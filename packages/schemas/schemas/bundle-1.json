@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bundle",
+  "description": "bundle@1 (02 §2): one uploaded part's complete unit catalog. Written by the untrusted capture side; everything here is a claim.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "revision", "providerId", "attempt", "shard", "producer", "claims", "units"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "revision": { "$ref": "common.json#/$defs/Revision" },
+    "providerId": { "$ref": "common.json#/$defs/Id" },
+    "attempt": { "$ref": "common.json#/$defs/GitHubId" },
+    "shard": { "$ref": "common.json#/$defs/Shard" },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "$ref": "common.json#/$defs/Id" },
+        "version": { "$ref": "common.json#/$defs/Label" }
+      }
+    },
+    "claims": { "$ref": "common.json#/$defs/Claims" },
+    "units": { "type": "array", "maxItems": 2000, "items": { "$ref": "#/$defs/BundleUnit" } }
+  },
+  "$defs": {
+    "Geometry": {
+      "title": "Geometry",
+      "description": "Optional CSS-space capture geometry. Pixel dimensions always come from decoding.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "enum": ["viewport", "full-page", "element"] },
+        "viewport": { "$ref": "common.json#/$defs/Viewport" },
+        "deviceScaleFactor": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "origin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+            "y": { "type": "integer", "minimum": 0, "maximum": 1000000 }
+          }
+        }
+      }
+    },
+    "BundleUnit": {
+      "title": "BundleUnit",
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "CapturedUnit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["viewId", "variantId", "state", "file"],
+          "properties": {
+            "viewId": { "$ref": "common.json#/$defs/Id" },
+            "variantId": { "$ref": "common.json#/$defs/Id" },
+            "labels": { "$ref": "common.json#/$defs/Labels" },
+            "notes": { "$ref": "common.json#/$defs/Notes" },
+            "state": { "const": "captured" },
+            "file": { "type": "string", "pattern": "^u-[0-9a-f]{64}\\.png$" },
+            "geometry": { "$ref": "#/$defs/Geometry" }
+          }
+        },
+        {
+          "title": "AbsentUnit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["viewId", "variantId", "state", "reason"],
+          "properties": {
+            "viewId": { "$ref": "common.json#/$defs/Id" },
+            "variantId": { "$ref": "common.json#/$defs/Id" },
+            "labels": { "$ref": "common.json#/$defs/Labels" },
+            "notes": { "$ref": "common.json#/$defs/Notes" },
+            "state": { "const": "absent" },
+            "reason": { "$ref": "common.json#/$defs/AbsentReason" }
+          }
+        },
+        {
+          "title": "FailedUnit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["viewId", "variantId", "state", "category"],
+          "properties": {
+            "viewId": { "$ref": "common.json#/$defs/Id" },
+            "variantId": { "$ref": "common.json#/$defs/Id" },
+            "labels": { "$ref": "common.json#/$defs/Labels" },
+            "notes": { "$ref": "common.json#/$defs/Notes" },
+            "state": { "const": "failed" },
+            "category": { "$ref": "common.json#/$defs/FailedCategory" },
+            "message": { "$ref": "common.json#/$defs/Message" }
+          }
+        }
+      ],
+      "discriminator": { "propertyName": "state" }
+    }
+  }
+}

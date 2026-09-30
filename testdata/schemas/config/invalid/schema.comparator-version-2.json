@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "workflowIds": [
+      "123456",
+      "789"
+    ],
+    "events": [
+      "pull_request",
+      "push",
+      "workflow_dispatch"
+    ]
+  },
+  "providers": [
+    {
+      "id": "fixture",
+      "shards": 1,
+      "label": "Fixture server"
+    },
+    {
+      "id": "stack",
+      "shards": 2
+    }
+  ],
+  "basePolicy": {
+    "pullRequest": "merge-base",
+    "push": "first-parent"
+  },
+  "comparator": {
+    "version": 2
+  },
+  "store": {
+    "branch": "pixelwatch-data",
+    "prefix": "pixelwatch"
+  },
+  "retention": {
+    "mainRuns": 30,
+    "runsPerPr": 5,
+    "prStreams": 30
+  },
+  "limits": {
+    "softBytes": 419430400,
+    "hardBytes": 524288000
+  },
+  "comment": {
+    "enabled": true
+  },
+  "theme": {
+    "preset": "fieldbook"
+  }
+}

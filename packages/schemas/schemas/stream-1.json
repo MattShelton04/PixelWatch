@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stream",
+  "description": "stream@1: an ordered, bounded run-key list plus a latest pointer. MVP streams are main and pr-<number>.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "streamId", "runs", "latest"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "streamId": { "$ref": "common.json#/$defs/StreamId" },
+    "runs": {
+      "type": "array",
+      "maxItems": 1000,
+      "uniqueItems": true,
+      "items": { "$ref": "common.json#/$defs/RunKey" }
+    },
+    "latest": { "$ref": "common.json#/$defs/NullableRunKey" }
+  }
+}

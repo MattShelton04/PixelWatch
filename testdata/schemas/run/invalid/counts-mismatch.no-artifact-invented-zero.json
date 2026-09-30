@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "runKey": "5-a1",
+  "source": {
+    "repositoryId": "987654321",
+    "workflowId": "123456",
+    "runId": "5",
+    "attempt": "1",
+    "event": "push",
+    "createdAt": "2026-09-28T09:48:30Z",
+    "workflowRef": "refs/heads/main",
+    "workflowSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+    "association": {
+      "status": "none"
+    },
+    "commits": {
+      "head": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
+    },
+    "configSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+    "releaseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da"
+  },
+  "claims": {
+    "head": {
+      "revisionSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
+    }
+  },
+  "versions": {
+    "release": "0.1.0-rc.1",
+    "config": 1,
+    "comparator": 1,
+    "bundle": 1,
+    "data": 1
+  },
+  "ingestionDigest": "4410f6dc300485b76b21f2fd6f36eb29a51323ee50a02911c35fcdcad087da91",
+  "snapshots": {
+    "base": null,
+    "head": "8b43958d23e6c890690d500c57006ef0302eba564c152220dd884aafa5546400"
+  },
+  "parts": [],
+  "coverage": {
+    "status": "unknown",
+    "declaredUnits": 0,
+    "accountedUnits": 0,
+    "missingParts": [
+      {
+        "revision": "head",
+        "providerId": "fixture",
+        "shard": {
+          "index": 1,
+          "count": 1
+        },
+        "reason": "not-received"
+      }
+    ]
+  },
+  "counts": {
+    "missing": 0,
+    "failed": 0,
+    "incomparable": 0,
+    "added": 0,
+    "removed": 0,
+    "unchanged": 1,
+    "subtle": 0,
+    "changed": 0
+  },
+  "results": []
+}

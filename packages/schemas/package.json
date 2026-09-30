@@ -1,0 +1,20 @@
+{
+  "name": "@pixelwatch/schemas",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PixelWatch data contracts: JSON Schemas, generated types, strict parsing, canonical JSON and bundle converters.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "types": "node scripts/generate-types.ts"
+  },
+  "dependencies": {
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "16.0.0"
+  }
+}

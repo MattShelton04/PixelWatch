@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Snapshot",
+  "description": "snapshot@1 (02 §3): one revision's captured units. snapshotId is the SHA-256 of this document's canonical JSON without snapshotId.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "snapshotId", "claims", "providers", "parts", "units"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "snapshotId": { "$ref": "common.json#/$defs/Sha256" },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revisionSha": { "$ref": "common.json#/$defs/GitOid" },
+        "harnessSha": { "$ref": "common.json#/$defs/GitOid" }
+      }
+    },
+    "providers": {
+      "description": "Normalized claimed environment per provider, sorted by providerId.",
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["providerId", "environment"],
+        "properties": {
+          "providerId": { "$ref": "common.json#/$defs/Id" },
+          "environment": { "$ref": "common.json#/$defs/Environment" }
+        }
+      }
+    },
+    "parts": {
+      "description": "Provenance: the validated parts this snapshot was built from.",
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["providerId", "shard", "artifactSha256"],
+        "properties": {
+          "providerId": { "$ref": "common.json#/$defs/Id" },
+          "shard": { "$ref": "common.json#/$defs/Shard" },
+          "artifactSha256": { "$ref": "common.json#/$defs/Sha256" }
+        }
+      }
+    },
+    "units": {
+      "description": "Sorted by (providerId, viewId, variantId), ASCII order.",
+      "type": "array",
+      "maxItems": 2000,
+      "items": { "$ref": "#/$defs/SnapshotUnit" }
+    }
+  },
+  "$defs": {
+    "SnapshotUnit": {
+      "title": "SnapshotUnit",
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "CapturedSnapshotUnit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["providerId", "viewId", "variantId", "state", "pixelHash", "width", "height"],
+          "properties": {
+            "providerId": { "$ref": "common.json#/$defs/Id" },
+            "viewId": { "$ref": "common.json#/$defs/Id" },
+            "variantId": { "$ref": "common.json#/$defs/Id" },
+            "state": { "const": "captured" },
+            "pixelHash": { "$ref": "common.json#/$defs/Sha256" },
+            "width": { "$ref": "common.json#/$defs/Dimension" },
+            "height": { "$ref": "common.json#/$defs/Dimension" }
+          }
+        },
+        {
+          "title": "AbsentSnapshotUnit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["providerId", "viewId", "variantId", "state", "reason"],
+          "properties": {
+            "providerId": { "$ref": "common.json#/$defs/Id" },
+            "viewId": { "$ref": "common.json#/$defs/Id" },
+            "variantId": { "$ref": "common.json#/$defs/Id" },
+            "state": { "const": "absent" },
+            "reason": { "$ref": "common.json#/$defs/AbsentReason" }
+          }
+        },
+        {
+          "title": "FailedSnapshotUnit",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["providerId", "viewId", "variantId", "state", "category"],
+          "properties": {
+            "providerId": { "$ref": "common.json#/$defs/Id" },
+            "viewId": { "$ref": "common.json#/$defs/Id" },
+            "variantId": { "$ref": "common.json#/$defs/Id" },
+            "state": { "const": "failed" },
+            "category": { "$ref": "common.json#/$defs/FailedCategory" }
+          }
+        }
+      ],
+      "discriminator": { "propertyName": "state" }
+    }
+  }
+}

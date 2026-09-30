@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "runKey": "5-a1",
+  "source": {
+    "repositoryId": "987654321",
+    "workflowId": "123456",
+    "runId": "5",
+    "attempt": "1",
+    "event": "push",
+    "createdAt": "2026-09-28T09:48:30Z",
+    "workflowRef": "refs/heads/main",
+    "workflowSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+    "association": {
+      "status": "none"
+    },
+    "commits": {
+      "head": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
+    },
+    "configSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+    "releaseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da"
+  },
+  "claims": {
+    "head": {
+      "revisionSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
+    }
+  },
+  "versions": {
+    "release": "0.1.0-rc.1",
+    "config": 1,
+    "comparator": 1,
+    "bundle": 1,
+    "data": 1
+  },
+  "ingestionDigest": "4410f6dc300485b76b21f2fd6f36eb29a51323ee50a02911c35fcdcad087da91",
+  "snapshots": {
+    "base": null,
+    "head": "8b43958d23e6c890690d500c57006ef0302eba564c152220dd884aafa5546400"
+  },
+  "parts": [
+    {
+      "revision": "head",
+      "providerId": "fixture",
+      "shard": {
+        "index": 1,
+        "count": 1
+      },
+      "status": "valid",
+      "artifactSha256": "359e085dc99c0ea9f354c7db114c3688b4bc4456ef5c0045c8fed9fd815a6428"
+    }
+  ],
+  "coverage": {
+    "status": "complete-declared",
+    "declaredUnits": 1,
+    "accountedUnits": 1,
+    "missingParts": []
+  },
+  "counts": {
+    "missing": 0,
+    "failed": 0,
+    "incomparable": 1,
+    "added": 0,
+    "removed": 0,
+    "unchanged": 0,
+    "subtle": 0,
+    "changed": 0
+  },
+  "results": [
+    {
+      "providerId": "fixture",
+      "viewId": "home",
+      "variantId": "desktop",
+      "status": "incomparable",
+      "reasons": [
+        "environment-mismatch"
+      ],
+      "base": {
+        "state": "none"
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065",
+        "width": 1440,
+        "height": 1000
+      }
+    }
+  ]
+}

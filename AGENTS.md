@@ -22,6 +22,8 @@ Node ≥ 22.18 (CI: `.node-version`), pnpm from `packageManager` (via Corepack).
   handoff.
 - `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm lint:workflows`: the individual parts.
   `pnpm test <path>` runs one file.
+- `pnpm schemas:types`: regenerate `packages/schemas/src/generated/types.ts` after editing a
+  schema. A test fails if it's stale.
 - `pnpm test:simulation` (M2.4) and `pnpm test:viewer` (M2.7) don't exist yet. They exit 1
   with "Nothing ran". Report them as not run.
 - `pnpm test:live`: needs `PIXELWATCH_LIVE=1`, `PIXELWATCH_E2E_OWNER`, `PIXELWATCH_E2E_REPO`,
