@@ -26,7 +26,9 @@ rules allow.
 
 - **Marker:** `<!-- pixelwatch:repo:<numeric-repository-id> -->`. Find and edit only a comment
   with that exact marker **and** the publishing bot's numeric author ID. Never edit a human's
-  comment, and don't trust a bot-looking login.
+  comment, and don't trust a bot-looking login. Every `GITHUB_TOKEN` workflow in the repo posts
+  as the same bot, so if more than one comment matches, edit none and record a diagnostic
+  (ADR 0004).
 - The target repo and PR come from the authenticated envelope (02 §8), never from the artifact.
 - The body includes a bounded machine-readable stamp: run key, captured head SHA, generation.
 

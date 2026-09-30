@@ -59,21 +59,27 @@ An in-process typed fake GitHub API (shapes hand-written from the official docs,
 by redacted real recordings), a local bare Git remote, a controllable static/CDN server, an
 injected clock and deterministic barriers.
 
-| Scenario | Must hold |
-|---|---|
-| Four ingestors fetch the same tip | Every valid run survives bounded CAS retries |
-| Push accepted, client times out | Refetch finds the run key/digest; no duplicate or overwrite |
-| Lease conflict, retries exhausted | Old consistent site remains; repair instruction reported |
-| Projectors A and B reordered | Each reads the store after the lock; the final generation has both |
-| Coalesced pending projector | The later projector publishes and comments for earlier runs too |
-| Old/new PR head interleaving | An old publisher can't replace the new head's comment |
-| Deploy OK, comment create times out | Rediscovery prevents duplicate comments |
-| Store OK, deploy fails or is cancelled | Run stays stored; the next or manual projection completes it |
-| 200 from an old CDN generation | Not treated as ready |
-| Independently stale HTML/JS/JSON, cached 404 | Bounded reload then static fallback; no loop, no misparse |
-| Migration/rollback vs active writer | Lease conflict forces a fresh loss preview |
-| Expired artifact, rate limit, cross-origin 302, 410/5xx | Bounded retries; auth stripped; nothing secret logged; incompleteness visible |
-| Unknown config/data version | No store write, deploy or comment |
+Each scenario has a stable ID. It's the test file name (`<id>.sim.test.ts`) and the name used in
+`docs/security/threat-model.md`. The two races are **separate** scenarios: concurrent ingestors on
+the store tip (`sim-ingest-cas-race`) and projectors vs deploy/comment ordering
+(`sim-deploy-comment-race`).
+
+| ID | Scenario | Must hold |
+|---|---|---|
+| `sim-ingest-cas-race` | Four ingestors fetch the same tip | Every valid run survives bounded CAS retries |
+| `sim-push-outcome-unknown` | Push accepted, client times out | Refetch finds the run key/digest; no duplicate or overwrite |
+| `sim-lease-exhausted` | Lease conflict, retries exhausted | Old consistent site remains; repair instruction reported |
+| `sim-deploy-comment-race` (A) | Projectors A and B reordered | Each reads the store after the lock; the final generation has both |
+| `sim-deploy-comment-race` (B) | Coalesced pending projector | The later projector publishes and comments for earlier runs too |
+| `sim-deploy-comment-race` (C) | Old/new PR head interleaving | An old publisher can't replace the new head's comment |
+| `sim-deploy-comment-race` (D) | Older-release projector runs after a newer one (03 §7) | Store tip never older than the last deployment; no comment rollback; `site.json` names the release that deployed |
+| `sim-comment-unknown-outcome` | Deploy OK, comment create times out | Rediscovery prevents duplicate comments |
+| `sim-deploy-fails` | Store OK, deploy fails or is cancelled | Run stays stored; the next or manual projection completes it |
+| `sim-cdn-stale-generation` | 200 from an old CDN generation | Not treated as ready |
+| `sim-viewer-stale-assets` | Independently stale HTML/JS/JSON, cached 404 | Bounded reload then static fallback; no loop, no misparse |
+| `sim-migration-vs-writer` | Migration/rollback vs active writer | Lease conflict forces a fresh loss preview |
+| `sim-github-faults` | Expired artifact, rate limit, cross-origin 302, 410/5xx | Bounded retries; auth stripped; nothing secret logged; incompleteness visible |
+| `sim-unknown-version` | Unknown config/data version | No store write, deploy or comment |
 
 Simulate several CDN TTLs (600 s is one case). Aim for ≤ 4 minutes, but never drop scenarios to
 meet that.
@@ -100,7 +106,8 @@ meet that.
 ## 6. Security, viewer and self-review
 
 - **Traceability:** every rule in 01 §4 maps to a named test or a manual evidence item
-  (`docs/security/threat-model.md`).
+  (`docs/security/threat-model.md`). `tools/threat-model.test.ts` checks the mapping in
+  `pnpm check`.
 - **Parser corpus:**
   - ZIP: central/local mismatch, duplicate and case-colliding names, links, ZIP64/encryption;
   - PNG: multiple IHDR/IEND, bad CRC or filter, inflate bombs, trailing data, integer overflow.

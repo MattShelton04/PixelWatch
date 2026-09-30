@@ -142,13 +142,20 @@ Commits pushed with `GITHUB_TOKEN` don't trigger a branch Pages build, so the st
 branch-served. Don't add a PAT to force it. Instead, the report workflow's second job:
 
 1. Joins one concurrency group per repository/site with `cancel-in-progress: false`.
-2. **After** taking the lock, fetches the latest store and builds the served tree (§3) plus the
-   pinned app.
+2. **After** taking the lock, fetches the latest store, reads config at the default-branch head
+   resolved at that point (recorded in the generation), and builds the served tree (§3) plus the
+   pinned app. A deployment never uses an older store tip than the one before it ("no stale
+   generation"). The release is the job's own, so a queued older-release projector can still
+   deploy once after a newer one. That's a documented residual risk: it can't lose data or roll
+   back a comment, and `site.json` names its release (ADR 0004).
 3. Uploads and deploys with the official `actions/upload-pages-artifact` / `actions/deploy-pages`
    into the `github-pages` environment.
-4. **Readiness:** polls a generated manifest until it reports the expected generation, run key
-   and content digest (bounded timeout). HTTP 200 alone isn't readiness, because old edges and
-   cached 404s exist. It also probes comment image URLs with a bounded GET before using them.
+4. **Readiness:** polls with a bounded timeout until the served `site.json` reports the expected
+   `generation`, and, for each PR about to be commented, `api/v1/pr/<number>/latest.json` names
+   the expected run key and generation. The SHA-256 of each fetched body must equal the bytes the
+   projector built. That digest is compared in memory, not stored. HTTP 200 alone isn't
+   readiness, because old edges and cached 404s exist. It also probes comment image URLs with a
+   bounded GET before using them.
 5. Reconciles sticky comments for **every** retained PR that needs an update, not just the
    triggering one (05 §2).
 
