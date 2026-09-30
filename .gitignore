@@ -1,0 +1,15 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Pinned lint binaries fetched by `pnpm tools:install`
+.tools/
+
+# Prototype reference inputs (08 §1 item 3). Never committed.
+.reference/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

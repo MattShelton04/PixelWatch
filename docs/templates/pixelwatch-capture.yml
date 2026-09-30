@@ -1,0 +1,115 @@
+# PixelWatch capture workflow: TEMPLATE for adopters (01 §3). Copy to
+# .github/workflows/pixelwatch-capture.yml and replace the TODO steps.
+#
+# This workflow runs your pull request's code, so it's UNTRUSTED (01 §4.1). Keep it that way:
+#   - `permissions: contents: read` only. No `secrets: inherit`, no secrets, no environments.
+#   - Never switch the trigger to `pull_request_target`.
+#   - GitHub-hosted runners only; no self-hosted or privileged runners.
+# PixelWatch can't enforce these on your workflow. If you weaken them, the fork-safety guarantees
+# no longer hold.
+#
+# Status: pre-release. The conversion step needs the M0.3 converters. The base-commit rule is
+# written from 01 §4.4 and will be confirmed by live spike S11 (M0.5).
+name: PixelWatch Capture
+
+on:
+  pull_request:
+  push:
+    branches: [main] # your default branch
+  # Don't add a paths-ignore for all Markdown: docs may be the rendered UI (01 §3).
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pixelwatch-capture-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refs:
+    name: Select base and head
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      base: ${{ steps.select.outputs.base }}
+      head: ${{ steps.select.outputs.head }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # PR: head = PR head commit, base = merge base with the event's base-branch commit.
+      # Push: head = pushed commit, base = its first parent. Initial commit: no base.
+      - id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSHED: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ "${EVENT}" = "pull_request" ]; then
+            head="${PR_HEAD}"
+            base="$(git merge-base "${PR_BASE}" "${PR_HEAD}")"
+          else
+            head="${PUSHED}"
+            base="$(git rev-parse --verify --quiet "${PUSHED}^1" || true)"
+          fi
+          echo "head=${head}" >> "${GITHUB_OUTPUT}"
+          echo "base=${base}" >> "${GITHUB_OUTPUT}"
+
+  capture:
+    name: ${{ matrix.revision }} ${{ matrix.provider }} s${{ matrix.shard }}
+    needs: refs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # Base and head are captured in separate jobs. Provider IDs and shard counts must match
+        # the trusted .pixelwatch/config.yml on the default branch (02 §6).
+        revision: [base, head]
+        provider: [app]
+        shard: [1]
+        shards: [1]
+    steps:
+      # The harness always comes from this workflow's revision, so base and head are captured
+      # by the same (head) harness (01 §4.4).
+      - name: Check out harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: harness
+          persist-credentials: false
+
+      - name: Check out ${{ matrix.revision }} application
+        if: matrix.revision == 'head' || needs.refs.outputs.base != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ matrix.revision == 'base' && needs.refs.outputs.base || needs.refs.outputs.head }}
+          path: app
+          persist-credentials: false
+
+      - name: Capture screenshots
+        env:
+          REVISION: ${{ matrix.revision }}
+          PROVIDER: ${{ matrix.provider }}
+        run: |
+          echo "TODO: run your capture harness from ./harness against ./app for ${REVISION}/${PROVIDER}."
+          exit 1
+
+      # Runs after failed captures too: the bundle records failed units explicitly, and
+      # incompleteness is evidence (01 §3, 02 §4).
+      - name: Convert to bundle@1
+        if: ${{ !cancelled() }}
+        run: |
+          echo "TODO: run the PixelWatch converter (M0.3) to write ./pixelwatch-bundle/."
+          exit 1
+
+      - name: Upload bundle
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          # pixelwatch-b1-a<attempt>-<base|head>-<provider>-s<index>-of<count> (02 §6)
+          name: pixelwatch-b1-a${{ github.run_attempt }}-${{ matrix.revision }}-${{ matrix.provider }}-s${{ matrix.shard }}-of${{ matrix.shards }}
+          path: pixelwatch-bundle/
+          if-no-files-found: error

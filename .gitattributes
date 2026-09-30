@@ -1,0 +1,4 @@
+# LF everywhere so hashes, goldens and lint output match on Linux and Windows.
+* text=auto eol=lf
+*.png binary
+*.zip binary

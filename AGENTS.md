@@ -13,7 +13,28 @@ PixelWatch is a self-hosted visual-regression tool for GitHub. Design: `docs/des
 
 ## Commands
 
-<!-- Fill in during M0.1 -->
+Node ≥ 22.18 (CI: `.node-version`), pnpm from `packageManager` (via Corepack).
+
+- `pnpm install --frozen-lockfile`: install.
+- `pnpm tools:install`: fetch the pinned actionlint + zizmor into `.tools/bin` (networked; rerun
+  when `tools/lint-tools.json` changes).
+- `pnpm check`: lint + typecheck + tests + workflow lint. No network. Must be green before
+  handoff.
+- `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm lint:workflows`: the individual parts.
+  `pnpm test <path>` runs one file.
+- `pnpm test:simulation` (M2.4) and `pnpm test:viewer` (M2.7) don't exist yet. They exit 1
+  with "Nothing ran". Report them as not run.
+- `pnpm test:live`: needs `PIXELWATCH_LIVE=1`, `PIXELWATCH_E2E_OWNER`, `PIXELWATCH_E2E_REPO`,
+  `GH_TOKEN`. It refuses on `pull_request*` events and has no scenarios until M2.6.
+
+Pitfalls:
+
+- `.reference/` holds the prototype clones and artifacts (ADR 0001). It's git-ignored. Never
+  commit it or read it from tests.
+- `testdata/smoke/` holds deliberately bad fixtures. Don't fix them.
+- TS files run directly on Node (type stripping), so use erasable syntax only and `.ts` import
+  extensions.
+- Pin every action to a full commit SHA with a `# vX.Y.Z` comment.
 
 ## Keeping this file useful
 

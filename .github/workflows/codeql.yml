@@ -1,0 +1,65 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions: {}
+
+jobs:
+  # Code scanning needs a public repo (or GHAS). While the repo is private the analysis job is
+  # skipped, which shows as skipped, never as a pass. The schedule payload has no repository
+  # object, so visibility comes from the API rather than github.event.
+  visibility:
+    name: Repository visibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    outputs:
+      public: ${{ steps.check.outputs.public }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          visibility="$(gh api "repos/${REPO}" --jq .visibility)"
+          echo "visibility: ${visibility}"
+          if [ "${visibility}" = "public" ]; then
+            echo "public=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "public=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+  analyze:
+    name: CodeQL (${{ matrix.language }})
+    needs: visibility
+    if: needs.visibility.outputs.public == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [actions, javascript-typescript]
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          category: /language:${{ matrix.language }}

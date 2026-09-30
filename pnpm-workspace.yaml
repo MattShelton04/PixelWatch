@@ -1,0 +1,9 @@
+packages:
+  - packages/*
+
+# Supply-chain defaults. Dependencies may not run install scripts unless listed here.
+onlyBuiltDependencies: []
+# Refuse versions published less than a day ago (minutes).
+minimumReleaseAge: 1440
+strictPeerDependencies: true
+saveExact: true
