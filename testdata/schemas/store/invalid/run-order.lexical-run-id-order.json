@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "marker": "pixelwatch-store",
+  "repositoryId": "987654321",
+  "dataVersion": 1,
+  "txn": 3,
+  "runs": [
+    {
+      "runKey": "100-a1",
+      "sourceCreatedAt": "2026-09-28T09:48:30Z",
+      "stream": "pr-123"
+    },
+    {
+      "runKey": "99-a1",
+      "sourceCreatedAt": "2026-09-28T09:48:30Z",
+      "stream": "main"
+    }
+  ]
+}

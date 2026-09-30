@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Config",
+  "description": "config@1 (02 §1, §10): the adopter's trusted policy, read from one default-branch commit. Omitted settings take their defaults: store.prefix pixelwatch, theme.preset github-light, and the default values below.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "source", "providers"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflowIds", "events"],
+      "properties": {
+        "workflowIds": {
+          "description": "Numeric IDs of the capture workflows allowed to trigger publishing. A name is not enough (01 §4.3).",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "common.json#/$defs/GitHubId" }
+        },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["pull_request", "push", "workflow_dispatch"] }
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "shards"],
+        "properties": {
+          "id": { "$ref": "common.json#/$defs/Id" },
+          "shards": { "type": "integer", "minimum": 1, "maximum": 64 },
+          "label": { "$ref": "common.json#/$defs/Label" }
+        }
+      }
+    },
+    "basePolicy": {
+      "description": "01 §4.4. Only the MVP policy exists.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pullRequest", "push"],
+      "properties": { "pullRequest": { "const": "merge-base" }, "push": { "const": "first-parent" } }
+    },
+    "comparator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version"],
+      "properties": { "version": { "const": 1 } }
+    },
+    "store": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "default": "pixelwatch-data",
+          "type": "string",
+          "pattern": "^(?!.*\\.\\.)(?!.*\\.lock$)[a-z0-9](?:[a-z0-9._-]{0,98}[a-z0-9_-])?$"
+        },
+        "prefix": { "$ref": "common.json#/$defs/SitePrefix" }
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mainRuns": { "default": 30, "type": "integer", "minimum": 1, "maximum": 1000 },
+        "runsPerPr": { "default": 5, "type": "integer", "minimum": 1, "maximum": 100 },
+        "prStreams": { "default": 30, "type": "integer", "minimum": 0, "maximum": 1000 }
+      }
+    },
+    "limits": {
+      "description": "Assembled-site byte budget (03 §1). softBytes must not exceed hardBytes.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "softBytes": { "default": 419430400, "type": "integer", "minimum": 1048576, "maximum": 1073741824 },
+        "hardBytes": { "default": 524288000, "type": "integer", "minimum": 1048576, "maximum": 1073741824 }
+      }
+    },
+    "comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "default": true, "type": "boolean" }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "preset": { "$ref": "common.json#/$defs/ThemePreset" } }
+    }
+  }
+}

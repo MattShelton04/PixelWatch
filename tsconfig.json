@@ -4,5 +4,12 @@
     "allowJs": true,
     "checkJs": true
   },
-  "include": ["tools/**/*.ts", "vitest.config.ts", "eslint.config.js"]
+  "include": [
+    "tools/**/*.ts",
+    "packages/*/src/**/*.ts",
+    "packages/*/test/**/*.ts",
+    "packages/*/scripts/**/*.ts",
+    "vitest.config.ts",
+    "eslint.config.js"
+  ]
 }

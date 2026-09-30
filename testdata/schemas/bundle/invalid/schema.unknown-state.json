@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "revision": "head",
+  "providerId": "fixture",
+  "attempt": "1",
+  "shard": {
+    "index": 1,
+    "count": 2
+  },
+  "producer": {
+    "name": "propertyscope",
+    "version": "capture-schema-1"
+  },
+  "claims": {
+    "revisionSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+    "harnessSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+    "environment": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "deviceScaleFactor": 1,
+      "colorScheme": "light",
+      "locale": "en-AU",
+      "timezone": "Australia/Sydney",
+      "fixedTime": "2026-09-01T10:00:00+10:00"
+    }
+  },
+  "units": [
+    {
+      "viewId": "home",
+      "variantId": "desktop",
+      "labels": {
+        "title": "Home",
+        "group": "Shared",
+        "state": "populated home",
+        "route": "/#home"
+      },
+      "notes": [
+        "masked runtime values: .health-row__latency"
+      ],
+      "state": "captured",
+      "file": "u-a577b1b3590df7ce46aaea06f295231f38348f6be5e800d82c7eeebb15dcbca0.png",
+      "geometry": {
+        "mode": "full-page",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "deviceScaleFactor": 1,
+        "origin": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "viewId": "new-page",
+      "variantId": "desktop",
+      "state": "absent",
+      "reason": "not-in-revision-catalog"
+    },
+    {
+      "viewId": "search",
+      "variantId": "desktop",
+      "state": "incomplete",
+      "category": "capture-error",
+      "message": "Timeout 20000ms exceeded."
+    },
+    {
+      "viewId": "unicode-label-view",
+      "variantId": "desktop",
+      "labels": {
+        "state": "Ünïcödé 标签 😀 ‮ ok"
+      },
+      "state": "captured",
+      "file": "u-e70fc6d1440a157d59e6fa1827b50780eb823d50f1c5bae0013cdfb35eeb08e8.png"
+    }
+  ]
+}

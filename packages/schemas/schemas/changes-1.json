@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Changes",
+  "description": "changes@1 (02 §7): the public, immutable per-run analysis for people and agents. Capture claims are untrusted; source facts are corroborated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runKey",
+    "source",
+    "captureClaimsTrusted",
+    "claims",
+    "comparator",
+    "capabilities",
+    "coverage",
+    "counts",
+    "results"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runKey": { "$ref": "common.json#/$defs/RunKey" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositoryId", "workflowId", "runId", "attempt", "event", "createdAt", "association"],
+      "properties": {
+        "repositoryId": { "$ref": "common.json#/$defs/GitHubId" },
+        "workflowId": { "$ref": "common.json#/$defs/GitHubId" },
+        "runId": { "$ref": "common.json#/$defs/GitHubId" },
+        "attempt": { "$ref": "common.json#/$defs/GitHubId" },
+        "event": { "enum": ["pull_request", "push", "workflow_dispatch"] },
+        "createdAt": { "$ref": "common.json#/$defs/Timestamp" },
+        "association": { "enum": ["corroborated", "none", "ambiguous"] },
+        "prNumber": { "$ref": "common.json#/$defs/GitHubId" },
+        "headSha": { "$ref": "common.json#/$defs/GitOid" },
+        "baseSha": { "$ref": "common.json#/$defs/GitOid" }
+      }
+    },
+    "captureClaimsTrusted": { "const": false },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": { "$ref": "common.json#/$defs/Claims" },
+        "head": { "$ref": "common.json#/$defs/Claims" }
+      }
+    },
+    "comparator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version"],
+      "properties": { "version": { "const": 1 } }
+    },
+    "capabilities": {
+      "description": "Features that ran. A feature that didn't run is false and its fields are absent, never empty.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["diff", "regions"],
+      "properties": { "diff": { "type": "boolean" }, "regions": { "type": "boolean" } }
+    },
+    "coverage": { "$ref": "common.json#/$defs/Coverage" },
+    "counts": { "$ref": "common.json#/$defs/Counts" },
+    "results": { "type": "array", "maxItems": 2000, "items": { "$ref": "#/$defs/ChangeResult" } }
+  },
+  "$defs": {
+    "HttpsUrl": {
+      "title": "HttpsUrl",
+      "description": "Absolute HTTPS URL built from the configured origin/prefix and generated IDs only.",
+      "type": "string",
+      "maxLength": 2048,
+      "pattern": "^https://[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?(?::[0-9]{1,5})?(?:/[A-Za-z0-9_~-][A-Za-z0-9._~-]*)*/?$"
+    },
+    "ChangeResult": {
+      "title": "ChangeResult",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerId", "viewId", "variantId", "status", "reasons", "base", "head"],
+      "properties": {
+        "providerId": { "$ref": "common.json#/$defs/Id" },
+        "viewId": { "$ref": "common.json#/$defs/Id" },
+        "variantId": { "$ref": "common.json#/$defs/Id" },
+        "status": { "$ref": "common.json#/$defs/ResultStatus" },
+        "reasons": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "common.json#/$defs/Reason" }
+        },
+        "labels": { "$ref": "common.json#/$defs/Labels" },
+        "base": { "$ref": "common.json#/$defs/Side" },
+        "head": { "$ref": "common.json#/$defs/Side" },
+        "images": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "base": { "$ref": "#/$defs/HttpsUrl" }, "head": { "$ref": "#/$defs/HttpsUrl" } }
+        },
+        "diff": { "$ref": "common.json#/$defs/Diff" }
+      }
+    }
+  }
+}

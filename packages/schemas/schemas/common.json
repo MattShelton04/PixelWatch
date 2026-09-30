@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PixelWatch common definitions",
+  "description": "Shared definitions. Other schemas reference these as common.json#/$defs/<Name>; the loader inlines them.",
+  "$defs": {
+    "Id": {
+      "title": "Id",
+      "description": "Provider, view or variant ID (02 §3).",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "Sha256": { "title": "Sha256", "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "GitOid": {
+      "title": "GitOid",
+      "description": "Git object ID (SHA-1 or SHA-256), not a content hash.",
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "GitHubId": {
+      "title": "GitHubId",
+      "description": "GitHub numeric ID as a nonzero decimal string. Compare numerically.",
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,18}$"
+    },
+    "RunKey": {
+      "title": "RunKey",
+      "type": "string",
+      "pattern": "^(?:[1-9][0-9]{0,18}-a[1-9][0-9]{0,18}|import-[0-9a-f]{64})$"
+    },
+    "StreamId": { "title": "StreamId", "type": "string", "pattern": "^(?:main|pr-[1-9][0-9]{0,18})$" },
+    "Timestamp": {
+      "title": "Timestamp",
+      "description": "UTC timestamp, whole seconds.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$"
+    },
+    "Revision": { "title": "Revision", "enum": ["base", "head"] },
+    "Label": {
+      "title": "Label",
+      "description": "Bounded display text: 1–256 code points, no control characters.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]*$"
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Bounded diagnostic text: at most 2048 UTF-8 bytes (checked after the schema), no control characters.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]*$"
+    },
+    "ReleaseVersion": {
+      "title": "ReleaseVersion",
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]{0,5})\\.(?:0|[1-9][0-9]{0,5})\\.(?:0|[1-9][0-9]{0,5})(?:-[0-9A-Za-z.]{1,32})?$"
+    },
+    "Count": { "title": "Count", "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "Dimension": {
+      "title": "Dimension",
+      "description": "Image or viewport size in pixels (02 §5).",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16383
+    },
+    "Shard": {
+      "title": "Shard",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index", "count"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "count": { "type": "integer", "minimum": 1, "maximum": 64 }
+      }
+    },
+    "Viewport": {
+      "title": "Viewport",
+      "description": "CSS-space size.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": { "width": { "$ref": "#/$defs/Dimension" }, "height": { "$ref": "#/$defs/Dimension" } }
+    },
+    "Environment": {
+      "title": "Environment",
+      "description": "Claimed capture environment. Untrusted.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "viewport": { "$ref": "#/$defs/Viewport" },
+        "deviceScaleFactor": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "colorScheme": { "enum": ["light", "dark"] },
+        "locale": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,35}$" },
+        "timezone": { "type": "string", "pattern": "^[A-Za-z0-9_+/-]{1,64}$" },
+        "fixedTime": { "$ref": "#/$defs/Label" },
+        "browser": { "$ref": "#/$defs/Label" }
+      }
+    },
+    "Claims": {
+      "title": "Claims",
+      "description": "What one side's capture says about itself. Untrusted.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revisionSha": { "$ref": "#/$defs/GitOid" },
+        "harnessSha": { "$ref": "#/$defs/GitOid" },
+        "environment": { "$ref": "#/$defs/Environment" }
+      }
+    },
+    "Labels": {
+      "title": "Labels",
+      "description": "Display labels for a unit. Untrusted text; never an identifier or link.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "$ref": "#/$defs/Label" },
+        "group": { "$ref": "#/$defs/Label" },
+        "state": { "$ref": "#/$defs/Label" },
+        "route": { "$ref": "#/$defs/Label" }
+      }
+    },
+    "Notes": { "title": "Notes", "type": "array", "maxItems": 8, "items": { "$ref": "#/$defs/Message" } },
+    "AbsentReason": { "title": "AbsentReason", "enum": ["not-in-revision-catalog", "not-applicable"] },
+    "FailedCategory": {
+      "title": "FailedCategory",
+      "enum": [
+        "capture-error",
+        "capture-incomplete",
+        "timeout",
+        "setup-error",
+        "image-missing",
+        "image-invalid",
+        "unknown"
+      ]
+    },
+    "ResultStatus": {
+      "title": "ResultStatus",
+      "enum": ["missing", "failed", "incomparable", "added", "removed", "unchanged", "subtle", "changed"]
+    },
+    "Reason": {
+      "title": "Reason",
+      "enum": [
+        "part-missing",
+        "unit-missing",
+        "capture-failed",
+        "no-baseline",
+        "environment-mismatch",
+        "alignment",
+        "dimensions",
+        "pixels"
+      ]
+    },
+    "Counts": {
+      "title": "Counts",
+      "description": "One count per result status; they sum to results.length (02 §4).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["missing", "failed", "incomparable", "added", "removed", "unchanged", "subtle", "changed"],
+      "properties": {
+        "missing": { "$ref": "#/$defs/Count" },
+        "failed": { "$ref": "#/$defs/Count" },
+        "incomparable": { "$ref": "#/$defs/Count" },
+        "added": { "$ref": "#/$defs/Count" },
+        "removed": { "$ref": "#/$defs/Count" },
+        "unchanged": { "$ref": "#/$defs/Count" },
+        "subtle": { "$ref": "#/$defs/Count" },
+        "changed": { "$ref": "#/$defs/Count" }
+      }
+    },
+    "PartRef": {
+      "title": "PartRef",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "providerId", "shard"],
+      "properties": {
+        "revision": { "$ref": "#/$defs/Revision" },
+        "providerId": { "$ref": "#/$defs/Id" },
+        "shard": { "$ref": "#/$defs/Shard" }
+      }
+    },
+    "MissingPart": {
+      "title": "MissingPart",
+      "description": "An expected part without a valid catalog. Its unit count is unknown, never zero.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "providerId", "shard", "reason"],
+      "properties": {
+        "revision": { "$ref": "#/$defs/Revision" },
+        "providerId": { "$ref": "#/$defs/Id" },
+        "shard": { "$ref": "#/$defs/Shard" },
+        "reason": { "enum": ["not-received", "rejected"] }
+      }
+    },
+    "Coverage": {
+      "title": "Coverage",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "declaredUnits", "accountedUnits", "missingParts"],
+      "properties": {
+        "status": { "enum": ["complete-declared", "incomplete", "unknown"] },
+        "declaredUnits": { "$ref": "#/$defs/Count" },
+        "accountedUnits": { "$ref": "#/$defs/Count" },
+        "missingParts": { "type": "array", "maxItems": 256, "items": { "$ref": "#/$defs/MissingPart" } }
+      }
+    },
+    "Region": {
+      "title": "Region",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "width", "height", "pixels"],
+      "properties": {
+        "x": { "type": "integer", "minimum": 0, "maximum": 16382 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 16382 },
+        "width": { "$ref": "#/$defs/Dimension" },
+        "height": { "$ref": "#/$defs/Dimension" },
+        "pixels": { "type": "integer", "minimum": 1, "maximum": 16000000 }
+      }
+    },
+    "Analysis": {
+      "title": "Analysis",
+      "description": "Measurements at one channel-difference threshold. changedPpm = round-half-up(1e6 × changedPixels / totalPixels). regions and regionCount appear together, and only when region grouping ran.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["threshold", "changedPixels", "changedPpm"],
+      "properties": {
+        "threshold": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "changedPixels": { "type": "integer", "minimum": 0, "maximum": 16000000 },
+        "changedPpm": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+        "bounds": { "$ref": "#/$defs/Region" },
+        "regions": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/Region" } },
+        "regionCount": { "$ref": "#/$defs/Count" }
+      }
+    },
+    "Diff": {
+      "title": "Diff",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["totalPixels", "analyses"],
+      "properties": {
+        "totalPixels": { "type": "integer", "minimum": 1, "maximum": 16000000 },
+        "analyses": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "$ref": "#/$defs/Analysis" } }
+      }
+    },
+    "Side": {
+      "title": "Side",
+      "type": "object",
+      "description": "One side of a compared unit. `none` means no baseline revision exists (e.g. an initial commit).",
+      "oneOf": [
+        {
+          "title": "CapturedSide",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "pixelHash", "width", "height"],
+          "properties": {
+            "state": { "const": "captured" },
+            "pixelHash": { "$ref": "#/$defs/Sha256" },
+            "width": { "$ref": "#/$defs/Dimension" },
+            "height": { "$ref": "#/$defs/Dimension" }
+          }
+        },
+        {
+          "title": "AbsentSide",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "reason"],
+          "properties": { "state": { "const": "absent" }, "reason": { "$ref": "#/$defs/AbsentReason" } }
+        },
+        {
+          "title": "FailedSide",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "category"],
+          "properties": { "state": { "const": "failed" }, "category": { "$ref": "#/$defs/FailedCategory" } }
+        },
+        {
+          "title": "MissingSide",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "cause"],
+          "properties": {
+            "state": { "const": "missing" },
+            "cause": { "enum": ["part-missing", "unit-missing"] }
+          }
+        },
+        {
+          "title": "NoBaselineSide",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "const": "none" } }
+        }
+      ],
+      "discriminator": { "propertyName": "state" }
+    },
+    "Association": {
+      "title": "Association",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["corroborated", "none", "ambiguous"] },
+        "prNumber": { "$ref": "#/$defs/GitHubId" },
+        "diagnostic": { "$ref": "#/$defs/Message" }
+      }
+    },
+    "SourceEnvelope": {
+      "title": "SourceEnvelope",
+      "description": "Source facts the publisher corroborated through the GitHub API (02 §8). Trusted.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repositoryId",
+        "workflowId",
+        "runId",
+        "attempt",
+        "event",
+        "createdAt",
+        "workflowRef",
+        "workflowSha",
+        "association",
+        "commits",
+        "configSha",
+        "releaseSha"
+      ],
+      "properties": {
+        "repositoryId": { "$ref": "#/$defs/GitHubId" },
+        "workflowId": { "$ref": "#/$defs/GitHubId" },
+        "runId": { "$ref": "#/$defs/GitHubId" },
+        "attempt": { "$ref": "#/$defs/GitHubId" },
+        "event": { "enum": ["pull_request", "push", "workflow_dispatch"] },
+        "createdAt": { "$ref": "#/$defs/Timestamp" },
+        "workflowRef": { "type": "string", "pattern": "^refs/[A-Za-z0-9._/-]{1,250}$" },
+        "workflowSha": { "$ref": "#/$defs/GitOid" },
+        "association": { "$ref": "#/$defs/Association" },
+        "commits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "head": { "$ref": "#/$defs/GitOid" }, "base": { "$ref": "#/$defs/GitOid" } }
+        },
+        "configSha": { "$ref": "#/$defs/GitOid" },
+        "releaseSha": { "$ref": "#/$defs/GitOid" }
+      }
+    },
+    "ThemePreset": { "title": "ThemePreset", "enum": ["github-light", "github-dark", "fieldbook", "midnight"] },
+    "SitePrefix": {
+      "title": "SitePrefix",
+      "description": "Relative site path: 1–4 ID segments separated by '/'.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?:/[a-z0-9][a-z0-9_-]{0,63}){0,3}$"
+    },
+    "NullableRunKey": {
+      "title": "NullableRunKey",
+      "oneOf": [
+        { "$ref": "#/$defs/RunKey" },
+        { "type": "null" }
+      ]
+    },
+    "NullableSha256": {
+      "title": "NullableSha256",
+      "oneOf": [
+        { "$ref": "#/$defs/Sha256" },
+        { "type": "null" }
+      ]
+    }
+  }
+}

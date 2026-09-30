@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "revision": "head",
+  "providerId": "fixture",
+  "attempt": "1",
+  "shard": {
+    "index": 1,
+    "count": 2
+  },
+  "producer": {
+    "name": "propertyscope",
+    "version": "capture-schema-1"
+  },
+  "claims": {},
+  "units": []
+}

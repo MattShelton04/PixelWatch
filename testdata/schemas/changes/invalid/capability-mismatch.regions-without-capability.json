@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 1,
+  "runKey": "36405830015-a2",
+  "source": {
+    "repositoryId": "987654321",
+    "workflowId": "123456",
+    "runId": "36405830015",
+    "attempt": "2",
+    "event": "pull_request",
+    "createdAt": "2026-09-28T09:48:30Z",
+    "association": "corroborated",
+    "prNumber": "123",
+    "headSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da"
+  },
+  "captureClaimsTrusted": false,
+  "claims": {
+    "base": {
+      "revisionSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da",
+      "harnessSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838"
+    },
+    "head": {
+      "revisionSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+      "harnessSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        }
+      }
+    }
+  },
+  "comparator": {
+    "version": 1
+  },
+  "capabilities": {
+    "diff": true,
+    "regions": false
+  },
+  "coverage": {
+    "status": "incomplete",
+    "declaredUnits": 9,
+    "accountedUnits": 8,
+    "missingParts": [
+      {
+        "revision": "head",
+        "providerId": "stack",
+        "shard": {
+          "index": 2,
+          "count": 2
+        },
+        "reason": "rejected"
+      }
+    ]
+  },
+  "counts": {
+    "missing": 1,
+    "failed": 1,
+    "incomparable": 1,
+    "added": 1,
+    "removed": 1,
+    "unchanged": 1,
+    "subtle": 1,
+    "changed": 2
+  },
+  "results": [
+    {
+      "providerId": "fixture",
+      "viewId": "added-view",
+      "variantId": "desktop",
+      "status": "added",
+      "reasons": [],
+      "base": {
+        "state": "absent",
+        "reason": "not-in-revision-catalog"
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "8974e19269065fdfbb99290ab5007b0eda19e9235a814bbab8a2baddda261d6c",
+        "width": 1440,
+        "height": 1000
+      },
+      "images": {
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/89/8974e19269065fdfbb99290ab5007b0eda19e9235a814bbab8a2baddda261d6c.png"
+      }
+    },
+    {
+      "providerId": "fixture",
+      "viewId": "home",
+      "variantId": "desktop",
+      "status": "unchanged",
+      "reasons": [],
+      "labels": {
+        "group": "Shared",
+        "state": "populated home"
+      },
+      "base": {
+        "state": "captured",
+        "pixelHash": "1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065",
+        "width": 1440,
+        "height": 1000
+      },
+      "diff": {
+        "totalPixels": 1440000,
+        "analyses": [
+          {
+            "threshold": 0,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          },
+          {
+            "threshold": 8,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          },
+          {
+            "threshold": 16,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          },
+          {
+            "threshold": 32,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          }
+        ]
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/1b/1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065.png",
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/1b/1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065.png"
+      }
+    },
+    {
+      "providerId": "fixture",
+      "viewId": "old-view",
+      "variantId": "desktop",
+      "status": "removed",
+      "reasons": [],
+      "base": {
+        "state": "captured",
+        "pixelHash": "105fe8a8de9606b7a3c715d84604c303462747991709e2f87f610835810e5d6b",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "absent",
+        "reason": "not-in-revision-catalog"
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/10/105fe8a8de9606b7a3c715d84604c303462747991709e2f87f610835810e5d6b.png"
+      }
+    },
+    {
+      "providerId": "fixture",
+      "viewId": "search",
+      "variantId": "desktop",
+      "status": "subtle",
+      "reasons": [
+        "pixels"
+      ],
+      "base": {
+        "state": "captured",
+        "pixelHash": "b9e22a4ebcfb3840ecfe0e1e871d08eaab8904f8ac7e8af87d8af8f7121a808b",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "2e79287dc58dc7b9f078f3ac0deeeb3c70e417579de761690491fe20928cdf39",
+        "width": 1440,
+        "height": 1000
+      },
+      "diff": {
+        "totalPixels": 1440000,
+        "analyses": [
+          {
+            "threshold": 0,
+            "changedPixels": 100,
+            "changedPpm": 69,
+            "bounds": {
+              "x": 100,
+              "y": 40,
+              "width": 20,
+              "height": 5,
+              "pixels": 100
+            },
+            "regions": [
+              {
+                "x": 100,
+                "y": 40,
+                "width": 20,
+                "height": 5,
+                "pixels": 100
+              }
+            ],
+            "regionCount": 1
+          },
+          {
+            "threshold": 8,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          },
+          {
+            "threshold": 16,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          },
+          {
+            "threshold": 32,
+            "changedPixels": 0,
+            "changedPpm": 0,
+            "regions": [],
+            "regionCount": 0
+          }
+        ]
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/b9/b9e22a4ebcfb3840ecfe0e1e871d08eaab8904f8ac7e8af87d8af8f7121a808b.png",
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/2e/2e79287dc58dc7b9f078f3ac0deeeb3c70e417579de761690491fe20928cdf39.png"
+      }
+    },
+    {
+      "providerId": "fixture",
+      "viewId": "taller",
+      "variantId": "desktop",
+      "status": "changed",
+      "reasons": [
+        "dimensions"
+      ],
+      "base": {
+        "state": "captured",
+        "pixelHash": "e2a451d7708dd753459d6c6735b18127b205f288cd6d533693b32aad00b445d6",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "70f5f50879d254f65ce29233cf8387217454a26c77982eff9ef9fe92452c78a0",
+        "width": 1440,
+        "height": 1200
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/e2/e2a451d7708dd753459d6c6735b18127b205f288cd6d533693b32aad00b445d6.png",
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/70/70f5f50879d254f65ce29233cf8387217454a26c77982eff9ef9fe92452c78a0.png"
+      }
+    },
+    {
+      "providerId": "stack",
+      "viewId": "home",
+      "variantId": "desktop",
+      "status": "changed",
+      "reasons": [
+        "pixels"
+      ],
+      "base": {
+        "state": "captured",
+        "pixelHash": "81a07cd1cc591bce0f246c64489d4993ce73435672a077706a69d4fc7c4cb86a",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "9369724282b60c6cbbf1c8330919695cf6c5a7ce11487032cf62b195594aa2d2",
+        "width": 1440,
+        "height": 1000
+      },
+      "diff": {
+        "totalPixels": 1440000,
+        "analyses": [
+          {
+            "threshold": 0,
+            "changedPixels": 5000,
+            "changedPpm": 3472,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1440,
+              "height": 300,
+              "pixels": 5000
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1440,
+                "height": 300,
+                "pixels": 5000
+              }
+            ],
+            "regionCount": 1
+          },
+          {
+            "threshold": 8,
+            "changedPixels": 4000,
+            "changedPpm": 2778,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1440,
+              "height": 300,
+              "pixels": 5000
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1440,
+                "height": 300,
+                "pixels": 5000
+              }
+            ],
+            "regionCount": 1
+          },
+          {
+            "threshold": 16,
+            "changedPixels": 3000,
+            "changedPpm": 2083,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1440,
+              "height": 300,
+              "pixels": 5000
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1440,
+                "height": 300,
+                "pixels": 5000
+              }
+            ],
+            "regionCount": 1
+          },
+          {
+            "threshold": 32,
+            "changedPixels": 2000,
+            "changedPpm": 1389,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1440,
+              "height": 300,
+              "pixels": 5000
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1440,
+                "height": 300,
+                "pixels": 5000
+              }
+            ],
+            "regionCount": 1
+          }
+        ]
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/81/81a07cd1cc591bce0f246c64489d4993ce73435672a077706a69d4fc7c4cb86a.png",
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/93/9369724282b60c6cbbf1c8330919695cf6c5a7ce11487032cf62b195594aa2d2.png"
+      }
+    },
+    {
+      "providerId": "stack",
+      "viewId": "map",
+      "variantId": "desktop",
+      "status": "failed",
+      "reasons": [
+        "capture-failed"
+      ],
+      "base": {
+        "state": "captured",
+        "pixelHash": "95754dddfeccec305be55088457f05a51691b06109271d8b0bd116567bebfaa7",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "failed",
+        "category": "timeout"
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/95/95754dddfeccec305be55088457f05a51691b06109271d8b0bd116567bebfaa7.png"
+      }
+    },
+    {
+      "providerId": "stack",
+      "viewId": "reviews",
+      "variantId": "desktop",
+      "status": "missing",
+      "reasons": [
+        "part-missing"
+      ],
+      "base": {
+        "state": "captured",
+        "pixelHash": "eb83da60936ecfb05069e451f1fcbfc1349d154c91f70575011be3240f518d6d",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "missing",
+        "cause": "part-missing"
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/eb/eb83da60936ecfb05069e451f1fcbfc1349d154c91f70575011be3240f518d6d.png"
+      }
+    },
+    {
+      "providerId": "stack",
+      "viewId": "theme",
+      "variantId": "desktop",
+      "status": "incomparable",
+      "reasons": [
+        "environment-mismatch"
+      ],
+      "base": {
+        "state": "captured",
+        "pixelHash": "98d3aecb73a809f99558653863a83eae01d5cd7eef31f27cf3eb6dd594f6e315",
+        "width": 1440,
+        "height": 1000
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "d0939bc1608715fbdab390340140385bbfa52cdd1e0babe20b340aa5a1356fe5",
+        "width": 1440,
+        "height": 1000
+      },
+      "images": {
+        "base": "https://owner.github.io/repo/pixelwatch/blobs/98/98d3aecb73a809f99558653863a83eae01d5cd7eef31f27cf3eb6dd594f6e315.png",
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/d0/d0939bc1608715fbdab390340140385bbfa52cdd1e0babe20b340aa5a1356fe5.png"
+      }
+    }
+  ]
+}

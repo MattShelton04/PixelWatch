@@ -43,6 +43,9 @@ A converter:
 Only aligned images are compared. A size change is `changed` with reason `dimensions`, never
 silently resized.
 
+The prototype → `bundle@1` mapping (status mapping, `revisionCatalog` for absence, identity) is
+in ADR 0003.
+
 ## 3. Identity and hashing
 
 - **Unit key:** `(providerId, viewId, variantId)`. Each ID matches `[a-z0-9][a-z0-9_-]{0,63}`.
@@ -72,6 +75,8 @@ silently resized.
   environment, provenance references), excluding its own ID. Unit arrays are sorted by the three
   ASCII IDs.
 - **Derived images** (comment previews, thumbnails): named by SHA-256 of their encoded bytes.
+
+ADR 0003 fixes the details: code-point key order, safe integers only, history order.
 
 ## 4. Coverage and result states
 
@@ -103,6 +108,9 @@ Every compared unit has exactly one result, decided in this precedence order:
 - "complete-declared" means the PR's own catalog was fully accounted for. It never claims the app
   was fully covered.
 - `unstable` and `assumed-unchanged` are future states, not MVP.
+
+ADR 0003 adds the base-side state `none` (no baseline revision) and integer `changedPpm` for
+diff percentages.
 
 ## 5. Ingress profile and hard limits
 

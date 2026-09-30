@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "workflowIds": [
+      "123456"
+    ],
+    "events": [
+      "pull_request_target"
+    ]
+  },
+  "providers": [
+    {
+      "id": "fixture",
+      "shards": 1
+    }
+  ]
+}

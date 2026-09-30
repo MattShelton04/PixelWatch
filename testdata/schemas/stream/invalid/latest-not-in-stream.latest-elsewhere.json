@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "streamId": "pr-123",
+  "runs": [
+    "99-a1",
+    "100-a1",
+    "100-a2"
+  ],
+  "latest": "7-a1"
+}

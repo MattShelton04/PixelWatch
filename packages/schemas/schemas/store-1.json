@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Store",
+  "description": "store@1 (03 §3): store.json at the root of the data branch. Ownership marker, repository, data version, transaction counter and run index in history order.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "marker", "repositoryId", "dataVersion", "txn", "runs"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "marker": { "const": "pixelwatch-store" },
+    "repositoryId": { "$ref": "common.json#/$defs/GitHubId" },
+    "dataVersion": { "const": 1 },
+    "txn": { "$ref": "common.json#/$defs/Count" },
+    "runs": {
+      "description": "Ordered by source-created time, then numeric run ID, then numeric attempt (02 §8).",
+      "type": "array",
+      "maxItems": 10000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["runKey", "sourceCreatedAt"],
+        "properties": {
+          "runKey": { "$ref": "common.json#/$defs/RunKey" },
+          "sourceCreatedAt": { "$ref": "common.json#/$defs/Timestamp" },
+          "stream": { "$ref": "common.json#/$defs/StreamId" }
+        }
+      }
+    }
+  }
+}

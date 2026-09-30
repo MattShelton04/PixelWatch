@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "revision": "head",
+  "providerId": "fixture",
+  "attempt": "1",
+  "shard": {
+    "index": 1,
+    "count": 2
+  },
+  "producer": {
+    "name": "propertyscope",
+    "version": "capture-schema-1"
+  },
+  "claims": {
+    "revisionSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+    "harnessSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
+    "environment": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "deviceScaleFactor": 1,
+      "colorScheme": "light",
+      "locale": "en-AU",
+      "timezone": "Australia/Sydney",
+      "fixedTime": "2026-09-01T10:00:00+10:00"
+    }
+  }
+}

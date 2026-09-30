@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run",
+  "description": "run@1 (02 §§4, 6, 8): one immutable comparison of a base and a head snapshot.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runKey",
+    "source",
+    "claims",
+    "versions",
+    "ingestionDigest",
+    "snapshots",
+    "parts",
+    "coverage",
+    "counts",
+    "results"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runKey": { "$ref": "common.json#/$defs/RunKey" },
+    "source": { "$ref": "common.json#/$defs/SourceEnvelope" },
+    "claims": {
+      "description": "Untrusted capture claims per side.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": { "$ref": "common.json#/$defs/Claims" },
+        "head": { "$ref": "common.json#/$defs/Claims" }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release", "config", "comparator", "bundle", "data"],
+      "properties": {
+        "release": { "$ref": "common.json#/$defs/ReleaseVersion" },
+        "config": { "const": 1 },
+        "comparator": { "const": 1 },
+        "bundle": { "const": 1 },
+        "data": { "const": 1 }
+      }
+    },
+    "ingestionDigest": { "$ref": "common.json#/$defs/Sha256" },
+    "snapshots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base", "head"],
+      "properties": {
+        "base": { "$ref": "common.json#/$defs/NullableSha256" },
+        "head": { "$ref": "common.json#/$defs/NullableSha256" }
+      }
+    },
+    "parts": {
+      "description": "Every received part and what happened to it. Rejected parts also appear in coverage.missingParts.",
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["revision", "providerId", "shard", "status", "artifactSha256"],
+        "properties": {
+          "revision": { "$ref": "common.json#/$defs/Revision" },
+          "providerId": { "$ref": "common.json#/$defs/Id" },
+          "shard": { "$ref": "common.json#/$defs/Shard" },
+          "status": { "enum": ["valid", "rejected"] },
+          "artifactSha256": { "$ref": "common.json#/$defs/Sha256" },
+          "diagnostic": { "$ref": "common.json#/$defs/Message" }
+        }
+      }
+    },
+    "coverage": { "$ref": "common.json#/$defs/Coverage" },
+    "counts": { "$ref": "common.json#/$defs/Counts" },
+    "results": { "type": "array", "maxItems": 2000, "items": { "$ref": "#/$defs/RunResult" } }
+  },
+  "$defs": {
+    "RunResult": {
+      "title": "RunResult",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["providerId", "viewId", "variantId", "status", "reasons", "base", "head"],
+      "properties": {
+        "providerId": { "$ref": "common.json#/$defs/Id" },
+        "viewId": { "$ref": "common.json#/$defs/Id" },
+        "variantId": { "$ref": "common.json#/$defs/Id" },
+        "status": { "$ref": "common.json#/$defs/ResultStatus" },
+        "reasons": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "common.json#/$defs/Reason" }
+        },
+        "labels": { "$ref": "common.json#/$defs/Labels" },
+        "base": { "$ref": "common.json#/$defs/Side" },
+        "head": { "$ref": "common.json#/$defs/Side" },
+        "diff": { "$ref": "common.json#/$defs/Diff" }
+      }
+    }
+  }
+}

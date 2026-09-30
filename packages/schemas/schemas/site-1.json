@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Site",
+  "description": "site@1 (03 §3): the served site.json. Never holds executable URLs or app hashes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "repositoryId",
+    "basePath",
+    "versions",
+    "generation",
+    "dataNamespaces",
+    "streams",
+    "theme"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "repositoryId": { "$ref": "common.json#/$defs/GitHubId" },
+    "basePath": { "$ref": "common.json#/$defs/SitePrefix" },
+    "versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release", "data", "api"],
+      "properties": {
+        "release": { "$ref": "common.json#/$defs/ReleaseVersion" },
+        "data": { "const": 1 },
+        "api": { "const": 1 }
+      }
+    },
+    "generation": { "$ref": "common.json#/$defs/Sha256" },
+    "dataNamespaces": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": { "enum": ["v1"] }
+    },
+    "streams": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["streamId", "latest", "runCount"],
+        "properties": {
+          "streamId": { "$ref": "common.json#/$defs/StreamId" },
+          "latest": { "$ref": "common.json#/$defs/NullableRunKey" },
+          "runCount": { "$ref": "common.json#/$defs/Count" }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preset"],
+      "properties": { "preset": { "$ref": "common.json#/$defs/ThemePreset" } }
+    }
+  }
+}
