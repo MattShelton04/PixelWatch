@@ -34,6 +34,9 @@ Pitfalls:
 - `.reference/` holds the prototype clones and artifacts (ADR 0001). It's git-ignored. Never
   commit it or read it from tests.
 - `testdata/smoke/` holds deliberately bad fixtures. Don't fix them.
+- `testdata/comparator/` and `testdata/pixel-hash/` are recorded prototype output (ADR
+  comparator-v1). Never hand-edit them; regenerate with `tools/prototype-goldens/` (see
+  `testdata/comparator/README.md`).
 - TS files run directly on Node (type stripping), so use erasable syntax only and `.ts` import
   extensions.
 - Pin every action to a full commit SHA with a `# vX.Y.Z` comment.

@@ -1,0 +1,4868 @@
+{
+  "comment": "Recorded by tools/prototype-goldens/record.py: PropertyScope's report._compare on TracePilot captures. Do not edit.",
+  "recordedWith": {
+    "prototype": {
+      "repository": "https://github.com/MattShelton04/41026ASDProject",
+      "commit": "6378d8be5b1f418f72279e04b3de23d761b426d3"
+    },
+    "constants": {
+      "THRESHOLDS": [
+        0,
+        8,
+        16,
+        32
+      ],
+      "SUBTLE_MAX_PIXELS": 128,
+      "SUBTLE_MAX_DELTA": 8,
+      "TILE": 8,
+      "MAX_REGIONS": 12
+    },
+    "environment": {
+      "platform": "Windows-11-10.0.22621-SP0",
+      "python": "3.12.13",
+      "numpy": "2.5.2",
+      "pillow": "11.3.0",
+      "uv": "uv 0.12.1 (329541a50 2026-07-31 x86_64-pc-windows-msvc)"
+    }
+  },
+  "source": {
+    "repository": "https://github.com/MattShelton04/TracePilot",
+    "run": "36287837535",
+    "attempt": "1",
+    "event": "push",
+    "baseSha": "53d3cdcdd9cb70b66842fd47d43238dd12a773df",
+    "headSha": "3507148c340e89da29358e7f0751214bffc1d102",
+    "artifacts": [
+      {
+        "name": "visual-base-1",
+        "id": "10921730284",
+        "zipSha256": "bc65a6a8c9bb8928c773f6d68eecc33d3ef52a141d07274b73bdf70cc6d6bfec"
+      },
+      {
+        "name": "visual-base-2",
+        "id": "10921521173",
+        "zipSha256": "84b3e4626d5b3cf36b1bf36cf566d61982b2db3cfea1fb5f89599ec18a65ba96"
+      },
+      {
+        "name": "visual-head-1",
+        "id": "10921240812",
+        "zipSha256": "647368600e344c58e966ba9aeacd2f3d20142de701cc8517d574403dba67a30b"
+      },
+      {
+        "name": "visual-head-2",
+        "id": "10921760211",
+        "zipSha256": "44e8d95c18f7a1a885f6af743a65f17a3820d8f8e265c341435c25a3ffc378b8"
+      }
+    ],
+    "publishedResult": "gh-pages visual/runs/36287837535/changes.json at 2f21af1bb59b4f8d0e27615b129cdfc607931f78"
+  },
+  "summary": {
+    "compared": 64,
+    "notCompared": 0,
+    "changed": 1,
+    "subtle": 1,
+    "unchanged": 62
+  },
+  "crossCheck": {
+    "compared": 64,
+    "agreeWithTracePilotPublished": 64
+  },
+  "views": [
+    {
+      "id": "agent-editor",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "3dd31b94385c57300a0139d80254e7e60e7b416b374b2e3742e6ca3df6ac0c81",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "30180d0fce3263bdc084e890b2a513af81ee46e0c1ce40763a58652cdbf79f78"
+        },
+        "head": {
+          "fileSha256": "3dd31b94385c57300a0139d80254e7e60e7b416b374b2e3742e6ca3df6ac0c81",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "30180d0fce3263bdc084e890b2a513af81ee46e0c1ce40763a58652cdbf79f78"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "agent-usage",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "e08a99d4d261a541df5eb1a1feb46af93cd87173862d1c67aa05e770675d5545",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6992f1f143a429597c5a4e64ffe96ae02b2fa9a1927ad0f85b41eedcc538cae6"
+        },
+        "head": {
+          "fileSha256": "e08a99d4d261a541df5eb1a1feb46af93cd87173862d1c67aa05e770675d5545",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6992f1f143a429597c5a4e64ffe96ae02b2fa9a1927ad0f85b41eedcc538cae6"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "agents-manager",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "9f7b70f99230a21803ec19b5ca3cf793dd2a6138eac495f1743b7107c3fb06a7",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "8bc2d2aea62e54747607fa8d698fdbdbe2f0ea924fa5663f92d588671198e84e"
+        },
+        "head": {
+          "fileSha256": "9f7b70f99230a21803ec19b5ca3cf793dd2a6138eac495f1743b7107c3fb06a7",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "8bc2d2aea62e54747607fa8d698fdbdbe2f0ea924fa5663f92d588671198e84e"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "analytics",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "6fbf5dce5e61c3548ccf34a75d61915d8b27a300364c0b4f056d200dbaefacab",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "525e96732d9c0eaa7cab441f865d48f2e55dd48b41982f82b39a31a071953660"
+        },
+        "head": {
+          "fileSha256": "6fbf5dce5e61c3548ccf34a75d61915d8b27a300364c0b4f056d200dbaefacab",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "525e96732d9c0eaa7cab441f865d48f2e55dd48b41982f82b39a31a071953660"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "cli-context",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "c100f2b696f32c0ab6c3f197dea98046ee6b5e07be37506ba578424ca45b3432",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4c3dfe0729708d5e9a2bc113f41912d32d408ff316c3bd011319850d3c7ca67b"
+        },
+        "head": {
+          "fileSha256": "c100f2b696f32c0ab6c3f197dea98046ee6b5e07be37506ba578424ca45b3432",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4c3dfe0729708d5e9a2bc113f41912d32d408ff316c3bd011319850d3c7ca67b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "code",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "ed3aaabb38c29455cfacb9b9337d620de39f6c701037434583e98c65bc1d891a",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "166a5ca70a234678fbc5c11160393e104693677e50e3766a85e612b00dbf5934"
+        },
+        "head": {
+          "fileSha256": "ed3aaabb38c29455cfacb9b9337d620de39f6c701037434583e98c65bc1d891a",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "166a5ca70a234678fbc5c11160393e104693677e50e3766a85e612b00dbf5934"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "compare",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "bad8dcb420daf329eaafa4f002256ccdbc5169cde57a127855f6748328652685",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "3f186715954928361162cf61b2e4be65febd0c335144a0318b8edc6e92e46228"
+        },
+        "head": {
+          "fileSha256": "bad8dcb420daf329eaafa4f002256ccdbc5169cde57a127855f6748328652685",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "3f186715954928361162cf61b2e4be65febd0c335144a0318b8edc6e92e46228"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "compare-populated",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "1e94f6e021275ab24ca1a4d4061b9c59e2c218a88b0c04d1092ad1c718af2599",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "2e988d602abcf566db24769b0cb54d4e1d7660773bb7216873e4df3336588fca"
+        },
+        "head": {
+          "fileSha256": "1e94f6e021275ab24ca1a4d4061b9c59e2c218a88b0c04d1092ad1c718af2599",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "2e988d602abcf566db24769b0cb54d4e1d7660773bb7216873e4df3336588fca"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "config-injector",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "7cd52d20a61fdfba43521655c41a29a2f3b9696058c4b57ad81746a228316a9f",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "fea3738cb3a69a13e58da01fb287c4053a731348db67d87dfee26651d59819ab"
+        },
+        "head": {
+          "fileSha256": "4346c74a15d9d88594ddc14c19aaf3aded198381a2b37331ed2e387df114772d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "da75b2027d3284c36ed0eac634ba0ac6959b5b54e97d2fa3378b549d73112a37"
+        }
+      },
+      "prototype": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 44,
+            "total": 1382400,
+            "percent": 0.0032,
+            "bounds": {
+              "x": 309,
+              "y": 212,
+              "width": 16,
+              "height": 14,
+              "pixels": 44
+            },
+            "regions": [
+              {
+                "x": 309,
+                "y": 212,
+                "width": 16,
+                "height": 14,
+                "pixels": 44
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "subtle",
+        "changedPixels": 44
+      }
+    },
+    {
+      "id": "export",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "fa9b871c3aba63f7ce2b48b55bcef4ee7ffe0bd57b77a9795bbf73219eab539d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "654c3543f5fda8f6cfcf7256a2839467316acec1d4a6bde8870bd97dcf41c367"
+        },
+        "head": {
+          "fileSha256": "fa9b871c3aba63f7ce2b48b55bcef4ee7ffe0bd57b77a9795bbf73219eab539d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "654c3543f5fda8f6cfcf7256a2839467316acec1d4a6bde8870bd97dcf41c367"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "export-preview",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "e7fea45d332b8c66355a56874fb1d09d97cd1aa2fe9eca113f1ba8a1593291d6",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "1196b4d19da153ebf1489f284e63258e1218a290c33d0c5b435f904f46f6f7b1"
+        },
+        "head": {
+          "fileSha256": "e7fea45d332b8c66355a56874fb1d09d97cd1aa2fe9eca113f1ba8a1593291d6",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "1196b4d19da153ebf1489f284e63258e1218a290c33d0c5b435f904f46f6f7b1"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "mcp-manager",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "7321b871f867b5ae15fa11da2e3c453f44229d55cbabbf879ceba5c8d46f7868",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "26ddae5d9dddf34e4278e675cf3f59b93b94a5e2f67140981a6aa27d8319b628"
+        },
+        "head": {
+          "fileSha256": "7321b871f867b5ae15fa11da2e3c453f44229d55cbabbf879ceba5c8d46f7868",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "26ddae5d9dddf34e4278e675cf3f59b93b94a5e2f67140981a6aa27d8319b628"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "mcp-server-detail",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "e10b02fae92d2c8cae42777f49481bf4a07d60c5e2ad94e36841734b1e9122b4",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4fe219884452af145934ab9bbc1be75b8f7e5e611535745589fb1546b70ee781"
+        },
+        "head": {
+          "fileSha256": "e10b02fae92d2c8cae42777f49481bf4a07d60c5e2ad94e36841734b1e9122b4",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4fe219884452af145934ab9bbc1be75b8f7e5e611535745589fb1546b70ee781"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "model-comparison",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "a9ba2a1dc9631f4e117d23f309d20c49dd3bea0dde2fc92dcaba66faf0ef8e89",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "ade8217b973c9a6a4313e86b2b75cee8a47600522536bfbbd1d392e885f3dd2d"
+        },
+        "head": {
+          "fileSha256": "a9ba2a1dc9631f4e117d23f309d20c49dd3bea0dde2fc92dcaba66faf0ef8e89",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "ade8217b973c9a6a4313e86b2b75cee8a47600522536bfbbd1d392e885f3dd2d"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "not-found",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "3b5ffd08b54d99e163b32cb5bdd429284d649a066726ec4204da489125d81a07",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7ccdc28a2535c5911e7013cc98d8ead3203870c9ec7b4d94edd73ee9b792dbcf"
+        },
+        "head": {
+          "fileSha256": "3b5ffd08b54d99e163b32cb5bdd429284d649a066726ec4204da489125d81a07",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7ccdc28a2535c5911e7013cc98d8ead3203870c9ec7b4d94edd73ee9b792dbcf"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "orchestration",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0dbf9b301559d9e70dd37f2bfa91b3643e0a2ca878a7f8a9f079a3d5fa834a97",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "b7d2ef7ad1aeea7160848c865a90822f3240827ea439b65b09831a552f1da2ce"
+        },
+        "head": {
+          "fileSha256": "0dbf9b301559d9e70dd37f2bfa91b3643e0a2ca878a7f8a9f079a3d5fa834a97",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "b7d2ef7ad1aeea7160848c865a90822f3240827ea439b65b09831a552f1da2ce"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "replay",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "f66b26eb89c50783ee416c52ecb56c64c47e09d05fba9cdfa233df04849dca31",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "87b372360adabee6e3f847542785205b1b7306a27b8a9d3101578f18305df574"
+        },
+        "head": {
+          "fileSha256": "f66b26eb89c50783ee416c52ecb56c64c47e09d05fba9cdfa233df04849dca31",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "87b372360adabee6e3f847542785205b1b7306a27b8a9d3101578f18305df574"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-apply-patch",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "2ac1e33e7f6f348c28abb92a392f3aac7ddf54164961cf088313d703876f35f1",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "2f3a2613b4226ab90da22f6ca7741e22d025aaa23694e1566e49f9d391e05d4f"
+        },
+        "head": {
+          "fileSha256": "2ac1e33e7f6f348c28abb92a392f3aac7ddf54164961cf088313d703876f35f1",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "2f3a2613b4226ab90da22f6ca7741e22d025aaa23694e1566e49f9d391e05d4f"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-apply-patch-pending",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "c95f8364b8bb7aec331f50eecd7b6c1c6132d6c791b50588bfafd28f3eb77dbe",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "3ced4ca0710bbecc79f8381902279515884f027606a9b3917abd3f98891d1919"
+        },
+        "head": {
+          "fileSha256": "c95f8364b8bb7aec331f50eecd7b6c1c6132d6c791b50588bfafd28f3eb77dbe",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "3ced4ca0710bbecc79f8381902279515884f027606a9b3917abd3f98891d1919"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-ask-user",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "77fe076f9ec6193444d190a35167f26955a087718b6cf06422d39e52cfdf5880",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4c49cd93d9656776fc48a9a0864c8e6f58738919f06b4aee398ded2828a51e00"
+        },
+        "head": {
+          "fileSha256": "77fe076f9ec6193444d190a35167f26955a087718b6cf06422d39e52cfdf5880",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4c49cd93d9656776fc48a9a0864c8e6f58738919f06b4aee398ded2828a51e00"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-ask-user-pending",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "70b9385eda555d685b038b6f55f0da381cfd076af52ae4826dc9b7c91a9d4cf9",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "9d70225ff1e23894d1892e8e792b599463005182ba58942ef301ba0acb8f849c"
+        },
+        "head": {
+          "fileSha256": "70b9385eda555d685b038b6f55f0da381cfd076af52ae4826dc9b7c91a9d4cf9",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "9d70225ff1e23894d1892e8e792b599463005182ba58942ef301ba0acb8f849c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-ask-user-schema",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0b8acade1d54bd9ae61eaf780b3dc13e495100cde202be6596f47379acce032d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "b2663775b934a52fd6149738114c136e754b9bf736574938beb098839299ea8b"
+        },
+        "head": {
+          "fileSha256": "0b8acade1d54bd9ae61eaf780b3dc13e495100cde202be6596f47379acce032d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "b2663775b934a52fd6149738114c136e754b9bf736574938beb098839299ea8b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-create",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "c4d233481f228872045151ea772c317c1d0f7e414c54e7d90438437c9d525493",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "bce8150d7f49e2949f416e36816758d706a23cc9ac2b1962ad06c77cadbd8027"
+        },
+        "head": {
+          "fileSha256": "c4d233481f228872045151ea772c317c1d0f7e414c54e7d90438437c9d525493",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "bce8150d7f49e2949f416e36816758d706a23cc9ac2b1962ad06c77cadbd8027"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-create-pending",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "f088ae6bd03f57c0718b3615578917630b40dffda78320dfbd44af437b4a2370",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "0ac45ded64af52de0a497679102007eb89a5981e52961210bccb42c5456800ef"
+        },
+        "head": {
+          "fileSha256": "f088ae6bd03f57c0718b3615578917630b40dffda78320dfbd44af437b4a2370",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "0ac45ded64af52de0a497679102007eb89a5981e52961210bccb42c5456800ef"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-edit",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "5720efb6f41af9934d3f5b84e97cd21359108958726e46cadb576ce06d53a0b7",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "d664fc0c649e74b96e36d96a3570698de338add8e564bef17f7bb3f35c4e2292"
+        },
+        "head": {
+          "fileSha256": "5720efb6f41af9934d3f5b84e97cd21359108958726e46cadb576ce06d53a0b7",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "d664fc0c649e74b96e36d96a3570698de338add8e564bef17f7bb3f35c4e2292"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-edit-pending",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "6f0720dd3472d42f36f5809d04c61bd2b67a71e5811ab97760eab210f17d20eb",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4791e92dc92741936ba12c21e96ac73f61d79a601d10f5b391ab86a84697136f"
+        },
+        "head": {
+          "fileSha256": "6f0720dd3472d42f36f5809d04c61bd2b67a71e5811ab97760eab210f17d20eb",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4791e92dc92741936ba12c21e96ac73f61d79a601d10f5b391ab86a84697136f"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-glob",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "f769f55d87a544759248d9b5d0e79b33dbc9c0b48d66c59519c68465c3c9f42c",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7cea47bc927ea33ec3494a1c0b863cbf39c422b3ca3d12516d89c5dbfe2fbc15"
+        },
+        "head": {
+          "fileSha256": "f769f55d87a544759248d9b5d0e79b33dbc9c0b48d66c59519c68465c3c9f42c",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7cea47bc927ea33ec3494a1c0b863cbf39c422b3ca3d12516d89c5dbfe2fbc15"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-grep",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "9fc1d7d8952ec4d3eed47b042d1ff3824555ea8f5975341bb62a5befcd25c635",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "530f21fccfc444452efa8fb019ea660f58127e4642b25ce4763c664bf04d835c"
+        },
+        "head": {
+          "fileSha256": "9fc1d7d8952ec4d3eed47b042d1ff3824555ea8f5975341bb62a5befcd25c635",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "530f21fccfc444452efa8fb019ea660f58127e4642b25ce4763c664bf04d835c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-list-agents",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "ab67a6f13309721e05ca70f30e2fe2c3764a9eb722ac9ab192c51a76487e2b1b",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "457f92bfac0bbe3a630021ec25324d07aac986f99e9d4896f48a5111bac049c5"
+        },
+        "head": {
+          "fileSha256": "ab67a6f13309721e05ca70f30e2fe2c3764a9eb722ac9ab192c51a76487e2b1b",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "457f92bfac0bbe3a630021ec25324d07aac986f99e9d4896f48a5111bac049c5"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-powershell",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "69cf6fb3c63a2e48d95978da992d51c29f3b8bc9221d66dd26a37b8c5883eb60",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "ae391164e6e2ece0a71cca8e9a3d5cf14acea8426aeaeda6852d9d296686cddb"
+        },
+        "head": {
+          "fileSha256": "69cf6fb3c63a2e48d95978da992d51c29f3b8bc9221d66dd26a37b8c5883eb60",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "ae391164e6e2ece0a71cca8e9a3d5cf14acea8426aeaeda6852d9d296686cddb"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-read-agent",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "657875328a26729cd2fdb9d9dc2a91b95fe54889d8ca9a8677891a7f37472dfe",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "1dccb956606f62ab0b09b9cb31952b0070ff3a31158dd2c33ff3937b45923ad6"
+        },
+        "head": {
+          "fileSha256": "657875328a26729cd2fdb9d9dc2a91b95fe54889d8ca9a8677891a7f37472dfe",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "1dccb956606f62ab0b09b9cb31952b0070ff3a31158dd2c33ff3937b45923ad6"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-read-powershell",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "080bada03a4444b6c323845d7bfc659575407d8b83a4edc6ee60de241c1cc538",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "a2facc1bb404b82a3fa3ee030dc521fa74d551df8d53b11f339ccb87ca844b4d"
+        },
+        "head": {
+          "fileSha256": "080bada03a4444b6c323845d7bfc659575407d8b83a4edc6ee60de241c1cc538",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "a2facc1bb404b82a3fa3ee030dc521fa74d551df8d53b11f339ccb87ca844b4d"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-report-intent",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "c4d5a1cd0ccdda4f61cc658071a06f79bcdd1618cb93f746bbce4c688483d839",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "ad9d53ba979fdfc3f4fcb1b59bb17cb73c2c43f8de965fc719fde103bbbc5c1d"
+        },
+        "head": {
+          "fileSha256": "c4d5a1cd0ccdda4f61cc658071a06f79bcdd1618cb93f746bbce4c688483d839",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "ad9d53ba979fdfc3f4fcb1b59bb17cb73c2c43f8de965fc719fde103bbbc5c1d"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-rg",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "e9946e3d20d10d835ca39a890360fb593d578bcf42612787a6e137aa665c97ee",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4499a8509c20f7fb1eee64f1ba857bad8fe925246c1a21fa2673780262a0335a"
+        },
+        "head": {
+          "fileSha256": "e9946e3d20d10d835ca39a890360fb593d578bcf42612787a6e137aa665c97ee",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4499a8509c20f7fb1eee64f1ba857bad8fe925246c1a21fa2673780262a0335a"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-shell-error",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0cc52a2dbb5b5ea68728de0b6e89d06ede7b783e43671e26a5070688793fa1c2",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "42fcbe6e05238b0284866dae0862b2e3ae67aa0882b2e6b67efda06efa0cef94"
+        },
+        "head": {
+          "fileSha256": "0cc52a2dbb5b5ea68728de0b6e89d06ede7b783e43671e26a5070688793fa1c2",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "42fcbe6e05238b0284866dae0862b2e3ae67aa0882b2e6b67efda06efa0cef94"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-sql",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "b32a076a272e67d2c231785d0a83767c0e438893151f043f0127a018d75ac580",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "0bc86428ac6f28166bcb714dbc7826c4dab219cfb0d522bd7426dcd8e8a1c4e7"
+        },
+        "head": {
+          "fileSha256": "b32a076a272e67d2c231785d0a83767c0e438893151f043f0127a018d75ac580",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "0bc86428ac6f28166bcb714dbc7826c4dab219cfb0d522bd7426dcd8e8a1c4e7"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-store-memory",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "3429c457f3b6c1415a09d8913ee8123abfbd582ae9c497af1a0b4726a1669a7d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "9d606d8d3c35315968cfd987e4912c44b9f8d1fd53045a126c83e4bec0aa6f36"
+        },
+        "head": {
+          "fileSha256": "3429c457f3b6c1415a09d8913ee8123abfbd582ae9c497af1a0b4726a1669a7d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "9d606d8d3c35315968cfd987e4912c44b9f8d1fd53045a126c83e4bec0aa6f36"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-task-fallback",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "3d5a8b61a6e90bf120de430d0d48d1a4e7676f34fc14970229b338f0f8138e3b",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "295fe2df916b5242e23d2db476e18774a4abfe3802b025fd89f35014ab278daf"
+        },
+        "head": {
+          "fileSha256": "3d5a8b61a6e90bf120de430d0d48d1a4e7676f34fc14970229b338f0f8138e3b",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "295fe2df916b5242e23d2db476e18774a4abfe3802b025fd89f35014ab278daf"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-view",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "cfe3058ced611d81641478f53870d2ff0aa9200e0a603be61a1dc31badf43c80",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "f290f4b206e35644584d13fa88c97fee40d3552eb96e4b3a355eeb3f77910e8b"
+        },
+        "head": {
+          "fileSha256": "cfe3058ced611d81641478f53870d2ff0aa9200e0a603be61a1dc31badf43c80",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "f290f4b206e35644584d13fa88c97fee40d3552eb96e4b3a355eeb3f77910e8b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-web-fetch-fallback",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "f032605001ab3005e0279376238254683263b1d281d48f4260e253236de8728e",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "0a5e3436da635a034618b0c8a77a4b8c997baefee473d6c68984021e494a3339"
+        },
+        "head": {
+          "fileSha256": "f032605001ab3005e0279376238254683263b1d281d48f4260e253236de8728e",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "0a5e3436da635a034618b0c8a77a4b8c997baefee473d6c68984021e494a3339"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-web-search",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "e8dc8eda04652c0f2279f22fa88353ee020d4fcfc8115ba31a95992c830c3025",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7bd801413749246d8c350bce70cd85b52fb09429d885df167755cdc7e679798b"
+        },
+        "head": {
+          "fileSha256": "e8dc8eda04652c0f2279f22fa88353ee020d4fcfc8115ba31a95992c830c3025",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7bd801413749246d8c350bce70cd85b52fb09429d885df167755cdc7e679798b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-write-agent",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "f3563570ea3b95a57179c753010f462bfbd515b3d0dc62456a5d0782f1790fd6",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7890acbd12ac63b72a705b62dcfcd1e573407ad85609677bd93bb7f3f8f9294b"
+        },
+        "head": {
+          "fileSha256": "f3563570ea3b95a57179c753010f462bfbd515b3d0dc62456a5d0782f1790fd6",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "7890acbd12ac63b72a705b62dcfcd1e573407ad85609677bd93bb7f3f8f9294b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-write-agent-pending",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "875a383390d0703f9d12dda9ef7740c24ecfb60ab7f55daccfcc00c1a632cbce",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "a1be3054dff3bb2ec6d96fc2422977b8eb1a0b747bc26504bfe1eba6b80a2408"
+        },
+        "head": {
+          "fileSha256": "875a383390d0703f9d12dda9ef7740c24ecfb60ab7f55daccfcc00c1a632cbce",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "a1be3054dff3bb2ec6d96fc2422977b8eb1a0b747bc26504bfe1eba6b80a2408"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "rich-tool-write-powershell",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "350554b673d9c215c9a1e2382622e59b2db4c2f12f398f4bfa27a4e6195cb1bd",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6d1ceefd7060186f92ada834a3085cf4978c5208856fba59f1c85151b339e292"
+        },
+        "head": {
+          "fileSha256": "350554b673d9c215c9a1e2382622e59b2db4c2f12f398f4bfa27a4e6195cb1bd",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6d1ceefd7060186f92ada834a3085cf4978c5208856fba59f1c85151b339e292"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "search",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "dad5fb982d8c74a53e3e5e4fb7949ce52339b6b0890586574188d3c0c69e154d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "024039288be4afcb26a696716a4ce830ebc29416ad62ca42201ab734eff2fba1"
+        },
+        "head": {
+          "fileSha256": "dad5fb982d8c74a53e3e5e4fb7949ce52339b6b0890586574188d3c0c69e154d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "024039288be4afcb26a696716a4ce830ebc29416ad62ca42201ab734eff2fba1"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "search-results",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "8415f441fe648973e7cea53577ed87ecacf76225b1b48fe3ce97d28155a2a08e",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "dbd052af0fd8329b8d39342e2ad4390e82baaa2995572c1e1ee999777009133e"
+        },
+        "head": {
+          "fileSha256": "8415f441fe648973e7cea53577ed87ecacf76225b1b48fe3ce97d28155a2a08e",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "dbd052af0fd8329b8d39342e2ad4390e82baaa2995572c1e1ee999777009133e"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-context",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "c76f1743eda7fae5ef4ce382d5e3185dd40b6f4ff8f1dd3dd24254c96880cc95",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "3ea585f9efcae7f35ab8fba8386ab679b5740b70ef8daaa7f943f77b6562af53"
+        },
+        "head": {
+          "fileSha256": "c76f1743eda7fae5ef4ce382d5e3185dd40b6f4ff8f1dd3dd24254c96880cc95",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "3ea585f9efcae7f35ab8fba8386ab679b5740b70ef8daaa7f943f77b6562af53"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-conversation",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "202dbee6c942fed2a46e663deabd5e45d1235f9e422aeb3e3d960319dbcf9ddc",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "1e77232dbbfd89995052cf14b66a328cac82706be97679213067b6957a301cb7"
+        },
+        "head": {
+          "fileSha256": "202dbee6c942fed2a46e663deabd5e45d1235f9e422aeb3e3d960319dbcf9ddc",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "1e77232dbbfd89995052cf14b66a328cac82706be97679213067b6957a301cb7"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-events",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "1acbeaa67a0442bb06f4a97c1bc14904955859840c5d2493492758673c3be8a4",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "af777dcc96b9ef02055596b02e3bf4a062f1fe724f514962868b7af2e741e62d"
+        },
+        "head": {
+          "fileSha256": "1acbeaa67a0442bb06f4a97c1bc14904955859840c5d2493492758673c3be8a4",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "af777dcc96b9ef02055596b02e3bf4a062f1fe724f514962868b7af2e741e62d"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-explorer",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "238c5540ac1e1565b9f3719bac011a8e601069e99ac1fcdf846f935894b344d5",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "044f6a2a1798a036066ee39dbd6411afaad863290cdc5b6498cf0efd26ed742d"
+        },
+        "head": {
+          "fileSha256": "238c5540ac1e1565b9f3719bac011a8e601069e99ac1fcdf846f935894b344d5",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "044f6a2a1798a036066ee39dbd6411afaad863290cdc5b6498cf0efd26ed742d"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-explorer-file",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "58902a7973c05313ae4938401a2e43da991784d531a18073c17c0dbcfd3c44cc",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "b96a8ba160eef2f0bd0414f1185ff2f496accb4a29c2956df7ae1dd3c90097d0"
+        },
+        "head": {
+          "fileSha256": "58902a7973c05313ae4938401a2e43da991784d531a18073c17c0dbcfd3c44cc",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "b96a8ba160eef2f0bd0414f1185ff2f496accb4a29c2956df7ae1dd3c90097d0"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-launcher",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "e0f309c2ca3abbe2cd18ce1685ad8c1d471fd332fc2245aa3920e92b1f1558b3",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "8d00d8425372e5407f590a2c16e7299b22c991faaa10c691bd54b3daa6b8a990"
+        },
+        "head": {
+          "fileSha256": "e0f309c2ca3abbe2cd18ce1685ad8c1d471fd332fc2245aa3920e92b1f1558b3",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "8d00d8425372e5407f590a2c16e7299b22c991faaa10c691bd54b3daa6b8a990"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-metrics",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0579d62dd15d9e57105c347c92e6195a9e93134003ab6c6ab9fca3ed09d6fdb3",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "fe913aec304293a187bf36ef6095f636ac1db984845048141181d858edfffd69"
+        },
+        "head": {
+          "fileSha256": "0579d62dd15d9e57105c347c92e6195a9e93134003ab6c6ab9fca3ed09d6fdb3",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "fe913aec304293a187bf36ef6095f636ac1db984845048141181d858edfffd69"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-overview",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0874f103de59f2b385b9aad0013bc52caa47cd217555805aaa3c2792af839a0d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "e270b9f46adcfbbac22ab880a0518ec44aa22e1d192bec07bdbb65a16907ae81"
+        },
+        "head": {
+          "fileSha256": "0874f103de59f2b385b9aad0013bc52caa47cd217555805aaa3c2792af839a0d",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "e270b9f46adcfbbac22ab880a0518ec44aa22e1d192bec07bdbb65a16907ae81"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-timeline",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0dc530db43dfe18bd178bfb04b37d80aaed3a200b94d82a7bda393a86bbbaf78",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "70bf68edffcb1c6ae099c7b80b980cf50996c8c6acc39bf5a972c8e9f64b9198"
+        },
+        "head": {
+          "fileSha256": "0dc530db43dfe18bd178bfb04b37d80aaed3a200b94d82a7bda393a86bbbaf78",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "70bf68edffcb1c6ae099c7b80b980cf50996c8c6acc39bf5a972c8e9f64b9198"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "session-todos",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "19bd58d475c8e72b8fc892ca84303b5ebc7d247d25238cfdc256fb1975783da4",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "57e383cef8be53233128c51721651aaefadc42765fb150374eb77fcba5a1471b"
+        },
+        "head": {
+          "fileSha256": "19bd58d475c8e72b8fc892ca84303b5ebc7d247d25238cfdc256fb1975783da4",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "57e383cef8be53233128c51721651aaefadc42765fb150374eb77fcba5a1471b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "sessions",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "c350f2ea088cb780b936bc3e2fe4c0e8aea5b67ca134eb926fc1e803bc705a32",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "573f8817a9f4c8fe4ec88a07ebae448ba6c7db98de431b0c8c7cd5f11eb7a72c"
+        },
+        "head": {
+          "fileSha256": "c350f2ea088cb780b936bc3e2fe4c0e8aea5b67ca134eb926fc1e803bc705a32",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "573f8817a9f4c8fe4ec88a07ebae448ba6c7db98de431b0c8c7cd5f11eb7a72c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "settings",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "572cbe8b6ec8d43b9bc34f28e529707288be4d8ed3b61e8af722762bbbbf46f2",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "71bb9fa0d7611c8052ee77d630e3ec37446cb32a68f190b55f98386fc7c9db52"
+        },
+        "head": {
+          "fileSha256": "572cbe8b6ec8d43b9bc34f28e529707288be4d8ed3b61e8af722762bbbbf46f2",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "71bb9fa0d7611c8052ee77d630e3ec37446cb32a68f190b55f98386fc7c9db52"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "settings-pricing",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "0d35d600e6336dab20fc90c9facf95e9225a89a8a8539a9a0e50f2eac7ce6442",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "06c537399eb01d96b4ac75f40e310ce9b5a7dc4048168269de0ec8b5d5d8b07e"
+        },
+        "head": {
+          "fileSha256": "a4bd9e0188ab44f7d7c56af20f88755d646530f622429eb207390a23402eca19",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "2ff26eb8849151a57e4e923c3275bdbce2ba633000341b3b29c989853d40a3cf"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 252,
+            "total": 1382400,
+            "percent": 0.0182,
+            "bounds": {
+              "x": 659,
+              "y": 746,
+              "width": 692,
+              "height": 172,
+              "pixels": 252
+            },
+            "regions": [
+              {
+                "x": 659,
+                "y": 746,
+                "width": 14,
+                "height": 8,
+                "pixels": 101
+              },
+              {
+                "x": 1344,
+                "y": 793,
+                "width": 7,
+                "height": 8,
+                "pixels": 55
+              },
+              {
+                "x": 1344,
+                "y": 910,
+                "width": 7,
+                "height": 8,
+                "pixels": 49
+              },
+              {
+                "x": 1344,
+                "y": 832,
+                "width": 7,
+                "height": 8,
+                "pixels": 47
+              }
+            ],
+            "regionCount": 4
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 214,
+            "total": 1382400,
+            "percent": 0.0155,
+            "bounds": {
+              "x": 659,
+              "y": 746,
+              "width": 692,
+              "height": 172,
+              "pixels": 214
+            },
+            "regions": [
+              {
+                "x": 659,
+                "y": 746,
+                "width": 14,
+                "height": 8,
+                "pixels": 83
+              },
+              {
+                "x": 1344,
+                "y": 793,
+                "width": 7,
+                "height": 8,
+                "pixels": 48
+              },
+              {
+                "x": 1344,
+                "y": 910,
+                "width": 7,
+                "height": 8,
+                "pixels": 44
+              },
+              {
+                "x": 1344,
+                "y": 832,
+                "width": 7,
+                "height": 8,
+                "pixels": 39
+              }
+            ],
+            "regionCount": 4
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 180,
+            "total": 1382400,
+            "percent": 0.013,
+            "bounds": {
+              "x": 659,
+              "y": 746,
+              "width": 692,
+              "height": 172,
+              "pixels": 180
+            },
+            "regions": [
+              {
+                "x": 659,
+                "y": 746,
+                "width": 14,
+                "height": 8,
+                "pixels": 70
+              },
+              {
+                "x": 1344,
+                "y": 793,
+                "width": 7,
+                "height": 8,
+                "pixels": 39
+              },
+              {
+                "x": 1344,
+                "y": 832,
+                "width": 7,
+                "height": 8,
+                "pixels": 36
+              },
+              {
+                "x": 1344,
+                "y": 910,
+                "width": 7,
+                "height": 8,
+                "pixels": 35
+              }
+            ],
+            "regionCount": 4
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 136,
+            "total": 1382400,
+            "percent": 0.0098,
+            "bounds": {
+              "x": 659,
+              "y": 746,
+              "width": 692,
+              "height": 172,
+              "pixels": 136
+            },
+            "regions": [
+              {
+                "x": 659,
+                "y": 746,
+                "width": 14,
+                "height": 8,
+                "pixels": 48
+              },
+              {
+                "x": 1344,
+                "y": 793,
+                "width": 6,
+                "height": 8,
+                "pixels": 33
+              },
+              {
+                "x": 1344,
+                "y": 832,
+                "width": 7,
+                "height": 8,
+                "pixels": 28
+              },
+              {
+                "x": 1344,
+                "y": 910,
+                "width": 7,
+                "height": 8,
+                "pixels": 27
+              }
+            ],
+            "regionCount": 4
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 659,
+              "y": 746,
+              "width": 14,
+              "height": 8,
+              "pixels": 101
+            },
+            {
+              "x": 1344,
+              "y": 793,
+              "width": 7,
+              "height": 8,
+              "pixels": 55
+            },
+            {
+              "x": 1344,
+              "y": 910,
+              "width": 7,
+              "height": 8,
+              "pixels": 49
+            },
+            {
+              "x": 1344,
+              "y": 832,
+              "width": 7,
+              "height": 8,
+              "pixels": 47
+            }
+          ],
+          "areaCount": 4,
+          "key": "168,104,1,1;168,114,1,1;168,99,1,1;82,93,2,1"
+        }
+      },
+      "tracepilotPublished": {
+        "change": "changed",
+        "changedPixels": 252
+      }
+    },
+    {
+      "id": "skill-editor",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "411b8e0a18b5ba8ad7ae03491054ec3f6c4572f28d6bc20db485cc9a89d7bf10",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6f6b8dcf7698787d57c51ebb30cb878e795300ff76732eb62a0faee6fb262d08"
+        },
+        "head": {
+          "fileSha256": "411b8e0a18b5ba8ad7ae03491054ec3f6c4572f28d6bc20db485cc9a89d7bf10",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6f6b8dcf7698787d57c51ebb30cb878e795300ff76732eb62a0faee6fb262d08"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "skill-usage",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "61550e69ecab6c6822cb6deb99189adfb43d69d287052330e93930b1da2b5e83",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "defe382281a728bf961dd7da9dc0d8f772a02755d42e51a19292ca4dcffbfbae"
+        },
+        "head": {
+          "fileSha256": "61550e69ecab6c6822cb6deb99189adfb43d69d287052330e93930b1da2b5e83",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "defe382281a728bf961dd7da9dc0d8f772a02755d42e51a19292ca4dcffbfbae"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "skills-manager",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "657bd46fd234ea8ba595f7db256f5bb552942f145ac8c8361e4bb0fc6731fd47",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4a206c3d06c6ff0eeb0c258cb59cc8ab66483c2317933db133a8b79ac705697a"
+        },
+        "head": {
+          "fileSha256": "657bd46fd234ea8ba595f7db256f5bb552942f145ac8c8361e4bb0fc6731fd47",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "4a206c3d06c6ff0eeb0c258cb59cc8ab66483c2317933db133a8b79ac705697a"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "tools",
+      "states": {
+        "base": {
+          "shard": "2/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "2/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "605f30fb5185e96aca81bdc67f00462d0bfd44167502adef7c6d82ecfd924bd7",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6d91cedfafa5111c1f8f9c054350453315601e0accad635a6f4129ea45b1b496"
+        },
+        "head": {
+          "fileSha256": "605f30fb5185e96aca81bdc67f00462d0bfd44167502adef7c6d82ecfd924bd7",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "6d91cedfafa5111c1f8f9c054350453315601e0accad635a6f4129ea45b1b496"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    },
+    {
+      "id": "worktree-manager",
+      "states": {
+        "base": {
+          "shard": "1/2",
+          "status": "captured"
+        },
+        "head": {
+          "shard": "1/2",
+          "status": "captured"
+        }
+      },
+      "inputs": {
+        "base": {
+          "fileSha256": "750c2d2a99712c4c4909d331aaba256ff3201f84a6a5b352ee516c3e261e34c8",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "24b691e160d28d32d290138c3ea70297e29a776c6a38706d55324499ad32afad"
+        },
+        "head": {
+          "fileSha256": "750c2d2a99712c4c4909d331aaba256ff3201f84a6a5b352ee516c3e261e34c8",
+          "width": 1440,
+          "height": 960,
+          "pixelHash": "24b691e160d28d32d290138c3ea70297e29a776c6a38706d55324499ad32afad"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1382400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      },
+      "tracepilotPublished": {
+        "change": "unchanged",
+        "changedPixels": 0
+      }
+    }
+  ]
+}

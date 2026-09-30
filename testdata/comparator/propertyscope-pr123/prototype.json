@@ -1,0 +1,2595 @@
+{
+  "comment": "Recorded by tools/prototype-goldens/record.py from the prototype's build_report. Do not edit.",
+  "recordedWith": {
+    "prototype": {
+      "repository": "https://github.com/MattShelton04/41026ASDProject",
+      "commit": "6378d8be5b1f418f72279e04b3de23d761b426d3"
+    },
+    "constants": {
+      "THRESHOLDS": [
+        0,
+        8,
+        16,
+        32
+      ],
+      "SUBTLE_MAX_PIXELS": 128,
+      "SUBTLE_MAX_DELTA": 8,
+      "TILE": 8,
+      "MAX_REGIONS": 12
+    },
+    "environment": {
+      "platform": "Windows-11-10.0.22621-SP0",
+      "python": "3.12.13",
+      "numpy": "2.5.2",
+      "pillow": "11.3.0",
+      "uv": "uv 0.12.1 (329541a50 2026-07-31 x86_64-pc-windows-msvc)"
+    }
+  },
+  "source": {
+    "repository": "https://github.com/MattShelton04/41026ASDProject",
+    "run": "36405830015",
+    "attempt": "1",
+    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da",
+    "headSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+    "artifacts": [
+      {
+        "name": "visual-base-fixture",
+        "id": "10962062704",
+        "zipSha256": "b062b6a961b6c98dc663645e870b0671efac82122b192fa5cd2367d308e775a5"
+      },
+      {
+        "name": "visual-base-stack",
+        "id": "10962640673",
+        "zipSha256": "b6a7b4c7ceb3f8f5f9eb5da88c62d3d4c111197ccd8c3b3855a73d3cd885aad4"
+      },
+      {
+        "name": "visual-head-fixture",
+        "id": "10962785105",
+        "zipSha256": "1f382cc54aa35181c87237cc24ca0387e4016b311a41f1574ccc9346feb9dfa5"
+      },
+      {
+        "name": "visual-head-stack",
+        "id": "10962835047",
+        "zipSha256": "e711eb3ebdcd710f732b5194cf8bd58227748e7b4fb87d5a695d5e52b914fdc5"
+      }
+    ]
+  },
+  "summary": {
+    "changed": 0,
+    "subtle": 0,
+    "unchanged": 42,
+    "incomplete": 0,
+    "baseUnavailable": 0,
+    "total": 42
+  },
+  "metadata": {
+    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da",
+    "headSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
+  },
+  "localOutputSha256": {
+    "summary.json": "480e9d3737f67b4b16c736be6eba77585a92017e3bf128dcdc9e21d6dd8e9e4b",
+    "changes.json": "80cf973024b5cfd1d28108008d40cdc10e3fbeb615f16c9245d55be701bc2257"
+  },
+  "views": [
+    {
+      "id": "shared-home",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "63710c8c3496d707c31c2f1278c1c35063b74e250947cc8738d1aa7d64583010",
+          "width": 1440,
+          "height": 5932,
+          "pixelHash": "4850f5dc26495e0c8d9e2602041e160485be677d83de7d942f557a033f6abb41"
+        },
+        "head": {
+          "fileSha256": "63710c8c3496d707c31c2f1278c1c35063b74e250947cc8738d1aa7d64583010",
+          "width": 1440,
+          "height": 5932,
+          "pixelHash": "4850f5dc26495e0c8d9e2602041e160485be677d83de7d942f557a033f6abb41"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-research-areas",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "586b78f8a51c6589c1309eeefcf444eaefc03b3654b9749fb4fcf6ef20eda4c6",
+          "width": 1440,
+          "height": 1392,
+          "pixelHash": "cb7a93ae9c3f7c82f23699ae5a0f0e6f57f2ec0371ed48aa1373ddbb3cd6f7be"
+        },
+        "head": {
+          "fileSha256": "586b78f8a51c6589c1309eeefcf444eaefc03b3654b9749fb4fcf6ef20eda4c6",
+          "width": 1440,
+          "height": 1392,
+          "pixelHash": "cb7a93ae9c3f7c82f23699ae5a0f0e6f57f2ec0371ed48aa1373ddbb3cd6f7be"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2004480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2004480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2004480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2004480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-data-status",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "2708dfa44970abb64aa468447881f4d35c22a3ef02f056f23d93247cf2c925d7",
+          "width": 1440,
+          "height": 1738,
+          "pixelHash": "b422786a661b474d1f6f26191c924276970e2213dc5e635d4f22cdd07716c7e4"
+        },
+        "head": {
+          "fileSha256": "2708dfa44970abb64aa468447881f4d35c22a3ef02f056f23d93247cf2c925d7",
+          "width": 1440,
+          "height": 1738,
+          "pixelHash": "b422786a661b474d1f6f26191c924276970e2213dc5e635d4f22cdd07716c7e4"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-sources-history",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "6962f8d6881ceb2a04dcf650e5233f55bb1cc3ec260ad1c0a824309002af31e4",
+          "width": 1440,
+          "height": 1618,
+          "pixelHash": "5dea93d9c180e7a11d5410e4d7823ab0094440e1886e878b33e64c8ab4627f8e"
+        },
+        "head": {
+          "fileSha256": "6962f8d6881ceb2a04dcf650e5233f55bb1cc3ec260ad1c0a824309002af31e4",
+          "width": 1440,
+          "height": 1618,
+          "pixelHash": "5dea93d9c180e7a11d5410e4d7823ab0094440e1886e878b33e64c8ab4627f8e"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2329920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2329920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2329920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2329920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-assistant",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "7330d7919d7b8bd31258b9288ab3714c6f155b0396d6a9cf1964d8eff25580b5",
+          "width": 1440,
+          "height": 1122,
+          "pixelHash": "f5fb9e73f31ddb6ed04337c54e8cb22d1fd87f053f42c9d63d3db6b20472f801"
+        },
+        "head": {
+          "fileSha256": "7330d7919d7b8bd31258b9288ab3714c6f155b0396d6a9cf1964d8eff25580b5",
+          "width": 1440,
+          "height": 1122,
+          "pixelHash": "f5fb9e73f31ddb6ed04337c54e8cb22d1fd87f053f42c9d63d3db6b20472f801"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1615680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1615680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1615680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1615680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-roadmap",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "9b531ee29550a1f36707365499f58ce4a4d39d79bc56f51feefc0ad3061da56b",
+          "width": 1440,
+          "height": 1824,
+          "pixelHash": "211c267478ff068f73419f2e4b3a1bd0a0ce6048dae502c4374ee6333975e78b"
+        },
+        "head": {
+          "fileSha256": "9b531ee29550a1f36707365499f58ce4a4d39d79bc56f51feefc0ad3061da56b",
+          "width": 1440,
+          "height": 1824,
+          "pixelHash": "211c267478ff068f73419f2e4b3a1bd0a0ce6048dae502c4374ee6333975e78b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2626560,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2626560,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2626560,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2626560,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-activity-history",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "1fd8151fbe41d7beabf69624267a16ca0f29a0c5450e7d85450e3b7dc619618b",
+          "width": 1440,
+          "height": 1000,
+          "pixelHash": "e9408d7dc28f9cc8eceb3ba9637f5986571facb29602da16ce5f78e7395e0d3b"
+        },
+        "head": {
+          "fileSha256": "1fd8151fbe41d7beabf69624267a16ca0f29a0c5450e7d85450e3b7dc619618b",
+          "width": 1440,
+          "height": 1000,
+          "pixelHash": "e9408d7dc28f9cc8eceb3ba9637f5986571facb29602da16ce5f78e7395e0d3b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-home-empty",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "63710c8c3496d707c31c2f1278c1c35063b74e250947cc8738d1aa7d64583010",
+          "width": 1440,
+          "height": 5932,
+          "pixelHash": "4850f5dc26495e0c8d9e2602041e160485be677d83de7d942f557a033f6abb41"
+        },
+        "head": {
+          "fileSha256": "63710c8c3496d707c31c2f1278c1c35063b74e250947cc8738d1aa7d64583010",
+          "width": 1440,
+          "height": 5932,
+          "pixelHash": "4850f5dc26495e0c8d9e2602041e160485be677d83de7d942f557a033f6abb41"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8542080,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-data-status-error",
+      "provider": "fixture",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "34da10056f09d29088cc302b4f8fad9af638520d0fb6bd3e2766b8290424a9e6",
+          "width": 1440,
+          "height": 1738,
+          "pixelHash": "d06bc24257ae7621ca5fab20d71721ad6c12a1e9f4771305a280c76523aaa9bb"
+        },
+        "head": {
+          "fileSha256": "34da10056f09d29088cc302b4f8fad9af638520d0fb6bd3e2766b8290424a9e6",
+          "width": 1440,
+          "height": 1738,
+          "pixelHash": "d06bc24257ae7621ca5fab20d71721ad6c12a1e9f4771305a280c76523aaa9bb"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2502720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-property-search",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "1978e7edae81a8d47d88ac90b4154affafd6b7085908f0ba791a8c282b66362a",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "0fdaae59438bd0a39207692714fa2f332817f2d719dfb7620af7f934a08e0bb8"
+        },
+        "head": {
+          "fileSha256": "1978e7edae81a8d47d88ac90b4154affafd6b7085908f0ba791a8c282b66362a",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "0fdaae59438bd0a39207692714fa2f332817f2d719dfb7620af7f934a08e0bb8"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-property-results",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "38fddfa68e2fc8f1a911c709bb1fdc1c6ec70dba14adc6f0ffe9c29d6a5466a0",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "32aaac2ab2875f6e735e108917948562ef53fe1102601909f1a18add2247e8c3"
+        },
+        "head": {
+          "fileSha256": "38fddfa68e2fc8f1a911c709bb1fdc1c6ec70dba14adc6f0ffe9c29d6a5466a0",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "32aaac2ab2875f6e735e108917948562ef53fe1102601909f1a18add2247e8c3"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-property-detail",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "86f8b18ac6ec9ce89def8a7e23bd33328c640d65ca8ff0806d8dad850d77a1b7",
+          "width": 1440,
+          "height": 1219,
+          "pixelHash": "6f6300eb47a1b44971d51f075d209204a5bafcb60c9fead9f3b31797fb1d547c"
+        },
+        "head": {
+          "fileSha256": "86f8b18ac6ec9ce89def8a7e23bd33328c640d65ca8ff0806d8dad850d77a1b7",
+          "width": 1440,
+          "height": 1219,
+          "pixelHash": "6f6300eb47a1b44971d51f075d209204a5bafcb60c9fead9f3b31797fb1d547c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1755360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1755360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1755360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1755360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-assistant",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "e231948805cdebdf753feb62835d81d4c1b494c891218e3a2aa6a696e0fa58a8",
+          "width": 1440,
+          "height": 1050,
+          "pixelHash": "305f4d7dd41e8c4f3b872f43329df110fc20efacf0367561a13704188706c7e7"
+        },
+        "head": {
+          "fileSha256": "e231948805cdebdf753feb62835d81d4c1b494c891218e3a2aa6a696e0fa58a8",
+          "width": 1440,
+          "height": 1050,
+          "pixelHash": "305f4d7dd41e8c4f3b872f43329df110fc20efacf0367561a13704188706c7e7"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1512000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1512000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1512000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1512000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-overview",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "dd87ba1a62fc13faabc4c4700f4563207f2a3dd8505a08d713449c9aacaa9d46",
+          "width": 1440,
+          "height": 1043,
+          "pixelHash": "db54051aab5ba5a1888fd3cdc107d52118b7fa2d4e34a76fe8deb9d5509fff7c"
+        },
+        "head": {
+          "fileSha256": "dd87ba1a62fc13faabc4c4700f4563207f2a3dd8505a08d713449c9aacaa9d46",
+          "width": 1440,
+          "height": 1043,
+          "pixelHash": "db54051aab5ba5a1888fd3cdc107d52118b7fa2d4e34a76fe8deb9d5509fff7c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1501920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1501920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1501920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1501920,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-jobs",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "a6e452bfb492b6deb586404016a2a38f48579aad27d40d9ea654b80f84fef0d1",
+          "width": 1440,
+          "height": 1059,
+          "pixelHash": "6349f1ab58ffebed765b5da8a0b626c9d0803fef3d2b713237976de20ea73d2e"
+        },
+        "head": {
+          "fileSha256": "a6e452bfb492b6deb586404016a2a38f48579aad27d40d9ea654b80f84fef0d1",
+          "width": 1440,
+          "height": 1059,
+          "pixelHash": "6349f1ab58ffebed765b5da8a0b626c9d0803fef3d2b713237976de20ea73d2e"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1524960,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1524960,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1524960,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1524960,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-job-detail",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "cb9e8ff636380707e3c98d668f5835469cfc5ad804906338a4a7983f3fa9e4bc",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "935e4a0a157033bf6854929fa06b4da29a1acdf48c444a710e381a9efa7e874a"
+        },
+        "head": {
+          "fileSha256": "cb9e8ff636380707e3c98d668f5835469cfc5ad804906338a4a7983f3fa9e4bc",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "935e4a0a157033bf6854929fa06b4da29a1acdf48c444a710e381a9efa7e874a"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-runs",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "949d54edc62d6daa6c9ca31c464219a3bb56000aa6467832a7a43649bbe06299",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "6886b50f671111e1ebe6e7fa6a607117a2ad06a2cea89279d9983b3319a6fec8"
+        },
+        "head": {
+          "fileSha256": "949d54edc62d6daa6c9ca31c464219a3bb56000aa6467832a7a43649bbe06299",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "6886b50f671111e1ebe6e7fa6a607117a2ad06a2cea89279d9983b3319a6fec8"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-run-detail",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "36d1a712bf93af66701c63f473ad8db1b039093a9a2553099b4c91c35783ee60",
+          "width": 1440,
+          "height": 1811,
+          "pixelHash": "29a839c7e17c1286665eb366df133d70304f1fa50262378bce23eab24517692b"
+        },
+        "head": {
+          "fileSha256": "36d1a712bf93af66701c63f473ad8db1b039093a9a2553099b4c91c35783ee60",
+          "width": 1440,
+          "height": 1811,
+          "pixelHash": "29a839c7e17c1286665eb366df133d70304f1fa50262378bce23eab24517692b"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2607840,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2607840,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2607840,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2607840,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-releases",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "f4b57b849f130cb30b3d12c4a06efc7da0578fa12d42e32ec3ccbdaf948f88bd",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "17f3e1909e648acce5e131f0b940b09c962a7d165f929f0df66f3c1d3d7f5c56"
+        },
+        "head": {
+          "fileSha256": "f4b57b849f130cb30b3d12c4a06efc7da0578fa12d42e32ec3ccbdaf948f88bd",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "17f3e1909e648acce5e131f0b940b09c962a7d165f929f0df66f3c1d3d7f5c56"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-release-detail",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "07254fa0d7bdf35d57d1f0a2088085a22fa486bb14bf64d93a34627c484fb12e",
+          "width": 1440,
+          "height": 2072,
+          "pixelHash": "86a8917cff481645386850889d46a5aa82f8d796f32e2619069a9b7afb2e90cb"
+        },
+        "head": {
+          "fileSha256": "07254fa0d7bdf35d57d1f0a2088085a22fa486bb14bf64d93a34627c484fb12e",
+          "width": 1440,
+          "height": 2072,
+          "pixelHash": "86a8917cff481645386850889d46a5aa82f8d796f32e2619069a9b7afb2e90cb"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2983680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2983680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2983680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2983680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-sources",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "338de75fe25f7e78862aa3ca6d688bfc157c9a07e16bcb98dc6175feac71fad1",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "46af02c1bc3ecb51004c8c686deabbc9c5ecc23e907d29eaad93b83ab8cc61f0"
+        },
+        "head": {
+          "fileSha256": "338de75fe25f7e78862aa3ca6d688bfc157c9a07e16bcb98dc6175feac71fad1",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "46af02c1bc3ecb51004c8c686deabbc9c5ecc23e907d29eaad93b83ab8cc61f0"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-source-detail",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "6fa1ed4cd1dec56946d4667c5dbf7e5757aac048e28f2dd8a9d2315e5d43d53c",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "d07ddaa68e50c16e5fe774f6f9620e830da573c671d8baa9970451c1d9cc9496"
+        },
+        "head": {
+          "fileSha256": "6fa1ed4cd1dec56946d4667c5dbf7e5757aac048e28f2dd8a9d2315e5d43d53c",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "d07ddaa68e50c16e5fe774f6f9620e830da573c671d8baa9970451c1d9cc9496"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-quality",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "cd51356b7193ac41c21072d194c7296c5ad9ffea1a2d8b0b307c60451f6f27ef",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "85c9b1cce162666116ec3479137f8cf52d0b60c3271f497c32442f374e354af9"
+        },
+        "head": {
+          "fileSha256": "cd51356b7193ac41c21072d194c7296c5ad9ffea1a2d8b0b307c60451f6f27ef",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "85c9b1cce162666116ec3479137f8cf52d0b60c3271f497c32442f374e354af9"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-artifacts",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "251e982cd8897babd29dae15ca6e27543bd4b9c3c2b45a70b779a28c33741f44",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "83250467ccb18991d83c3507a1c0350fd8cb98bb6668aa0853b6f9ad65134872"
+        },
+        "head": {
+          "fileSha256": "251e982cd8897babd29dae15ca6e27543bd4b9c3c2b45a70b779a28c33741f44",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "83250467ccb18991d83c3507a1c0350fd8cb98bb6668aa0853b6f9ad65134872"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-coverage",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "c777b0d1b145533ac250232d628c65c1ea230c65f544d3d6fe129d10c91a65f4",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "141776d33f87b955f4a1a76f71e47fae508bbd19c1a17e8b1a7aaa66f15a6470"
+        },
+        "head": {
+          "fileSha256": "c777b0d1b145533ac250232d628c65c1ea230c65f544d3d6fe129d10c91a65f4",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "141776d33f87b955f4a1a76f71e47fae508bbd19c1a17e8b1a7aaa66f15a6470"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-property-results-empty",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "cbfa41ad6506770e170f25fcd82291787f6df2c197e32425110c2f91653c6d7f",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "ceb7ec511ec91c5e6f956ea5d48ff294584789e6c13d7223f56206d3fed280bb"
+        },
+        "head": {
+          "fileSha256": "cbfa41ad6506770e170f25fcd82291787f6df2c197e32425110c2f91653c6d7f",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "ceb7ec511ec91c5e6f956ea5d48ff294584789e6c13d7223f56206d3fed280bb"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-overview-error",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "4ce14d708903ec4bff0b6d2ec26cb35f880fdf5a2d18f6564b0b681559012b0e",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "3f7dc9002c20894c4391c375dae05d9303dac69951820579efcadecedb3268a0"
+        },
+        "head": {
+          "fileSha256": "4ce14d708903ec4bff0b6d2ec26cb35f880fdf5a2d18f6564b0b681559012b0e",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "3f7dc9002c20894c4391c375dae05d9303dac69951820579efcadecedb3268a0"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-releases-long-content",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "f4b57b849f130cb30b3d12c4a06efc7da0578fa12d42e32ec3ccbdaf948f88bd",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "17f3e1909e648acce5e131f0b940b09c962a7d165f929f0df66f3c1d3d7f5c56"
+        },
+        "head": {
+          "fileSha256": "f4b57b849f130cb30b3d12c4a06efc7da0578fa12d42e32ec3ccbdaf948f88bd",
+          "width": 1440,
+          "height": 1013,
+          "pixelHash": "17f3e1909e648acce5e131f0b940b09c962a7d165f929f0df66f3c1d3d7f5c56"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1458720,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f1-runs-large",
+      "provider": "fixture",
+      "section": "feature-1",
+      "inputs": {
+        "base": {
+          "fileSha256": "e445d72e9ff16c80e781b7fe96adecac42abfcdb65309624ab29f4f23749d479",
+          "width": 1440,
+          "height": 6000,
+          "pixelHash": "1a2a7b7ee29ef9e8c3adc7cc9277d4b39bc9edfbd125a6f0cae7145fb0e88bb8"
+        },
+        "head": {
+          "fileSha256": "e445d72e9ff16c80e781b7fe96adecac42abfcdb65309624ab29f4f23749d479",
+          "width": 1440,
+          "height": 6000,
+          "pixelHash": "1a2a7b7ee29ef9e8c3adc7cc9277d4b39bc9edfbd125a6f0cae7145fb0e88bb8"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8640000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8640000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8640000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 8640000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "shared-knowledge-sources",
+      "provider": "stack",
+      "section": "shared",
+      "inputs": {
+        "base": {
+          "fileSha256": "f74b2cadf651d8b2cf085aaeb0410ec8036f5239cbd50e0486051787008b1bee",
+          "width": 1440,
+          "height": 1000,
+          "pixelHash": "f558e6bb6c3126af22405f0792223b28c3d72d8e0867368559c1c06b72eedf49"
+        },
+        "head": {
+          "fileSha256": "f74b2cadf651d8b2cf085aaeb0410ec8036f5239cbd50e0486051787008b1bee",
+          "width": 1440,
+          "height": 1000,
+          "pixelHash": "f558e6bb6c3126af22405f0792223b28c3d72d8e0867368559c1c06b72eedf49"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1440000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f2-market-cases",
+      "provider": "stack",
+      "section": "feature-2",
+      "inputs": {
+        "base": {
+          "fileSha256": "9d3453eb75658658fd34f19131538aadb327d6664a75d11b13226f512edd170b",
+          "width": 1440,
+          "height": 2747,
+          "pixelHash": "e4236a1ecc7c1c49d56e78c122475ff0d86a600bf94b798b9604d5396e784e7c"
+        },
+        "head": {
+          "fileSha256": "9d3453eb75658658fd34f19131538aadb327d6664a75d11b13226f512edd170b",
+          "width": 1440,
+          "height": 2747,
+          "pixelHash": "e4236a1ecc7c1c49d56e78c122475ff0d86a600bf94b798b9604d5396e784e7c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f2-new-case-dialog",
+      "provider": "stack",
+      "section": "feature-2",
+      "inputs": {
+        "base": {
+          "fileSha256": "ec9c930db121f113d090cbf3895a76ab5e7f955181ab92cb1798315af483fd17",
+          "width": 1440,
+          "height": 2747,
+          "pixelHash": "e89754b4333424283af69e6d58096b3004ab422cefc3fcfc2a6953ac47a5ed7c"
+        },
+        "head": {
+          "fileSha256": "ec9c930db121f113d090cbf3895a76ab5e7f955181ab92cb1798315af483fd17",
+          "width": 1440,
+          "height": 2747,
+          "pixelHash": "e89754b4333424283af69e6d58096b3004ab422cefc3fcfc2a6953ac47a5ed7c"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3955680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f3-explore",
+      "provider": "stack",
+      "section": "feature-3",
+      "inputs": {
+        "base": {
+          "fileSha256": "eb0afd9f5cff5af466650cec8dd327103eca1ea5627f2b209d14e2edf0fa4cb5",
+          "width": 1440,
+          "height": 1395,
+          "pixelHash": "c82ba04ab1e03faabf3d653cd35aacf4296ce8d155cb01484e4b293aa14aa3f4"
+        },
+        "head": {
+          "fileSha256": "eb0afd9f5cff5af466650cec8dd327103eca1ea5627f2b209d14e2edf0fa4cb5",
+          "width": 1440,
+          "height": 1395,
+          "pixelHash": "c82ba04ab1e03faabf3d653cd35aacf4296ce8d155cb01484e4b293aa14aa3f4"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2008800,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2008800,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2008800,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2008800,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f3-trends",
+      "provider": "stack",
+      "section": "feature-3",
+      "inputs": {
+        "base": {
+          "fileSha256": "bc22c4f0d10589628d30061ff6169b09ac3aaebaf72ace6a71077667cfcba34b",
+          "width": 1440,
+          "height": 1590,
+          "pixelHash": "69fb48756ed8c33dbb65bedd622cc8ce6b385deceb0b838227100a306f3a3d8e"
+        },
+        "head": {
+          "fileSha256": "bc22c4f0d10589628d30061ff6169b09ac3aaebaf72ace6a71077667cfcba34b",
+          "width": 1440,
+          "height": 1590,
+          "pixelHash": "69fb48756ed8c33dbb65bedd622cc8ce6b385deceb0b838227100a306f3a3d8e"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2289600,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2289600,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2289600,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2289600,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f3-published",
+      "provider": "stack",
+      "section": "feature-3",
+      "inputs": {
+        "base": {
+          "fileSha256": "c82130745caa6dc53b33caa393512bd1d2423ec18cbbf442f493879439f01c1e",
+          "width": 1440,
+          "height": 1017,
+          "pixelHash": "9264ab4513a47c274f753963696c4c78ed8e698c583c0d1b43a6816ad0f75454"
+        },
+        "head": {
+          "fileSha256": "c82130745caa6dc53b33caa393512bd1d2423ec18cbbf442f493879439f01c1e",
+          "width": 1440,
+          "height": 1017,
+          "pixelHash": "9264ab4513a47c274f753963696c4c78ed8e698c583c0d1b43a6816ad0f75454"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1464480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1464480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1464480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1464480,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f3-comparisons",
+      "provider": "stack",
+      "section": "feature-3",
+      "inputs": {
+        "base": {
+          "fileSha256": "6fa03e6129d8616bf8d4a4d09094c802c79425d4e9e450c3feb2fd3f5e4e5933",
+          "width": 1440,
+          "height": 1844,
+          "pixelHash": "e8b4e8d70e0f3e0dc989acfa1ccd4e83c51cf3bc0b0adc939305f727c1528043"
+        },
+        "head": {
+          "fileSha256": "6fa03e6129d8616bf8d4a4d09094c802c79425d4e9e450c3feb2fd3f5e4e5933",
+          "width": 1440,
+          "height": 1844,
+          "pixelHash": "e8b4e8d70e0f3e0dc989acfa1ccd4e83c51cf3bc0b0adc939305f727c1528043"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2655360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2655360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2655360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 2655360,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f3-assistant",
+      "provider": "stack",
+      "section": "feature-3",
+      "inputs": {
+        "base": {
+          "fileSha256": "0cdb790d190582db19b712517697420c2df0218a2d5d060c0ff6cbad1721780b",
+          "width": 1440,
+          "height": 1085,
+          "pixelHash": "40810475e8cad236117d8e45fd02a7970e74b60a3328c6dac8aac75212da7a51"
+        },
+        "head": {
+          "fileSha256": "0cdb790d190582db19b712517697420c2df0218a2d5d060c0ff6cbad1721780b",
+          "width": 1440,
+          "height": 1085,
+          "pixelHash": "40810475e8cad236117d8e45fd02a7970e74b60a3328c6dac8aac75212da7a51"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1562400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1562400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1562400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1562400,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f4-site-reviews",
+      "provider": "stack",
+      "section": "feature-4",
+      "inputs": {
+        "base": {
+          "fileSha256": "c10667306c2e9b5d93e7a6f350aa2f7e25f7f0a6806afe31d56645a6d23ba546",
+          "width": 1440,
+          "height": 1076,
+          "pixelHash": "72e4ebf70d8bd2a13f6c16e0790b164a1adb6029bce2da8bf46b1d0485dfa17f"
+        },
+        "head": {
+          "fileSha256": "c10667306c2e9b5d93e7a6f350aa2f7e25f7f0a6806afe31d56645a6d23ba546",
+          "width": 1440,
+          "height": 1076,
+          "pixelHash": "72e4ebf70d8bd2a13f6c16e0790b164a1adb6029bce2da8bf46b1d0485dfa17f"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f4-review-detail",
+      "provider": "stack",
+      "section": "feature-4",
+      "inputs": {
+        "base": {
+          "fileSha256": "a726b115cce49aa08b58f60e3a39b60d70614297ddf0e732db37e13d7f4284b9",
+          "width": 1440,
+          "height": 2722,
+          "pixelHash": "95812cf18e1dcec7edaf78ad3fa468682c177469459d1d042211798961449868"
+        },
+        "head": {
+          "fileSha256": "a726b115cce49aa08b58f60e3a39b60d70614297ddf0e732db37e13d7f4284b9",
+          "width": 1440,
+          "height": 2722,
+          "pixelHash": "95812cf18e1dcec7edaf78ad3fa468682c177469459d1d042211798961449868"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3919680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3919680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3919680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 3919680,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f4-new-review-dialog",
+      "provider": "stack",
+      "section": "feature-4",
+      "inputs": {
+        "base": {
+          "fileSha256": "8b2f7d4aec9148025b65f6f63be56bf1953cbe559b3d9d6776d970ab4d08fd00",
+          "width": 1440,
+          "height": 1076,
+          "pixelHash": "dc2aa9a902bc6bd6762f0a671e4b14abcbaf086e79ec751170b4fe1fc6db25f3"
+        },
+        "head": {
+          "fileSha256": "8b2f7d4aec9148025b65f6f63be56bf1953cbe559b3d9d6776d970ab4d08fd00",
+          "width": 1440,
+          "height": 1076,
+          "pixelHash": "dc2aa9a902bc6bd6762f0a671e4b14abcbaf086e79ec751170b4fe1fc6db25f3"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1549440,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f5-buyer-cases",
+      "provider": "stack",
+      "section": "feature-5",
+      "inputs": {
+        "base": {
+          "fileSha256": "8b40e58af59e05c452d13f85e5ec73b5210af87fec8974ff094070d1fcfd338b",
+          "width": 1440,
+          "height": 1075,
+          "pixelHash": "597969051aea34cec5db957c5ae2bada7755a74b9b067f63ffeb73d078b2d192"
+        },
+        "head": {
+          "fileSha256": "8b40e58af59e05c452d13f85e5ec73b5210af87fec8974ff094070d1fcfd338b",
+          "width": 1440,
+          "height": 1075,
+          "pixelHash": "597969051aea34cec5db957c5ae2bada7755a74b9b067f63ffeb73d078b2d192"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1548000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1548000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1548000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1548000,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "f5-case-detail",
+      "provider": "stack",
+      "section": "feature-5",
+      "inputs": {
+        "base": {
+          "fileSha256": "cd629edcb5ab8a041b0d9ecb92932232b0b46dd97729271ad399468b47ef3cb5",
+          "width": 1440,
+          "height": 3005,
+          "pixelHash": "90111357afc036f39e510ec56cc8e42365138f9f846a924a9e6b53a94366802e"
+        },
+        "head": {
+          "fileSha256": "cd629edcb5ab8a041b0d9ecb92932232b0b46dd97729271ad399468b47ef3cb5",
+          "width": 1440,
+          "height": 3005,
+          "pixelHash": "90111357afc036f39e510ec56cc8e42365138f9f846a924a9e6b53a94366802e"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 4327200,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 4327200,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 4327200,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 4327200,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    }
+  ]
+}

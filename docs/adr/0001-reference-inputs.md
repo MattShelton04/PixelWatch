@@ -115,4 +115,44 @@ what real input looks like. It doesn't define correct output. So:
 - There are no committed checksums or download script for these inputs. The Consequences
   sentence above about "their own checksums (07 §3)" doesn't apply to them.
 - The M0.6 plan to record comparator goldens from running PropertyScope's code is unchanged by
-  this addendum. Whether those goldens are binding is for the owner to decide at M0.6.
+  this addendum. Whether those goldens are binding is for the owner to decide at M0.6. (Decided:
+  binding, with listed deltas; see the M0.6 addendum and `docs/adr/comparator-v1.md`.)
+
+## Addendum (2026-09-30, M0.6)
+
+**PR #123 has no visual changes.** All 42 base/head PNGs of run 36405830015 are byte-identical,
+and so are those of TracePilot run 36314265418. PropertyScope has only three Visual Capture runs,
+all from the same tooling PR and its merge. Running the comparator on them proves only
+"identical in, unchanged out". PR #123 stays recorded as that case.
+
+**Additional reference inputs with real changes (owner, 2026-09-30).** These are two TracePilot
+Desktop Visual Capture runs that TracePilot's own `gh-pages` history
+(`2f21af1bb59b4f8d0e27615b129cdfc607931f78`) reports as changed. PropertyScope's comparator runs
+on their screenshots, which are 1440×960 RGB and inside its PNG profile.
+
+| Run | Attempt / event | Head | Base (manifest claim) | Created |
+|---|---|---|---|---|
+| 36287837535 | 1 / `push` to `main` | `3507148c340e89da29358e7f0751214bffc1d102` | `53d3cdcdd9cb70b66842fd47d43238dd12a773df` | 2026-09-27T02:12:21Z |
+| 36301239732 | 1 / `pull_request` (Dependabot) | `7e8380a52d84c39c28c4ffa3a66f3ffcdb9c17cf` | `e3ff0935641de98b96da49f9c2c9fb5b83e3cbf1` | 2026-09-27T06:49:37Z |
+
+| Run | Artifact ID | Name | Bytes (zip) | SHA-256 of zip (API `digest`) | Expires |
+|---|---|---|---|---|---|
+| 36287837535 | 10921730284 | `visual-base-1` | 5398422 | `bc65a6a8c9bb8928c773f6d68eecc33d3ef52a141d07274b73bdf70cc6d6bfec` | 2026-10-11T02:14:08Z |
+| 36287837535 | 10921521173 | `visual-base-2` | 5393579 | `84b3e4626d5b3cf36b1bf36cf566d61982b2db3cfea1fb5f89599ec18a65ba96` | 2026-10-11T02:14:02Z |
+| 36287837535 | 10921240812 | `visual-head-1` | 5398486 | `647368600e344c58e966ba9aeacd2f3d20142de701cc8517d574403dba67a30b` | 2026-10-11T02:14:05Z |
+| 36287837535 | 10921760211 | `visual-head-2` | 5393559 | `44e8d95c18f7a1a885f6af743a65f17a3820d8f8e265c341435c25a3ffc378b8` | 2026-10-11T02:13:56Z |
+| 36301239732 | 10925303368 | `visual-base-1` | 8165992 | `4af0538fb89be283c94edb1d42066314c50e9739889989d73b3b6d0c36d71831` | 2026-10-11T06:51:53Z |
+| 36301239732 | 10926230874 | `visual-base-2` | 7927547 | `33e3f7e265f1a2b8f086ef6b09e357c921391605ff90bee4a37a0005ce8cefbb` | 2026-10-11T06:51:51Z |
+| 36301239732 | 10925333267 | `visual-head-1` | 8165610 | `bd3b9f4ea664a2500ca5f3d16977289e9a6c8995f2df2202fc51dd286b0012fe` | 2026-10-11T06:52:09Z |
+| 36301239732 | 10926195393 | `visual-head-2` | 7926258 | `3f6adb26fd1764bee04ac3dd71dc8ceb556db1ff1874cf427180996f2c7824d2` | 2026-10-11T06:51:52Z |
+
+These were downloaded with `gh api repos/MattShelton04/TracePilot/actions/artifacts/<id>/zip` into
+`.reference/artifacts/tp-<run>-zips/`, and every digest matched.
+
+- Unlike the M0.3 inputs, these **are** checksummed in the committed recordings, because
+  comparator-v1 makes their outputs binding. There's still no download script, and they expire on
+  2026-10-11.
+- Three real crops (1440×256 bands of changed/subtle views) are committed under
+  `testdata/comparator/crops/`, so real-pixel parity survives expiry.
+- The crops are screenshots of the owner's TracePilot repository, with the same provenance as
+  the TracePilot screenshot committed in M0.3 (`testdata/prototypes/`).

@@ -232,8 +232,11 @@ owner-approved deliberate change gets a new comparator version and an explicit g
 The core receives the policy as data. Test zero/missing denominators, dimension changes and
 incomplete comparisons. Thresholds never turn missing or failed into unchanged.
 
-Known prototype defaults (confirm against source): thresholds `[0, 8, 16, 32]`, subtle
-= ≤ 128 changed pixels and max Δ ≤ 8, tile-based regions with grouping of identical changed areas.
+Confirmed against the source in `docs/adr/comparator-v1.md`: thresholds `[0, 8, 16, 32]` (a
+pixel changes when its max RGBA channel Δ > t), subtle = ≤ 128 changed pixels and max Δ ≤ 8,
+regions from 8-connected 8 px tiles (top 12 kept). The ADR lists the two approved deltas: pixels
+are alpha-normalized as for the pixel hash, and a width change has no diff. Grouping of identical
+changed areas is presentation, derived from stored regions, and not part of the run.
 
 ## 10. Trusted config parsing
 
