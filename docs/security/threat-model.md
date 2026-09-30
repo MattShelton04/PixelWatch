@@ -1,0 +1,357 @@
+# Threat model (M0.4)
+
+This file maps every rule of the normative security model
+([01 §4](../design/01-architecture-and-security.md#4-security-model-normative)) to a trust boundary,
+the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
+weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
+
+Status on 2026-09-30 (main @ `1677e43`): only `packages/schemas` and the pixel hash are
+implemented. Most checks below are therefore **planned**. A planned check is never counted as
+green.
+
+`tools/threat-model.test.ts` keeps this file honest. It runs in `pnpm check` and fails when:
+
+- a rule has no check;
+- a boundary has no rule;
+- a `passing` row points at a file or test title that doesn't exist;
+- a planned row has no owning task.
+
+## 1. Status vocabulary
+
+| Status | Meaning |
+|---|---|
+| `passing` | The test exists and runs in `pnpm check`. It may cover only part of the rule; the invariant column says which part. |
+| `planned` | Not written yet. The owner task writes it at the path given, or moves it and updates this row in the same PR. |
+| `recorded` | Manual evidence exists at the path given. |
+| `evidence-planned` | Manual evidence the owner task or spike must record (usually under `docs/evidence/`, 07 §7). |
+
+When a task lands a planned test, it flips the row to `passing` in the same PR, with the real
+path and test title. Trusted-path PRs name the rule IDs they touch (08 §10).
+
+## 2. Assets and actors
+
+**Assets:**
+
+- the store branch `pixelwatch-data`;
+- the served Pages site and its shared origin `owner.github.io`;
+- the sticky PR comment;
+- the report job's write-capable `GITHUB_TOKEN` and Pages OIDC token;
+- the pinned release code;
+- adopter config;
+- the adopter's default branch and other refs, which `contents: write` could reach.
+
+**Actors:**
+
+| Actor | Trust |
+|---|---|
+| PR author (same-repo or fork) and everything their PR runs | Hostile. Controls capture code, harness, artifacts, labels and claims. |
+| Other workflows in the adopter repo | Outside PixelWatch's control. They can post as the same `github-actions[bot]`. |
+| Repository administrator | Trusted, but can weaken their own capture workflow (R4.1-04). |
+| GitHub platform (API, Actions, Pages, Camo) | Trusted for identity; fallible for timing, caching and outcomes. |
+| CDN, browser and Camo caches | Can serve stale bytes or cached 404s. |
+| Site visitor / external agent | Reads public data. Other sites on the same origin may be hostile. |
+
+## 3. Trust boundaries
+
+| ID | Boundary | What crosses it |
+|---|---|---|
+| TB1 | PR code → capture job | Untrusted code runs with a read-only token and no secrets |
+| TB2 | Capture artifacts → ingest job | ZIPs, `bundle.json` and PNGs: untrusted data |
+| TB3 | GitHub API → ingest job | The source envelope: run, attempt, workflow, event, PR association, commits |
+| TB4 | Default-branch config → publisher | Trusted policy, parsed as bounded data |
+| TB5 | Release self-checkout → publisher | The code that holds the write tokens |
+| TB6 | Store branch ↔ publisher (Git) | Store objects read back as data; CAS writes |
+| TB7 | Concurrent ingestors ↔ store tip | Racing CAS pushes |
+| TB8 | Projectors ↔ deploy/readiness/comment | Racing projections, deployments and comment writes |
+| TB9 | Publisher → Pages served tree | Generated HTML/JSON plus validated PNGs on a shared origin |
+| TB10 | Publisher → PR comment | Markdown built from untrusted labels, posted under a bot identity |
+| TB11 | Served data → viewer/browser | JSON and PNGs rendered by the pinned app; origin-shared storage |
+| TB12 | CDN/Camo caches → readiness | Possibly stale generations, 404s and images |
+| TB13 | Toolchain and parsers (TCB) | Node, Git, zlib, the ZIP/JSON/YAML/schema parsers, and build tools |
+| TB14 | Repository settings | Settings the code can't enforce (M0.2) |
+
+## 4. Rules
+
+IDs are `R<01 section>-<n>`. Rules marked ADR 0004 are the owner's 2026-09-30 decisions that
+close gaps between 03 §7, 05 §2 and the frozen `site@1`.
+
+<!-- rules:begin -->
+| ID | Rule | Boundary | Threat | Control |
+|---|---|---|---|---|
+| R4.1-01 | Capture runs PR code only on `pull_request`/`push` with `contents: read`, no secrets, no environments, no `pull_request_target`, hosted runners only | TB1, TB14 | Elevation: PR code gains write tokens | Capture template; config refuses `pull_request_target` as a source event; fork approval setting |
+| R4.1-02 | Capture doesn't persist checkout credentials | TB1 | Disclosure of the read token to later steps or artifacts | `persist-credentials: false` in the template |
+| R4.1-03 | Capture never receives publishing credentials via caches, artifacts, outputs, logs or fixtures | TB1, TB5 | Elevation through a default-branch cache or artifact that the PR can read | Report job writes no caches or artifacts for capture; test credentials never reach PR events |
+| R4.1-04 | An admin can weaken their own capture workflow; docs say so and claim no guarantee | TB1, TB14 | Repudiation: false assurance | Template header and adopter docs |
+| R4.2-01 | Publisher runs on `workflow_run` from the default branch at a full-SHA-pinned release | TB5, TB14 | Tampering: a moving ref swaps publisher code | SHA pins, repo-level SHA-pin requirement, zizmor `hash-pin` |
+| R4.2-02 | Publisher never checks out a PR tree, runs a project script or artifact binary, installs adopter dependencies, evaluates a recipe, or restores a PR-writable cache | TB2, TB5 | Elevation: PR code runs with write tokens | `report.yml` has no such steps; lint and live hostile PR |
+| R4.2-03 | Publisher loads its own bundle from `job.workflow_repository`/`job.workflow_sha`; missing fields fail; never a branch, a moving tag, or the caller's `github.sha`/`github.repository` | TB5 | Tampering: caller code runs as the publisher | Self-checkout (06 §3), spike S4 |
+| R4.2-04 | Config is read at one recorded default-branch commit. The projector reads it at the default-branch head resolved after taking the lock and records it in the generation (ADR 0004). | TB4, TB8 | Tampering: PR-supplied or stale policy | Config commit recorded in run and generation |
+| R4.2-05 | Unknown policy, schema or data versions fail before any store write, deployment or comment | TB4, TB6 | Tampering/DoS: misread data rewrites history | Version check before anything else; refusal before mutation |
+| R4.2-06 | Per-job permissions: ingest `actions: read, contents: write, pull-requests: read`; project `contents: read, pages: write, id-token: write, pull-requests: write` | TB5, TB14 | Elevation: blast radius of a compromised step | Per-job `permissions` in `report.yml`; top-level `permissions: {}` |
+| R4.2-07 | Deploy and comment run in one job under one per-site concurrency group, `cancel-in-progress: false`; the group name is stable across releases | TB8 | Tampering: read-check-write race between deploy and comment | One project job; one group |
+| R4.2-08 | The TCB is pinned, advisory-tracked and tested with bounded hostile input | TB13 | Tampering via dependency or parser bug | Lockfile, pinned tool digests, Dependabot, CodeQL, dependency review, hostile corpora |
+| R4.3-01 | The envelope is corroborated through the API: numeric repository ID, configured workflow **ID**, run ID + attempt, allowed event/ref, PR/commit association. `workflow_run` payload must match REST. | TB3 | Spoofing: a look-alike workflow or forged run | Forge verification; config stores workflow IDs, not names |
+| R4.3-02 | Artifact claims (PR number, URL, SHA, environment, plan hash) never choose a write target, token destination, ref, PR or storage path | TB2, TB6, TB10 | Tampering: capture redirects writes or comments | Targets come from the envelope; `captureClaimsTrusted: false` |
+| R4.3-03 | Source workflow SHA, PR head SHA, base-branch SHA, selected baseline SHA and captured-target claim are kept separate | TB3 | Spoofing: merge ref or default-branch SHA mistaken for the PR head | Separate envelope fields; S11 recordings |
+| R4.3-04 | Ambiguous association (none or several PRs) → unassociated run with a diagnostic, no comment; never the first PR | TB3, TB10 | Tampering: a comment on the wrong PR | Association states in `run@1`; forge tests |
+| R4.3-05 | Download only by API-returned artifact ID, HTTPS only, with capped redirects, time and bytes | TB2, TB3 | DoS/tampering via redirects or oversized downloads | Forge download client |
+| R4.3-06 | `Authorization` is stripped on every cross-origin redirect (`redirect: "manual"`) | TB3 | Disclosure: the token is sent to the blob host | Manual redirect handling |
+| R4.3-07 | Tokens and signed URLs are never logged | TB3, TB13 | Disclosure in public logs | Redacting logger; log assertions |
+| R4.3-08 | Archives, JSON/YAML and PNGs are validated before and during allocation (02 §5) | TB2, TB4, TB13 | DoS: bombs, overflow, duplicate keys; tampering: prototype pollution | Strict JSON parser, bounded ZIP, bounded PNG decoder |
+| R4.3-09 | Accepted pixels are re-encoded to canonical PNG; the raw artifact file is never served | TB2, TB9 | Tampering: polyglot or metadata-carrying files | Own encoder; blob named by pixel hash |
+| R4.3-10 | Never publish HTML, SVG, JS, CSS, XML, source maps, HARs, traces or attachments from capture | TB2, TB9 | Tampering: active content on the shared origin | Entry-name allowlist; served-tree allowlist |
+| R4.3-11 | Diffs and hashes are authoritative only about submitted pixels; reports are advisory, with no mandatory gate | TB2 | Repudiation: over-trusted results | `captureClaimsTrusted: false`; docs and `llms.txt` wording |
+| R4.4-01 | PR run: target = PR head commit, baseline = merge base with the event's base-branch commit | TB3 | Spoofing: the wrong baseline hides a change | Envelope-derived source policy |
+| R4.4-02 | Default-branch push: target = pushed commit, baseline = first parent | TB3 | Same | Same |
+| R4.4-03 | Initial commit has no baseline → `incomparable` | TB2 | Tampering: a missing baseline shown as a pass | Base side `none` + `no-baseline` |
+| R4.4-04 | Never silently substitute "latest main snapshot" for the baseline | TB3, TB6 | Tampering: the wrong baseline | Baseline chosen only from the envelope |
+| R4.4-05 | The same head harness captures base and head; this is a technique, not proof | TB1 | Repudiation: over-trusted results | Documented limitation |
+| R4.4-06 | A PR whose base can't be corroborated → unassociated with a diagnostic; a stale identifiable run may enter history but never replaces the current head's comment | TB3, TB8, TB10 | Tampering: an old result shown as current | Head check before every comment write |
+| R4.4-07 | Live same-repo/fork/synchronize/rerun identities are recorded (S11) before M2 exits | TB3 | Spoofing: the design misreads real payloads | Spike S11 evidence |
+| R4.5-01 | Only the configured, marked data branch is writable. Refuse the default branch, unmarked branches, foreign repository markers and any other ref. | TB6, TB14 | Tampering: `contents: write` isn't ref-scoped, so a bug could push elsewhere | Store adapter refusal; branch protection on the default branch |
+| R4.5-02 | Git objects are read as data (`cat-file`/`ls-tree`) with hooks, filters and submodules disabled and a sanitized environment; tree content never runs | TB6, TB13 | Elevation via hostile tree content or Git config | Sanitized isolated Git dir |
+| R4.5-03 | Store writes are CAS with an explicit expected-SHA lease: no blind force, no rebase, no global Actions concurrency group for ingestion | TB7 | Tampering/DoS: lost or dropped runs | `--force-with-lease=<ref>:<sha>`; bounded recompute-retry |
+| R4.5-04 | An uncertain push outcome is resolved by refetching and matching run key + ingestion digest. Same key with a different digest is a reported conflict, never an overwrite. | TB6, TB7 | Tampering: duplicate or overwritten runs | Idempotency (02 §8) |
+| R4.5-05 | The served tree is built only from allowlisted validated data plus the pinned release's app; store files are never copied as active files; app hashes in the store are never trusted | TB6, TB9 | Tampering: stored-XSS through the store | Fresh build directory; `site@1` has no code URLs or hashes |
+| R4.5-06 | Projection → deploy → readiness → comment reconciliation is serialized, and the store is read after taking the lock | TB8 | Tampering: a stale generation or comment | Project job order (§6) |
+| R4.5-07 | Readiness: served `site.json` has the expected `generation`; each PR to be commented has `api/v1/pr/<n>/latest.json` naming the expected run key and generation; each fetched body's SHA-256 equals the built bytes. HTTP 200 alone isn't readiness (ADR 0004). | TB8, TB12 | Tampering: a comment links to content not yet served | Bounded readiness poll |
+| R4.5-08 | "Stale generation" means an older store tip, which is never deployed. A reordered older release may deploy once. It can't lose data or roll back a comment, and `site.json` shows its release (ADR 0004). | TB8 | Tampering: a downgrade window | Store read after lock; residual risk §7 |
+| R4.6-01 | No tokens, credentials, approvals or private data in viewer storage; stored preferences are validated on every read | TB11 | Disclosure/tampering across the shared origin | Viewer storage rules (04 §4) |
+| R4.6-02 | Viewer uses a hash CSP + SRI on pinned app bytes, no service worker, no dynamic script loading | TB9, TB11 | Tampering: script injection or app swapping | Generated entry pages |
+| R4.6-03 | Meta CSP can't set `frame-ancestors`; framing is not prevented | TB11 | Tampering: clickjacking | Documented residual (§7); no action in the viewer needs a click to be safe |
+| R4.6-04 | Untrusted values are encoded for their exact context; the DOM is built with text nodes; no `innerHTML` with data | TB10, TB11 | Tampering: XSS or Markdown injection | ESLint sink ban; context encoders |
+| R4.6-05 | Links use validated destinations (HTTPS, configured origin/prefix, no traversal or userinfo) and `noopener` | TB9, TB10, TB11 | Tampering: `javascript:` or off-site links | URL builders; `changes@1` URL pattern |
+| R4.6-06 | Control/bidi characters and `@mentions` from capture data are suppressed | TB10, TB11 | Spoofing: text reordering or unwanted pings | Label bounding and sanitizing |
+| R4.6-07 | Only a comment with the exact marker **and** the publishing bot's numeric author ID is edited; required warnings are never dropped | TB10 | Tampering: editing a human's comment; hiding warnings | Marker + author check; size budget reserves warnings |
+| R4.6-08 | More than one comment matching marker + author → edit none and record a diagnostic (ADR 0004) | TB10 | Spoofing: another bot workflow seeds a marker | Ambiguity refusal |
+| R4.6-09 | A stale run never replaces a newer head's report | TB8, TB10 | Tampering: comment rollback | Head re-fetch immediately before writing |
+| R4.6-10 | Instructions in labels, screenshots, findings or `changes.json` are never followed | TB2, TB10 | Tampering: prompt injection of agents or tooling | No instruction fields; `llms.txt` explains, never instructs |
+| R4.7-01 | Everything published is public and copyable; Camo is a proxy, not confidentiality; adopters use synthetic data and masks | TB9 | Disclosure | Adopter docs |
+| R4.7-02 | No raw DOM, traces, auth state or failed-capture logs are published by default; diagnostics are opt-in, redacted, bounded, and not Pages data | TB2, TB9 | Disclosure | Bounded error categories; served-tree allowlist |
+| R4.7-03 | Deleting a branch tip or backup isn't secure erasure | TB6, TB9 | Disclosure: false assurance of deletion | Documented limitation |
+| R4.7-04 | A deploy timeout is reported as "stored, deployment pending", never "published"; summaries record store commit, deployment outcome and repair steps, without secrets | TB8, TB12 | Repudiation: misleading status | Separate stored/deployed/served/commented statuses |
+<!-- rules:end -->
+
+## 5. Verification
+
+"Where" is a repo path. For a `passing` row with a title, the title is the exact `it(...)` text in
+that file. Fixture paths under `testdata/schemas/*/invalid/` are run by
+`packages/schemas/test/schemas.test.ts` (each fixture must fail with the code in its name).
+Planned paths are provisional (§1).
+
+<!-- verification:begin -->
+| Rule | Layer | Status | Where | Invariant | Owner |
+|---|---|---|---|---|---|
+| R4.1-01 | lint | passing | `tools/lint-workflows.test.ts` › "grants only contents: read at the top level and nowhere else" | The capture template has exactly one `permissions:` block, `contents: read`, and no `write` anywhere | M0.2 |
+| R4.1-01 | lint | passing | `tools/lint-workflows.test.ts` › "uses no secrets, environments or pull_request_target" | The capture template references no secrets or environments and never uses `pull_request_target` | M0.2 |
+| R4.1-01 | unit | passing | `testdata/schemas/config/invalid/schema.event-pull-request-target.json` | `config@1` refuses `pull_request_target` as an allowed source event | M0.3 |
+| R4.1-01 | evidence | recorded | `docs/security/repo-settings.md` | Rows 10–12: fork PR approval for all external contributors, read-only default token, Actions can't approve PRs (this repo) | M0.2 |
+| R4.1-01 | live | planned | `tools/live/scenarios/pr-fork.ts` | A real fork PR's capture run has `contents: read`, no secrets, and the trusted report still publishes | M2.6 |
+| R4.1-02 | lint | passing | `tools/lint-workflows.test.ts` › "never persists checkout credentials" | Every checkout in the capture template sets `persist-credentials: false` | M0.2 |
+| R4.1-03 | unit | passing | `tools/live.test.ts` › "refuses every pull_request event, even with all settings" | Live test credentials are refused on any `pull_request*` event | M0.1 |
+| R4.1-03 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | `report.yml` has no `actions/cache`, no cache-enabled setup action, and no `upload-artifact` except the Pages artifact; self-checkout has `persist-credentials: false` | M2.5 |
+| R4.1-03 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A hostile fork PR that dumps env, caches and artifacts finds no publishing credential | M2.6 |
+| R4.1-04 | evidence | recorded | `docs/templates/pixelwatch-capture.yml` | The template header says PixelWatch can't enforce capture settings and that weakening them voids fork safety | M0.2 |
+| R4.1-04 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs state the admin-weakening limitation; checked in the clean-repo quickstart | M3.8 |
+| R4.2-01 | lint | passing | `zizmor.yml` | `pnpm lint:workflows` enforces the `hash-pin` policy for every `uses:` in this repo's workflows and templates | M0.1 |
+| R4.2-01 | lint | passing | `tools/lint-workflows.test.ts` › "zizmor flags the insecure fixture offline" | zizmor reports `unpinned-uses`, `dangerous-triggers`, `artipacked`, `template-injection` and `excessive-permissions` on the insecure fixture | M0.1 |
+| R4.2-01 | evidence | recorded | `docs/security/repo-settings.md` | Row 8: the repository requires full-length SHA pins; rows 2–3: protected `main` and version tags | M0.2 |
+| R4.2-01 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | The adopter report template triggers only on `workflow_run` (+ `workflow_dispatch`), calls `report.yml@<40-hex>` with no `secrets: inherit` | M2.5 |
+| R4.2-02 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | `report.yml` checks out only `job.workflow_repository`@`job.workflow_sha`, never `workflow_run.head_sha`/`head_branch`, and has no `run:` step executing adopter files | M2.5 |
+| R4.2-02 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A fork PR adding scripts, a `package.json` and a poisoned cache sees none of them executed by the report | M2.6 |
+| R4.2-03 | evidence | evidence-planned | `docs/adr/` (S4 ADR) | A SHA-pinned caller runs the pinned bundle, not caller code; recorded with run IDs | S4 |
+| R4.2-03 | live | planned | `tools/release/self-reference.test.ts` | A foreign SHA-pinned caller, a nested call, and an older release after a newer one each run their own bundle; missing job fields fail | M2.5 |
+| R4.2-04 | unit | planned | `packages/core/test/envelope.test.ts` | Every run records the config commit it was validated against; the claim-supplied config is ignored | M1.5 |
+| R4.2-04 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case D: the projector reads config at the default-branch head resolved after the lock, and the generation hash includes that commit | M2.3 |
+| R4.2-05 | unit | passing | `packages/schemas/test/schemas.test.ts` › "reports an unknown version before looking at anything else" | Every document kind reports `unsupported-version` before any other check | M0.3 |
+| R4.2-05 | unit | passing | `testdata/schemas/store/invalid/schema.data-version-2.json` | A store with `dataVersion` 2 is rejected | M0.3 |
+| R4.2-05 | unit | passing | `testdata/schemas/config/invalid/schema.comparator-version-2.json` | An unknown comparator version in config is rejected | M0.3 |
+| R4.2-05 | simulation | planned | `packages/publisher/test/simulation/sim-unknown-version.sim.test.ts` | Unknown config/bundle/store version → zero store pushes, zero deployments, zero comment writes | M2.3 |
+| R4.2-06 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Top-level `permissions: {}`; the ingest and project jobs have exactly the 01 §4.2 sets | M2.5 |
+| R4.2-06 | evidence | evidence-planned | `docs/evidence/` (M2.6 live run) | Token permissions observed in a real report run match 01 §4.2 per job | M2.6 |
+| R4.2-07 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Exactly one job both deploys Pages and writes comments; it has the fixed per-site group, `cancel-in-progress: false`; the ingest job has no concurrency group | M2.5 |
+| R4.2-08 | unit | passing | `tools/lib/lint-tools.test.ts` › "rejects any single-byte change or truncation" | Pinned lint tools are verified by SHA-256 before use | M0.1 |
+| R4.2-08 | unit | passing | `packages/schemas/test/json.test.ts` › "enforces the size and depth limits" | The strict JSON parser refuses > 1 MiB or depth > 32 | M0.3 |
+| R4.2-08 | evidence | recorded | `docs/security/repo-settings.md` | Rows 5–7: Dependabot alerts and security updates, CodeQL advanced setup, dependency review | M0.2 |
+| R4.2-08 | unit | planned | `packages/core/test/png-decode.test.ts` | The hostile PNG corpus fails before large allocation; peak RSS and time are recorded | M1.1 |
+| R4.3-01 | unit | passing | `testdata/schemas/config/invalid/schema.workflow-name-not-id.json` | Config identifies the source workflow by numeric ID, never by name | M0.3 |
+| R4.3-01 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | Wrong repository ID, wrong workflow ID, wrong attempt, disallowed event/ref, incomplete run or payload≠REST mismatch → refused before download | M2.1 |
+| R4.3-01 | unit | planned | `packages/core/test/envelope.test.ts` | The envelope is built only from corroborated fields; a `workflow_run` payload that disagrees with REST fails safely | M1.5 |
+| R4.3-02 | unit | passing | `testdata/schemas/changes/invalid/schema.claims-trusted.json` | `changes@1` can never mark capture claims as trusted | M0.3 |
+| R4.3-02 | unit | passing | `packages/schemas/test/identity.test.ts` › "refuses a bundle.json whose file names belong to another provider" | A part can't claim units of another provider | M0.3 |
+| R4.3-02 | unit | planned | `packages/core/test/envelope.test.ts` | Forged PR number, SHA, URL or run ID in `bundle.json` changes neither run key, stream, store path nor comment target | M1.5 |
+| R4.3-02 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A fork PR with forged PR/run/attempt claims is published under its real identity only | M2.6 |
+| R4.3-03 | unit | planned | `packages/core/test/envelope.test.ts` | Workflow SHA, PR head, base-branch SHA, baseline SHA and captured-target claim are distinct fields; a merge-ref SHA is never used as the PR head | M1.5 |
+| R4.3-03 | evidence | evidence-planned | `docs/adr/` (S11 ADR) | Recorded same-repo and fork payloads show which SHAs `pull_request` and `workflow_run` report | S11 |
+| R4.3-04 | unit | passing | `testdata/schemas/run/invalid/association-inconsistent.ambiguous-with-pr.json` | An ambiguous association can't carry a PR number | M0.3 |
+| R4.3-04 | unit | passing | `testdata/schemas/run/invalid/association-inconsistent.corroborated-without-pr.json` | A corroborated association must name its PR | M0.3 |
+| R4.3-04 | unit | planned | `packages/forge-github/test/pr-association.test.ts` | Zero PRs, several PRs, or a head/merge SHA mismatch → unassociated with a diagnostic and no comment; never the first PR | M2.1 |
+| R4.3-05 | unit | planned | `packages/forge-github/test/artifact-download.test.ts` | Only API-listed artifact IDs are fetched; non-HTTPS, > N redirects, over-time or over-size responses are aborted; all pages are listed | M2.1 |
+| R4.3-05 | unit | planned | `packages/core/test/merge.test.ts` | Only expected names for the selected attempt are merged; duplicates and mixed attempts are rejected | M1.4 |
+| R4.3-06 | unit | planned | `packages/forge-github/test/artifact-download.test.ts` | A cross-origin 302 is followed without `Authorization`; a same-origin one keeps it | M2.1 |
+| R4.3-06 | simulation | planned | `packages/publisher/test/simulation/sim-github-faults.sim.test.ts` | Expired artifact, rate limit, cross-origin 302 and 410/5xx: bounded retries, auth stripped, incompleteness visible | M2.4 |
+| R4.3-07 | simulation | planned | `packages/publisher/test/simulation/sim-github-faults.sim.test.ts` | Captured logs and job summaries of every scenario contain no token or signed-URL query string | M2.4 |
+| R4.3-08 | unit | passing | `packages/schemas/test/json.test.ts` › "rejects duplicate keys, including nested and escaped spellings" | Duplicate JSON keys fail at any depth | M0.3 |
+| R4.3-08 | unit | passing | `packages/schemas/test/json.test.ts` › "rejects prototype-pollution keys anywhere" | `__proto__`, `constructor` and `prototype` keys fail | M0.3 |
+| R4.3-08 | unit | passing | `packages/schemas/test/json.test.ts` › "rejects a BOM, invalid UTF-8 and lone surrogates" | Malformed text fails before parsing | M0.3 |
+| R4.3-08 | unit | passing | `packages/core/test/pixel-hash.test.ts` › "rejects dimensions outside 1–16383 and more than 16,000,000 pixels" | Pixel buffers outside the 02 §5 bounds are refused | M0.6 |
+| R4.3-08 | unit | passing | `packages/schemas/test/png-profile.test.ts` › "rejects everything outside the profile" | Partial: the chunk-profile check (converter side) rejects non-profile PNGs. It isn't the trusted decoder. | M0.3 |
+| R4.3-08 | unit | planned | `packages/core/test/png-decode.test.ts` | Multiple IHDR/IEND, bad CRC or filter, inflate bombs, trailing data and overflow fail before decoded-buffer allocation; output matches an independent decoder | M1.1 |
+| R4.3-08 | unit | planned | `packages/core/test/ingress-zip.test.ts` | Central/local mismatch, duplicate or case-colliding names, links, ZIP64, encryption, > 4096 entries and > 512 MiB expanded all fail, counted from actual bytes | M1.4 |
+| R4.3-08 | unit | planned | `packages/core/test/config-parse.test.ts` | Config YAML with aliases, custom tags, duplicate keys, non-finite numbers or > 1 MiB fails before validation | M1.4 |
+| R4.3-09 | unit | planned | `packages/core/test/png-decode.test.ts` | Encoded output fits the profile and never equals the uploaded bytes when those carry extra chunks | M1.1 |
+| R4.3-09 | unit | planned | `packages/core/test/blob-pool.test.ts` | A blob is named by its pixel hash; an existing blob is revalidated and never overwritten; a corrupt named blob fails | M1.2 |
+| R4.3-10 | unit | passing | `testdata/schemas/bundle/invalid/schema.file-with-path.json` | `bundle.json` can't name a file outside `u-<hex>.png` | M0.3 |
+| R4.3-10 | unit | planned | `packages/core/test/ingress-zip.test.ts` | An archive containing anything but `bundle.json` and `u-<64 hex>.png` is rejected | M1.4 |
+| R4.3-10 | unit | planned | `packages/publisher/test/site-tree.test.ts` | Every served path matches the 03 §3 allowlist and every served file type is HTML/JSON/JS/PNG/TXT generated or validated by the publisher | M2.3 |
+| R4.3-11 | golden | planned | `packages/core/test/changes-projection.test.ts` | `changes.json` carries source vs claims separately and `llms.txt` states that results are advisory about submitted pixels | M1.7 |
+| R4.4-01 | unit | planned | `packages/core/test/envelope.test.ts` | PR run: target = PR head, baseline = merge base with the event's base-branch commit | M1.5 |
+| R4.4-01 | evidence | evidence-planned | `docs/adr/` (S11 ADR) | Live payloads confirm the base/head policy or surface a decision | S11 |
+| R4.4-02 | unit | planned | `packages/core/test/envelope.test.ts` | Default-branch push: target = pushed commit, baseline = first parent | M1.5 |
+| R4.4-03 | unit | passing | `testdata/schemas/run/invalid/result-inconsistent.no-baseline-without-reason.json` | A base side of `none` must carry `no-baseline` | M0.3 |
+| R4.4-03 | golden | passing | `packages/core/test/comparator-goldens.test.ts` › "covers all eight results" | Tiny fixtures include `incomparable` from a missing baseline | M0.6 |
+| R4.4-04 | unit | planned | `packages/core/test/envelope.test.ts` | Without a corroborated baseline commit the run is `incomparable`, never compared to the latest main snapshot | M1.5 |
+| R4.4-05 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs and `llms.txt` state that the PR controls the harness for both sides | M3.8 |
+| R4.4-06 | unit | planned | `packages/core/test/envelope.test.ts` | A historical PR with an uncorroborated base is stored unassociated with a diagnostic | M1.5 |
+| R4.4-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case C: a stale run enters history but never replaces the current head's comment | M2.3 |
+| R4.4-07 | evidence | evidence-planned | `docs/adr/` (S11 ADR) | Minimal same-repo/fork identity recorded in M0.5; full matrix (synchronize, full rerun, partial rerun, approval) before M2 exits | S11 |
+| R4.5-01 | unit | passing | `testdata/schemas/store/invalid/schema.foreign-marker.json` | `store.json` with a foreign marker is rejected | M0.3 |
+| R4.5-01 | unit | passing | `testdata/schemas/config/invalid/schema.store-branch-traversal.json` | Config can't point the store at a traversal ref | M0.3 |
+| R4.5-01 | unit | passing | `testdata/schemas/config/invalid/schema.store-branch-lock.json` | Config can't point the store at a `.lock` ref | M0.3 |
+| R4.5-01 | unit | planned | `packages/store/test/git-branch.test.ts` | The default branch, an unmarked existing branch, a foreign repository ID, or any ref other than the configured one is refused before any write; never "initialized" over content | M2.2 |
+| R4.5-01 | evidence | recorded | `docs/security/repo-settings.md` | Row 2: this repo's default branch is protected; adopter docs recommend the same | M0.2 |
+| R4.5-02 | unit | planned | `packages/store/test/git-branch.test.ts` | Hooks, filters, submodules, credential helpers, `core.sshCommand` and hostile tree modes (symlink, gitlink, exec) never execute or get followed | M2.2 |
+| R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-ingest-cas-race.sim.test.ts` | **CAS race.** Four ingestors fetch the same tip; all four runs are in the final store within 5 attempts each; every push uses an explicit lease; no rebase, no plain `--force` | M2.2 |
+| R4.5-03 | unit | planned | `packages/store/test/git-branch.test.ts` | A stale lease fails; first creation uses an expected-absent lease | M2.2 |
+| R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.4 |
+| R4.5-04 | simulation | planned | `packages/publisher/test/simulation/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds run key + digest; no duplicate, no overwrite | M2.2 |
+| R4.5-04 | unit | planned | `packages/core/test/envelope.test.ts` | Same run key + same digest → no-op; same key + different digest → conflict, reported | M1.5 |
+| R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | `site.json` can't carry an app URL | M0.3 |
+| R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-hash-in-versions.json` | `site.json` can't carry an app hash | M0.3 |
+| R4.5-05 | unit | planned | `packages/publisher/test/site-tree.test.ts` | A store containing `.html`, `.js`, `.svg` or unknown files produces a served tree without them; app bytes and hashes come from the release only | M2.3 |
+| R4.5-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | **Deploy/comment race**, sub-case A: projectors A and B reordered at barriers; each reads the store after the lock; the final deployed generation's store tip contains both runs; no deployment uses an older tip than the one before it | M2.3 |
+| R4.5-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case B: a coalesced pending projector deploys and comments for earlier runs too | M2.3 |
+| R4.5-07 | simulation | planned | `packages/publisher/test/simulation/sim-cdn-stale-generation.sim.test.ts` | HTTP 200 with an older `generation`, a stale `latest.json`, a body whose digest differs from the built bytes, or a cached 404 is not ready; no comment is written until ready or timeout | M2.3 |
+| R4.5-07 | evidence | evidence-planned | `docs/adr/` (S2 ADR) | Fresh-repo Pages bootstrap and readiness polling recorded with deployment IDs | S2 |
+| R4.5-08 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case D: an older-release projector running after a newer one deploys a store tip no older than the previous one, doesn't roll back any comment, and its `site.json` names its own release | M2.3 |
+| R4.6-01 | browser | planned | `packages/viewer/test/storage.spec.ts` | Poisoned `localStorage` values are validated and ignored; the app never writes tokens or approvals | M2.7 |
+| R4.6-02 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | Data can't select app code | M0.3 |
+| R4.6-02 | browser | planned | `packages/viewer/test/csp.spec.ts` | In Chromium, Firefox and WebKit the entry page's CSP meta is first, the app loads only with a matching SRI hash, a tampered app is blocked, and no service worker registers | M2.7 |
+| R4.6-03 | evidence | recorded | `docs/security/threat-model.md` | §7 records that framing isn't prevented on Pages without a header | M0.4 |
+| R4.6-04 | lint | passing | `tools/eslint-smoke.test.ts` › "reports a sink error on every marked line of the bad fixture, and nowhere else" | `innerHTML`, `outerHTML` and `insertAdjacentHTML` fail lint | M0.1 |
+| R4.6-04 | unit | planned | `packages/publisher/test/comment-render.test.ts` | Labels with pipes, brackets, backticks, newlines, quotes, HTML and URL delimiters render as their canonical safe text in every Markdown context | M2.3 |
+| R4.6-04 | browser | planned | `packages/viewer/test/injection.spec.ts` | Injected HTML/script in labels renders as text in all three engines | M2.7 |
+| R4.6-05 | unit | passing | `testdata/schemas/changes/invalid/schema.javascript-url.json` | `changes@1` rejects a `javascript:` URL | M0.3 |
+| R4.6-05 | unit | passing | `testdata/schemas/changes/invalid/schema.http-image-url.json` | `changes@1` rejects a non-HTTPS URL | M0.3 |
+| R4.6-05 | unit | passing | `testdata/schemas/changes/invalid/schema.dot-dot-url.json` | `changes@1` rejects dot segments | M0.3 |
+| R4.6-05 | unit | planned | `packages/core/test/changes-projection.test.ts` | URL builders reject other protocols, traversal, userinfo and unexpected hosts | M1.7 |
+| R4.6-06 | unit | passing | `packages/schemas/test/convert.test.ts` › "bounds untrusted labels and messages" | Converter labels are bounded and control characters become spaces | M0.3 |
+| R4.6-06 | unit | passing | `testdata/schemas/bundle/invalid/schema.control-char-in-label.json` | `bundle@1` rejects control characters in labels | M0.3 |
+| R4.6-06 | unit | planned | `packages/publisher/test/comment-render.test.ts` | Bidi controls, combining characters and `@mentions` from capture data are stripped or neutralized in the comment | M2.3 |
+| R4.6-07 | unit | planned | `packages/forge-github/test/comments.test.ts` | A comment with the marker but a human or look-alike bot author, or the right author with a different marker, is never edited | M2.1 |
+| R4.6-07 | unit | planned | `packages/publisher/test/comment-render.test.ts` | At the 60,000-byte boundary with multibyte text, and in every degradation step, identity, status, warnings and the report link survive | M2.3 |
+| R4.6-08 | unit | planned | `packages/forge-github/test/comments.test.ts` | Two comments matching marker + author → no edit, no create, a diagnostic in the summary | M2.1 |
+| R4.6-09 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case C: old/new PR head interleaving; the head is re-fetched immediately before writing; an old head's projector never replaces the new head's comment, and no comment moves to an older run by source order | M2.3 |
+| R4.6-09 | simulation | planned | `packages/publisher/test/simulation/sim-comment-unknown-outcome.sim.test.ts` | Deploy OK, comment create times out → the marker is rediscovered before retrying; exactly one comment exists | M2.3 |
+| R4.6-10 | unit | passing | `testdata/schemas/changes/invalid/schema.instruction-field.json` | `changes@1` has no instruction field | M0.3 |
+| R4.6-10 | golden | planned | `packages/core/test/changes-projection.test.ts` | `llms.txt` explains versions, trust and coverage and contains no commands for agents; prompt-like labels stay data | M1.7 |
+| R4.7-01 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs say everything published is public and recommend synthetic data and masks | M3.8 |
+| R4.7-02 | unit | passing | `testdata/schemas/bundle/invalid/text-too-long.message-over-2048-bytes.json` | Capture error messages are bounded to 2048 bytes | M0.3 |
+| R4.7-02 | unit | planned | `packages/publisher/test/site-tree.test.ts` | No DOM, trace, HAR or log file reaches the served tree; errors appear only as bounded categories | M2.3 |
+| R4.7-03 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Uninstall and GC docs say deletion isn't erasure | M3.8 |
+| R4.7-04 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-fails.sim.test.ts` | Store OK, deploy fails or is cancelled → the run stays stored; the summary says "stored; deployment pending" with a repair command; the next or manual projection completes it | M2.3 |
+<!-- verification:end -->
+
+### Named race tests (acceptance)
+
+The two races are **separate** simulation scenarios (07 §4) with separate files:
+
+| Scenario | Race | Proves |
+|---|---|---|
+| `sim-ingest-cas-race` | Concurrent ingestors on the store tip (TB7) | No dropped ingestion: every valid run survives bounded CAS retries with explicit leases |
+| `sim-deploy-comment-race` | Projectors vs deploy/readiness/comment (TB8) | No stale generation (A, B, D), no comment rollback (C, D), old head can't replace a new head's comment (C) |
+
+## 6. Ingest vs serialized projection
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Capture run (untrusted)
+    participant I as Ingest job (per run, parallel)
+    participant S as Store branch
+    participant P as Project job (one lock per site)
+    participant G as Pages / CDN
+    participant R as PR comment
+    C-->>I: workflow_run completed (event only)
+    I->>I: verify envelope via API, download by artifact ID, validate, decode, compare
+    loop ≤ 5 attempts, jittered
+        I->>S: fetch tip (depth 1), revalidate
+        I->>S: push parentless commit, lease = fetched tip
+        S-->>I: accepted / lease conflict / unknown
+    end
+    Note over I,S: No lock. Concurrent ingestors race only on the CAS lease.
+    I-->>P: needs: ingest (queued; pending runs may coalesce)
+    P->>P: acquire concurrency lock
+    P->>S: read latest tip (after lock)
+    P->>P: read config at default-branch head (after lock), build served tree
+    P->>G: upload + deploy Pages artifact
+    P->>G: poll site.json generation + per-PR latest.json + body digests
+    loop each retained PR needing an update
+        P->>R: re-fetch PR head + marker comments, then skip / create / edit / refuse
+    end
+    P->>P: release lock, write summary
+```
+
+### Ingest job (no lock; CAS only)
+
+Permissions: `actions: read`, `contents: write`, `pull-requests: read`.
+
+| State | Reads | Writes | Failure → next | Reported |
+|---|---|---|---|---|
+| I1 Verify source | `workflow_run` payload; REST run, workflow, attempt, PR association | — | mismatch/disallowed → I9 (no write). Ambiguous PR → continue unassociated. | diagnostic |
+| I2 Load config | Config at the recorded default-branch commit | — | unknown version/invalid → I9 (no write) | config error |
+| I3 Collect parts | All artifact pages, by ID, bounded | temp files | malformed part → rejected part, run continues incomplete; download failure → missing part | part diagnostics |
+| I4 Analyse | Validated parts | in-memory run, snapshots, blobs | over limits/timeout → I9 or failure record | — |
+| I5 Fetch tip | `pixelwatch-data` depth 1 | — | unmarked/foreign/default/unknown version → I9 | refusal |
+| I6 Build tx | Tip tree + run (+ retention/GC, budget) | new tree, parentless commit | same key + different digest → conflict (I9); same key + same digest → I8 (no-op); over hard budget → I9 | — |
+| I7 CAS push | — | lease push | lease conflict → I5 (≤ 5 attempts); unknown outcome → refetch; run key + digest present → I8; else I5; exhausted → I9 | — |
+| I8 Stored | — | — | — | `stored` + store commit |
+| I9 Failed | — | nothing (or a bounded failure record through I5–I7) | — | failure category + repair command |
+
+Maintenance `workflow_dispatch`: never treated as a capture. Skips I1–I4 and runs GC/repair as a
+normal I5–I7 transaction, then the project job.
+
+### Project job (serialized; one group per site, `cancel-in-progress: false`)
+
+Permissions: `contents: read`, `pages: write`, `id-token: write`, `pull-requests: write`.
+
+| State | Reads (all after the lock) | Writes | Failure → next | Reported |
+|---|---|---|---|---|
+| P1 Acquire lock | — | — | a newer pending run replaces this pending one: coalesced, nothing lost | — |
+| P2 Read inputs | Latest store tip; config at the current default-branch head; own release | — | unknown store/config version → P8 (no deploy, no comment) | refusal |
+| P3 Build | Validated store data, release app | fresh served tree; generation = H(storeTip, release, config, projectionVersion) | validation error → P8 | — |
+| P4 Deploy | — | Pages deployment | fail/cancel → P8, run stays stored | deployment ID |
+| P5 Readiness | Served `site.json` (generation), per-PR `latest.json` (run key + generation), body digests, preview URLs | — | timeout → P8 | `served` |
+| P6 Reconcile, per PR | Newest stored run for the **current** head; PR head and marker comments re-fetched immediately before writing | comment create/edit | head changed → skip + reason; > 1 match → refuse + diagnostic; unknown create → rediscover then retry (bounded); API failure → record | per-PR comment status |
+| P7 Done | — | job summary | — | stored / deployed / served / commented separately |
+| P8 Pending | — | job summary | — | "stored; deployment/comment pending" + repair command. Never "published". |
+
+Reads that must happen **after** the lock: store tip (P2), config (P2, ADR 0004), PR heads and
+existing comments (P6, immediately before each write). The release is fixed by the job's own
+self-checkout, so it isn't re-read (R4.5-08).
+
+## 7. Residual risks
+
+| Risk | Why it stays | Mitigation |
+|---|---|---|
+| An admin weakens the capture workflow | A reusable workflow can't enforce caller settings | Template and docs (R4.1-04) |
+| Other adopter workflows post as the same `github-actions[bot]` | The author ID is per token type, not per workflow | Marker + ID check; refuse on ambiguity (R4.6-08) |
+| A reordered older-release projector deploys once | Projectors can't write the store to record the last release; concurrency order follows queue time | Store tip never older; comments never roll back; `site.json` shows the release; the next projection fixes it (R4.5-08) |
+| A push lands after the final head check | GitHub has no conditional comment write | Every comment names its head SHA (05 §2) |
+| `contents: write` isn't ref-scoped | GitHub token permissions have no ref filter | Store adapter refusal (R4.5-01) and branch protection on the default branch |
+| The concurrency group name is a cross-release contract | Different group names would let two releases project at once | Fixed name, lint-checked (R4.2-07); a change needs an ADR |
+| Framing on `owner.github.io` | Meta CSP can't set `frame-ancestors` | No state-changing actions in the viewer (R4.6-03) |
+| Deletion isn't erasure | Git objects, caches, forks and clones survive | Docs (R4.7-03) |
+| Results prove only submitted pixels | The PR controls the harness | Advisory reports, no gate (R4.3-11, R4.4-05) |
+| TCB bugs (Node, Git, zlib, parsers) | Can't be removed | Pins, advisories, hostile corpora (R4.2-08) |
+| Repo settings are only checked at one date | Settings can change later | `docs/security/repo-settings.md`; owner check pending there |
