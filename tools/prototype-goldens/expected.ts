@@ -1,0 +1,143 @@
+// Generates the comparator-v1 expected results (testdata/comparator/{tiny,crops}/expected.json)
+// from the RECORDED prototype outputs, via the mapping in mapping.ts. Nothing here compares
+// pixels. Compared cases take their numbers from the recording; a case whose v1 result differs
+// from the prototype must name a listed delta (docs/adr/comparator-v1.md §Deltas):
+//
+// - D1: v1 compares alpha-normalized pixels, so the "prototypeOnNormalized" recording is used;
+// - D2: different widths are `changed` + `dimensions` with no diff (the prototype raises).
+//
+// v1's region order must equal the recorded order; a difference needs a new ADR.
+//
+// Side-state cases (02 §4) use the status declared in cases.json; checkResult is their oracle.
+//
+//   node tools/prototype-goldens/expected.ts
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import type { CapturedSide, Reason, RunResult, Side } from "../../packages/schemas/src/generated/types.ts";
+import { compareUnitKeys } from "../../packages/schemas/src/ids.ts";
+import { type PrototypeRecord, isComparison, regionsReordered, toDiff } from "./mapping.ts";
+import type { TinyCase, TinySide } from "./tiny-cases.ts";
+
+export const COMPARATOR_TESTDATA = fileURLToPath(new URL("../../testdata/comparator/", import.meta.url));
+
+export interface RecordedSide {
+  width: number;
+  height: number;
+  pixelHash: string;
+}
+
+export interface TinyRecording {
+  cases: Record<string, { sides: Partial<Record<"base" | "head", RecordedSide>>; prototype?: PrototypeRecord; prototypeOnNormalized?: PrototypeRecord }>;
+}
+
+export interface CropRecording {
+  crops: { id: string; source: string; view: string; sides: Record<"base" | "head", RecordedSide & { file: string; fileSha256: string }>; prototype: PrototypeRecord }[];
+}
+
+export interface ExpectedFile {
+  comment: string;
+  comparator: 1;
+  results: RunResult[];
+}
+
+function readJson(...path: string[]): unknown {
+  return JSON.parse(readFileSync(join(COMPARATOR_TESTDATA, ...path), "utf8"));
+}
+
+function captured(side: RecordedSide): CapturedSide {
+  return { state: "captured", pixelHash: side.pixelHash, width: side.width, height: side.height };
+}
+
+function sideOf(spec: TinySide, recorded: RecordedSide | undefined): Side {
+  if (spec.state !== "captured") return spec;
+  if (recorded === undefined) throw new Error("captured side has no recorded pixel hash");
+  return captured(recorded);
+}
+
+/** Result for two captured sides, from the recording. `delta` must name any listed v1 deviation. */
+export function comparedResult(
+  id: string,
+  base: RecordedSide,
+  head: RecordedSide,
+  raw: PrototypeRecord | undefined,
+  normalized: PrototypeRecord | undefined,
+  delta: TinyCase["delta"],
+): Pick<RunResult, "status" | "reasons" | "diff"> {
+  if (base.width !== head.width) {
+    if (delta !== "D2" || raw === undefined || isComparison(raw)) throw new Error(`${id}: a width change must be delta D2 with a recorded prototype error`);
+    return { status: "changed", reasons: ["dimensions"] };
+  }
+  if ((normalized !== undefined) !== (delta === "D1")) throw new Error(`${id}: alpha normalization changes the input exactly when delta is D1`);
+  const source = normalized ?? raw;
+  if (source === undefined || !isComparison(source)) throw new Error(`${id}: no recorded comparison`);
+  if (regionsReordered(source)) throw new Error(`${id}: v1 region order differs from the recording; that needs an ADR`);
+  const sizeChanged = base.height !== head.height;
+  if (sizeChanged && source.change !== "changed") throw new Error(`${id}: the prototype must call a size change changed`);
+  const reasons: Reason[] = sizeChanged ? ["dimensions"] : source.change === "unchanged" ? [] : ["pixels"];
+  return { status: source.change, reasons, diff: toDiff(source) };
+}
+
+function sortResults(results: RunResult[]): RunResult[] {
+  return results.sort(compareUnitKeys);
+}
+
+export function buildTinyExpected(cases: TinyCase[], recording: TinyRecording): ExpectedFile {
+  const results = cases.map((c): RunResult => {
+    const rec = recording.cases[c.id];
+    if (rec === undefined) throw new Error(`${c.id}: not recorded`);
+    const base = sideOf(c.base, rec.sides.base);
+    const head = sideOf(c.head, rec.sides.head);
+    const identity = { providerId: "tiny", viewId: c.id, variantId: "desktop" };
+    if (c.expect) {
+      if (base.state === "captured" && head.state === "captured") throw new Error(`${c.id}: two captured sides are never declared`);
+      return { ...identity, status: c.expect.status, reasons: c.expect.reasons as Reason[], base, head };
+    }
+    if (base.state !== "captured" || head.state !== "captured") throw new Error(`${c.id}: needs a declared status`);
+    return { ...identity, ...comparedResult(c.id, base, head, rec.prototype, rec.prototypeOnNormalized, c.delta), base, head };
+  });
+  return {
+    comment: "Generated by tools/prototype-goldens/expected.ts from the recorded prototype output. Do not edit.",
+    comparator: 1,
+    results: sortResults(results),
+  };
+}
+
+export function buildCropExpected(recording: CropRecording): ExpectedFile {
+  const results = recording.crops.map((crop): RunResult => {
+    const base = captured(crop.sides.base);
+    const head = captured(crop.sides.head);
+    return {
+      providerId: "crops",
+      viewId: crop.id,
+      variantId: "desktop",
+      ...comparedResult(crop.id, crop.sides.base, crop.sides.head, crop.prototype, undefined, undefined),
+      base,
+      head,
+    };
+  });
+  return {
+    comment: "Generated by tools/prototype-goldens/expected.ts from the recorded prototype output. Do not edit.",
+    comparator: 1,
+    results: sortResults(results),
+  };
+}
+
+export function serialize(value: unknown): string {
+  return `${JSON.stringify(value, null, 2)}\n`;
+}
+
+export function loadAndBuild(): { tiny: ExpectedFile; crops: ExpectedFile } {
+  const { cases } = readJson("tiny", "cases.json") as { cases: TinyCase[] };
+  return {
+    tiny: buildTinyExpected(cases, readJson("tiny", "prototype.json") as TinyRecording),
+    crops: buildCropExpected(readJson("crops", "crops.json") as CropRecording),
+  };
+}
+
+if (process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const built = loadAndBuild();
+  writeFileSync(join(COMPARATOR_TESTDATA, "tiny", "expected.json"), serialize(built.tiny));
+  writeFileSync(join(COMPARATOR_TESTDATA, "crops", "expected.json"), serialize(built.crops));
+  console.log(`wrote ${String(built.tiny.results.length)} tiny and ${String(built.crops.results.length)} crop results`);
+}

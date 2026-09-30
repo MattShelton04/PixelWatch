@@ -1,0 +1,3990 @@
+{
+  "comment": "Recorded by tools/prototype-goldens/record.py from the prototype's report._compare. Do not edit.",
+  "recordedWith": {
+    "prototype": {
+      "repository": "https://github.com/MattShelton04/41026ASDProject",
+      "commit": "6378d8be5b1f418f72279e04b3de23d761b426d3"
+    },
+    "constants": {
+      "THRESHOLDS": [
+        0,
+        8,
+        16,
+        32
+      ],
+      "SUBTLE_MAX_PIXELS": 128,
+      "SUBTLE_MAX_DELTA": 8,
+      "TILE": 8,
+      "MAX_REGIONS": 12
+    },
+    "environment": {
+      "platform": "Windows-11-10.0.22621-SP0",
+      "python": "3.12.13",
+      "numpy": "2.5.2",
+      "pillow": "11.3.0",
+      "uv": "uv 0.12.1 (329541a50 2026-07-31 x86_64-pc-windows-msvc)"
+    }
+  },
+  "cases": {
+    "missing-head-unit": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "missing-base-part": {
+      "sides": {
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "missing-both": {
+      "sides": {}
+    },
+    "missing-over-failed": {
+      "sides": {}
+    },
+    "missing-over-none": {
+      "sides": {}
+    },
+    "failed-head": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "failed-base": {
+      "sides": {
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "failed-over-none": {
+      "sides": {}
+    },
+    "failed-over-absent-base": {
+      "sides": {}
+    },
+    "failed-over-absent-head": {
+      "sides": {}
+    },
+    "no-baseline": {
+      "sides": {
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "added": {
+      "sides": {
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "removed": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      }
+    },
+    "identical": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "identical-transparent": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "7794345bfa22f268abc07880f4b840b89147fc552fc87ecb2be51e15031c1143"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "7794345bfa22f268abc07880f4b840b89147fc552fc87ecb2be51e15031c1143"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "delta-1": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "36a2d6fc3bd755ada1c52777360eb9843d8a8658df5cfe557179b98ea07f844b"
+        }
+      },
+      "prototype": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "delta-8": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "b9a516d28f5ad0846eebabcf1c5b69fda6969113528f45e31914464fbf96f5d1"
+        }
+      },
+      "prototype": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "delta-9": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "576b75e32ea7152255bff033ca7bdadbd24bd312107ff43df580a989bd9e1cfb"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "delta-16": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "b1deca74bc15f2ca96f2e0d5de15943aa66985116677b67c924cef8ac1ba2ae9"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "delta-17": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "2084027cba55d19d737c349a01d29fdaa5a0a628d85918c60989d828a1572e0d"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "delta-32": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "a59b4534be5f9f4e49822ad8e5b5b04555b2e05f56c0b4e0a7a964c86f112725"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "delta-33": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "5eb132be9c3a8233fc57d0d6a3303b818c86b8e57386b645ca5d926799a5d084"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "delta-minus-9": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "e71a383fef0b9a6c88c0750590fe9bc0881d97808a42953a07dcb94f369fc10f"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "delta-255": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "6e9b7e6e196d21ab1964ccf98f198bdfae18789d279933f2903238aaf374f362"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "ce6fb1c1e7703e46bf2a2340e5747bed07bab3741d2695cd03b33fff675bdd8d"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 2,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 2,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 2,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 2,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 2,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 2,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 2,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 2,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 2,
+              "y": 2,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "channel-max": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "2c881dfb4fa8933af9be9ced1b004f08031b4abca6df830bd5c5d7e6034bd285"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 0,
+              "y": 3,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 0,
+              "y": 3,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 3,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "alpha-only-8": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "6520b50d68194199a10e9d25f0dfcb312a223813b5961a487672fa290f95f279"
+        }
+      },
+      "prototype": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "alpha-only-9": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "12d750b2f591766f77b0cc40e6dea95a5050d7e2eb2fb1d9ba7519741f77e689"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 3,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "alpha-visible-from-zero": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "7794345bfa22f268abc07880f4b840b89147fc552fc87ecb2be51e15031c1143"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "4c84ed890ef7852e6a33a9c804e3059ef57814e1c954179f98fc4a8d32e58866"
+        }
+      },
+      "prototype": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 2,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 2,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "hidden-rgb": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "7794345bfa22f268abc07880f4b840b89147fc552fc87ecb2be51e15031c1143"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "7794345bfa22f268abc07880f4b840b89147fc552fc87ecb2be51e15031c1143"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      },
+      "prototypeOnNormalized": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "hidden-rgb-then-visible": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "7794345bfa22f268abc07880f4b840b89147fc552fc87ecb2be51e15031c1143"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "9c196617fc8c51bfff6b844966a0eef2766282ec86cba8b5610fec54dcfebfa8"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 2,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      },
+      "prototypeOnNormalized": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 16,
+            "percent": 6.25,
+            "bounds": {
+              "x": 2,
+              "y": 1,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 16,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "subtle-128": {
+      "sides": {
+        "base": {
+          "width": 16,
+          "height": 16,
+          "pixelHash": "e4b6058f0298efe63097c69a26f2e325ff0a40661b384b7f506610a16779cc0b"
+        },
+        "head": {
+          "width": 16,
+          "height": 16,
+          "pixelHash": "057494c760f06ad8d267fc68d81b96fdbdd21a89dffa54cab9383018613380f0"
+        }
+      },
+      "prototype": {
+        "change": "subtle",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 128,
+            "total": 256,
+            "percent": 50.0,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 16,
+              "height": 8,
+              "pixels": 128
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 16,
+                "height": 8,
+                "pixels": 128
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "subtle-129": {
+      "sides": {
+        "base": {
+          "width": 16,
+          "height": 16,
+          "pixelHash": "e4b6058f0298efe63097c69a26f2e325ff0a40661b384b7f506610a16779cc0b"
+        },
+        "head": {
+          "width": 16,
+          "height": 16,
+          "pixelHash": "8e6a704caf27982d846d019a8596ee4e5fa95bfd6f26001998d1bae26c64f003"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 129,
+            "total": 256,
+            "percent": 50.3906,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 16,
+              "height": 9,
+              "pixels": 129
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 16,
+                "height": 9,
+                "pixels": 129
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 16,
+              "height": 9,
+              "pixels": 129
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,2,1"
+        }
+      }
+    },
+    "subtle-mixed": {
+      "sides": {
+        "base": {
+          "width": 16,
+          "height": 16,
+          "pixelHash": "e4b6058f0298efe63097c69a26f2e325ff0a40661b384b7f506610a16779cc0b"
+        },
+        "head": {
+          "width": 16,
+          "height": 16,
+          "pixelHash": "1be4c0e372ffe0ac206166d06417e91944fd29e6744e3fe0e47a948299b82162"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 11,
+            "total": 256,
+            "percent": 4.2969,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 16,
+              "height": 16,
+              "pixels": 11
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 16,
+                "height": 16,
+                "pixels": 11
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 256,
+            "percent": 0.3906,
+            "bounds": {
+              "x": 15,
+              "y": 15,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 15,
+                "y": 15,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 0,
+            "total": 256,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 16,
+              "height": 16,
+              "pixels": 11
+            }
+          ],
+          "areaCount": 1,
+          "key": "2,2,0,0"
+        }
+      }
+    },
+    "height-grow": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 5,
+          "pixelHash": "c98f0625b280a3c34fe152a7392d75afde68ff2a3f9b862e67c670bf99dcbbb4"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "height-grow-transparent": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 4,
+          "height": 5,
+          "pixelHash": "3ee6890bfa3a8c36b4283f7bec34763ee896edb7b374a04c5265a5837c4e328d"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 20,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 20,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 20,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 20,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        },
+        "review": {
+          "areas": [],
+          "areaCount": 0,
+          "key": ""
+        }
+      }
+    },
+    "height-shrink": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 5,
+          "pixelHash": "9a2f3604dc548593248dc4b4498089ec271c4873d4c786b4168813321eedebd2"
+        },
+        "head": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 4,
+            "total": 20,
+            "percent": 20.0,
+            "bounds": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 4,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 1,
+              "pixels": 4
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "width-change": {
+      "sides": {
+        "base": {
+          "width": 4,
+          "height": 4,
+          "pixelHash": "52ea527c91b0d068217fcbfb288329ba3a7529c3d9acfbfd26654700ddebc4f3"
+        },
+        "head": {
+          "width": 5,
+          "height": 4,
+          "pixelHash": "e9d7c97ff94665aa99a38904b5cbc0b5dcde01036f8d05f3dc2060f3ce152a1a"
+        }
+      },
+      "prototype": {
+        "error": {
+          "type": "ValueError",
+          "message": "operands could not be broadcast together with shapes (4,4,4) (4,5,4) "
+        }
+      }
+    },
+    "one-pixel": {
+      "sides": {
+        "base": {
+          "width": 1,
+          "height": 1,
+          "pixelHash": "71237c68c638ae8bf1ffdba7118230ea437d1c35294f300e98369c47203428fc"
+        },
+        "head": {
+          "width": 1,
+          "height": 1,
+          "pixelHash": "23516381f49dc3d93e99b1104dd2f5127f952b29240b6fd9a5ce0ed63bba6ab8"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 1,
+            "total": 1,
+            "percent": 100.0,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 1,
+            "percent": 100.0,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 1,
+            "percent": 100.0,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 1,
+            "total": 1,
+            "percent": 100.0,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,0,0"
+        }
+      }
+    },
+    "one-pixel-same": {
+      "sides": {
+        "base": {
+          "width": 1,
+          "height": 1,
+          "pixelHash": "c138f2a0220d92185abf86c1c395eeef0f972785ddb5fe2009a352f276b57048"
+        },
+        "head": {
+          "width": 1,
+          "height": 1,
+          "pixelHash": "c138f2a0220d92185abf86c1c395eeef0f972785ddb5fe2009a352f276b57048"
+        }
+      },
+      "prototype": {
+        "change": "unchanged",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "8": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "16": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          },
+          "32": {
+            "threshold": 0,
+            "changed": 0,
+            "total": 1,
+            "percent": 0.0,
+            "bounds": null,
+            "regions": [],
+            "regionCount": 0
+          }
+        }
+      }
+    },
+    "region-tile-boundary": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "e19656faa0c79a8918491bd2bb217bb737a2d9047752af44bcd5c3f5d2303b96"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 2,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 2,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 2,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 2,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 7,
+              "y": 3,
+              "width": 2,
+              "height": 1,
+              "pixels": 2
+            }
+          ],
+          "areaCount": 1,
+          "key": "1,0,0,0"
+        }
+      }
+    },
+    "region-diagonal": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "95886399a45247f8e1d03f26a88f3a3d6a7660205e87586af6a34be3ec3376c0"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 7,
+              "width": 2,
+              "height": 2,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 7,
+                "width": 2,
+                "height": 2,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 7,
+              "width": 2,
+              "height": 2,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 7,
+                "width": 2,
+                "height": 2,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 7,
+              "width": 2,
+              "height": 2,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 7,
+                "width": 2,
+                "height": 2,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 7,
+              "width": 2,
+              "height": 2,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 7,
+                "width": 2,
+                "height": 2,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 7,
+              "y": 7,
+              "width": 2,
+              "height": 2,
+              "pixels": 2
+            }
+          ],
+          "areaCount": 1,
+          "key": "1,1,0,0"
+        }
+      }
+    },
+    "region-gap": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "4fabc8db73c77a8a4b343ba57f9c201e249e6c6b91e4dcab5c6b086a3ff1bbae"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 10,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              },
+              {
+                "x": 16,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 10,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              },
+              {
+                "x": 16,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 10,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              },
+              {
+                "x": 16,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 7,
+              "y": 3,
+              "width": 10,
+              "height": 1,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 7,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              },
+              {
+                "x": 16,
+                "y": 3,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 7,
+              "y": 3,
+              "width": 10,
+              "height": 1,
+              "pixels": 2
+            }
+          ],
+          "areaCount": 1,
+          "key": "1,0,1,0"
+        }
+      }
+    },
+    "region-clip": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "c3fbb3ad8098cde7a9ec71278d44740310ac214123c2968825df86ff364c6234"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 3,
+              "y": 2,
+              "width": 10,
+              "height": 8,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 2,
+                "width": 10,
+                "height": 8,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 3,
+              "y": 2,
+              "width": 10,
+              "height": 8,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 2,
+                "width": 10,
+                "height": 8,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 3,
+              "y": 2,
+              "width": 10,
+              "height": 8,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 2,
+                "width": 10,
+                "height": 8,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 3,
+              "y": 2,
+              "width": 10,
+              "height": 8,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 2,
+                "width": 10,
+                "height": 8,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 3,
+              "y": 2,
+              "width": 10,
+              "height": 8,
+              "pixels": 2
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,1,1"
+        }
+      }
+    },
+    "region-threshold": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "63c99484d994dd7af219d2b9ec8d19e8582f6447bc9f6b43dabbea01806969de"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 2,
+            "total": 1024,
+            "percent": 0.1953,
+            "bounds": {
+              "x": 2,
+              "y": 2,
+              "width": 25,
+              "height": 25,
+              "pixels": 2
+            },
+            "regions": [
+              {
+                "x": 2,
+                "y": 2,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              },
+              {
+                "x": 26,
+                "y": 26,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 1,
+            "total": 1024,
+            "percent": 0.0977,
+            "bounds": {
+              "x": 26,
+              "y": 26,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 26,
+                "y": 26,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 1,
+            "total": 1024,
+            "percent": 0.0977,
+            "bounds": {
+              "x": 26,
+              "y": 26,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 26,
+                "y": 26,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 1,
+            "total": 1024,
+            "percent": 0.0977,
+            "bounds": {
+              "x": 26,
+              "y": 26,
+              "width": 1,
+              "height": 1,
+              "pixels": 1
+            },
+            "regions": [
+              {
+                "x": 26,
+                "y": 26,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 1
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 2,
+              "y": 2,
+              "width": 25,
+              "height": 25,
+              "pixels": 2
+            }
+          ],
+          "areaCount": 1,
+          "key": "3,3,0,0"
+        }
+      }
+    },
+    "region-sort": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "4f3fced2eff36f35482f589ab344e2d2c521e5f8326ae1506a908a4838fd28fb"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 8,
+            "total": 1024,
+            "percent": 0.7812,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 27,
+              "height": 25,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 25,
+                "y": 25,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 25,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 25,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 4
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 8,
+            "total": 1024,
+            "percent": 0.7812,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 27,
+              "height": 25,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 25,
+                "y": 25,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 25,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 25,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 4
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 8,
+            "total": 1024,
+            "percent": 0.7812,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 27,
+              "height": 25,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 25,
+                "y": 25,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 25,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 25,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 4
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 8,
+            "total": 1024,
+            "percent": 0.7812,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 27,
+              "height": 25,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 25,
+                "y": 25,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 25,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 25,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 4
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 1,
+              "y": 1,
+              "width": 27,
+              "height": 25,
+              "pixels": 8
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,3,3"
+        }
+      }
+    },
+    "region-truncate": {
+      "sides": {
+        "base": {
+          "width": 64,
+          "height": 64,
+          "pixelHash": "5a8189cec9e51102eb60d7f92f55f0a1ca6099aa95ebdb3e84921faa2acbb508"
+        },
+        "head": {
+          "width": 64,
+          "height": 64,
+          "pixelHash": "6f41147c2f4716cd3295756986c63db750dbaffad1524efb7b3fbedbbca97e47"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 40,
+            "total": 4096,
+            "percent": 0.9766,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 52,
+              "height": 49,
+              "pixels": 40
+            },
+            "regions": [
+              {
+                "x": 49,
+                "y": 1,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 17,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 33,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 49,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 33,
+                "y": 1,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 17,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 33,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 17,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 17,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 33,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 49,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 16
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 40,
+            "total": 4096,
+            "percent": 0.9766,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 52,
+              "height": 49,
+              "pixels": 40
+            },
+            "regions": [
+              {
+                "x": 49,
+                "y": 1,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 17,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 33,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 49,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 33,
+                "y": 1,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 17,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 33,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 17,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 17,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 33,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 49,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 16
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 40,
+            "total": 4096,
+            "percent": 0.9766,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 52,
+              "height": 49,
+              "pixels": 40
+            },
+            "regions": [
+              {
+                "x": 49,
+                "y": 1,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 17,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 33,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 49,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 33,
+                "y": 1,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 17,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 33,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 17,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 17,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 33,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 49,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 16
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 40,
+            "total": 4096,
+            "percent": 0.9766,
+            "bounds": {
+              "x": 1,
+              "y": 1,
+              "width": 52,
+              "height": 49,
+              "pixels": 40
+            },
+            "regions": [
+              {
+                "x": 49,
+                "y": 1,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 17,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 33,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 49,
+                "y": 49,
+                "width": 4,
+                "height": 1,
+                "pixels": 4
+              },
+              {
+                "x": 33,
+                "y": 1,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 17,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 33,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "width": 3,
+                "height": 1,
+                "pixels": 3
+              },
+              {
+                "x": 17,
+                "y": 1,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 17,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 33,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              },
+              {
+                "x": 17,
+                "y": 49,
+                "width": 2,
+                "height": 1,
+                "pixels": 2
+              }
+            ],
+            "regionCount": 16
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 17,
+              "y": 1,
+              "width": 36,
+              "height": 49,
+              "pixels": 36
+            }
+          ],
+          "areaCount": 1,
+          "key": "2,0,4,6"
+        }
+      }
+    },
+    "region-sort-tie": {
+      "sides": {
+        "base": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "d09dfe582a33e51828b956dac01f4c2a51a2670ba26924c58aa26d84e663c99b"
+        },
+        "head": {
+          "width": 32,
+          "height": 32,
+          "pixelHash": "23bd1dcc328e58a688519a3cd6e0f402dea94d5132b4f8552a290bec05139a30"
+        }
+      },
+      "prototype": {
+        "change": "changed",
+        "analyses": {
+          "0": {
+            "threshold": 0,
+            "changed": 14,
+            "total": 1024,
+            "percent": 1.3672,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 25,
+              "height": 25,
+              "pixels": 14
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 11,
+                "height": 11,
+                "pixels": 7
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "width": 25,
+                "height": 25,
+                "pixels": 7
+              }
+            ],
+            "regionCount": 2
+          },
+          "8": {
+            "threshold": 8,
+            "changed": 14,
+            "total": 1024,
+            "percent": 1.3672,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 25,
+              "height": 25,
+              "pixels": 14
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 11,
+                "height": 11,
+                "pixels": 7
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "width": 25,
+                "height": 25,
+                "pixels": 7
+              }
+            ],
+            "regionCount": 2
+          },
+          "16": {
+            "threshold": 16,
+            "changed": 14,
+            "total": 1024,
+            "percent": 1.3672,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 25,
+              "height": 25,
+              "pixels": 14
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 11,
+                "height": 11,
+                "pixels": 7
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "width": 25,
+                "height": 25,
+                "pixels": 7
+              }
+            ],
+            "regionCount": 2
+          },
+          "32": {
+            "threshold": 32,
+            "changed": 14,
+            "total": 1024,
+            "percent": 1.3672,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "width": 25,
+              "height": 25,
+              "pixels": 14
+            },
+            "regions": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 11,
+                "height": 11,
+                "pixels": 7
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "width": 25,
+                "height": 25,
+                "pixels": 7
+              }
+            ],
+            "regionCount": 2
+          }
+        },
+        "review": {
+          "areas": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 25,
+              "height": 25,
+              "pixels": 14
+            }
+          ],
+          "areaCount": 1,
+          "key": "0,0,3,3"
+        }
+      }
+    }
+  }
+}

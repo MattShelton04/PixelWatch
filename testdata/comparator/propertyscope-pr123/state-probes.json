@@ -1,0 +1,156 @@
+{
+  "comment": "Recorded by tools/prototype-goldens/record.py: build_report on mutated copies of the PR #123 inputs. Do not edit.",
+  "recordedWith": {
+    "prototype": {
+      "repository": "https://github.com/MattShelton04/41026ASDProject",
+      "commit": "6378d8be5b1f418f72279e04b3de23d761b426d3"
+    },
+    "constants": {
+      "THRESHOLDS": [
+        0,
+        8,
+        16,
+        32
+      ],
+      "SUBTLE_MAX_PIXELS": 128,
+      "SUBTLE_MAX_DELTA": 8,
+      "TILE": 8,
+      "MAX_REGIONS": 12
+    },
+    "environment": {
+      "platform": "Windows-11-10.0.22621-SP0",
+      "python": "3.12.13",
+      "numpy": "2.5.2",
+      "pillow": "11.3.0",
+      "uv": "uv 0.12.1 (329541a50 2026-07-31 x86_64-pc-windows-msvc)"
+    }
+  },
+  "source": {
+    "repository": "https://github.com/MattShelton04/41026ASDProject",
+    "run": "36405830015",
+    "attempt": "1",
+    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da",
+    "headSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+    "artifacts": [
+      {
+        "name": "visual-base-fixture",
+        "id": "10962062704",
+        "zipSha256": "b062b6a961b6c98dc663645e870b0671efac82122b192fa5cd2367d308e775a5"
+      },
+      {
+        "name": "visual-base-stack",
+        "id": "10962640673",
+        "zipSha256": "b6a7b4c7ceb3f8f5f9eb5da88c62d3d4c111197ccd8c3b3855a73d3cd885aad4"
+      },
+      {
+        "name": "visual-head-fixture",
+        "id": "10962785105",
+        "zipSha256": "1f382cc54aa35181c87237cc24ca0387e4016b311a41f1574ccc9346feb9dfa5"
+      },
+      {
+        "name": "visual-head-stack",
+        "id": "10962835047",
+        "zipSha256": "e711eb3ebdcd710f732b5194cf8bd58227748e7b4fb87d5a695d5e52b914fdc5"
+      }
+    ]
+  },
+  "summary": {
+    "changed": 0,
+    "subtle": 0,
+    "unchanged": 23,
+    "incomplete": 4,
+    "baseUnavailable": 15,
+    "total": 42
+  },
+  "probes": [
+    {
+      "probe": "head-png-deleted",
+      "view": "shared-home",
+      "change": "incomplete",
+      "base": {
+        "status": "captured",
+        "errors": []
+      },
+      "head": {
+        "status": "incomplete",
+        "errors": [
+          "screenshot missing from the capture artifact"
+        ]
+      }
+    },
+    {
+      "probe": "head-status-failed",
+      "view": "shared-research-areas",
+      "change": "incomplete",
+      "base": {
+        "status": "captured",
+        "errors": []
+      },
+      "head": {
+        "status": "failed",
+        "errors": []
+      }
+    },
+    {
+      "probe": "base-status-failed",
+      "view": "shared-data-status",
+      "change": "base unavailable",
+      "base": {
+        "status": "failed",
+        "errors": []
+      },
+      "head": {
+        "status": "captured",
+        "errors": []
+      }
+    },
+    {
+      "probe": "head-case-dropped",
+      "view": "shared-sources-history",
+      "change": "incomplete",
+      "base": {
+        "status": "captured",
+        "errors": []
+      },
+      "head": null
+    },
+    {
+      "probe": "base-case-dropped",
+      "view": "shared-assistant",
+      "change": "base unavailable",
+      "base": null,
+      "head": {
+        "status": "captured",
+        "errors": []
+      }
+    },
+    {
+      "probe": "head-png-width-1441",
+      "view": "shared-roadmap",
+      "change": "incomplete",
+      "base": {
+        "status": "captured",
+        "errors": []
+      },
+      "head": {
+        "status": "incomplete",
+        "errors": [
+          "screenshot rejected: unsupported or malformed screenshot PNG"
+        ]
+      }
+    },
+    {
+      "probe": "base-part-missing",
+      "view": "shared-knowledge-sources",
+      "change": "base unavailable",
+      "base": null,
+      "head": {
+        "status": "captured",
+        "errors": []
+      }
+    }
+  ],
+  "basePartMissingChanges": [
+    "base unavailable"
+  ]
+}

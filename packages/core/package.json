@@ -1,0 +1,14 @@
+{
+  "name": "@pixelwatch/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PixelWatch pure engine: pixel hash (M0.6); decode, compare, merge and projection follow in M1.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@pixelwatch/schemas": "workspace:*"
+  }
+}
