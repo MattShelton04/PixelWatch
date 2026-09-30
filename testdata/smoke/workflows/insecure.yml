@@ -1,0 +1,12 @@
+# Deliberately insecure: zizmor must flag every pattern here. Never "fix" this file.
+name: insecure
+on:
+  pull_request_target:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: echo "${{ github.event.pull_request.title }}"

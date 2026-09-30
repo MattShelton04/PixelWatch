@@ -1,0 +1,12 @@
+# Deliberately invalid: actionlint must reject this file. Never "fix" it.
+name: broken
+on:
+  push:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "${{ github.nonexistent_context_field.value }}"
+      - run: echo "${{ unknown_context.value }}"

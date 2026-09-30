@@ -1,0 +1,7 @@
+# zizmor policy for this repo's workflows and the adopter templates.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # Every action, first- or third-party, is pinned to a full commit SHA (06 §6).
+        "*": hash-pin

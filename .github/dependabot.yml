@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: npm # covers pnpm-lock.yaml
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    groups:
+      dev-tooling:
+        update-types: [minor, patch]
+    ignore:
+      # typescript-eslint 8.x supports TypeScript < 6.1. Lift this when it supports newer.
+      - dependency-name: typescript
+        versions: [">=6.1.0"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        update-types: [minor, patch]
