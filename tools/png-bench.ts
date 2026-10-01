@@ -235,7 +235,8 @@ const COMPARE_SCENARIOS: CompareScenario[] = [
 
 function describeComparison(c: Comparison): string {
   const t0 = c.diff?.analyses[0];
-  return `${c.status} (${c.reasons.join(", ") || "–"}), t0 ${t0?.changedPixels.toLocaleString("en-US") ?? "–"} px in ${t0?.regionCount?.toLocaleString("en-US") ?? "–"} regions`;
+  const regions = t0?.regionCount ?? 0;
+  return `${c.status} (${c.reasons.join(", ") || "–"}), t0 ${t0?.changedPixels.toLocaleString("en-US") ?? "–"} px in ${regions.toLocaleString("en-US")} region${regions === 1 ? "" : "s"}`;
 }
 
 async function compareChild(mode: CompareMode, basePath: string, headPath: string): Promise<CompareMeasurement> {
@@ -326,12 +327,13 @@ ${provenance()}
 |---|---|---|---|---|---|---|---|
 ${rows.join("\n")}
 
-The comparator streams 64-row chunks through the pixel hash's normalizer and keeps only per-tile
-statistics (8 bytes per tile per threshold), so beyond the two decoded images it allocates a few
-MB whatever the content: compare each row with \`pair-baseline\`. Region boxes come from each
-component's tile-rectangle edges, which keeps the fragmented and diagonal cases linear. The worker
-row copies both images into the worker, so the process briefly holds them twice. Only this Windows
-machine was measured; CI runs the same code on Linux but doesn't record RSS.
+The comparator never allocates an image-sized buffer. It streams 64-row chunks through the pixel
+hash's normalizer and keeps per-tile statistics: 8 bytes per tile per threshold, about 8 MB at
+16 MP for v1. The difference from \`pair-baseline\` is those statistics plus chunk buffers the GC
+hasn't collected yet. Region boxes come from each component's tile-rectangle edges, which keeps
+the fragmented and diagonal cases linear. The worker row copies both images into the worker, so
+the process briefly holds them twice. Only this Windows machine was measured; CI runs the same
+code on Linux but doesn't record RSS.
 `;
     writeFileSync(COMPARE_EVIDENCE, doc);
     console.log(`wrote ${COMPARE_EVIDENCE}`);
