@@ -2,7 +2,7 @@
   "name": "@pixelwatch/core",
   "version": "0.0.0",
   "private": true,
-  "description": "PixelWatch pure engine: restricted PNG codec, pixel hash and canonical blob pool; compare, merge and projection follow in M1.",
+  "description": "PixelWatch pure engine: restricted PNG codec, pixel hash, canonical blob pool and comparator-v1; merge and projection follow in M1.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {

@@ -1,10 +1,12 @@
-// Integrity of the comparator-v1 goldens (M0.6, docs/adr/comparator-v1.md). The comparator itself
-// is M1.3; these tests prove the committed fixtures are complete, that the expected results are the
-// mechanical mapping of RECORDED prototype output, and that every recording fits run@1.
+// comparator-v1 goldens (docs/adr/comparator-v1.md). The integrity tests (M0.6) prove the committed
+// fixtures are complete, that the expected results are the mechanical mapping of RECORDED prototype
+// output, and that every recording fits run@1. The parity tests (M1.3) prove the core comparator
+// reproduces those expected results exactly. Full-size parity is local only
+// (tools/check-reference-compare.ts); tests never read .reference/.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { type Run, type RunResult, normalizePng, validateDocument } from "@pixelwatch/schemas";
+import { type Run, type RunResult, type Side, compareUnitKeys, normalizePng, validateDocument } from "@pixelwatch/schemas";
 import { describe, expect, it } from "vitest";
 import {
   COMPARATOR_TESTDATA,
@@ -16,9 +18,13 @@ import {
   loadAndBuild,
   serialize,
 } from "../../../tools/prototype-goldens/expected.ts";
-import { COMPARATOR_V1, type PrototypeRecord, isComparison } from "../../../tools/prototype-goldens/mapping.ts";
-import { type TinyCase, paintTinyImage, serializeTinyCases } from "../../../tools/prototype-goldens/tiny-cases.ts";
-import { pixelHash } from "../src/pixel-hash.ts";
+import { type PrototypeRecord, isComparison } from "../../../tools/prototype-goldens/mapping.ts";
+import { type TinyCase, type TinySide, paintTinyImage, serializeTinyCases } from "../../../tools/prototype-goldens/tiny-cases.ts";
+import { compareImages } from "../src/comparator/compare.ts";
+import { COMPARATOR_V1 } from "../src/comparator/policy.ts";
+import { unitResult } from "../src/comparator/result.ts";
+import { type RawPixels, pixelHash } from "../src/pixel-hash.ts";
+import { decodePng } from "../src/png/decode.ts";
 
 const PIN = "6378d8be5b1f418f72279e04b3de23d761b426d3";
 const TESTDATA = join(import.meta.dirname, "..", "..", "..", "testdata");
@@ -112,7 +118,7 @@ describe("tiny comparator fixtures", () => {
       "dimensions-zero-delta",
       "dimensions-width",
       "minimum-size",
-      ...["tile-boundary", "diagonal", "gap", "clip", "threshold", "sort", "sort-tie", "truncate"].map((r) => `region-${r}`),
+      ...["tile-boundary", "diagonal", "gap", "clip", "threshold", "sort", "sort-tie", "truncate", "window"].map((r) => `region-${r}`),
     ];
     expect(required.filter((tag) => !covered.has(tag))).toEqual([]);
   });
@@ -265,5 +271,48 @@ describe("real crops", () => {
 
   it("maps to valid run@1 results", () => {
     expectValidRun((json("crops", "expected.json") as ExpectedFile).results);
+  });
+});
+
+/** A side as stored, plus its pixels when captured. */
+function captured(image: RawPixels): { side: Side; image: RawPixels } {
+  return { side: { state: "captured", pixelHash: pixelHash(image), width: image.width, height: image.height }, image };
+}
+
+function tinySide(spec: TinySide): { side: Side; image?: RawPixels } {
+  if (spec.state !== "captured") return { side: spec };
+  const { width, height } = spec.image;
+  return captured({ width, height, channels: 4, data: paintTinyImage(spec.image) });
+}
+
+/** Results in file order, so key order is compared too, not just values. */
+function expectExactly(results: RunResult[], expected: ExpectedFile): void {
+  const sorted = results.sort(compareUnitKeys);
+  expect(sorted).toEqual(expected.results);
+  expect(JSON.stringify(sorted)).toBe(JSON.stringify(expected.results));
+}
+
+describe("core comparator (M1.3)", () => {
+  it("reproduces tiny/expected.json exactly", () => {
+    const { cases } = json("tiny", "cases.json") as { cases: TinyCase[] };
+    const results = cases.map((c) => {
+      const base = tinySide(c.base);
+      const head = tinySide(c.head);
+      const comparison = base.image && head.image ? compareImages(base.image, head.image, COMPARATOR_V1) : undefined;
+      return unitResult({ providerId: "tiny", viewId: c.id, variantId: "desktop" }, base.side, head.side, comparison);
+    });
+    expectExactly(results, json("tiny", "expected.json") as ExpectedFile);
+  });
+
+  it("reproduces crops/expected.json exactly from the committed crop PNGs", async () => {
+    const recording = json("crops", "crops.json") as CropRecording;
+    const results: RunResult[] = [];
+    for (const crop of recording.crops) {
+      const decode = async (side: "base" | "head") => captured(await decodePng(readFileSync(join(COMPARATOR_TESTDATA, "crops", crop.sides[side].file))));
+      const base = await decode("base");
+      const head = await decode("head");
+      results.push(unitResult({ providerId: "crops", viewId: crop.id, variantId: "desktop" }, base.side, head.side, compareImages(base.image, head.image, COMPARATOR_V1)));
+    }
+    expectExactly(results, json("crops", "expected.json") as ExpectedFile);
   });
 });

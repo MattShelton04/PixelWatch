@@ -134,6 +134,8 @@ advisories, and test them with bounded hostile input.
   source maps, HARs, traces or arbitrary attachments from capture.
 - Diffs and hashes are authoritative only about the **submitted pixels**. They don't prove the PR
   rendered the claimed commit. Reports are advisory; no mandatory regression gate in the MVP.
+- Missing, failed or omitted work is never reported as `unchanged`. Side states decide first
+  (02 §4), and pixel thresholds only judge two captured sides (02 §9).
 
 ### 4.4 Source and baseline policy
 
