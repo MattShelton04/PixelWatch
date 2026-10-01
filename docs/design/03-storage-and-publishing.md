@@ -154,16 +154,21 @@ branch-served. Don't add a PAT to force it. Instead, the report workflow's secon
    `generation`, and, for each PR about to be commented, `api/v1/pr/<number>/latest.json` names
    the expected run key and generation. The SHA-256 of each fetched body must equal the bytes the
    projector built. That digest is compared in memory, not stored. HTTP 200 alone isn't
-   readiness, because old edges and cached 404s exist. It also probes comment image URLs with a
-   bounded GET before using them.
+   readiness, because old edges and cached 404s exist. The whole check must pass on **3
+   consecutive polls at least 10 s apart**; any failing poll resets the count. It also probes
+   comment image URLs with a bounded GET before using them. Ready means "ready as observed from
+   the runner". Other CDN edges can still serve an older or mixed generation for minutes (Pages
+   sends `max-age=600`), so nothing claims global visibility (ADR 0005).
 5. Reconciles sticky comments for **every** retained PR that needs an update, not just the
    triggering one (05 §2).
 
 Pending projections may be coalesced safely, because every ingestion is already durable and the
-next projector catches up. Never cancel an active deploy. On a timeout, report "stored;
-deployment/comment pending". The job summary records deployment ID, store tip and comment
-operations. Manual `workflow_dispatch` repair reprojects the latest store and reconciles
-comments idempotently. (`concurrency.queue: max` exists but isn't needed.)
+next projector catches up. Never cancel an active deploy. On a timeout, a failed deploy step or
+a cancelled job, report "stored; deployment/comment pending". A cancelled job may still have
+deployed; readiness, not the job or deployment state, decides what's served. The job summary
+records the numeric environment deployment ID (the Pages deployment ID repeats per commit),
+store tip and comment operations. Manual `workflow_dispatch` repair reprojects the latest store
+and reconciles comments idempotently. (`concurrency.queue: max` exists but isn't needed.)
 
 ## 8. Deferred serving modes
 

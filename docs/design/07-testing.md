@@ -74,8 +74,8 @@ the store tip (`sim-ingest-cas-race`) and projectors vs deploy/comment ordering
 | `sim-deploy-comment-race` (C) | Old/new PR head interleaving | An old publisher can't replace the new head's comment |
 | `sim-deploy-comment-race` (D) | Older-release projector runs after a newer one (03 §7) | Store tip never older than the last deployment; no comment rollback; `site.json` names the release that deployed |
 | `sim-comment-unknown-outcome` | Deploy OK, comment create times out | Rediscovery prevents duplicate comments |
-| `sim-deploy-fails` | Store OK, deploy fails or is cancelled | Run stays stored; the next or manual projection completes it |
-| `sim-cdn-stale-generation` | 200 from an old CDN generation | Not treated as ready |
+| `sim-deploy-fails` | Store OK, deploy fails or is cancelled; also a cancelled job whose deploy completed (ADR 0005) | Run stays stored; the next or manual projection completes it with the same generation |
+| `sim-cdn-stale-generation` | 200 from an old CDN generation; an edge that goes stale again after passing; files from mixed generations (ADR 0005) | Not treated as ready until 3 consecutive full passes |
 | `sim-viewer-stale-assets` | Independently stale HTML/JS/JSON, cached 404 | Bounded reload then static fallback; no loop, no misparse |
 | `sim-migration-vs-writer` | Migration/rollback vs active writer | Lease conflict forces a fresh loss preview |
 | `sim-github-faults` | Expired artifact, rate limit, cross-origin 302, 410/5xx | Bounded retries; auth stripped; nothing secret logged; incompleteness visible |

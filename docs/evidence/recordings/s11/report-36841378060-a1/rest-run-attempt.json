@@ -1,0 +1,79 @@
+{
+  "id": 36841340489,
+  "name": "Spike Capture",
+  "head_branch": "main",
+  "head_sha": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+  "path": ".github/workflows/s11-capture.yml",
+  "display_title": "S11: advance main (M3)",
+  "run_number": 4,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "workflow_id": 371067781,
+  "check_suite_id": 99783216171,
+  "check_suite_node_id": "CS_kwDOU065us8AAAAXO4sMKw",
+  "pull_requests": [],
+  "created_at": "2026-10-01T09:13:43Z",
+  "updated_at": "2026-10-01T09:14:02Z",
+  "actor": {
+    "login": "MattShelton04",
+    "id": 103937891,
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "run_attempt": 1,
+  "referenced_workflows": [],
+  "run_started_at": "2026-10-01T09:13:43Z",
+  "triggering_actor": {
+    "login": "MattShelton04",
+    "id": 103937891,
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "head_commit": {
+    "id": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+    "tree_id": "171290e5b98ef62aad62603085277d744797aa86",
+    "message": "S11: advance main (M3)",
+    "timestamp": "2026-10-01T09:13:37Z",
+    "author": {
+      "name": "<redacted>",
+      "email": "<redacted>"
+    },
+    "committer": {
+      "name": "<redacted>",
+      "email": "<redacted>"
+    }
+  },
+  "repository": {
+    "id": 1397668282,
+    "name": "pixelwatch-spike-app",
+    "full_name": "MattShelton04/pixelwatch-spike-app",
+    "private": false,
+    "owner": {
+      "login": "MattShelton04",
+      "id": 103937891,
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+    "fork": false
+  },
+  "head_repository": {
+    "id": 1397668282,
+    "name": "pixelwatch-spike-app",
+    "full_name": "MattShelton04/pixelwatch-spike-app",
+    "private": false,
+    "owner": {
+      "login": "MattShelton04",
+      "id": 103937891,
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+    "fork": false
+  }
+}

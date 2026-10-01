@@ -3,6 +3,9 @@
 - Status: accepted
 - Date: 2026-09-30
 - Task / spike: M0.4 (threat model)
+- Amended by: [ADR 0005](0005-s2-actions-pages-bootstrap-and-readiness.md). Readiness (decision 1)
+  must pass on 3 consecutive polls at least 10 s apart, and it means "ready as observed from the
+  runner", not globally visible.
 
 ## Context
 

@@ -1,0 +1,106 @@
+{
+  "after": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+  "base_ref": null,
+  "before": "f8927b68efbdbc5589f9f7ae379ad473dd40e440",
+  "commits": [
+    {
+      "author": {
+        "email": "<redacted>",
+        "name": "<redacted>",
+        "username": "MattShelton04"
+      },
+      "committer": {
+        "email": "<redacted>",
+        "name": "<redacted>",
+        "username": "MattShelton04"
+      },
+      "distinct": true,
+      "id": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+      "message": "S11: advance main (M3)",
+      "timestamp": "2026-10-01T19:13:37+10:00",
+      "tree_id": "171290e5b98ef62aad62603085277d744797aa86"
+    }
+  ],
+  "compare": "https://github.com/MattShelton04/pixelwatch-spike-app/compare/f8927b68efbd...ef2f8dc2ee41",
+  "created": false,
+  "deleted": false,
+  "forced": false,
+  "head_commit": {
+    "author": {
+      "email": "<redacted>",
+      "name": "<redacted>",
+      "username": "MattShelton04"
+    },
+    "committer": {
+      "email": "<redacted>",
+      "name": "<redacted>",
+      "username": "MattShelton04"
+    },
+    "distinct": true,
+    "id": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+    "message": "S11: advance main (M3)",
+    "timestamp": "2026-10-01T19:13:37+10:00",
+    "tree_id": "171290e5b98ef62aad62603085277d744797aa86"
+  },
+  "pusher": {
+    "email": "<redacted>",
+    "name": "<redacted>"
+  },
+  "ref": "refs/heads/main",
+  "repository": {
+    "allow_forking": true,
+    "archived": false,
+    "created_at": 1790766265,
+    "default_branch": "main",
+    "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+    "disabled": false,
+    "fork": false,
+    "forks": 0,
+    "forks_count": 0,
+    "full_name": "MattShelton04/pixelwatch-spike-app",
+    "has_discussions": false,
+    "has_downloads": true,
+    "has_issues": true,
+    "has_pages": true,
+    "has_projects": true,
+    "has_pull_requests": true,
+    "has_wiki": true,
+    "homepage": null,
+    "id": 1397668282,
+    "is_template": false,
+    "language": "JavaScript",
+    "license": null,
+    "master_branch": "main",
+    "name": "pixelwatch-spike-app",
+    "open_issues": 1,
+    "open_issues_count": 1,
+    "owner": {
+      "email": "<redacted>",
+      "id": 103937891,
+      "login": "MattShelton04",
+      "name": "<redacted>",
+      "site_admin": false,
+      "type": "User",
+      "user_view_type": "public"
+    },
+    "private": false,
+    "pull_request_creation_policy": "all",
+    "pushed_at": 1790846020,
+    "size": 17,
+    "stargazers": 0,
+    "stargazers_count": 0,
+    "topics": [],
+    "updated_at": "2026-09-30T11:46:57Z",
+    "visibility": "public",
+    "watchers": 0,
+    "watchers_count": 0,
+    "web_commit_signoff_required": false
+  },
+  "sender": {
+    "id": 103937891,
+    "login": "MattShelton04",
+    "site_admin": false,
+    "type": "User",
+    "user_view_type": "public"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "reportJob": {
+    "githubRef": "refs/heads/main",
+    "githubSha": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+    "runId": "36841378060",
+    "runAttempt": "1"
+  },
+  "defaultBranchTipAtReport": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d"
+}

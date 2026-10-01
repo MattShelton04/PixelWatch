@@ -1,0 +1,47 @@
+{
+  "total_count": 3,
+  "artifacts": [
+    {
+      "id": 11151178095,
+      "name": "pixelwatch-b1-a1-head-spike-s1-of1",
+      "size_in_bytes": 274,
+      "expired": false,
+      "created_at": "2026-10-01T09:16:09Z",
+      "workflow_run": {
+        "id": 36841580726,
+        "repository_id": 1397668282,
+        "head_repository_id": 1397668282,
+        "head_branch": "main",
+        "head_sha": "92c0f162c65fd989f4bc69b1017db91e387f3ab4"
+      }
+    },
+    {
+      "id": 11151003297,
+      "name": "pixelwatch-b1-a1-base-spike-s1-of1",
+      "size_in_bytes": 272,
+      "expired": false,
+      "created_at": "2026-10-01T09:16:08Z",
+      "workflow_run": {
+        "id": 36841580726,
+        "repository_id": 1397668282,
+        "head_repository_id": 1397668282,
+        "head_branch": "main",
+        "head_sha": "92c0f162c65fd989f4bc69b1017db91e387f3ab4"
+      }
+    },
+    {
+      "id": 11150833694,
+      "name": "s11-capture-36841580726-a1",
+      "size_in_bytes": 1439,
+      "expired": false,
+      "created_at": "2026-10-01T09:16:01Z",
+      "workflow_run": {
+        "id": 36841580726,
+        "repository_id": 1397668282,
+        "head_repository_id": 1397668282,
+        "head_branch": "main",
+        "head_sha": "92c0f162c65fd989f4bc69b1017db91e387f3ab4"
+      }
+    }
+  ]
+}
