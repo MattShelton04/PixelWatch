@@ -52,8 +52,9 @@ later milestones don't re-decide them.
 - Labels (`group` = section, `state`, `route` = path) and messages are bounded: ≤ 256 code
   points for labels, ≤ 2048 UTF-8 bytes for messages. Control characters become spaces.
 - The manifest's own `sha256` per image is ignored. Hashes are computed from pixels later.
-- PNGs pass through with only ancillary chunks stripped (02 §2 "strips metadata"). No
-  re-encoding happens: all 294 reference PNGs are already plain 8-bit RGB IHDR/IDAT/IEND.
+- PNGs pass through with only ancillary chunks (and a truecolour PLTE) stripped (02 §2 "strips
+  metadata"; 02 §5 allows only IHDR, IDAT and IEND). No re-encoding happens: all 294 reference
+  PNGs are already plain 8-bit RGB IHDR/IDAT/IEND.
 
 ### Schema details 02 leaves open
 
