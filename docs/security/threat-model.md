@@ -362,4 +362,4 @@ self-checkout, so it isn't re-read (R4.5-08).
 | Deletion isn't erasure | Git objects, caches, forks and clones survive | Docs (R4.7-03) |
 | Results prove only submitted pixels | The PR controls the harness | Advisory reports, no gate (R4.3-11, R4.4-05) |
 | TCB bugs (Node, Git, zlib, parsers) | Can't be removed | Pins, advisories, hostile corpora (R4.2-08) |
-| Repo settings are only checked at one date | Settings can change later | `docs/security/repo-settings.md`; owner check pending there |
+| Repo settings are only checked at one date | Settings can change later | `docs/security/repo-settings.md` (owner check dated 2026-10-01); re-check after any settings change |
