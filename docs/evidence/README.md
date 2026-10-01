@@ -14,6 +14,9 @@ signed URLs, emails or real screenshots.
 | [s4-self-reference.md](s4-self-reference.md) | M0.5 / S4 reusable-workflow self-checkout | pass | [0006](../adr/0006-s4-reusable-workflow-self-checkout.md) |
 | [s11-same-repo-identity.md](s11-same-repo-identity.md) | M0.5 / S11 same-repo PR identity (fork → M2.6) | pass (same-repo only) | [0007](../adr/0007-s11-same-repo-identity.md) |
 | [m1.1-png-bench.md](m1.1-png-bench.md) | M1.1 PNG codec peak RSS and time (R4.2-08) | pass: peak 209 MiB of the 512 MiB budget | – |
+| [m1.3-compare-bench.md](m1.3-compare-bench.md) | M1.3 comparator peak RSS and time (R4.2-08) | pass: peak 385 MiB of the 512 MiB budget | [comparator-v1](../adr/comparator-v1.md) |
+| [m1.4-ingest-bench.md](m1.4-ingest-bench.md) | M1.4 ZIP / ingestion peak RSS and time (R4.2-08) | pass: peak 195 MiB; 4096 entries / 495.3 MiB expanded admitted; bombs refused | [0008](../adr/0008-ingress-zip-and-merge.md) |
+| [m1.4-reference-ingest.md](m1.4-reference-ingest.md) | M1.4 real prototype ingestion and original GitHub ZIPs | pass: 42/42 and 105/105 coverage; order-independent; 16 original ZIPs accepted by structure / CRC checks | [0008](../adr/0008-ingress-zip-and-merge.md) |
 
 `recordings/` holds machine-readable data behind these records: `s2/timings.json` and the redacted
 S11 payloads and REST responses, one directory per run and attempt (`capture-<run>-a<n>`,
