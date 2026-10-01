@@ -36,6 +36,8 @@ Notes:
 
 ## Owner check
 
-- Checked by owner on: ____________ (date)
-- Visibility at the time of the check: ____________
-- Rows not applied, and why: ____________
+- Checked by owner on: 2026-10-01. The owner approved the settings in an agent session, and the
+  agent recorded the approval at their request after re-reading every row through the API that
+  day. All 14 matched.
+- Visibility at the time of the check: public
+- Rows not applied, and why: none
