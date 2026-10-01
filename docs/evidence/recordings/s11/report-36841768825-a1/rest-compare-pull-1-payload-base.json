@@ -1,0 +1,7 @@
+{
+  "status": "diverged",
+  "ahead_by": 2,
+  "behind_by": 1,
+  "base_commit": "f8927b68efbdbc5589f9f7ae379ad473dd40e440",
+  "merge_base_commit": "e4e9b82ba3e5900a21aac5440b96273c98b6ff5e"
+}

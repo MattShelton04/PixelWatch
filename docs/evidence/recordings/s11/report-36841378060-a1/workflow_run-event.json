@@ -1,0 +1,142 @@
+{
+  "action": "completed",
+  "repository": {
+    "allow_forking": true,
+    "archived": false,
+    "created_at": "2026-09-30T11:04:25Z",
+    "default_branch": "main",
+    "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+    "disabled": false,
+    "fork": false,
+    "forks": 0,
+    "forks_count": 0,
+    "full_name": "MattShelton04/pixelwatch-spike-app",
+    "has_discussions": false,
+    "has_downloads": false,
+    "has_issues": true,
+    "has_pages": true,
+    "has_projects": true,
+    "has_pull_requests": true,
+    "has_wiki": true,
+    "homepage": null,
+    "id": 1397668282,
+    "is_template": false,
+    "language": "JavaScript",
+    "license": null,
+    "name": "pixelwatch-spike-app",
+    "open_issues": 1,
+    "open_issues_count": 1,
+    "owner": {
+      "id": 103937891,
+      "login": "MattShelton04",
+      "site_admin": false,
+      "type": "User",
+      "user_view_type": "public"
+    },
+    "private": false,
+    "pull_request_creation_policy": "all",
+    "pushed_at": "2026-10-01T09:13:40Z",
+    "size": 17,
+    "stargazers_count": 0,
+    "topics": [],
+    "updated_at": "2026-10-01T09:13:44Z",
+    "visibility": "public",
+    "watchers": 0,
+    "watchers_count": 0,
+    "web_commit_signoff_required": false
+  },
+  "sender": {
+    "id": 103937891,
+    "login": "MattShelton04",
+    "site_admin": false,
+    "type": "User",
+    "user_view_type": "public"
+  },
+  "workflow": {
+    "created_at": "2026-09-30T11:05:49.000Z",
+    "id": 371067781,
+    "name": "Spike Capture",
+    "path": ".github/workflows/s11-capture.yml",
+    "state": "active",
+    "updated_at": "2026-09-30T11:05:49.000Z"
+  },
+  "workflow_run": {
+    "actor": {
+      "id": 103937891,
+      "login": "MattShelton04",
+      "site_admin": false,
+      "type": "User",
+      "user_view_type": "public"
+    },
+    "check_suite_id": 99783216171,
+    "check_suite_node_id": "CS_kwDOU065us8AAAAXO4sMKw",
+    "conclusion": "success",
+    "created_at": "2026-10-01T09:13:43Z",
+    "display_title": "S11: advance main (M3)",
+    "event": "push",
+    "head_branch": "main",
+    "head_commit": {
+      "author": {
+        "email": "<redacted>",
+        "name": "<redacted>"
+      },
+      "committer": {
+        "email": "<redacted>",
+        "name": "<redacted>"
+      },
+      "id": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+      "message": "S11: advance main (M3)",
+      "timestamp": "2026-10-01T09:13:37Z",
+      "tree_id": "171290e5b98ef62aad62603085277d744797aa86"
+    },
+    "head_repository": {
+      "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+      "fork": false,
+      "full_name": "MattShelton04/pixelwatch-spike-app",
+      "id": 1397668282,
+      "name": "pixelwatch-spike-app",
+      "owner": {
+        "id": 103937891,
+        "login": "MattShelton04",
+        "site_admin": false,
+        "type": "User",
+        "user_view_type": "public"
+      },
+      "private": false
+    },
+    "head_sha": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+    "id": 36841340489,
+    "name": "Spike Capture",
+    "path": ".github/workflows/s11-capture.yml",
+    "pull_requests": [],
+    "referenced_workflows": [],
+    "repository": {
+      "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+      "fork": false,
+      "full_name": "MattShelton04/pixelwatch-spike-app",
+      "id": 1397668282,
+      "name": "pixelwatch-spike-app",
+      "owner": {
+        "id": 103937891,
+        "login": "MattShelton04",
+        "site_admin": false,
+        "type": "User",
+        "user_view_type": "public"
+      },
+      "private": false
+    },
+    "run_attempt": 1,
+    "run_number": 4,
+    "run_started_at": "2026-10-01T09:13:43Z",
+    "status": "completed",
+    "triggering_actor": {
+      "id": 103937891,
+      "login": "MattShelton04",
+      "site_admin": false,
+      "type": "User",
+      "user_view_type": "public"
+    },
+    "updated_at": "2026-10-01T09:14:02Z",
+    "workflow_id": 371067781
+  }
+}

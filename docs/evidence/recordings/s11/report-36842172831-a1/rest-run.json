@@ -1,0 +1,100 @@
+{
+  "id": 36842134011,
+  "name": "Spike Capture",
+  "head_branch": "s11/same-repo",
+  "head_sha": "92a103c1085798bd869ea505037853bb88c8c00b",
+  "path": ".github/workflows/s11-capture.yml",
+  "display_title": "S11 spike: same-repo PR identity (synthetic)",
+  "run_number": 8,
+  "event": "pull_request",
+  "status": "completed",
+  "conclusion": "success",
+  "workflow_id": 371067781,
+  "check_suite_id": 99785386279,
+  "check_suite_node_id": "CS_kwDOU065us8AAAAXO6wpJw",
+  "pull_requests": [
+    {
+      "id": 4690041596,
+      "number": 1,
+      "head": {
+        "ref": "s11/same-repo",
+        "sha": "92a103c1085798bd869ea505037853bb88c8c00b",
+        "repo": {
+          "id": 1397668282,
+          "name": "pixelwatch-spike-app"
+        }
+      },
+      "base": {
+        "ref": "main",
+        "sha": "92c0f162c65fd989f4bc69b1017db91e387f3ab4",
+        "repo": {
+          "id": 1397668282,
+          "name": "pixelwatch-spike-app"
+        }
+      }
+    }
+  ],
+  "created_at": "2026-10-01T09:20:54Z",
+  "updated_at": "2026-10-01T09:21:14Z",
+  "actor": {
+    "login": "MattShelton04",
+    "id": 103937891,
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "run_attempt": 1,
+  "referenced_workflows": [],
+  "run_started_at": "2026-10-01T09:20:54Z",
+  "triggering_actor": {
+    "login": "MattShelton04",
+    "id": 103937891,
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "head_commit": {
+    "id": "92a103c1085798bd869ea505037853bb88c8c00b",
+    "tree_id": "28a0248107f0ee11e8527310f0ae3dc1657007c5",
+    "message": "S11: head H3 merges main (M4)",
+    "timestamp": "2026-10-01T09:20:45Z",
+    "author": {
+      "name": "<redacted>",
+      "email": "<redacted>"
+    },
+    "committer": {
+      "name": "<redacted>",
+      "email": "<redacted>"
+    }
+  },
+  "repository": {
+    "id": 1397668282,
+    "name": "pixelwatch-spike-app",
+    "full_name": "MattShelton04/pixelwatch-spike-app",
+    "private": false,
+    "owner": {
+      "login": "MattShelton04",
+      "id": 103937891,
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+    "fork": false
+  },
+  "head_repository": {
+    "id": 1397668282,
+    "name": "pixelwatch-spike-app",
+    "full_name": "MattShelton04/pixelwatch-spike-app",
+    "private": false,
+    "owner": {
+      "login": "MattShelton04",
+      "id": 103937891,
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "description": "Throwaway spike for PixelWatch M0.5. Not a product. Synthetic data only.",
+    "fork": false
+  }
+}

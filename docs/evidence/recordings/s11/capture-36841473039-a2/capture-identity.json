@@ -1,0 +1,18 @@
+{
+  "event": "pull_request",
+  "action": "synchronize",
+  "githubSha": "72d8928321602732b46c5209ee6e071612538114",
+  "githubRef": "refs/pull/1/merge",
+  "runId": "36841473039",
+  "runAttempt": "2",
+  "prNumber": "1",
+  "prHeadSha": "64d0906a4ac77e4ba51ee018d14950227c2bc435",
+  "prBaseSha": "f8927b68efbdbc5589f9f7ae379ad473dd40e440",
+  "prBaseRef": "main",
+  "before": "50b2f5e185f47fb1038c901915048ec5c1fc71a6",
+  "after": "64d0906a4ac77e4ba51ee018d14950227c2bc435",
+  "githubShaParents": "72d8928321602732b46c5209ee6e071612538114 ef2f8dc2ee41baec0f948efd2fe0106c55f9225d 64d0906a4ac77e4ba51ee018d14950227c2bc435",
+  "baseBranchTipAtCheckout": "92c0f162c65fd989f4bc69b1017db91e387f3ab4",
+  "selectedBase": "e4e9b82ba3e5900a21aac5440b96273c98b6ff5e",
+  "selectedHead": "64d0906a4ac77e4ba51ee018d14950227c2bc435"
+}

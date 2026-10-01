@@ -48,7 +48,7 @@ independent tests/docs or report the exact gate. Never pull in future features t
 | M0.2 | Licence, README stub, `SECURITY.md`, `CONTRIBUTING.md`, Dependabot, CodeQL, pinned third-party actions, branch protection | Settings checked by the owner and noted with a date; capture template is read-only/no-secret; nothing claims settings the account can't enforce |
 | M0.3 | `packages/schemas`: the 8 schemas in 02 §1, generated TS types, canonical serializer; bundle converters for PropertyScope and TracePilot | Every schema has valid and invalid fixtures (unknown versions, unsafe fields, duplicate keys rejected); real prototype output converts and validates; counts sum; provider and attempt identity work |
 | M0.4 | `docs/security/threat-model.md` from 01 §4; diagram/state table of ingest vs serialized projection | Every trust boundary maps to a named test (07) or manual evidence item; CAS race and deploy/comment race are separate tests |
-| M0.5 | Live spikes in a throwaway public repo: **S2** Actions Pages bootstrap + readiness, **S4** reusable-workflow self-checkout, **minimal S11** same-repo/fork identity | Each has an ADR with run/deployment IDs. S4: a SHA-pinned caller runs the pinned bundle, not caller code (if not, stop and redesign). S11 payloads confirm the base/head policy in 01 §4.4 or surface a decision. |
+| M0.5 | Live spikes in a throwaway public repo: **S2** Actions Pages bootstrap + readiness, **S4** reusable-workflow self-checkout, **minimal S11** same-repo identity (fork → M2.6) | Each has an ADR with run/deployment IDs. S4: a SHA-pinned caller runs the pinned bundle, not caller code (if not, stop and redesign). S11 payloads confirm the base/head policy in 01 §4.4 or surface a decision. |
 | M0.6 | `docs/adr/comparator-v1.md` from the prototype source (02 §9); golden outputs produced by **running** PropertyScope's comparator on the PR #123 bundles (plus two TracePilot runs with real changes, ADR 0001 M0.6 addendum); tiny 4×4 fixtures for every state/boundary; pixel-hash vectors | Goldens are recorded outputs, not hand-written guesses; tiny fixtures cover all 8 results and threshold edges |
 
 **Order:**
@@ -122,7 +122,7 @@ background only.
 | S5 | Do Dependabot/Renovate bump SHA-pinned reusable workflows correctly? | M3, optional | Manual SHA bumps |
 | S7 | Store push sizes and repo growth on GitHub over ~50 publishes | M2 | Linear history with periodic squash (PropertyScope's current approach), by ADR |
 | S8 | WebP encode/decode cost | M5, only if needed | Stay PNG |
-| S11 | Same-repo/fork/synchronize/rerun identities and PR association | **M0 minimal**, full matrix before M2 exit | Ambiguous → unassociated with diagnostic |
+| S11 | Same-repo/fork/synchronize/rerun identities and PR association | **M0 minimal = same-repo** (ADR 0007); fork identity deferred to M2.6, still required before M2 exits | Ambiguous → unassociated with diagnostic |
 | S6, S10, S12 | Studio prefill; DOM collector cost; findings precision | M4–M6 | See `future/` |
 
 (S9, pixel-hash normalization, is resolved by 02 §3.)

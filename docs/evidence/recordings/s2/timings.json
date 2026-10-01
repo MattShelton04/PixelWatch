@@ -1,0 +1,3006 @@
+{
+ "spike": "S2",
+ "repository": "MattShelton04/pixelwatch-spike-app",
+ "repositoryId": 1397668282,
+ "siteUrl": "https://mattshelton04.github.io/pixelwatch-spike-app/pixelwatch/",
+ "generations": {
+  "G0": "d0367a0c50d20b1a0ed9a47108179e945e9a35c93c62314f762e579642d22580",
+  "G1": "f3496c1f26b85bb23694580e178fdb5c9987b323c2ab6276858b13271a8d4bcd",
+  "G2": "2e6f7273b8f173776d39a53f44a0713fca18186b9a650ed3575774103a6664f4",
+  "G3": "14b82f4304cead3cfac26aece6c375554611f86c802f4e2492d23dc2a46bedf2",
+  "G4": "f16cb6e2f89248cc23436a86d4fb975a8c72346e9b3b283d67a48250f6addcda",
+  "G5": "e5612fb400cef09ed17f073f1f1439ba6a70457f72d1accc713fce85888fe307",
+  "G6": "f5263d20d14b68863841ea5fa91cfc06f432a889cc6b467112c782dcc160dbc0",
+  "G7": "c55634a840d3dde22eca8f9736da916ae3f0ab5340f423c282ff1d7dcdadaff4",
+  "G8": "3a2f312fd08db159201d892524eb54fc3084806b035f638cb78a0ff316740014",
+  "G9": "2c0a145769e019205759a2b34907a14b20d3f5715502520cc70ca65b647c8128",
+  "G10": "a9b9c3cd50d70296957600fd26342bbed71bdefb99228ba8a86cc33b3f8861d3"
+ },
+ "runs": [
+  {
+   "runId": "36706718710",
+   "attempt": 1,
+   "label": "G0",
+   "case": "before Pages enabled",
+   "generation": "d0367a0c50d20b1a0ed9a47108179e945e9a35c93c62314f762e579642d22580",
+   "environmentDeploymentId": "6757843330",
+   "environmentDeployment": {
+    "pagesBuildVersion": "ca07b3d",
+    "created": "2026-09-30T11:08:47Z",
+    "statuses": [
+     "in_progress@11:08:50",
+     "failure@11:09:53"
+    ]
+   },
+   "pagesDeploymentCreated": null,
+   "deployReportedSuccess": null,
+   "runnerPolls": 12,
+   "runnerFirstPassAfterSuccessMs": null,
+   "runnerResult": "NOT READY after 55343 ms, 12 polls: stored; deployment pending. Observations: {\"stale200\":0,\"notFound\":36,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36706957444",
+   "attempt": 1,
+   "label": "G1",
+   "case": "bootstrap",
+   "generation": "f3496c1f26b85bb23694580e178fdb5c9987b323c2ab6276858b13271a8d4bcd",
+   "environmentDeploymentId": "6757884105",
+   "environmentDeployment": {
+    "pagesBuildVersion": "f2ec7bf",
+    "created": "2026-09-30T11:11:05Z",
+    "statuses": [
+     "waiting@11:11:06",
+     "queued@11:11:08",
+     "queued@11:11:08",
+     "in_progress@11:11:10",
+     "success@11:11:34"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:11:18.025Z",
+   "deployReportedSuccess": "2026-09-30T11:11:30.255Z",
+   "runnerPolls": 1,
+   "runnerFirstPassAfterSuccessMs": 489,
+   "runnerResult": "READY generation=f3496c1f26b85bb23694580e178fdb5c9987b323c2ab6276858b13271a8d4bcd after 493 ms, 1 polls; not-ready observations: {\"stale200\":0,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36707088718",
+   "attempt": 1,
+   "label": "G2",
+   "case": "staleness series",
+   "generation": "2e6f7273b8f173776d39a53f44a0713fca18186b9a650ed3575774103a6664f4",
+   "environmentDeploymentId": "6757908762",
+   "environmentDeployment": {
+    "pagesBuildVersion": "f2ec7bf",
+    "created": "2026-09-30T11:12:22Z",
+    "statuses": [
+     "waiting@11:12:23",
+     "queued@11:12:24",
+     "in_progress@11:12:26",
+     "success@11:12:43"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:12:33.066Z",
+   "deployReportedSuccess": "2026-09-30T11:12:37.411Z",
+   "runnerPolls": 1,
+   "runnerFirstPassAfterSuccessMs": 908,
+   "runnerResult": "READY generation=2e6f7273b8f173776d39a53f44a0713fca18186b9a650ed3575774103a6664f4 after 851 ms, 1 polls; not-ready observations: {\"stale200\":0,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36707226919",
+   "attempt": 1,
+   "label": "G3",
+   "case": "staleness series",
+   "generation": "14b82f4304cead3cfac26aece6c375554611f86c802f4e2492d23dc2a46bedf2",
+   "environmentDeploymentId": "6757933016",
+   "environmentDeployment": {
+    "pagesBuildVersion": "f2ec7bf",
+    "created": "2026-09-30T11:13:40Z",
+    "statuses": [
+     "waiting@11:13:41",
+     "queued@11:13:42",
+     "in_progress@11:13:44",
+     "success@11:15:02"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:13:49.097Z",
+   "deployReportedSuccess": "2026-09-30T11:13:53.322Z",
+   "runnerPolls": 14,
+   "runnerFirstPassAfterSuccessMs": 65567,
+   "runnerResult": "READY generation=14b82f4304cead3cfac26aece6c375554611f86c802f4e2492d23dc2a46bedf2 after 65518 ms, 14 polls; not-ready observations: {\"stale200\":14,\"notFound\":1,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36707464032",
+   "attempt": 1,
+   "label": "G4",
+   "case": "staleness series; adds PR 2",
+   "generation": "f16cb6e2f89248cc23436a86d4fb975a8c72346e9b3b283d67a48250f6addcda",
+   "environmentDeploymentId": "6757978874",
+   "environmentDeployment": {
+    "pagesBuildVersion": "f2ec7bf",
+    "created": "2026-09-30T11:15:56Z",
+    "statuses": [
+     "waiting@11:15:57",
+     "queued@11:15:58",
+     "in_progress@11:16:01",
+     "success@11:16:27"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:16:07.918Z",
+   "deployReportedSuccess": "2026-09-30T11:16:12.718Z",
+   "runnerPolls": 3,
+   "runnerFirstPassAfterSuccessMs": 10481,
+   "runnerResult": "READY generation=f16cb6e2f89248cc23436a86d4fb975a8c72346e9b3b283d67a48250f6addcda after 10423 ms, 3 polls; not-ready observations: {\"stale200\":2,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36707613955",
+   "attempt": 1,
+   "label": "G5",
+   "case": "staleness series",
+   "generation": "e5612fb400cef09ed17f073f1f1439ba6a70457f72d1accc713fce85888fe307",
+   "environmentDeploymentId": "6758005032",
+   "environmentDeployment": {
+    "pagesBuildVersion": "f2ec7bf",
+    "created": "2026-09-30T11:17:23Z",
+    "statuses": [
+     "waiting@11:17:24",
+     "queued@11:17:25",
+     "in_progress@11:17:28",
+     "success@11:18:33"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:17:40.909Z",
+   "deployReportedSuccess": "2026-09-30T11:17:47.121Z",
+   "runnerPolls": 9,
+   "runnerFirstPassAfterSuccessMs": 41354,
+   "runnerResult": "READY generation=e5612fb400cef09ed17f073f1f1439ba6a70457f72d1accc713fce85888fe307 after 41295 ms, 9 polls; not-ready observations: {\"stale200\":12,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36707826645",
+   "attempt": 1,
+   "label": "G6",
+   "case": "staleness series",
+   "generation": "f5263d20d14b68863841ea5fa91cfc06f432a889cc6b467112c782dcc160dbc0",
+   "environmentDeploymentId": "6758041648",
+   "environmentDeployment": {
+    "pagesBuildVersion": "f2ec7bf",
+    "created": "2026-09-30T11:19:29Z",
+    "statuses": [
+     "waiting@11:19:30",
+     "queued@11:19:31",
+     "in_progress@11:19:33",
+     "success@11:20:09"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:19:38.467Z",
+   "deployReportedSuccess": "2026-09-30T11:19:44.677Z",
+   "runnerPolls": 5,
+   "runnerFirstPassAfterSuccessMs": 20704,
+   "runnerResult": "READY generation=f5263d20d14b68863841ea5fa91cfc06f432a889cc6b467112c782dcc160dbc0 after 20657 ms, 5 polls; not-ready observations: {\"stale200\":4,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0}"
+  },
+  {
+   "runId": "36709383413",
+   "attempt": 1,
+   "label": "G7",
+   "case": "3-consecutive readiness",
+   "generation": "c55634a840d3dde22eca8f9736da916ae3f0ab5340f423c282ff1d7dcdadaff4",
+   "environmentDeploymentId": "6758319968",
+   "environmentDeployment": {
+    "pagesBuildVersion": "85376fe",
+    "created": "2026-09-30T11:34:35Z",
+    "statuses": [
+     "waiting@11:34:36",
+     "queued@11:34:37",
+     "in_progress@11:34:40",
+     "success@11:36:44"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:34:47.524Z",
+   "deployReportedSuccess": "2026-09-30T11:36:30.159Z",
+   "runnerPolls": 3,
+   "runnerFirstPassAfterSuccessMs": 458,
+   "runnerResult": "READY generation=c55634a840d3dde22eca8f9736da916ae3f0ab5340f423c282ff1d7dcdadaff4 after 10544 ms (3 consecutive), first passing poll at 392 ms, 3 polls; not-ready observations: {\"stale200\":0,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0,\"regressedAfterPass\":0}"
+  },
+  {
+   "runId": "36709690836",
+   "attempt": 1,
+   "label": "G8",
+   "case": "F1 deploy fails (bad artifact name)",
+   "generation": "3a2f312fd08db159201d892524eb54fc3084806b035f638cb78a0ff316740014",
+   "environmentDeploymentId": "6758374397",
+   "environmentDeployment": {
+    "pagesBuildVersion": "85376fe",
+    "created": "2026-09-30T11:37:36Z",
+    "statuses": [
+     "waiting@11:37:37",
+     "queued@11:37:38",
+     "in_progress@11:37:41",
+     "failure@11:38:48"
+    ]
+   },
+   "pagesDeploymentCreated": null,
+   "deployReportedSuccess": null,
+   "runnerPolls": 12,
+   "runnerFirstPassAfterSuccessMs": null,
+   "runnerResult": "NOT READY after 56047 ms, 12 polls: stored; deployment pending. Observations: {\"stale200\":36,\"notFound\":12,\"otherStatus\":0,\"digestMismatch\":0,\"regressedAfterPass\":0}"
+  },
+  {
+   "runId": "36709898713",
+   "attempt": 1,
+   "label": "G8",
+   "case": "F1 repair, same store tip",
+   "generation": "3a2f312fd08db159201d892524eb54fc3084806b035f638cb78a0ff316740014",
+   "environmentDeploymentId": "6758410938",
+   "environmentDeployment": {
+    "pagesBuildVersion": "85376fe",
+    "created": "2026-09-30T11:39:41Z",
+    "statuses": [
+     "waiting@11:39:43",
+     "queued@11:39:44",
+     "in_progress@11:39:46",
+     "success@11:40:13"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:39:53.152Z",
+   "deployReportedSuccess": "2026-09-30T11:39:58.874Z",
+   "runnerPolls": 3,
+   "runnerFirstPassAfterSuccessMs": 306,
+   "runnerResult": "READY generation=3a2f312fd08db159201d892524eb54fc3084806b035f638cb78a0ff316740014 after 10419 ms (3 consecutive), first passing poll at 241 ms, 3 polls; not-ready observations: {\"stale200\":0,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0,\"regressedAfterPass\":0}"
+  },
+  {
+   "runId": "36710020123",
+   "attempt": 1,
+   "label": "G9",
+   "case": "F2 run cancelled during deploy",
+   "generation": "2c0a145769e019205759a2b34907a14b20d3f5715502520cc70ca65b647c8128",
+   "environmentDeploymentId": "6758431621",
+   "environmentDeployment": {
+    "pagesBuildVersion": "85376fe",
+    "created": "2026-09-30T11:40:51Z",
+    "statuses": [
+     "waiting@11:40:52",
+     "queued@11:40:53",
+     "in_progress@11:40:55",
+     "error@11:41:18"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:41:00.355Z",
+   "deployReportedSuccess": "2026-09-30T11:41:05.453Z",
+   "runnerPolls": 3,
+   "runnerFirstPassAfterSuccessMs": 629,
+   "runnerResult": "READY generation=2c0a145769e019205759a2b34907a14b20d3f5715502520cc70ca65b647c8128 after 10649 ms (3 consecutive), first passing poll at 537 ms, 3 polls; not-ready observations: {\"stale200\":0,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0,\"regressedAfterPass\":0}"
+  },
+  {
+   "runId": "36710156102",
+   "attempt": 1,
+   "label": "G9",
+   "case": "F2 repair, same store tip",
+   "generation": "2c0a145769e019205759a2b34907a14b20d3f5715502520cc70ca65b647c8128",
+   "environmentDeploymentId": "6758455357",
+   "environmentDeployment": {
+    "pagesBuildVersion": "85376fe",
+    "created": "2026-09-30T11:42:10Z",
+    "statuses": [
+     "waiting@11:42:11",
+     "queued@11:42:13",
+     "in_progress@11:42:15",
+     "success@11:44:10"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:42:21.298Z",
+   "deployReportedSuccess": "2026-09-30T11:42:26.301Z",
+   "runnerPolls": 21,
+   "runnerFirstPassAfterSuccessMs": 341,
+   "runnerResult": "READY generation=2c0a145769e019205759a2b34907a14b20d3f5715502520cc70ca65b647c8128 after 100942 ms (3 consecutive), first passing poll at 285 ms, 21 polls; not-ready observations: {\"stale200\":22,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0,\"regressedAfterPass\":16}"
+  },
+  {
+   "runId": "36710481440",
+   "attempt": 1,
+   "label": "G10",
+   "case": "production shape via lib pages.yml@eee3ea7",
+   "generation": "a9b9c3cd50d70296957600fd26342bbed71bdefb99228ba8a86cc33b3f8861d3",
+   "environmentDeploymentId": "6758511494",
+   "environmentDeployment": {
+    "pagesBuildVersion": "e4e9b82",
+    "created": "2026-09-30T11:45:24Z",
+    "statuses": [
+     "waiting@11:45:25",
+     "queued@11:45:26",
+     "in_progress@11:45:28",
+     "success@11:45:50"
+    ]
+   },
+   "pagesDeploymentCreated": "2026-09-30T11:45:32.954Z",
+   "deployReportedSuccess": "2026-09-30T11:45:38.163Z",
+   "runnerPolls": 3,
+   "runnerFirstPassAfterSuccessMs": 270,
+   "runnerResult": "READY generation=a9b9c3cd50d70296957600fd26342bbed71bdefb99228ba8a86cc33b3f8861d3 after 10293 ms (3 consecutive), first passing poll at 210 ms, 3 polls; not-ready observations: {\"stale200\":0,\"notFound\":0,\"otherStatus\":0,\"digestMismatch\":0,\"regressedAfterPass\":0}"
+  }
+ ],
+ "localObserver": {
+  "note": "Owner's machine, 2 s interval, canonical URLs plus a ?cb= cache-busted site.json. Each timeline row is a change in which generation each file served. A regression is a poll where a file served a generation older than one that same file had already served at this vantage point. A mixed poll is one where the files served more than one generation.",
+  "polls": 1236,
+  "first": "2026-09-30T11:10:54.541Z",
+  "last": "2026-09-30T11:52:38.668Z",
+  "servedBy": [
+   "WSI"
+  ],
+  "cacheControl": [
+   "max-age=600"
+  ],
+  "timeline": [
+   {
+    "at": "2026-09-30T11:10:54.541Z",
+    "site.json": null,
+    "site.json?cb": null,
+    "pr/1/latest.json": null,
+    "pr/2/latest.json": 404,
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:11:25.109Z",
+    "site.json": "G1",
+    "site.json?cb": "G1",
+    "pr/1/latest.json": "G1",
+    "pr/2/latest.json": 404,
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:12:34.897Z",
+    "site.json": "G2",
+    "site.json?cb": "G2",
+    "pr/1/latest.json": "G2",
+    "pr/2/latest.json": 404,
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:13:55.961Z",
+    "site.json": "G3",
+    "site.json?cb": "G3",
+    "pr/1/latest.json": "G2",
+    "pr/2/latest.json": 404,
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:14:26.431Z",
+    "site.json": "G3",
+    "site.json?cb": "G3",
+    "pr/1/latest.json": "G3",
+    "pr/2/latest.json": 404,
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:16:09.867Z",
+    "site.json": "G2",
+    "site.json?cb": "G2",
+    "pr/1/latest.json": "G3",
+    "pr/2/latest.json": 404,
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:16:12.753Z",
+    "site.json": "G4",
+    "site.json?cb": "G4",
+    "pr/1/latest.json": "G3",
+    "pr/2/latest.json": "G4",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:16:43.833Z",
+    "site.json": "G3",
+    "site.json?cb": "G3",
+    "pr/1/latest.json": "G2",
+    "pr/2/latest.json": "G4",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:17:28.621Z",
+    "site.json": "G4",
+    "site.json?cb": "G4",
+    "pr/1/latest.json": "G4",
+    "pr/2/latest.json": "G4",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:17:44.959Z",
+    "site.json": "G5",
+    "site.json?cb": "G5",
+    "pr/1/latest.json": "G5",
+    "pr/2/latest.json": "G5",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:19:40.677Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G3",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:20:11.151Z",
+    "site.json": "G5",
+    "site.json?cb": "G5",
+    "pr/1/latest.json": "G6",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:20:49.912Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G5",
+    "pr/2/latest.json": "G5",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:21:20.356Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G2",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:21:50.810Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G3",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "HIT",
+    "site.json age": "30"
+   },
+   {
+    "at": "2026-09-30T11:22:21.270Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G2",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "HIT",
+    "site.json age": "61"
+   },
+   {
+    "at": "2026-09-30T11:22:45.674Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G3",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:23:16.151Z",
+    "site.json": "G6",
+    "site.json?cb": "G6",
+    "pr/1/latest.json": "G6",
+    "pr/2/latest.json": "G6",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:36:05.369Z",
+    "site.json": "G7",
+    "site.json?cb": "G7",
+    "pr/1/latest.json": "G7",
+    "pr/2/latest.json": "G7",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:39:55.922Z",
+    "site.json": "G7",
+    "site.json?cb": "G7",
+    "pr/1/latest.json": "G8",
+    "pr/2/latest.json": "G8",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:40:26.376Z",
+    "site.json": "G8",
+    "site.json?cb": "G8",
+    "pr/1/latest.json": "G8",
+    "pr/2/latest.json": "G8",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:41:03.691Z",
+    "site.json": "G9",
+    "site.json?cb": "G9",
+    "pr/1/latest.json": "G9",
+    "pr/2/latest.json": "G9",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:41:34.105Z",
+    "site.json": "G9",
+    "site.json?cb": "G9",
+    "pr/1/latest.json": "G9",
+    "pr/2/latest.json": "G8",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:42:04.518Z",
+    "site.json": "G9",
+    "site.json?cb": "G9",
+    "pr/1/latest.json": "G9",
+    "pr/2/latest.json": "G9",
+    "site.json x-cache": "HIT",
+    "site.json age": "30"
+   },
+   {
+    "at": "2026-09-30T11:42:57.284Z",
+    "site.json": "G9",
+    "site.json?cb": "G9",
+    "pr/1/latest.json": "G9",
+    "pr/2/latest.json": "G7",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:43:27.690Z",
+    "site.json": "G7",
+    "site.json?cb": "G7",
+    "pr/1/latest.json": "G9",
+    "pr/2/latest.json": "G9",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:43:58.165Z",
+    "site.json": "G9",
+    "site.json?cb": "G9",
+    "pr/1/latest.json": "G9",
+    "pr/2/latest.json": "G7",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:44:05.094Z",
+    "site.json": "G7",
+    "site.json?cb": "G7",
+    "pr/1/latest.json": "G7",
+    "pr/2/latest.json": "G8",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:44:35.541Z",
+    "site.json": "G9",
+    "site.json?cb": "G9",
+    "pr/1/latest.json": "G8",
+    "pr/2/latest.json": "G7",
+    "site.json x-cache": "MISS",
+    "site.json age": "0"
+   },
+   {
+    "at": "2026-09-30T11:45:34.381Z",
+    "site.json": "G10",
+    "site.json?cb": "G10",
+    "pr/1/latest.json": "G10",
+    "pr/2/latest.json": "G10",
+    "site.json x-cache": "HIT",
+    "site.json age": "0"
+   }
+  ],
+  "regressionPolls": 389,
+  "regressions": [
+   {
+    "at": "2026-09-30T11:16:09.867Z",
+    "file": "site.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:09.867Z",
+    "file": "site.json?cb",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:43.833Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:43.833Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:43.833Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:45.841Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:45.841Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:45.841Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:47.863Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:47.863Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:47.863Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:49.876Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:49.876Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:49.876Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:51.887Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:51.887Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:51.887Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:53.902Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:53.902Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:53.902Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:55.909Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:55.909Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:55.909Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:16:58.141Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:58.141Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:16:58.141Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:00.158Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:00.158Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:00.158Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:02.169Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:02.169Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:02.169Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:04.192Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:04.192Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:04.192Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:06.207Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:06.207Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:06.207Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:08.215Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:08.215Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:08.215Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:10.264Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:10.264Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:10.264Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:12.276Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:12.276Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:12.276Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:14.294Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:14.294Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:14.294Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:16.304Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:16.304Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:16.304Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:18.314Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:18.314Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:18.314Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:20.321Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:20.321Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:20.321Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:22.332Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:22.332Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:22.332Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:24.343Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:24.343Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:24.343Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:17:26.360Z",
+    "file": "site.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:26.360Z",
+    "file": "site.json?cb",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G4"
+   },
+   {
+    "at": "2026-09-30T11:17:26.360Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G3"
+   },
+   {
+    "at": "2026-09-30T11:19:40.677Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:42.697Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:44.719Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:46.740Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:48.757Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:50.775Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:52.804Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:54.819Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:56.832Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:19:58.845Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:20:00.857Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:20:02.872Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:20:04.882Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:20:06.894Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:20:08.902Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G5"
+   },
+   {
+    "at": "2026-09-30T11:20:11.151Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:11.151Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:13.169Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:13.169Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:15.191Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:15.191Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:17.199Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:17.199Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:19.217Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:19.217Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:21.231Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:21.231Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:23.244Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:23.244Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:25.262Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:25.262Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:27.287Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:27.287Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:29.294Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:29.294Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:31.307Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:31.307Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:33.318Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:33.318Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:35.336Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:35.336Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:37.346Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:37.346Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:39.358Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:39.358Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:41.603Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:41.603Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:43.612Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:43.612Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:45.631Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:45.631Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:47.648Z",
+    "file": "site.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:47.648Z",
+    "file": "site.json?cb",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:49.912Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:49.912Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:51.933Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:51.933Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:53.945Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:53.945Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:55.962Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:55.962Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:57.977Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:57.977Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:59.989Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:20:59.989Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:01.997Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:01.997Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:04.016Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:04.016Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:06.048Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:06.048Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:08.057Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:08.057Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:10.075Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:10.075Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:12.082Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:12.082Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:14.092Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:14.092Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:16.105Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:16.105Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:18.121Z",
+    "file": "pr/1/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:18.121Z",
+    "file": "pr/2/latest.json",
+    "served": "G5",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:20.356Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:22.363Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:24.382Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:26.398Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:28.407Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:30.420Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:32.432Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:34.447Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:36.477Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:38.489Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:40.498Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:42.519Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:44.525Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:46.537Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:48.559Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:50.810Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:52.830Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:54.848Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:56.861Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:21:58.870Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:00.886Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:02.899Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:04.933Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:06.948Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:08.968Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:10.978Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:12.988Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:15.001Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:17.015Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:19.028Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:21.270Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:23.291Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:25.313Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:27.330Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:29.349Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:31.368Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:33.382Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:35.394Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:37.403Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:39.414Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:41.423Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:43.439Z",
+    "file": "pr/1/latest.json",
+    "served": "G2",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:45.674Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:47.690Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:49.700Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:51.714Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:53.729Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:55.741Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:57.752Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:22:59.763Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:01.777Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:03.798Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:05.821Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:07.835Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:09.861Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:11.883Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:23:13.909Z",
+    "file": "pr/1/latest.json",
+    "served": "G3",
+    "newestAlreadySeenForThisFile": "G6"
+   },
+   {
+    "at": "2026-09-30T11:41:34.105Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:36.123Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:38.144Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:40.152Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:42.164Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:44.172Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:46.185Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:48.192Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:50.204Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:52.230Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:54.251Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:56.263Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:41:58.275Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:42:00.281Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:42:02.289Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:42:57.284Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:42:59.296Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:01.305Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:03.319Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:05.339Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:07.371Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:09.379Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:11.386Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:13.393Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:15.400Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:17.415Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:19.422Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:21.434Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:23.451Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:25.459Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:27.690Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:27.690Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:29.708Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:29.708Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:31.717Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:31.717Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:33.767Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:33.767Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:35.787Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:35.787Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:37.801Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:37.801Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:39.819Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:39.819Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:41.831Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:41.831Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:43.843Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:43.843Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:45.854Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:45.854Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:47.864Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:47.864Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:49.877Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:49.877Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:51.887Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:51.887Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:53.897Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:53.897Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:55.918Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:55.918Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:43:58.165Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:00.183Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:02.193Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:05.094Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:05.094Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:05.094Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:05.094Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:07.104Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:07.104Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:07.104Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:07.104Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:09.123Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:09.123Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:09.123Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:09.123Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:11.140Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:11.140Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:11.140Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:11.140Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:13.160Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:13.160Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:13.160Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:13.160Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:15.173Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:15.173Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:15.173Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:15.173Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:17.183Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:17.183Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:17.183Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:17.183Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:19.196Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:19.196Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:19.196Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:19.196Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:21.215Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:21.215Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:21.215Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:21.215Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:23.226Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:23.226Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:23.226Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:23.226Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:25.232Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:25.232Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:25.232Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:25.232Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:27.242Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:27.242Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:27.242Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:27.242Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:29.258Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:29.258Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:29.258Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:29.258Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:31.264Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:31.264Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:31.264Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:31.264Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:33.315Z",
+    "file": "site.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:33.315Z",
+    "file": "site.json?cb",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:33.315Z",
+    "file": "pr/1/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:33.315Z",
+    "file": "pr/2/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:35.541Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:35.541Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:37.563Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:37.563Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:39.575Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:39.575Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:41.584Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:41.584Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:43.602Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:43.602Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:45.614Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:45.614Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:47.636Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:47.636Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:49.644Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:49.644Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:51.655Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:51.655Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:53.674Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:53.674Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:55.685Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:55.685Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:57.705Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:57.705Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:59.724Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:44:59.724Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:01.734Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:01.734Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:03.745Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:03.745Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:05.988Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:05.988Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:08.003Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:08.003Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:10.010Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:10.010Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:12.018Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:12.018Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:14.026Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:14.026Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:16.036Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:16.036Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:18.044Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:18.044Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:20.060Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:20.060Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:22.070Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:22.070Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:24.079Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:24.079Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:26.101Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:26.101Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:28.121Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:28.121Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:30.127Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:30.127Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:32.136Z",
+    "file": "pr/1/latest.json",
+    "served": "G8",
+    "newestAlreadySeenForThisFile": "G9"
+   },
+   {
+    "at": "2026-09-30T11:45:32.136Z",
+    "file": "pr/2/latest.json",
+    "served": "G7",
+    "newestAlreadySeenForThisFile": "G9"
+   }
+  ],
+  "mixedGenerationPolls": 266,
+  "perDeploy": {
+   "note": "Window = from this generation's deploy-pages \"Reported success!\" to the next generation's. pollsWithAnOlderFile counts polls where any JSON file (site.json, ?cb copy, pr/1, pr/2 once it existed) served a generation older than this one; newer generations appearing early are not counted.",
+   "byGeneration": {
+    "G1": {
+     "windowS": 67.2,
+     "polls": 33,
+     "pollsWithAnOlderFile": 0,
+     "lastOlderFileAfterSuccessS": null
+    },
+    "G2": {
+     "windowS": 75.9,
+     "polls": 37,
+     "pollsWithAnOlderFile": 0,
+     "lastOlderFileAfterSuccessS": null
+    },
+    "G3": {
+     "windowS": 139.4,
+     "polls": 68,
+     "pollsWithAnOlderFile": 17,
+     "lastOlderFileAfterSuccessS": 136.5
+    },
+    "G4": {
+     "windowS": 94.4,
+     "polls": 47,
+     "pollsWithAnOlderFile": 37,
+     "lastOlderFileAfterSuccessS": 73.6
+    },
+    "G5": {
+     "windowS": 117.6,
+     "polls": 57,
+     "pollsWithAnOlderFile": 2,
+     "lastOlderFileAfterSuccessS": 115.6
+    },
+    "G6": {
+     "windowS": 1005.5,
+     "polls": 498,
+     "pollsWithAnOlderFile": 104,
+     "lastOlderFileAfterSuccessS": 209.2
+    },
+    "G7": {
+     "windowS": 208.7,
+     "polls": 103,
+     "pollsWithAnOlderFile": 0,
+     "lastOlderFileAfterSuccessS": null
+    },
+    "G8": {
+     "windowS": 66.6,
+     "polls": 32,
+     "pollsWithAnOlderFile": 13,
+     "lastOlderFileAfterSuccessS": 25.2
+    },
+    "G9": {
+     "windowS": 272.7,
+     "polls": 134,
+     "pollsWithAnOlderFile": 92,
+     "lastOlderFileAfterSuccessS": 266.7
+    },
+    "G10": {
+     "windowS": 420.5,
+     "polls": 208,
+     "pollsWithAnOlderFile": 0,
+     "lastOlderFileAfterSuccessS": null
+    }
+   }
+  }
+ }
+}

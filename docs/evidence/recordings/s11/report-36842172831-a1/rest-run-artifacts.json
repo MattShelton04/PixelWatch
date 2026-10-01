@@ -1,0 +1,47 @@
+{
+  "total_count": 3,
+  "artifacts": [
+    {
+      "id": 11151603535,
+      "name": "pixelwatch-b1-a1-head-spike-s1-of1",
+      "size_in_bytes": 295,
+      "expired": false,
+      "created_at": "2026-10-01T09:21:10Z",
+      "workflow_run": {
+        "id": 36842134011,
+        "repository_id": 1397668282,
+        "head_repository_id": 1397668282,
+        "head_branch": "s11/same-repo",
+        "head_sha": "92a103c1085798bd869ea505037853bb88c8c00b"
+      }
+    },
+    {
+      "id": 11151534709,
+      "name": "s11-capture-36842134011-a1",
+      "size_in_bytes": 2124,
+      "expired": false,
+      "created_at": "2026-10-01T09:21:01Z",
+      "workflow_run": {
+        "id": 36842134011,
+        "repository_id": 1397668282,
+        "head_repository_id": 1397668282,
+        "head_branch": "s11/same-repo",
+        "head_sha": "92a103c1085798bd869ea505037853bb88c8c00b"
+      }
+    },
+    {
+      "id": 11150879348,
+      "name": "pixelwatch-b1-a1-base-spike-s1-of1",
+      "size_in_bytes": 274,
+      "expired": false,
+      "created_at": "2026-10-01T09:21:09Z",
+      "workflow_run": {
+        "id": 36842134011,
+        "repository_id": 1397668282,
+        "head_repository_id": 1397668282,
+        "head_branch": "s11/same-repo",
+        "head_sha": "92a103c1085798bd869ea505037853bb88c8c00b"
+      }
+    }
+  ]
+}

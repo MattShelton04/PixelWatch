@@ -1,0 +1,18 @@
+{
+  "event": "push",
+  "action": "",
+  "githubSha": "92c0f162c65fd989f4bc69b1017db91e387f3ab4",
+  "githubRef": "refs/heads/main",
+  "runId": "36841581816",
+  "runAttempt": "1",
+  "prNumber": "",
+  "prHeadSha": "",
+  "prBaseSha": "",
+  "prBaseRef": "",
+  "before": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+  "after": "92c0f162c65fd989f4bc69b1017db91e387f3ab4",
+  "githubShaParents": "92c0f162c65fd989f4bc69b1017db91e387f3ab4 ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+  "baseBranchTipAtCheckout": "92c0f162c65fd989f4bc69b1017db91e387f3ab4",
+  "selectedBase": "ef2f8dc2ee41baec0f948efd2fe0106c55f9225d",
+  "selectedHead": "92c0f162c65fd989f4bc69b1017db91e387f3ab4"
+}
