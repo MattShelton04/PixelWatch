@@ -91,9 +91,15 @@ const checkBundle: Check<Bundle> = (bundle) => {
   return undefined;
 };
 
+/** Σ shards over providers; base + head parts then fit run@1's 256 `parts`. */
+export const MAX_CONFIG_SHARDS = 128;
+
 const checkConfig: Check<Config> = (config) => {
   const dup = firstDuplicate(config.providers, (p) => p.id);
   if (dup >= 0) return issue("duplicate-provider", `/providers/${String(dup)}/id`, "provider ID appears twice");
+  // run@1 and snapshot@1 record at most 256 parts: base and head of every provider shard (02 §1).
+  const shards = config.providers.reduce((sum, p) => sum + p.shards, 0);
+  if (shards > MAX_CONFIG_SHARDS) return issue("too-many-parts", "/providers", `shards across providers must total at most ${String(MAX_CONFIG_SHARDS)}`);
   const soft = config.limits?.softBytes ?? 419_430_400;
   const hard = config.limits?.hardBytes ?? 524_288_000;
   if (soft > hard) return issue("limit-order", "/limits", "softBytes must not exceed hardBytes");

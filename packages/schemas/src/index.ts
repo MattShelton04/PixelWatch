@@ -4,7 +4,7 @@ export * from "./generated/types.ts";
 export * from "./ids.ts";
 export * from "./json.ts";
 export { DOCUMENT_KINDS, type DocumentKind, SUPPORTED_VERSIONS, schemaFor } from "./schemas.ts";
-export { changedPpm, checkResult, type SemanticIssue } from "./semantic.ts";
+export { MAX_CONFIG_SHARDS, changedPpm, checkResult, type SemanticIssue } from "./semantic.ts";
 export * from "./text.ts";
 export * from "./validate.ts";
 export * from "./convert/bundle.ts";

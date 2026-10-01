@@ -13,7 +13,7 @@ keys are rejected.
 | Schema | Contents |
 |---|---|
 | `bundle@1` | `schemaVersion: 1`; source claims; `revision: base\|head`; provider; shard index/count; complete declared unit catalog; per-unit result. No publishing decisions. |
-| `config@1` | Allowed source workflow IDs/events; providers and fixed shard counts; base policy (01 §4.4); comparator policy/version; store branch and prefix; retention and byte limits; comment on/off; theme preset |
+| `config@1` | Allowed source workflow IDs/events; providers and fixed shard counts (at most 128 shards in total, so base and head parts fit `run@1`'s 256 `parts`); base policy (01 §4.4); comparator policy/version; store branch and prefix; retention and byte limits; comment on/off; theme preset |
 | `store@1` | Ownership marker, repository ID, data version, transaction counter, run index. No app code. |
 | `run@1` | Run key; authenticated source envelope; capture claims; config/release/comparator versions; ingestion digest; base and head snapshot refs; results; coverage; ordering fields |
 | `snapshot@1` | Revision claim, normalized capture environment, sorted unit entries with explicit side states |
@@ -134,6 +134,8 @@ limit needs a measured memory bound, never disabling the check.
 - A malformed part is rejected. Valid sibling parts may still form an explicitly incomplete run.
 - The publisher re-encodes decoded pixels to canonical PNG. It never copies the uploaded file.
 - APNG and metadata are outside the profile; other encoders must normalize before upload.
+- ADR 0008 records the exact archive layout accepted (including upload-artifact's data
+  descriptors) and which failures reject a part versus refuse the whole ingestion.
 
 ## 6. Artifacts and merging (MVP)
 
@@ -158,6 +160,9 @@ Merge procedure:
    unit counts. A listed unit without a result is `missing`.
 5. The union of catalogs is the **declared** set. Omitted or failing work is never `unchanged`.
 6. Persist part diagnostics and coverage in the run and in `changes.json`.
+
+ADR 0008 fixes the details: conflicting parts are all rejected, a side no valid part lists is
+`part-missing` or `unit-missing`, and units absent on both sides are excluded with a diagnostic.
 
 **Rerun rule:** only **Re-run all jobs** produces a new complete attempt. Never mix parts across
 attempts. A failed-jobs-only rerun yields an incomplete attempt with an instruction to rerun
@@ -241,7 +246,8 @@ changed areas is presentation, derived from stored regions, and not part of the 
 ## 10. Trusted config parsing
 
 - Parse default-branch YAML as a restricted JSON-compatible mapping, then validate the exact
-  schema.
+  schema. ADR 0009 defines the subset: every accepted document means the same under YAML 1.1
+  and 1.2.
 - Unknown versions, unsafe paths/URLs/limits and source-policy errors stop **before any store
   write, deployment or comment**. No "fall back to defaults" for these.
 - Only a malformed *optional presentation* setting in a known version may fall back to the fixed
