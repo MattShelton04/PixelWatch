@@ -5,8 +5,8 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-01 (main @ `c37de5c` plus M1.1/M1.2): `packages/schemas`, the pixel hash, the
-restricted PNG codec and the canonical blob pool are implemented. Most checks below are therefore **planned**. A planned check is never counted as
+Status on 2026-10-01 (main @ `94f21c0` plus M1.3): `packages/schemas`, the pixel hash, the
+restricted PNG codec, the canonical blob pool and comparator-v1 are implemented. Most checks below are therefore **planned**. A planned check is never counted as
 green. M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
 stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
@@ -102,6 +102,7 @@ close gaps between 03 §7, 05 §2 and the frozen `site@1`.
 | R4.3-09 | Accepted pixels are re-encoded to canonical PNG; the raw artifact file is never served | TB2, TB9 | Tampering: polyglot or metadata-carrying files | Own encoder; blob named by pixel hash |
 | R4.3-10 | Never publish HTML, SVG, JS, CSS, XML, source maps, HARs, traces or attachments from capture | TB2, TB9 | Tampering: active content on the shared origin | Entry-name allowlist; served-tree allowlist |
 | R4.3-11 | Diffs and hashes are authoritative only about submitted pixels; reports are advisory, with no mandatory gate | TB2 | Repudiation: over-trusted results | `captureClaimsTrusted: false`; docs and `llms.txt` wording |
+| R4.3-12 | Missing, failed or omitted work is never `unchanged`: side states decide first (02 §4), and pixel thresholds only judge two captured sides (02 §9) | TB2 | Tampering: an omitted or failed capture shown as a pass | Side-state precedence before any comparison; a comparison is refused for any other unit; the policy's first threshold must be 0 |
 | R4.4-01 | PR run: target = PR head commit, baseline = merge base with the event's base-branch commit | TB3 | Spoofing: the wrong baseline hides a change | Envelope-derived source policy |
 | R4.4-02 | Default-branch push: target = pushed commit, baseline = first parent | TB3 | Same | Same |
 | R4.4-03 | Initial commit has no baseline → `incomparable` | TB2 | Tampering: a missing baseline shown as a pass | Base side `none` + `no-baseline` |
@@ -168,6 +169,7 @@ Planned paths are provisional (§1).
 | R4.2-05 | unit | passing | `packages/schemas/test/schemas.test.ts` › "reports an unknown version before looking at anything else" | Every document kind reports `unsupported-version` before any other check | M0.3 |
 | R4.2-05 | unit | passing | `testdata/schemas/store/invalid/schema.data-version-2.json` | A store with `dataVersion` 2 is rejected | M0.3 |
 | R4.2-05 | unit | passing | `testdata/schemas/config/invalid/schema.comparator-version-2.json` | An unknown comparator version in config is rejected | M0.3 |
+| R4.2-05 | unit | passing | `packages/core/test/comparator.test.ts` › "refuses an unknown comparator version" | The core maps only comparator version 1 to a policy; any other version throws | M1.3 |
 | R4.2-05 | simulation | planned | `packages/publisher/test/simulation/sim-unknown-version.sim.test.ts` | Unknown config/bundle/store version → zero store pushes, zero deployments, zero comment writes | M2.3 |
 | R4.2-06 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Top-level `permissions: {}`; the ingest and project jobs have exactly the 01 §4.2 sets | M2.5 |
 | R4.2-06 | evidence | recorded | `docs/evidence/s4-self-reference.md` | Inside a foreign-called reusable workflow, each called job's logged `GITHUB_TOKEN` permissions were exactly its own 01 §4.2 set, not the caller's union | S4 |
@@ -179,6 +181,7 @@ Planned paths are provisional (§1).
 | R4.2-08 | unit | passing | `packages/core/test/png-decode.test.ts` › "rejects every hostile PNG with its code before allocating decoded buffers" | The hostile PNG corpus (`testdata/png/hostile/`) fails before any output buffer is allocated, each within a time bound | M1.1 |
 | R4.2-08 | unit | passing | `packages/core/test/png-decode.test.ts` › "gives every PngSuite file its expected outcome" | The decoder is tested against the third-party PngSuite, including its corrupt `x*` files | M1.1 |
 | R4.2-08 | evidence | recorded | `docs/evidence/m1.1-png-bench.md` | Peak RSS and time recorded for real, maximum-size and hostile inputs, within the 02 §5 512 MiB budget | M1.1 |
+| R4.2-08 | evidence | recorded | `docs/evidence/m1.3-compare-bench.md` | Peak RSS and time recorded for decoding, hashing and comparing two 16 MP images (dense, fragmented, diagonal, height-change and in-worker cases), within the 02 §5 512 MiB budget | M1.3 |
 | R4.3-01 | unit | passing | `testdata/schemas/config/invalid/schema.workflow-name-not-id.json` | Config identifies the source workflow by numeric ID, never by name | M0.3 |
 | R4.3-01 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | Wrong repository ID, wrong workflow ID, wrong attempt, disallowed event/ref, incomplete run or payload≠REST mismatch → refused before download | M2.1 |
 | R4.3-01 | unit | planned | `packages/core/test/envelope.test.ts` | The envelope is built only from corroborated fields; a `workflow_run` payload that disagrees with REST fails safely | M1.5 |
@@ -215,12 +218,17 @@ Planned paths are provisional (§1).
 | R4.3-10 | unit | planned | `packages/core/test/ingress-zip.test.ts` | An archive containing anything but `bundle.json` and `u-<64 hex>.png` is rejected | M1.4 |
 | R4.3-10 | unit | planned | `packages/publisher/test/site-tree.test.ts` | Every served path matches the 03 §3 allowlist and every served file type is HTML/JSON/JS/PNG/TXT generated or validated by the publisher | M2.3 |
 | R4.3-11 | golden | planned | `packages/core/test/changes-projection.test.ts` | `changes.json` carries source vs claims separately and `llms.txt` states that results are advisory about submitted pixels | M1.7 |
+| R4.3-12 | unit | passing | `packages/core/test/comparator.test.ts` › "never turns a missing or failed side into unchanged, under any policy" | Every side pair with a missing or failed side is `missing`/`failed` with no diff under v1 and a maximally lenient policy, and even an `unchanged` comparison is refused for it | M1.3 |
+| R4.3-12 | unit | passing | `packages/core/test/comparator.test.ts` › "refuses pixel results for a unit whose sides aren't both captured" | A pixel comparison is refused for every non-captured side pair, and two captured sides can't be decided without one | M1.3 |
+| R4.3-12 | unit | passing | `packages/core/test/comparator.test.ts` › "refuses a policy that could hide a change or break run@1" | A policy whose first threshold isn't 0 (or that is otherwise malformed) is refused, so `unchanged` always means no channel moved | M1.3 |
+| R4.3-12 | golden | passing | `packages/core/test/comparator-goldens.test.ts` › "reproduces tiny/expected.json exactly" | The core reproduces all 48 recorded tiny results, including every missing/failed precedence case | M1.3 |
 | R4.4-01 | unit | planned | `packages/core/test/envelope.test.ts` | PR run: target = PR head, baseline = merge base with the event's base-branch commit | M1.5 |
 | R4.4-01 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo opened, synchronize (incl. a head that merged the base) and full rerun: merge base of the corroborated `base.sha` and the head equalled the capture's selected base | S11 |
 | R4.4-01 | evidence | evidence-planned | `docs/adr/` (fork identity) | Fork PR payloads confirm the base/head policy or surface a decision | M2.6 |
 | R4.4-02 | unit | planned | `packages/core/test/envelope.test.ts` | Default-branch push: target = pushed commit, baseline = first parent | M1.5 |
 | R4.4-03 | unit | passing | `testdata/schemas/run/invalid/result-inconsistent.no-baseline-without-reason.json` | A base side of `none` must carry `no-baseline` | M0.3 |
 | R4.4-03 | golden | passing | `packages/core/test/comparator-goldens.test.ts` › "covers all eight results" | Tiny fixtures include `incomparable` from a missing baseline | M0.6 |
+| R4.4-03 | unit | passing | `packages/core/test/comparator.test.ts` › "compares a none base never: incomparable with no-baseline whatever the head" | A `none` base always carries `no-baseline`, is `incomparable` against a captured head, never has a diff, and refuses a pixel comparison | M1.3 |
 | R4.4-04 | unit | planned | `packages/core/test/envelope.test.ts` | Without a corroborated baseline commit the run is `incomparable`, never compared to the latest main snapshot | M1.5 |
 | R4.4-05 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs and `llms.txt` state that the PR controls the harness for both sides | M3.8 |
 | R4.4-06 | unit | planned | `packages/core/test/envelope.test.ts` | A historical PR with an uncorroborated base is stored unassociated with a diagnostic | M1.5 |

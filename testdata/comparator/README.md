@@ -6,7 +6,7 @@ that recording. Nothing is hand-written. Never edit these files by hand.
 
 | Path | What | Made by |
 |---|---|---|
-| `tiny/cases.json` | 47 small hand-built inputs (1×1 to 64×64). Images are a fill colour plus `[x, y, w, h, rgba]` rectangles. Side-state cases declare their 02 §4 result | `tools/prototype-goldens/tiny-cases.ts` |
+| `tiny/cases.json` | 48 small hand-built inputs (1×1 to 64×64). Images are a fill colour plus `[x, y, w, h, rgba]` rectangles. Side-state cases declare their 02 §4 result | `tools/prototype-goldens/tiny-cases.ts` |
 | `tiny/prototype.json` | The prototype's `report._compare` on each captured pair (plus on the alpha-normalized pair where that differs, for D1). Python pixel hashes per side | `record.py` |
 | `tiny/expected.json` | comparator-v1 run@1 results (the M1.3 target) | `tools/prototype-goldens/expected.ts` |
 | `propertyscope-pr123/prototype.json` | `build_report` on PR #123 (run 36405830015): 42 × unchanged. Input file hashes, dimensions and pixel hashes | `record.py` |
@@ -35,3 +35,5 @@ node tools/prototype-goldens/expected.ts
 
 `packages/core/test/comparator-goldens.test.ts` fails if `cases.json` or either `expected.json`
 is stale, if a required edge or state loses its fixture, or if any recording stops fitting run@1.
+It also requires the core comparator to reproduce both `expected.json` files exactly. Full-size
+parity is local only: `node tools/check-reference-compare.ts` (needs `.reference/`).

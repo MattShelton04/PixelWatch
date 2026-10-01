@@ -58,8 +58,12 @@ Inputs are two decoded images as unpremultiplied RGBA8. RGB input gets alpha 255
      be partial.
    - A tile is active if it contains at least one changed pixel. Group active tiles into
      8-connected components.
-   - Each component becomes a region: the box of its **changed pixels** (not the tiles), with
-     `pixels` = its changed-pixel count.
+   - Each component becomes a region, with `pixels` = the changed-pixel count of its own tiles.
+     Its box is the box of the **changed pixels** (not the tiles) inside the component's **tile
+     rectangle**, the smallest tile-aligned rectangle holding all its tiles. That rectangle can
+     contain another component's tiles, and their changed pixels count toward the box (but not
+     toward `pixels`). This is the prototype's `window` (`pixels.py` lines 89–96); see
+     Clarifications.
    - Sort by pixels descending, then y, x, width and height ascending. Keep the first 12, and
      `regionCount` is the total number of components.
 7. **Classify:**
@@ -68,8 +72,8 @@ Inputs are two decoded images as unpremultiplied RGBA8. RGB input gets alpha 255
    - t0 changedPixels ≤ 128 and t8 changedPixels = 0 (so max delta ≤ 8) → `subtle`, `[pixels]`;
    - otherwise → `changed`, `[pixels]`.
 
-The policy is data (`COMPARATOR_V1` in `tools/prototype-goldens/mapping.ts`: thresholds, subtle
-limits, tile, maxRegions). `config@1` only carries `comparator.version: 1`, so the version fixes
+The policy is data (`COMPARATOR_V1` in `packages/core/src/comparator/policy.ts`: thresholds,
+subtle limits, tile, maxRegions; the recording tools import it from there). `config@1` only carries `comparator.version: 1`, so the version fixes
 the policy. With D1, for equal sizes, t0 = 0 exactly when the pixel hashes are equal, which is what
 `checkResult` requires of `unchanged`.
 
@@ -127,6 +131,13 @@ as `prototypeOnNormalized`. It isn't hand-written.
 - **Region tie order.** The prototype orders exact ties in (pixels, y, x) by Python set iteration.
   v1 adds width, then height. `region-sort-tie` (two 7-pixel regions both starting at (0, 0))
   recorded the same order v1 gives. Any recording whose order differs fails generation.
+- **Region box window** (added 2026-10-01, M1.3). An earlier wording of step 6 said a region is
+  "the box of its changed pixels". The prototype boxes every changed pixel in the component's tile
+  rectangle instead, which can take in a non-adjacent component's pixels. `region-window` (a U of
+  7 tiles around a separate 1-pixel component) was recorded: the U's box is
+  `{x: 3, y: 0, width: 49, height: 24, pixels: 7}`, where y = 0 comes from the other component's
+  pixel. v1 is the prototype's behaviour. Only the wording was wrong, so there's no version
+  change. Owner decision, 2026-10-01.
 - **Height change with zero delta.** A head that grows by fully transparent rows compares equal
   on the canvas but is still `changed`/`dimensions` (`height-grow-transparent`).
 
@@ -168,7 +179,7 @@ ADR 0001 digest.
 | PropertyScope PR #123 (run 36405830015), 42 views | `build_report`, the CI publisher path | 42 × `unchanged`. Base and head PNGs are byte-identical |
 | TracePilot run 36287837535 (push), 64 views | `report._compare` + `pngsafe` per pair | 1 `changed` (`settings-pricing`, 252 px), 1 `subtle` (`config-injector`, 44 px), 62 `unchanged` |
 | TracePilot run 36301239732 (PR), 101 views | same | 5 `changed` (`rich-tool-*`, 729–4607 px), 96 `unchanged` |
-| 47 tiny cases (1×1 to 64×64) | `report._compare` on arrays | covers all 8 results and every edge (below) |
+| 48 tiny cases (1×1 to 64×64) | `report._compare` on arrays | covers all 8 results and every edge (below) |
 | 3 real crops (1440×256 bands) | `report._compare` | 1 `subtle`, 2 `changed` |
 
 **Cross-check.** On all 165 TracePilot views, PropertyScope's comparator matches TracePilot's
@@ -184,14 +195,14 @@ recording agrees with an independent implementation on another platform.
 - height grow, height grow with zero delta, height shrink, and a width change;
 - 1×1 images;
 - regions: tile boundary, diagonal, gap, clipping, per-threshold regions, sort order, ties, and
-  16 regions → 12 kept.
+  16 regions → 12 kept, and a box window that takes in another region's pixel.
 
 Committed files (SHA-256):
 
 | File | SHA-256 |
 |---|---|
-| `testdata/comparator/tiny/cases.json` (generated input) | `c5456368ab4f78f183b2d69febe35497f7ed2848705831c7d7b8fc32ccc83d31` |
-| `testdata/comparator/tiny/prototype.json` | `f7eb5a32402ac77fd85367bdcff3e8c517e088c3e28e25bb6f1e5f0f8869f27b` |
+| `testdata/comparator/tiny/cases.json` (generated input) | `7afbf5bf6483a8698d38b328bf83242a96e852e3b9aaf5570a1c26f6bf533fac` |
+| `testdata/comparator/tiny/prototype.json` | `2931571868754fad7be189137d055a13f0a77922fee408d1341cf9dfce6dca60` |
 | `testdata/comparator/propertyscope-pr123/prototype.json` | `76e8a46ef9e4ad8e5c599ea7e445884ff974d9f6d7512929a7be7e514cecd4ed` |
 | `testdata/comparator/propertyscope-pr123/state-probes.json` | `1159fd1f8ee10a6824b746b8ced6dd90d72d14d56da60fc5ce7b7973aaa07672` |
 | `testdata/comparator/tracepilot-36287837535/prototype.json` | `3503f719ea2f1d0bd265551cf65daccbe738808e508ea9113f30e84c5ea36fd0` |
@@ -213,6 +224,12 @@ generated from the files above, and a test fails if they're stale.
   local, like `tools/check-reference-conversion.ts`. The GitHub copies expire on 2026-10-11/12;
   after that it needs the owner's backup of `.reference/artifacts/`. The crops keep real-pixel
   parity in CI.
+
+  **Met in M1.3 (2026-10-01).** `packages/core/test/comparator-goldens.test.ts` reproduces both
+  expected files exactly from the core comparator, decoding the crop PNGs with `decodePng`.
+  `node tools/check-reference-compare.ts` reproduced all 207 compared views (42 + 64 + 101) from
+  `.reference/`. `region-window` was recorded with the harness above in the same environment, and
+  only the three `tiny/` files changed.
 - M1.1/M1.2 should decode the real PNGs and crops and match the recorded `pixelHash` values.
   Those come from Pillow plus an independent Python hash.
 - `packages/core` now exists with the pixel hash only (M1.2 adds blob reuse). The fixed vectors

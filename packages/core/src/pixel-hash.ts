@@ -34,8 +34,11 @@ export function checkPixels(image: RawPixels): void {
   }
 }
 
-/** Normalized RGBA for rows [from, to): alpha 255 for RGB, RGB zeroed under alpha 0. */
-function normalizeRows(image: RawPixels, from: number, to: number): Uint8Array {
+/**
+ * Normalized RGBA for rows [from, to): alpha 255 for RGB, RGB zeroed under alpha 0. Unchecked:
+ * callers validate `image` with checkPixels first. The comparator streams through this too.
+ */
+export function normalizeRgbaRows(image: RawPixels, from: number, to: number): Uint8Array {
   const { width, channels, data } = image;
   const out = new Uint8Array((to - from) * width * 4);
   let src = from * width * channels;
@@ -54,7 +57,7 @@ function normalizeRows(image: RawPixels, from: number, to: number): Uint8Array {
 /** The normalized RGBA the hash covers. comparator-v1 compares these pixels too (delta D1). */
 export function normalizeRgba(image: RawPixels): Uint8Array {
   checkPixels(image);
-  return normalizeRows(image, 0, image.height);
+  return normalizeRgbaRows(image, 0, image.height);
 }
 
 export function pixelHash(image: RawPixels): string {
@@ -65,7 +68,7 @@ export function pixelHash(image: RawPixels): string {
   view.setUint32(4, image.height);
   const hash = createHash("sha256").update(PIXEL_HASH_DOMAIN, "utf8").update(header);
   for (let row = 0; row < image.height; row += ROWS_PER_CHUNK) {
-    hash.update(normalizeRows(image, row, Math.min(image.height, row + ROWS_PER_CHUNK)));
+    hash.update(normalizeRgbaRows(image, row, Math.min(image.height, row + ROWS_PER_CHUNK)));
   }
   return hash.digest("hex");
 }

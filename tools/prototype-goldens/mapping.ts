@@ -1,7 +1,9 @@
 // The mechanical mapping from a recorded prototype comparison (PropertyScope report._compare at
 // 6378d8be…) to comparator-v1's run@1 `Diff` (docs/adr/comparator-v1.md §Mapping). It renames
 // and recomputes; it never re-implements the comparison. Used by expected.ts and by the tests
-// that prove every recorded output fits run@1.
+// that prove every recorded output fits run@1. The policy and region order are core's
+// (packages/core/src/comparator/policy.ts).
+import { COMPARATOR_V1, compareRegions } from "../../packages/core/src/comparator/policy.ts";
 import { changedPpm } from "../../packages/schemas/src/semantic.ts";
 import type { Analysis, Diff, Region } from "../../packages/schemas/src/generated/types.ts";
 
@@ -30,20 +32,6 @@ export interface PrototypeComparison {
 }
 
 export type PrototypeRecord = PrototypeComparison | { error: { type: string; message: string } };
-
-/** comparator-v1 policy, confirmed against pixels.py (THRESHOLDS, SUBTLE_*, TILE, MAX_REGIONS). */
-export const COMPARATOR_V1 = {
-  thresholds: [0, 8, 16, 32],
-  subtleMaxPixels: 128,
-  subtleMaxDelta: 8,
-  tile: 8,
-  maxRegions: 12,
-} as const;
-
-/** comparator-v1 region order: pixels descending, then y, x, width, height ascending. */
-export function compareRegions(a: Region, b: Region): number {
-  return b.pixels - a.pixels || a.y - b.y || a.x - b.x || a.width - b.width || a.height - b.height;
-}
 
 function region(r: PrototypeRegion): Region {
   return { x: r.x, y: r.y, width: r.width, height: r.height, pixels: r.pixels };

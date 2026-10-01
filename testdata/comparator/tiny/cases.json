@@ -1632,6 +1632,87 @@
           ]
         }
       }
+    },
+    {
+      "id": "region-window",
+      "description": "a region's box covers every changed pixel in its tile rectangle, including another region's",
+      "covers": [
+        "region-window"
+      ],
+      "base": {
+        "state": "captured",
+        "image": {
+          "width": 64,
+          "height": 32,
+          "fill": "808080ff"
+        }
+      },
+      "head": {
+        "state": "captured",
+        "image": {
+          "width": 64,
+          "height": 32,
+          "fill": "808080ff",
+          "rects": [
+            [
+              3,
+              7,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              11,
+              15,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              19,
+              23,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              27,
+              23,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              35,
+              23,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              43,
+              15,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              51,
+              7,
+              1,
+              1,
+              "a88080ff"
+            ],
+            [
+              27,
+              0,
+              1,
+              1,
+              "a88080ff"
+            ]
+          ]
+        }
+      }
     }
   ]
 }

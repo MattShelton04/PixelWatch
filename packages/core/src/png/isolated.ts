@@ -1,5 +1,5 @@
-// Worker isolation for the PNG codec (02 §5: one decode at a time, cancellable per image). A
-// PngWorker owns at most one worker thread and sends it one job at a time. A job that times out
+// Worker isolation for the PNG codec and the comparator (02 §5: one decode/compare at a time,
+// cancellable per image). A PngWorker owns at most one worker thread and sends it one job at a time. A job that times out
 // or is aborted terminates the thread, and the next job starts a fresh one. A crash is reported
 // as `worker-crash`, never as a result.
 //
@@ -12,7 +12,9 @@
 // The worker loads only this package's own worker.ts. A bundled publisher (M2.5) must emit it as
 // a separate entry and pass its URL as `workerUrl`.
 import { Worker } from "node:worker_threads";
-import type { RawPixels } from "../pixel-hash.ts";
+import type { Comparison } from "../comparator/compare.ts";
+import { type ComparatorPolicy, checkPolicy } from "../comparator/policy.ts";
+import { type RawPixels, checkPixels } from "../pixel-hash.ts";
 import { PngError } from "./errors.ts";
 import type { WorkerReply, WorkerRequest } from "./worker.ts";
 
@@ -30,7 +32,10 @@ export interface JobOptions {
   readonly signal?: AbortSignal;
 }
 
-type Request = { op: "decode"; bytes: Uint8Array } | { op: "encode"; image: RawPixels };
+type Request =
+  | { op: "decode"; bytes: Uint8Array }
+  | { op: "encode"; image: RawPixels }
+  | { op: "compare"; base: RawPixels; head: RawPixels; policy: ComparatorPolicy };
 
 const DEFAULT_TIMEOUT_MS = 60_000;
 const DEFAULT_HEAP_MB = 256;
@@ -57,6 +62,17 @@ export class PngWorker {
   /** encodePng in the worker. */
   encode(image: RawPixels, job: JobOptions = {}): Promise<Uint8Array> {
     return this.#enqueue({ op: "encode", image }, job) as Promise<Uint8Array>;
+  }
+
+  /**
+   * compareImages in the worker, so it shares the one-job queue, timeout and cancellation. The
+   * images are copied; a malformed image or policy is refused here, before anything is sent.
+   */
+  async compare(base: RawPixels, head: RawPixels, policy: ComparatorPolicy, job: JobOptions = {}): Promise<Comparison> {
+    checkPolicy(policy);
+    checkPixels(base);
+    checkPixels(head);
+    return this.#enqueue({ op: "compare", base, head, policy }, job) as Promise<Comparison>;
   }
 
   /** Terminates the worker thread. Queued jobs after this start a new one. */
@@ -131,11 +147,21 @@ export class PngWorker {
       // Copy exactly the view's bytes (`new Uint8Array(view)` copies; `Buffer#slice` wouldn't) and
       // transfer the copy: cloning a view would copy its whole backing buffer (e.g. an entire
       // archive), and transferring the caller's buffer would detach it.
-      const message: WorkerRequest =
-        request.op === "decode"
-          ? { id, op: "decode", bytes: new Uint8Array(request.bytes) }
-          : { id, op: "encode", image: { width: request.image.width, height: request.image.height, channels: request.image.channels, data: new Uint8Array(request.image.data) } };
-      worker.postMessage(message, [(message.op === "decode" ? message.bytes : message.image.data).buffer as ArrayBuffer]);
+      const copy = (image: RawPixels): RawPixels => ({ width: image.width, height: image.height, channels: image.channels, data: new Uint8Array(image.data) });
+      let message: WorkerRequest;
+      let transfer: Uint8Array[];
+      if (request.op === "decode") {
+        message = { id, op: "decode", bytes: new Uint8Array(request.bytes) };
+        transfer = [message.bytes];
+      } else if (request.op === "encode") {
+        message = { id, op: "encode", image: copy(request.image) };
+        transfer = [message.image.data];
+      } else {
+        const { thresholds, subtleMaxPixels, subtleMaxDelta, tile, maxRegions } = request.policy;
+        message = { id, op: "compare", base: copy(request.base), head: copy(request.head), policy: { thresholds: [...thresholds], subtleMaxPixels, subtleMaxDelta, tile, maxRegions } };
+        transfer = [message.base.data, message.head.data];
+      }
+      worker.postMessage(message, transfer.map((bytes) => bytes.buffer as ArrayBuffer));
     });
   }
 }

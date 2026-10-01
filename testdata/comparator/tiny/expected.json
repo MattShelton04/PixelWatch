@@ -3380,6 +3380,148 @@
     },
     {
       "providerId": "tiny",
+      "viewId": "region-window",
+      "variantId": "desktop",
+      "status": "changed",
+      "reasons": [
+        "pixels"
+      ],
+      "diff": {
+        "totalPixels": 2048,
+        "analyses": [
+          {
+            "threshold": 0,
+            "changedPixels": 8,
+            "changedPpm": 3906,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 49,
+              "height": 24,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 49,
+                "height": 24,
+                "pixels": 7
+              },
+              {
+                "x": 27,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          {
+            "threshold": 8,
+            "changedPixels": 8,
+            "changedPpm": 3906,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 49,
+              "height": 24,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 49,
+                "height": 24,
+                "pixels": 7
+              },
+              {
+                "x": 27,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          {
+            "threshold": 16,
+            "changedPixels": 8,
+            "changedPpm": 3906,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 49,
+              "height": 24,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 49,
+                "height": 24,
+                "pixels": 7
+              },
+              {
+                "x": 27,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          },
+          {
+            "threshold": 32,
+            "changedPixels": 8,
+            "changedPpm": 3906,
+            "bounds": {
+              "x": 3,
+              "y": 0,
+              "width": 49,
+              "height": 24,
+              "pixels": 8
+            },
+            "regions": [
+              {
+                "x": 3,
+                "y": 0,
+                "width": 49,
+                "height": 24,
+                "pixels": 7
+              },
+              {
+                "x": 27,
+                "y": 0,
+                "width": 1,
+                "height": 1,
+                "pixels": 1
+              }
+            ],
+            "regionCount": 2
+          }
+        ]
+      },
+      "base": {
+        "state": "captured",
+        "pixelHash": "78848c391a20a4891d5475fb54e381387e682b689dbcc5c000a9fcd7c10b310b",
+        "width": 64,
+        "height": 32
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "f7119d4b6d2ba951d849018913076aa946e9f10765f76ac731d8e9a58e7d35ea",
+        "width": 64,
+        "height": 32
+      }
+    },
+    {
+      "providerId": "tiny",
       "viewId": "removed",
       "variantId": "desktop",
       "status": "removed",
