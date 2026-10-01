@@ -2,11 +2,10 @@
 // unpremultiplied RGBA8, row-major, with RGB zeroed wherever alpha is 0. RGB input gets alpha
 // 255. No premultiplication or colour transforms. Changing this rule needs a new domain (v2).
 import { createHash } from "node:crypto";
+import { MAX_DIMENSION, MAX_PIXELS } from "./png/limits.ts";
 
 export const PIXEL_HASH_DOMAIN = "pixelwatch:rgba8:v1\0";
 
-const MAX_DIMENSION = 16383;
-const MAX_PIXELS = 16_000_000;
 /** Rows hashed per update, so normalization never copies a whole large image. */
 const ROWS_PER_CHUNK = 64;
 
@@ -18,7 +17,8 @@ export interface RawPixels {
   readonly data: Uint8Array;
 }
 
-function checkPixels(image: RawPixels): void {
+/** Throws a RangeError unless `image` is a well-formed RGB/RGBA buffer within the 02 §5 limits. */
+export function checkPixels(image: RawPixels): void {
   const { width, height, data } = image;
   // Widened: the type says 3 | 4, but callers can hand in anything at runtime.
   const channels: number = image.channels;

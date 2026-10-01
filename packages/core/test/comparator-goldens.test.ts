@@ -17,7 +17,7 @@ import {
   serialize,
 } from "../../../tools/prototype-goldens/expected.ts";
 import { COMPARATOR_V1, type PrototypeRecord, isComparison } from "../../../tools/prototype-goldens/mapping.ts";
-import { type TinyCase, type TinyImage, serializeTinyCases } from "../../../tools/prototype-goldens/tiny-cases.ts";
+import { type TinyCase, paintTinyImage, serializeTinyCases } from "../../../tools/prototype-goldens/tiny-cases.ts";
 import { pixelHash } from "../src/pixel-hash.ts";
 
 const PIN = "6378d8be5b1f418f72279e04b3de23d761b426d3";
@@ -69,17 +69,6 @@ function asRun(results: RunResult[]): Run {
 function expectValidRun(results: RunResult[]): void {
   const result = validateDocument("run", asRun(results));
   expect(result.ok ? "ok" : result.issue).toBe("ok");
-}
-
-function expand(image: TinyImage): Uint8Array {
-  const data = new Uint8Array(image.width * image.height * 4);
-  const paint = (x0: number, y0: number, w: number, h: number, colour: string) => {
-    const rgba = Buffer.from(colour, "hex");
-    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) data.set(rgba, (y * image.width + x) * 4);
-  };
-  paint(0, 0, image.width, image.height, image.fill);
-  for (const [x, y, w, h, colour] of image.rects ?? []) paint(x, y, w, h, colour);
-  return data;
 }
 
 describe("tiny comparator fixtures", () => {
@@ -168,7 +157,7 @@ describe("tiny comparator fixtures", () => {
         const spec = c[side];
         if (spec.state !== "captured") continue;
         const { width, height } = spec.image;
-        expect(pixelHash({ width, height, channels: 4, data: expand(spec.image) }), `${c.id}/${side}`).toBe(
+        expect(pixelHash({ width, height, channels: 4, data: paintTinyImage(spec.image) }), `${c.id}/${side}`).toBe(
           recording.cases[c.id]?.sides[side]?.pixelHash,
         );
       }

@@ -5,8 +5,8 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-01 (main @ `ef39750` plus M0.5): only `packages/schemas` and the pixel hash are
-implemented. Most checks below are therefore **planned**. A planned check is never counted as
+Status on 2026-10-01 (main @ `c37de5c` plus M1.1/M1.2): `packages/schemas`, the pixel hash, the
+restricted PNG codec and the canonical blob pool are implemented. Most checks below are therefore **planned**. A planned check is never counted as
 green. M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
 stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
@@ -176,7 +176,9 @@ Planned paths are provisional (§1).
 | R4.2-08 | unit | passing | `tools/lib/lint-tools.test.ts` › "rejects any single-byte change or truncation" | Pinned lint tools are verified by SHA-256 before use | M0.1 |
 | R4.2-08 | unit | passing | `packages/schemas/test/json.test.ts` › "enforces the size and depth limits" | The strict JSON parser refuses > 1 MiB or depth > 32 | M0.3 |
 | R4.2-08 | evidence | recorded | `docs/security/repo-settings.md` | Rows 5–7: Dependabot alerts and security updates, CodeQL advanced setup, dependency review | M0.2 |
-| R4.2-08 | unit | planned | `packages/core/test/png-decode.test.ts` | The hostile PNG corpus fails before large allocation; peak RSS and time are recorded | M1.1 |
+| R4.2-08 | unit | passing | `packages/core/test/png-decode.test.ts` › "rejects every hostile PNG with its code before allocating decoded buffers" | The hostile PNG corpus (`testdata/png/hostile/`) fails before any output buffer is allocated, each within a time bound | M1.1 |
+| R4.2-08 | unit | passing | `packages/core/test/png-decode.test.ts` › "gives every PngSuite file its expected outcome" | The decoder is tested against the third-party PngSuite, including its corrupt `x*` files | M1.1 |
+| R4.2-08 | evidence | recorded | `docs/evidence/m1.1-png-bench.md` | Peak RSS and time recorded for real, maximum-size and hostile inputs, within the 02 §5 512 MiB budget | M1.1 |
 | R4.3-01 | unit | passing | `testdata/schemas/config/invalid/schema.workflow-name-not-id.json` | Config identifies the source workflow by numeric ID, never by name | M0.3 |
 | R4.3-01 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | Wrong repository ID, wrong workflow ID, wrong attempt, disallowed event/ref, incomplete run or payload≠REST mismatch → refused before download | M2.1 |
 | R4.3-01 | unit | planned | `packages/core/test/envelope.test.ts` | The envelope is built only from corroborated fields; a `workflow_run` payload that disagrees with REST fails safely | M1.5 |
@@ -201,11 +203,14 @@ Planned paths are provisional (§1).
 | R4.3-08 | unit | passing | `packages/schemas/test/json.test.ts` › "rejects a BOM, invalid UTF-8 and lone surrogates" | Malformed text fails before parsing | M0.3 |
 | R4.3-08 | unit | passing | `packages/core/test/pixel-hash.test.ts` › "rejects dimensions outside 1–16383 and more than 16,000,000 pixels" | Pixel buffers outside the 02 §5 bounds are refused | M0.6 |
 | R4.3-08 | unit | passing | `packages/schemas/test/png-profile.test.ts` › "rejects everything outside the profile" | Partial: the chunk-profile check (converter side) rejects non-profile PNGs. It isn't the trusted decoder. | M0.3 |
-| R4.3-08 | unit | planned | `packages/core/test/png-decode.test.ts` | Multiple IHDR/IEND, bad CRC or filter, inflate bombs, trailing data and overflow fail before decoded-buffer allocation; output matches an independent decoder | M1.1 |
+| R4.3-08 | unit | passing | `packages/core/test/png-decode.test.ts` › "rejects every hostile PNG with its code before allocating decoded buffers" | Multiple IHDR/IEND, bad CRC or filter, inflate bombs, trailing data, overflow, disallowed colour types/bit depths/interlace and extra chunks fail before decoded-buffer allocation | M1.1 |
+| R4.3-08 | unit | passing | `packages/core/test/png-decode.test.ts` › "decodes real screenshots to the same RGBA as an independent decoder" | Decoded RGBA of the committed real PNGs equals fast-png's (test toolchain only); a seeded differential test covers every filter type | M1.1 |
 | R4.3-08 | unit | planned | `packages/core/test/ingress-zip.test.ts` | Central/local mismatch, duplicate or case-colliding names, links, ZIP64, encryption, > 4096 entries and > 512 MiB expanded all fail, counted from actual bytes | M1.4 |
 | R4.3-08 | unit | planned | `packages/core/test/config-parse.test.ts` | Config YAML with aliases, custom tags, duplicate keys, non-finite numbers or > 1 MiB fails before validation | M1.4 |
-| R4.3-09 | unit | planned | `packages/core/test/png-decode.test.ts` | Encoded output fits the profile and never equals the uploaded bytes when those carry extra chunks | M1.1 |
-| R4.3-09 | unit | planned | `packages/core/test/blob-pool.test.ts` | A blob is named by its pixel hash; an existing blob is revalidated and never overwritten; a corrupt named blob fails | M1.2 |
+| R4.3-09 | unit | passing | `packages/core/test/png-decode.test.ts` › "encodes output that fits the profile and round-trips the normalized pixels" | Encoded output fits the profile (checked by the independent converter-side `normalizePng`) and decodes to the normalized pixels | M1.1 |
+| R4.3-09 | unit | passing | `packages/core/test/png-decode.test.ts` › "never echoes uploaded bytes that carry extra chunks" | Encoded output never equals the uploaded bytes when those carry extra chunks | M1.1 |
+| R4.3-09 | unit | passing | `packages/core/test/blob-pool.test.ts` › "reuses an existing valid blob and never overwrites it" | A blob is named by its pixel hash; an existing blob is revalidated and never overwritten | M1.2 |
+| R4.3-09 | unit | passing | `packages/core/test/blob-pool.test.ts` › "fails on a corrupt named blob and writes nothing" | A corrupt named blob fails and nothing is written | M1.2 |
 | R4.3-10 | unit | passing | `testdata/schemas/bundle/invalid/schema.file-with-path.json` | `bundle.json` can't name a file outside `u-<hex>.png` | M0.3 |
 | R4.3-10 | unit | planned | `packages/core/test/ingress-zip.test.ts` | An archive containing anything but `bundle.json` and `u-<64 hex>.png` is rejected | M1.4 |
 | R4.3-10 | unit | planned | `packages/publisher/test/site-tree.test.ts` | Every served path matches the 03 §3 allowlist and every served file type is HTML/JSON/JS/PNG/TXT generated or validated by the publisher | M2.3 |

@@ -181,6 +181,18 @@ function tieRects(): Rect[] {
   return [...a, ...b].map(([x, y]) => px(x, y, STRONG));
 }
 
+/** The image as tightly packed RGBA8: the fill, then each rect painted in order. */
+export function paintTinyImage(image: TinyImage): Uint8Array {
+  const data = new Uint8Array(image.width * image.height * 4);
+  const paint = (x0: number, y0: number, w: number, h: number, colour: string) => {
+    const rgba = Buffer.from(colour, "hex");
+    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) data.set(rgba, (y * image.width + x) * 4);
+  };
+  paint(0, 0, image.width, image.height, image.fill);
+  for (const [x, y, w, h, colour] of image.rects ?? []) paint(x, y, w, h, colour);
+  return data;
+}
+
 export function serializeTinyCases(): string {
   return `${JSON.stringify(buildTinyCases(), null, 2)}\n`;
 }
