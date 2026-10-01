@@ -36,7 +36,8 @@ own subset parser. The `yaml` package is a dev-only dependency, used for differe
 - **Scalars:**
   - double-quoted, with JSON escapes except `\/` (YAML 1.1 lacks it), and no surrogate escapes;
   - single-quoted;
-  - plain `true`, `false`, `null`, decimal safe integers without leading zeros, signs or `-0`;
+  - plain `true`, `false`, `null`, decimal safe integers with an optional minus sign, without
+    leading zeros, a plus sign or `-0`;
   - plain strings starting with a letter, `_` or `/`, using letters, digits, space and `_./()+-`.
 
 Everything else is refused with its own code:
@@ -48,7 +49,7 @@ Everything else is refused with its own code:
 | `yaml-directive`, `yaml-multi-document` | directives, multiple documents |
 | `yaml-duplicate-key`, `yaml-unsafe-key` | duplicate and unsafe keys |
 | `yaml-ambiguous-scalar` | any case of y/n/yes/no/on/off/true/false/null and `~`, other than lowercase `true`, `false`, `null` |
-| `yaml-number` | non-integers, unsafe integers, leading zeros, signs, `0x`/`0o`/`0b`, `_`, sexagesimal, timestamps, `.inf`/`.nan`, and bare exponents such as `e5`, which the `yaml` package's 1.1 schema reads as a float (found by the differential test) |
+| `yaml-number` | non-integers, unsafe integers, leading zeros, a plus sign, `-0`, `0x`/`0o`/`0b`, `_`, sexagesimal, timestamps, `.inf`/`.nan`, and bare exponents such as `e5`, which the `yaml` package's 1.1 schema reads as a float (found by the differential test) |
 | `yaml-escape` | escapes outside the allowed set |
 | `yaml-empty-value` | empty values (write `null`) |
 | `yaml-indent` | inconsistent indentation or multi-line scalars |
@@ -71,4 +72,7 @@ malformed `theme`: it is dropped with a `theme-fallback` warning, and the defaul
   document the subset accepts must equal the `yaml` package's result under both 1.1 and 1.2.
   A second, unstructured fuzz run covers YAML punctuation. A divergence fails `pnpm check`.
 - `yaml` is a root devDependency only. The runtime TCB gains no dependency.
+- Negative integers such as `-12` are accepted by the YAML subset because both versions read
+  them identically. The config schema still rejects negative values where policy requires a
+  non-negative or positive integer.
 - 02 §10 points here.
