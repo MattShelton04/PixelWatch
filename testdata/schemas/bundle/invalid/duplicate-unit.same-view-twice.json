@@ -40,7 +40,6 @@
         "masked runtime values: .health-row__latency"
       ],
       "state": "captured",
-      "file": "u-a577b1b3590df7ce46aaea06f295231f38348f6be5e800d82c7eeebb15dcbca0.png",
       "geometry": {
         "mode": "full-page",
         "viewport": {
@@ -73,8 +72,7 @@
       "labels": {
         "state": "Ünïcödé 标签 😀 ‮ ok"
       },
-      "state": "captured",
-      "file": "u-e70fc6d1440a157d59e6fa1827b50780eb823d50f1c5bae0013cdfb35eeb08e8.png"
+      "state": "captured"
     },
     {
       "viewId": "home",
@@ -89,7 +87,6 @@
         "masked runtime values: .health-row__latency"
       ],
       "state": "captured",
-      "file": "u-a577b1b3590df7ce46aaea06f295231f38348f6be5e800d82c7eeebb15dcbca0.png",
       "geometry": {
         "mode": "full-page",
         "viewport": {

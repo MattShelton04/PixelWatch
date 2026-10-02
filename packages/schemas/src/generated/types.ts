@@ -128,13 +128,15 @@ export interface Viewport {
   width: Dimension;
   height: Dimension;
 }
+/**
+ * The image is the archive entry <viewId>.<variantId>.png.
+ */
 export interface CapturedUnit {
   viewId: Id;
   variantId: Id;
   labels?: Labels;
   notes?: Notes;
   state: "captured";
-  file: string;
   geometry?: Geometry;
 }
 /**

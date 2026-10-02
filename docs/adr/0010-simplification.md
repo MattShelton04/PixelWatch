@@ -52,3 +52,19 @@ against corruption of a publisher-owned branch whose objects Git already checksu
 `BlobPool` is `has(path)` and `add(path, bytes)`: an existing blob is reused untouched, a new one
 is the canonical encoding. `verifyBlob` and `BlobError` are gone. Blobs are still never
 overwritten (R4.3-09).
+
+### 4. Bundle images are `<viewId>.<variantId>.png`
+
+A captured unit's image used to be `u-<SHA-256 of the canonical unit-key JSON>.png`, and
+`bundle.json` repeated that name in a `file` field that a semantic check then recomputed. The
+hash protected nothing: IDs are already `[a-z0-9][a-z0-9_-]{0,63}`, safe as file names, and a
+part has exactly one provider.
+
+- The entry name is `<viewId>.<variantId>.png`. IDs never contain a dot, so the name is
+  unambiguous, and the ZIP allowlist is `UNIT_FILE_PATTERN` in `@pixelwatch/schemas`.
+- bundle@1's captured unit has no `file` field; the name is derived. The `file-name-mismatch`
+  check, `unitKeyDigest` and the old `unitFileName` hashing are gone.
+- The converters take a `variantId` (default `desktop`), so each capture width or theme is its
+  own variant instead of every screenshot being filed under one hard-coded desktop setting.
+- bundle@1 hasn't shipped, so this is an in-place change with no migration. The hostile ZIP
+  corpus was regenerated with `node tools/zip-corpus/generate.ts`.

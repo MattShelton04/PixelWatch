@@ -30,6 +30,8 @@ export interface TracePilotInput {
   readonly revision?: Revision;
   /** View IDs the captured revision's own case inventory declares (ADR 0003). */
   readonly revisionCatalog?: Iterable<string>;
+  /** The capture setting (viewport, theme) of these screenshots; defaults to `desktop`. */
+  readonly variantId?: string;
 }
 
 export function convertTracePilot(input: TracePilotInput): ConvertedBundle {
@@ -77,5 +79,6 @@ export function convertTracePilot(input: TracePilotInput): ConvertedBundle {
     cases,
     images: input.images,
     revisionCatalog: input.revisionCatalog,
+    variantId: input.variantId,
   });
 }

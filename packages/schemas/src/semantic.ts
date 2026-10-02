@@ -1,7 +1,7 @@
 // Invariants JSON Schema can't express: uniqueness, ordering, counts, the 02 §4 result
 // precedence, coverage arithmetic and self-referencing digests. Each check returns the first
 // problem found, or undefined.
-import { canonicalSha256, unitFileName } from "./canonical.ts";
+import { canonicalSha256 } from "./canonical.ts";
 import type {
   Analysis,
   Bundle,
@@ -81,13 +81,6 @@ export function changedPpm(changedPixels: number, totalPixels: number): number {
 const checkBundle: Check<Bundle> = (bundle) => {
   const dup = firstDuplicate(bundle.units, (u) => `${u.viewId}\u0000${u.variantId}`);
   if (dup >= 0) return issue("duplicate-unit", `/units/${String(dup)}`, "unit (viewId, variantId) appears twice");
-  for (const [i, unit] of bundle.units.entries()) {
-    if (unit.state !== "captured") continue;
-    const expected = unitFileName({ providerId: bundle.providerId, viewId: unit.viewId, variantId: unit.variantId });
-    if (unit.file !== expected) {
-      return issue("file-name-mismatch", `/units/${String(i)}/file`, `file must be ${expected} for this unit key`);
-    }
-  }
   return undefined;
 };
 

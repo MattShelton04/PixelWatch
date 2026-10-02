@@ -77,7 +77,7 @@ function configOf(providers: readonly [string, number][]): Config {
 const DISCARD: BlobPool = { has: () => Promise.resolve(false), add: () => Promise.resolve() };
 
 function part(revision: "base" | "head", providerId: string, index: number, count: number, units: [string, Uint8Array][]): [string, Uint8Array] {
-  const files = units.map(([viewId, png]) => [unitFileName({ providerId, viewId, variantId: "desktop" }), viewId, png] as const);
+  const files = units.map(([viewId, png]) => [unitFileName({ viewId, variantId: "desktop" }), viewId, png] as const);
   const bundle = {
     schemaVersion: 1,
     revision,
@@ -86,7 +86,7 @@ function part(revision: "base" | "head", providerId: string, index: number, coun
     shard: { index, count },
     producer: { name: "ingest-bench", version: "1" },
     claims: {},
-    units: files.map(([file, viewId]) => ({ viewId, variantId: "desktop", state: "captured", file })),
+    units: files.map(([, viewId]) => ({ viewId, variantId: "desktop", state: "captured" })),
   };
   const name = formatArtifactName({ attempt: "1", revision, providerId, shard: { index, count } });
   return [name, buildZip({ entries: [{ name: "bundle.json", data: canonicalBytes(bundle) }, ...files.map(([file, , data]) => ({ name: file, data }))] })];

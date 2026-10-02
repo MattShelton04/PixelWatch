@@ -3,7 +3,7 @@
 //
 // The accepted profile is the layout GitHub's upload-artifact writes, and nothing looser:
 // single disk; stored or deflate; no encryption, ZIP64, extra fields, comments, links or
-// special files; flat ASCII names from a two-pattern allowlist; entries contiguous from offset 0
+// special files; flat ASCII names from a two-pattern allowlist (`bundle.json`, `<viewId>.<variantId>.png`); entries contiguous from offset 0
 // up to the central directory, which the end record immediately follows. Data descriptors
 // (general-purpose bit 3) are accepted because upload-artifact sets them on every entry. Data is
 // always located by the central record's compressed size, never by scanning for a descriptor,
@@ -19,6 +19,7 @@
 // No worker: parsing is linear in the entry count (≤ 4096), inflation is async and stops between
 // pieces when the signal aborts, and memory is bounded by construction (ADR 0008).
 import { crc32, createInflateRaw } from "node:zlib";
+import { UNIT_FILE_PATTERN } from "@pixelwatch/schemas";
 import { IngressError, type IngressErrorCode } from "./errors.ts";
 import { INGEST_LIMITS, type IngestBudget } from "./limits.ts";
 
@@ -54,7 +55,6 @@ const DOS_SPECIAL = 0x08 | 0x10;
 const INFLATE_CHUNK = 64 * 1024;
 
 const BUNDLE_NAME = "bundle.json";
-const UNIT_FILE = /^u-[0-9a-f]{64}\.png$/;
 
 export interface ZipEntry {
   readonly name: string;
@@ -257,7 +257,7 @@ function checkRecord(index: number, nameBytes: Uint8Array, extra: Uint8Array, ra
 /**
  * Stage 2: entry names. Each name must be flat ASCII without NUL, drive, separator or dot path;
  * the set must have no duplicates or ASCII case-fold collisions; and every name must be exactly
- * `bundle.json` or `u-<64 hex>.png`, with one `bundle.json`. Messages carry indices, never names.
+ * `bundle.json` or `<viewId>.<variantId>.png`, with one `bundle.json`. Messages carry indices, never names.
  */
 export function checkEntryNames(records: readonly CentralRecord[]): string[] {
   const names = records.map((record) => {
@@ -287,7 +287,7 @@ export function checkEntryNames(records: readonly CentralRecord[]): string[] {
     folded.set(key, i);
   });
   names.forEach((name, i) => {
-    if (name !== BUNDLE_NAME && !UNIT_FILE.test(name)) fail("zip-name-not-allowed", `entry ${String(i)} is neither bundle.json nor a unit PNG name`);
+    if (name !== BUNDLE_NAME && !UNIT_FILE_PATTERN.test(name)) fail("zip-name-not-allowed", `entry ${String(i)} is neither bundle.json nor a unit PNG name`);
   });
   if (!exact.has(BUNDLE_NAME)) fail("zip-bundle-missing", "the archive has no bundle.json");
   return names;

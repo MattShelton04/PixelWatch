@@ -108,7 +108,7 @@
       },
       "status": "rejected",
       "artifactSha256": "cbd9f21228656d136bee3142e4b8734a2bf8503389d13381daf2635da31ba92c",
-      "diagnostic": "entry name is not bundle.json or u-<sha256>.png"
+      "diagnostic": "entry name is not bundle.json or <viewId>.<variantId>.png"
     }
   ],
   "coverage": {

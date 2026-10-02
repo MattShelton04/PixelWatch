@@ -33,8 +33,10 @@ profile; it never installs an image library or runs project scripts.
 A converter:
 
 - emits a complete per-part catalog with an explicit state for every unit (§4);
-- names each image file `u-<digest>.png`, where digest is SHA-256 of the canonical unit-key JSON
-  (§3), and includes no other files;
+- names each captured unit's image `<viewId>.<variantId>.png` (the provider is the part's own;
+  IDs never contain a dot, so the name is unambiguous), and includes no other files;
+- converts each capture setting (viewport, device scale, theme) as its own variant. Nothing
+  assumes one viewport width;
 - strips metadata and non-image payloads;
 - records optional CSS-space capture geometry (viewport, device scale, crop origin, full-page vs
   element). Actual pixel dimensions come from decoding, never from the manifest. A 390 px CSS
@@ -121,7 +123,7 @@ limit needs a measured memory bound, never disabling the check.
 |---|---|
 | Artifact download | ≤ 128 MiB compressed each, ≤ 256 MiB per source attempt; 60 s request timeout; bounded retries; never log signed URLs |
 | Archive | ZIP only, single disk, stored/deflate entries. No encryption, ZIP64, links or special files. ≤ 4096 entries and ≤ 512 MiB total expanded per ingestion. |
-| Entry names | Exactly `bundle.json` and `u-<64 hex>.png`, flat ASCII. No separators, drive prefixes, NUL or dot paths. No duplicates or case-fold collisions. |
+| Entry names | Exactly `bundle.json` and `<viewId>.<variantId>.png`, flat ASCII. No separators, drive prefixes, NUL or dot paths. No duplicates or case-fold collisions. |
 | JSON | ≤ 1 MiB each, nesting ≤ 32, ≤ 2000 units total. Labels ≤ 256 code points / 1024 bytes. Errors ≤ 2048 bytes. No duplicate keys or non-integer numbers. |
 | PNG size | ≤ 32 MiB encoded; each dimension 1–16383; ≤ 16,000,000 pixels; one decode/compare at a time within a 512 MiB worker budget. The budget is enforced by the decoder's own allocation bound (sized from the checked header) and verified by recorded peak RSS. Worker `resourceLimits` cap only the V8 heap; the worker adds isolation, a timeout and cancellation. |
 | PNG profile | Signature; one IHDR; contiguous IDATs; one final IEND; valid CRCs; 8-bit RGB or RGBA; compression/filter method 0; non-interlaced; only IHDR, IDAT and IEND chunks (no PLTE, ancillary or unknown chunks); no trailing bytes |

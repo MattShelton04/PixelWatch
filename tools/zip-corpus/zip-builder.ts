@@ -242,7 +242,7 @@ export function buildZip(spec: ArchiveSpec): Uint8Array {
   return out.done();
 }
 
-/** A deterministic `u-<64 hex>.png` name for index `i` (any 64-hex string is a valid entry name). */
+/** A deterministic unit image name `v<i>.desktop.png` for index `i`. */
 export function pngName(i: number): string {
-  return `u-${i.toString(16).padStart(64, "0")}.png`;
+  return `v${String(i)}.desktop.png`;
 }

@@ -60,7 +60,8 @@ not run in a worker.
   - with bit 3, local CRC and sizes must be zero or equal to central;
   - the signed 16-byte descriptor must follow the data and equal the central record;
   - unsigned and ZIP64-form descriptors are refused.
-- **Names** must be exactly `bundle.json` or `u-<64 hex>.png`. Duplicates and ASCII case-fold
+- **Names** must be exactly `bundle.json` or `<viewId>.<variantId>.png` (ADR 0010; originally
+  `u-<64 hex>.png`). Duplicates and ASCII case-fold
   collisions are checked before the allowlist and before any extraction. Error messages carry
   entry indices, never names.
 - Checks run in a fixed order and each failure has its own code. The committed hostile corpus

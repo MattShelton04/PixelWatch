@@ -64,15 +64,15 @@ export function hostileCorpus(): HostileCase[] {
   const valid = zip(BUNDLE, png(1));
 
   // Entry names: traversal, absolute and drive paths, separators, dot names, NUL, encoding.
-  add("name-traversal-dotdot", "zip-name-traversal", "traversal", "entry ../u-….png", zip(BUNDLE, png(1, { name: `../${pngName(1)}` })));
-  add("name-traversal-backslash", "zip-name-traversal", "traversal", "entry ..\\u-….png", zip(BUNDLE, png(1, { name: `..\\${pngName(1)}` })));
-  add("name-traversal-inner", "zip-name-traversal", "traversal", "entry a/../u-….png", zip(BUNDLE, png(1, { name: `a/../${pngName(1)}` })));
-  add("name-absolute-slash", "zip-name-absolute", "absolute", "entry /u-….png", zip(BUNDLE, png(1, { name: `/${pngName(1)}` })));
-  add("name-absolute-backslash", "zip-name-absolute", "absolute", "entry \\u-….png", zip(BUNDLE, png(1, { name: `\\${pngName(1)}` })));
-  add("name-unc", "zip-name-absolute", "absolute", "entry \\\\server\\share\\u-….png", zip(BUNDLE, png(1, { name: `\\\\server\\share\\${pngName(1)}` })));
-  add("name-drive-relative", "zip-name-drive", "drive", "entry C:u-….png", zip(BUNDLE, png(1, { name: `C:${pngName(1)}` })));
-  add("name-drive-absolute", "zip-name-drive", "drive", "entry C:\\u-….png", zip(BUNDLE, png(1, { name: `C:\\${pngName(1)}` })));
-  add("name-nested", "zip-name-separator", "separator", "entry dir/u-….png", zip(BUNDLE, png(1, { name: `dir/${pngName(1)}` })));
+  add("name-traversal-dotdot", "zip-name-traversal", "traversal", "entry ../<unit>.png", zip(BUNDLE, png(1, { name: `../${pngName(1)}` })));
+  add("name-traversal-backslash", "zip-name-traversal", "traversal", "entry ..\\<unit>.png", zip(BUNDLE, png(1, { name: `..\\${pngName(1)}` })));
+  add("name-traversal-inner", "zip-name-traversal", "traversal", "entry a/../<unit>.png", zip(BUNDLE, png(1, { name: `a/../${pngName(1)}` })));
+  add("name-absolute-slash", "zip-name-absolute", "absolute", "entry /<unit>.png", zip(BUNDLE, png(1, { name: `/${pngName(1)}` })));
+  add("name-absolute-backslash", "zip-name-absolute", "absolute", "entry \\<unit>.png", zip(BUNDLE, png(1, { name: `\\${pngName(1)}` })));
+  add("name-unc", "zip-name-absolute", "absolute", "entry \\\\server\\share\\<unit>.png", zip(BUNDLE, png(1, { name: `\\\\server\\share\\${pngName(1)}` })));
+  add("name-drive-relative", "zip-name-drive", "drive", "entry C:<unit>.png", zip(BUNDLE, png(1, { name: `C:${pngName(1)}` })));
+  add("name-drive-absolute", "zip-name-drive", "drive", "entry C:\\<unit>.png", zip(BUNDLE, png(1, { name: `C:\\${pngName(1)}` })));
+  add("name-nested", "zip-name-separator", "separator", "entry dir/<unit>.png", zip(BUNDLE, png(1, { name: `dir/${pngName(1)}` })));
   add("name-directory-entry", "zip-name-separator", "separator", "a directory entry u/", zip(BUNDLE, { name: "u/", data: new Uint8Array(0), method: 0 }));
   add("name-dot", "zip-name-dot", "name", "entry .", zip(BUNDLE, png(1, { name: "." })));
   add("name-dotdot", "zip-name-dot", "name", "entry ..", zip(BUNDLE, png(1, { name: ".." })));
@@ -82,11 +82,11 @@ export function hostileCorpus(): HostileCase[] {
 
   // Duplicates and case-fold collisions, rejected before anything is extracted.
   add("duplicate-bundle", "zip-duplicate-name", "duplicate", "two bundle.json entries", zip(BUNDLE, BUNDLE, png(1)));
-  add("duplicate-png", "zip-duplicate-name", "duplicate", "the same u-….png twice", zip(BUNDLE, png(1), png(1)));
+  add("duplicate-png", "zip-duplicate-name", "duplicate", "the same <unit>.png twice", zip(BUNDLE, png(1), png(1)));
   add("case-collision-bundle", "zip-name-collision", "case-collision", "bundle.json and BUNDLE.JSON", zip(BUNDLE, { ...BUNDLE, name: "BUNDLE.JSON" }, png(1)));
-  add("case-collision-png", "zip-name-collision", "case-collision", "u-…abc.png and U-…ABC.PNG", zip(BUNDLE, png(0xabc), png(0xabc, { name: pngName(0xabc).toUpperCase() })));
+  add("case-collision-png", "zip-name-collision", "case-collision", "<unit>.png and <UNIT>.PNG", zip(BUNDLE, png(0xabc), png(0xabc, { name: pngName(0xabc).toUpperCase() })));
 
-  // Anything but bundle.json and u-<64 hex>.png (R4.3-10).
+  // Anything but bundle.json and <viewId>.<variantId>.png (R4.3-10).
   for (const [file, why] of [
     ["index.html", "HTML"],
     ["image.svg", "SVG"],
@@ -100,8 +100,8 @@ export function hostileCorpus(): HostileCase[] {
   ] as const) {
     add(`extra-file-${file.replaceAll(".", "-")}`, "zip-name-not-allowed", "extra-file", `${why} entry ${file} next to valid entries`, zip(BUNDLE, png(1), { name: file, data: ascii("<x/>") }));
   }
-  add("extra-file-short-hex", "zip-name-not-allowed", "extra-file", "u-<63 hex>.png", zip(BUNDLE, png(1, { name: `u-${"a".repeat(63)}.png` })));
-  add("extra-file-upper-hex", "zip-name-not-allowed", "extra-file", "u-<64 upper-case hex>.png on its own", zip(BUNDLE, png(1, { name: `u-${"A".repeat(64)}.png` })));
+  add("extra-file-no-variant", "zip-name-not-allowed", "extra-file", "<view>.png without a variant", zip(BUNDLE, png(1, { name: "home.png" })));
+  add("extra-file-upper-case", "zip-name-not-allowed", "extra-file", "<View>.<variant>.png with an upper-case ID, on its own", zip(BUNDLE, png(1, { name: "Home.desktop.png" })));
   add("bundle-missing", "zip-bundle-missing", "extra-file", "PNG entries without bundle.json", zip(png(1), png(2)));
 
   // Links and special files.
@@ -165,7 +165,7 @@ export function hostileCorpus(): HostileCase[] {
 
   // Central and local headers must agree.
   add("mismatch-local-signature", "zip-header-mismatch", "header-mismatch", "local-header signature corrupted", patch(valid, 0, Uint8Array.of(0x50, 0x4b, 0x05, 0x06)));
-  add("mismatch-name", "zip-header-mismatch", "header-mismatch", "local name index.html, central name u-….png", zip(BUNDLE, png(1, { localName: ascii(`u-${"f".repeat(55)}index.html`) })));
+  add("mismatch-name", "zip-header-mismatch", "header-mismatch", "local name index.html, central name <unit>.png", zip(BUNDLE, png(1, { localName: ascii("index.html") })));
   add("mismatch-method", "zip-header-mismatch", "header-mismatch", "local method 0, central method 8", zip(BUNDLE, png(1, { localMethod: 0 })));
   add("mismatch-flags", "zip-header-mismatch", "header-mismatch", "local flags add bit 11", zip(BUNDLE, png(1, { localFlags: 0x0808 })));
   add("mismatch-version", "zip-header-mismatch", "header-mismatch", "local version needed 10, central 20", zip(BUNDLE, png(1, { localVersionNeeded: 10 })));

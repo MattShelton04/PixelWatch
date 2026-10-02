@@ -5,6 +5,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { crc32, deflateRawSync } from "node:zlib";
 import fc from "fast-check";
+import { UNIT_FILE_PATTERN } from "@pixelwatch/schemas";
 import { describe, expect, it } from "vitest";
 import { REQUIRED_CLASSES, hostileCorpus } from "../../../tools/zip-corpus/generate.ts";
 import { type EntrySpec, ascii, buildZip, pngName } from "../../../tools/zip-corpus/zip-builder.ts";
@@ -105,20 +106,20 @@ describe("hostile ZIP corpus (02 §5)", () => {
 });
 
 describe("entry names (02 §5; R4.3-10)", () => {
-  it("rejects any entry name but bundle.json and u-<64 hex>.png", async () => {
+  it("rejects any entry name but bundle.json and <viewId>.<variantId>.png", async () => {
     const suspicious = fc.oneof(
       fc.constantFrom(
         "index.html", "a.svg", "app.js", "x.css", "d.xml", "app.js.map", "n.har", "trace.zip", "bundle.json.png", "Bundle.json",
-        "bundle.JSON", "bundle.json ", " bundle.json", "bundle.json.", "u-.png", `u-${"0".repeat(64)}.PNG`, `u-${"0".repeat(64)}.png.html`,
-        `U-${"0".repeat(64)}.png`, `u-${"g".repeat(64)}.png`, `u-${"0".repeat(65)}.png`, `${pngName(1)}\0`, `./${pngName(1)}`,
+        "bundle.JSON", "bundle.json ", " bundle.json", "bundle.json.", "home.png", "home.desktop.PNG", "home.desktop.png.html",
+        "Home.desktop.png", "home..png", ".desktop.png", "home.desktop.x.png", `${"a".repeat(65)}.desktop.png`, `${pngName(1)}\0`, `./${pngName(1)}`,
         "bundle.json/", "con", "aux.png", "~bundle.json", ".bundle.json",
       ),
-      fc.string({ unit: fc.constantFrom(..."abu-.0123456789fjsonpg/\\:\0 ".split("")), maxLength: 80 }),
+      fc.string({ unit: fc.constantFrom(..."abu-_.0123456789fjsonpg/\\:\0 ".split("")), maxLength: 80 }),
       fc.string({ unit: "binary-ascii", maxLength: 80 }),
     );
     await fc.assert(
       fc.asyncProperty(suspicious, async (name) => {
-        const allowed = name === "bundle.json" || /^u-[0-9a-f]{64}\.png$/.test(name);
+        const allowed = name === "bundle.json" || UNIT_FILE_PATTERN.test(name);
         const entries = name === "bundle.json" ? [BUNDLE, png(1)] : [BUNDLE, { name, data: ascii("x") }];
         const result = await outcome(extractAll(buildZip({ entries })));
         if (allowed) expect(result).toBe("ok");

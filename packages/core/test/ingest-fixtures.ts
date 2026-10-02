@@ -51,7 +51,7 @@ export interface PartSpec {
 export function bundleFor(spec: PartSpec): Bundle {
   const units: BundleUnit[] = spec.units.map((u) => {
     const variantId = u.variantId ?? VARIANT;
-    if (u.state === "captured") return { viewId: u.viewId, variantId, state: "captured", file: unitFileName({ providerId: spec.providerId, viewId: u.viewId, variantId }) };
+    if (u.state === "captured") return { viewId: u.viewId, variantId, state: "captured" };
     if (u.state === "absent") return { viewId: u.viewId, variantId, state: "absent", reason: "not-in-revision-catalog" };
     return { viewId: u.viewId, variantId, state: "failed", category: "capture-error", message: "boom" };
   });
@@ -93,7 +93,7 @@ export function partZip(spec: PartSpec, options: ZipOptions = {}): Uint8Array {
   let entries: EntrySpec[] = [{ name: "bundle.json", data: options.bundleBytes ?? canonicalBytes(document) }];
   spec.units.forEach((u, i) => {
     if (u.state !== "captured") return;
-    const name = unitFileName({ providerId: spec.providerId, viewId: u.viewId, variantId: u.variantId ?? VARIANT });
+    const name = unitFileName({ viewId: u.viewId, variantId: u.variantId ?? VARIANT });
     entries.push({ name, data: u.png ?? tinyPng(i + 1) });
   });
   entries.push(...(options.extra ?? []));

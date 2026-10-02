@@ -92,7 +92,6 @@ describe("ingestion", () => {
       ["p", 2],
       ["q", 1],
     ]);
-    // No captured unit: a file name is derived from the provider, so changing it would fail the schema first.
     const units = [{ viewId: "home", state: "failed" as const }];
     const spec = head(units, [1, 2]);
     const edits: [string, (b: Bundle) => Bundle][] = [
@@ -119,8 +118,8 @@ describe("ingestion", () => {
       { viewId: "a", state: "captured" },
       { viewId: "b", state: "absent" },
     ]);
-    const fileA = unitFileName({ providerId: "p", viewId: "a", variantId: VARIANT });
-    const fileB = unitFileName({ providerId: "p", viewId: "b", variantId: VARIANT });
+    const fileA = unitFileName({ viewId: "a", variantId: VARIANT });
+    const fileB = unitFileName({ viewId: "b", variantId: VARIANT });
     const cases: [ArtifactInput, string][] = [
       [artifact(spec), "valid"],
       // The captured unit's file is gone; the absent unit has one; an unrelated PNG rides along.

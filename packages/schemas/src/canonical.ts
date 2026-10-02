@@ -99,19 +99,3 @@ export function sha256Hex(data: Uint8Array | string): string {
 export function canonicalSha256(value: unknown, options: CanonicalOptions = {}): string {
   return sha256Hex(canonicalBytes(value, options));
 }
-
-export interface UnitKey {
-  readonly providerId: string;
-  readonly viewId: string;
-  readonly variantId: string;
-}
-
-/** SHA-256 of the unit key as a canonical three-element array; never a joined string (02 §3). */
-export function unitKeyDigest(key: UnitKey): string {
-  return canonicalSha256([key.providerId, key.viewId, key.variantId]);
-}
-
-/** The only image file name a bundle may contain for a unit (02 §2). */
-export function unitFileName(key: UnitKey): string {
-  return `u-${unitKeyDigest(key)}.png`;
-}

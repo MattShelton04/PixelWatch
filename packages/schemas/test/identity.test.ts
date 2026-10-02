@@ -1,12 +1,12 @@
 // Provider and attempt identity: the same view name under two providers stays two units, and a
 // part's attempt/revision/provider/shard agree between its artifact name and its bundle.json.
 import { describe, expect, it } from "vitest";
-import { canonicalSha256, unitFileName } from "../src/canonical.ts";
+import { canonicalSha256 } from "../src/canonical.ts";
 import { convertPropertyScope } from "../src/convert/propertyscope.ts";
 import { convertTracePilot } from "../src/convert/tracepilot.ts";
 import type { Snapshot } from "../src/generated/types.ts";
 import { formatRunKey, parseArtifactName } from "../src/ids.ts";
-import { parseDocument, validateDocument } from "../src/validate.ts";
+import { validateDocument } from "../src/validate.ts";
 import { testdata, tinyPng } from "./helpers.ts";
 
 function psManifest(provider: string, revision = "head"): string {
@@ -23,13 +23,8 @@ describe("provider identity", () => {
   const fixture = convertPropertyScope({ manifest: psManifest("fixture"), images, attempt: "1" });
   const stack = convertPropertyScope({ manifest: psManifest("stack"), images, attempt: "1" });
 
-  it("gives the same view name distinct files per provider", () => {
-    const [a] = fixture.bundle.units;
-    const [b] = stack.bundle.units;
-    expect(a?.state === "captured" && b?.state === "captured").toBe(true);
-    if (a?.state !== "captured" || b?.state !== "captured") return;
-    expect(a.file).not.toBe(b.file);
-    expect(a.file).toBe(unitFileName({ providerId: "fixture", viewId: "home", variantId: "desktop" }));
+  it("gives the same view name in two providers distinct artifacts", () => {
+    expect(fixture.files.has("home.desktop.png") && stack.files.has("home.desktop.png")).toBe(true);
     expect(fixture.artifactName).not.toBe(stack.artifactName);
   });
 
@@ -57,12 +52,6 @@ describe("provider identity", () => {
     // The ID is over the canonical payload, so key order and position don't matter.
     const reordered = Object.fromEntries(Object.entries(snapshot).reverse());
     expect(validateDocument("snapshot", reordered).ok).toBe(true);
-  });
-
-  it("refuses a bundle.json whose file names belong to another provider", () => {
-    const json = Buffer.from(fixture.files.get("bundle.json") ?? new Uint8Array()).toString("utf8");
-    const swapped = json.replace('"providerId":"fixture"', '"providerId":"stack"');
-    expect(parseDocument("bundle", swapped)).toMatchObject({ ok: false, issue: { code: "file-name-mismatch" } });
   });
 });
 

@@ -6,8 +6,6 @@ import {
   canonicalJson,
   canonicalSha256,
   compareCodePoints,
-  unitFileName,
-  unitKeyDigest,
 } from "../src/canonical.ts";
 
 // Vectors computed independently with Python:
@@ -24,13 +22,6 @@ const MIXED_CANONICAL =
   '{"A":{"y":{},"z":"q\\"\\\\/\\n\\t\\u0000\\u001f\u007f "},"a":[true,null,"x",-5,0],"b":1,"é":[],"Ａ":1,"\u{1F600}":2}';
 
 describe("canonical JSON (02 §3)", () => {
-  it("pins the unit-key digest and file name", () => {
-    const key = { providerId: "fixture", viewId: "shared-home", variantId: "desktop" };
-    expect(canonicalJson(["fixture", "shared-home", "desktop"])).toBe('["fixture","shared-home","desktop"]');
-    expect(unitKeyDigest(key)).toBe("6899c0650d0db5e5a302f224735a5b4e1d252b22eb61cec403ac533fd83a59a0");
-    expect(unitFileName(key)).toBe("u-6899c0650d0db5e5a302f224735a5b4e1d252b22eb61cec403ac533fd83a59a0.png");
-  });
-
   it("pins exact bytes and hash for keys, escapes and non-ASCII", () => {
     expect(canonicalJson(MIXED)).toBe(MIXED_CANONICAL);
     expect(canonicalBytes(MIXED).byteLength).toBe(103);
@@ -41,13 +32,6 @@ describe("canonical JSON (02 §3)", () => {
     // U+FF21 < U+1F600 by code point, but its UTF-16 unit 0xFF21 > the surrogate 0xD83D.
     expect(compareCodePoints("Ａ", "\u{1F600}")).toBeLessThan(0);
     expect(canonicalJson({ "\u{1F600}": 1, "Ａ": 2 })).toBe('{"Ａ":2,"\u{1F600}":1}');
-  });
-
-  it("keeps different unit keys apart, including delimiter lookalikes", () => {
-    const a = unitKeyDigest({ providerId: "fixture", viewId: "home", variantId: "desktop" });
-    const b = unitKeyDigest({ providerId: "stack", viewId: "home", variantId: "desktop" });
-    const c = unitKeyDigest({ providerId: "fixture-home", viewId: "desktop", variantId: "x" });
-    expect(new Set([a, b, c]).size).toBe(3);
   });
 
   it("omits only the named top-level field", () => {
