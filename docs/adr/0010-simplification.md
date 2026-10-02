@@ -95,5 +95,9 @@ part provenance, two runs never produced the same snapshot ID, so it deduplicate
 - Less contract surface for M1.5: build a run from an `Ingestion` plus the envelope, append it to
   `store.json`, and treat an existing run key as done.
 - bundle@1 and run@1 change in place. Neither has shipped, so no data migration is needed.
-- Benchmarks in `docs/evidence/m1.1-png-bench.md` and `m1.4-ingest-bench.md` were measured
-  before §2 and §3; rerun them before quoting their numbers.
+- The PNG and ingest benches and the real-capture check were rerun after §§2–6
+  (`docs/evidence/m1.1-png-bench.md`, `m1.4-ingest-bench.md`, `m1.4-reference-ingest.md`). On this
+  machine, real decode went from 55 to 36 ms, the maximum ingestion from 21.1 to 17.2 s, and the
+  real captures from 21.7 to 16.6 s (PropertyScope) and 49.9 to 41.0 s (TracePilot). The
+  64 MiB-header PNG bomb now peaks at 169 MiB RSS instead of 90 (§2's trade-off), within the
+  512 MiB budget.

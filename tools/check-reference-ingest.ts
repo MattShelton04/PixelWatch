@@ -27,7 +27,7 @@ import { COMPARATOR_V1 } from "../packages/core/src/comparator/policy.ts";
 import { unitResult } from "../packages/core/src/comparator/result.ts";
 import { ingestArtifacts } from "../packages/core/src/ingest/ingest.ts";
 import { IngestBudget } from "../packages/core/src/ingest/limits.ts";
-import type { ArtifactInput, Ingestion } from "../packages/core/src/ingest/types.ts";
+import type { ArtifactInput } from "../packages/core/src/ingest/types.ts";
 import { checkLayout, readCentralDirectory, readEntry } from "../packages/core/src/ingest/zip.ts";
 import { PngWorker } from "../packages/core/src/png/isolated.ts";
 import { buildZip } from "./zip-corpus/zip-builder.ts";
@@ -92,10 +92,6 @@ function zipOf(converted: ConvertedBundle, reverse: boolean): Uint8Array {
   return buildZip({ entries: reverse ? entries.reverse() : entries });
 }
 
-/** The ingestion without archive hashes, which differ when entry order does. */
-function comparable(ingestion: Ingestion): string {
-  return canonicalJson({ ...ingestion, parts: ingestion.parts.map((p) => ({ ...p, artifacts: p.artifacts.map((a) => a.artifactId) })) });
-}
 
 const worker = new PngWorker();
 let failures = 0;
@@ -150,7 +146,7 @@ for (const spec of RUNS) {
     const { status } = unitResult(unit, unit.base, unit.head, comparison);
     results.set(status, (results.get(status) ?? 0) + 1);
   }
-  const permutationOk = comparable(ingestion) === comparable(reversed);
+  const permutationOk = canonicalJson(ingestion) === canonicalJson(reversed);
   ok &&= permutationOk && ingestion.coverage.status === "complete-declared";
   console.log(`  coverage: ${JSON.stringify(ingestion.coverage)}`);
   console.log(`  side states: ${[...sides].map(([k, n]) => `${k} ${String(n)}`).join(", ")}`);
