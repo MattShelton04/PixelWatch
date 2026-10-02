@@ -334,9 +334,20 @@
         "workflowSha": { "$ref": "#/$defs/GitOid" },
         "association": { "$ref": "#/$defs/Association" },
         "commits": {
+          "description": "Corroborated commits, each in its own field and never copied from another (01 §4.3).",
           "type": "object",
           "additionalProperties": false,
-          "properties": { "head": { "$ref": "#/$defs/GitOid" }, "base": { "$ref": "#/$defs/GitOid" } }
+          "properties": {
+            "head": { "description": "Target: the PR head or the pushed commit.", "$ref": "#/$defs/GitOid" },
+            "base": {
+              "description": "Selected baseline: the merge base with baseBranch for a PR, the first parent for a push. Absent means no baseline.",
+              "$ref": "#/$defs/GitOid"
+            },
+            "baseBranch": {
+              "description": "The event's base-branch commit (pull_request.base.sha, ADR 0007). Pull requests only.",
+              "$ref": "#/$defs/GitOid"
+            }
+          }
         },
         "configSha": { "$ref": "#/$defs/GitOid" },
         "releaseSha": { "$ref": "#/$defs/GitOid" }

@@ -53,6 +53,18 @@ export type RunKey = string;
  */
 export type Timestamp = string;
 export type StreamId = string;
+/**
+ * Git object ID (SHA-1 or SHA-256), not a content hash.
+ */
+export type GitOid1 = string;
+/**
+ * Git object ID (SHA-1 or SHA-256), not a content hash.
+ */
+export type GitOid2 = string;
+/**
+ * Git object ID (SHA-1 or SHA-256), not a content hash.
+ */
+export type GitOid3 = string;
 export type ReleaseVersion = string;
 export type ResultStatus =
   "missing" | "failed" | "incomparable" | "added" | "removed" | "unchanged" | "subtle" | "changed";
@@ -309,9 +321,13 @@ export interface SourceEnvelope {
   workflowRef: string;
   workflowSha: GitOid;
   association: Association;
+  /**
+   * Corroborated commits, each in its own field and never copied from another (01 §4.3).
+   */
   commits: {
-    head?: GitOid;
-    base?: GitOid;
+    head?: GitOid1;
+    base?: GitOid2;
+    baseBranch?: GitOid3;
   };
   configSha: GitOid;
   releaseSha: GitOid;

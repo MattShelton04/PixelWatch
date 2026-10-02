@@ -15,9 +15,7 @@
       "prNumber": "123"
     },
     "commits": {
-      "head": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
-      "base": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da",
-      "baseBranch": "5d1f0b6a8e1c4f7b9a2d3e4f5a6b7c8d9e0f1a2b"
+      "head": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
     },
     "configSha": "8eb1e7956dbc0a1001536ab3304b15be4ff07838",
     "releaseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da"

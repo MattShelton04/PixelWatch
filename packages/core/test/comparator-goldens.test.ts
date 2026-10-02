@@ -41,9 +41,17 @@ interface Recorded {
   recordedWith: { prototype: { commit: string }; constants: Record<string, unknown> };
 }
 
-/** Puts results into a real run@1 document so the full schema + semantic checks apply. */
-function asRun(results: RunResult[]): Run {
+/**
+ * Puts results into a real run@1 document so the full schema + semantic checks apply. A run has a
+ * baseline commit exactly when no base side is `none` (ADR 0011), so `none`-base results get a
+ * run without one.
+ */
+function asRun(results: RunResult[], baseline: boolean): Run {
   const template = JSON.parse(readFileSync(join(TESTDATA, "schemas", "run", "valid", "all-eight-statuses.json"), "utf8")) as Run;
+  if (!baseline) {
+    delete template.source.commits.base;
+    template.parts = template.parts.filter((p) => p.revision === "head");
+  }
   const sorted = [...results].sort((a, b) =>
     a.providerId !== b.providerId ? (a.providerId < b.providerId ? -1 : 1) : a.viewId < b.viewId ? -1 : a.viewId > b.viewId ? 1 : 0,
   );
@@ -73,8 +81,11 @@ function asRun(results: RunResult[]): Run {
 }
 
 function expectValidRun(results: RunResult[]): void {
-  const result = validateDocument("run", asRun(results));
-  expect(result.ok ? "ok" : result.issue).toBe("ok");
+  for (const baseline of [true, false]) {
+    const group = results.filter((r) => (r.base.state !== "none") === baseline);
+    const result = validateDocument("run", asRun(group, baseline));
+    expect(result.ok ? "ok" : result.issue).toBe("ok");
+  }
 }
 
 describe("tiny comparator fixtures", () => {

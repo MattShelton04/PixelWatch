@@ -5,9 +5,9 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-01 (main @ `4dbc056` plus M1.4): `packages/schemas`, the pixel hash, the
+Status on 2026-10-02 (main @ `b7e1cde` plus M1.5): `packages/schemas`, the pixel hash, the
 restricted PNG codec, the canonical blob pool, comparator-v1, bounded ZIP ingestion, the
-fixed-part merge and trusted config parsing are implemented. Most checks below are therefore **planned**. A planned check is never counted as
+fixed-part merge, trusted config parsing, runs and the store run index are implemented. Most checks below are therefore **planned**. A planned check is never counted as
 green. M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
 stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
@@ -192,9 +192,9 @@ Planned paths are provisional (§1).
 | R4.3-02 | unit | passing | `testdata/schemas/changes/invalid/schema.claims-trusted.json` | `changes@1` can never mark capture claims as trusted | M0.3 |
 | R4.3-02 | unit | passing | `packages/core/test/ingest.test.ts` › "rejects identity mismatches between name, bundle.json, attempt and config" | A part can't claim units of another provider: its bundle.json provider must match its artifact name | M1.4 |
 | R4.3-02 | unit | passing | `packages/core/test/ingest.test.ts` › "rejects identity mismatches between name, bundle.json, attempt and config" | A `bundle.json` whose attempt, revision, provider or shard disagrees with its artifact name, the authenticated attempt or the config rejects its part | M1.4 |
-| R4.3-02 | unit | planned | `packages/core/test/envelope.test.ts` | Forged PR number, SHA, URL or run ID in `bundle.json` changes neither run key, stream, store path nor comment target | M1.5 |
+| R4.3-02 | unit | passing | `packages/core/test/envelope.test.ts` › "takes the run key, stream, commits and PR number only from the envelope, even when claims disagree" | Claimed revision/harness SHAs and environment differing from the envelope change neither run key, `source`, stream nor the store index entry; they appear only under `claims`, and disagreeing parts drop the field (bundle@1 has no PR, URL or run-ID field; a forged attempt is rejected at ingest, M1.4) | M1.5 |
 | R4.3-02 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A fork PR with forged PR/run/attempt claims is published under its real identity only | M2.6 |
-| R4.3-03 | unit | planned | `packages/core/test/envelope.test.ts` | Workflow SHA, PR head, base-branch SHA, baseline SHA and captured-target claim are distinct fields; a merge-ref SHA is never used as the PR head | M1.5 |
+| R4.3-03 | unit | passing | `packages/core/test/envelope.test.ts` › "keeps workflow, head, base-branch and baseline SHAs in their own fields" | `workflowSha`, `commits.head`, `commits.baseBranch`, `commits.base` and the captured-target claim are distinct fields; a missing one is never filled from another or from a claim (choosing the head over a merge ref is M2.1's forge test) | M1.5 |
 | R4.3-03 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo: capture `github.sha` is a merge ref; `workflow_run.head_sha` is the PR head; `base.sha` is neither the base tip nor the merge parent; the payload's `merge_commit_sha` can be the previous merge | S11 |
 | R4.3-03 | evidence | evidence-planned | `docs/adr/` (fork identity) | Recorded fork payloads show which SHAs and head-repository IDs `pull_request` and `workflow_run` report | M2.6 |
 | R4.3-04 | unit | passing | `testdata/schemas/run/invalid/association-inconsistent.ambiguous-with-pr.json` | An ambiguous association can't carry a PR number | M0.3 |
@@ -242,7 +242,8 @@ Planned paths are provisional (§1).
 | R4.4-03 | unit | passing | `testdata/schemas/run/invalid/result-inconsistent.no-baseline-without-reason.json` | A base side of `none` must carry `no-baseline` | M0.3 |
 | R4.4-03 | golden | passing | `packages/core/test/comparator-goldens.test.ts` › "covers all eight results" | Tiny fixtures include `incomparable` from a missing baseline | M0.6 |
 | R4.4-03 | unit | passing | `packages/core/test/comparator.test.ts` › "compares a none base never: incomparable with no-baseline whatever the head" | A `none` base always carries `no-baseline`, is `incomparable` against a captured head, never has a diff, and refuses a pixel comparison | M1.3 |
-| R4.4-04 | unit | planned | `packages/core/test/envelope.test.ts` | Without a corroborated baseline commit the run is `incomparable`, never compared to the latest main snapshot | M1.5 |
+| R4.4-04 | unit | passing | `packages/core/test/envelope.test.ts` › "never substitutes latest main for a missing baseline commit: results are incomparable" | Without `commits.base` the ingestion expects no base part, every base side is `none` and a captured head is `incomparable` with `no-baseline`, even with a main run in the store; a comparison offered for such a unit and an ingestion whose baseline disagrees with the envelope are refused | M1.5 |
+| R4.4-04 | unit | passing | `testdata/schemas/run/invalid/baseline-inconsistent.compared-without-baseline-commit.json` | A stored run without a baseline commit can't hold a compared base side; with one, it can't hold a `none` base side (`baseline-inconsistent.none-base-with-baseline-commit.json`) | M1.5 |
 | R4.4-05 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs and `llms.txt` state that the PR controls the harness for both sides | M3.8 |
 | R4.4-06 | unit | planned | `packages/core/test/envelope.test.ts` | A historical PR with an uncorroborated base is stored unassociated with a diagnostic | M1.5 |
 | R4.4-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case C: a stale run enters history but never replaces the current head's comment | M2.3 |
@@ -258,7 +259,7 @@ Planned paths are provisional (§1).
 | R4.5-03 | unit | planned | `packages/store/test/git-branch.test.ts` | A stale lease fails; first creation uses an expected-absent lease | M2.2 |
 | R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.4 |
 | R4.5-04 | simulation | planned | `packages/publisher/test/simulation/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds the run key; no duplicate, no overwrite | M2.2 |
-| R4.5-04 | unit | planned | `packages/core/test/envelope.test.ts` | A run key already in the store index → no-op; the stored run is returned unchanged, never overwritten | M1.5 |
+| R4.5-04 | unit | passing | `packages/core/test/envelope.test.ts` › "treats an already-stored run key as a no-op and never replaces the stored run" | A run key already in the store index → no-op (`added: false`, the same store, `txn` unchanged), even when the retry has different results and created time | M1.5 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | `site.json` can't carry an app URL | M0.3 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-hash-in-versions.json` | `site.json` can't carry an app hash | M0.3 |
 | R4.5-05 | unit | planned | `packages/publisher/test/site-tree.test.ts` | A store containing `.html`, `.js`, `.svg` or unknown files produces a served tree without them; app bytes and hashes come from the release only | M2.3 |
