@@ -125,11 +125,12 @@ limit needs a measured memory bound, never disabling the check.
 | JSON | ≤ 1 MiB each, nesting ≤ 32, ≤ 2000 units total. Labels ≤ 256 code points / 1024 bytes. Errors ≤ 2048 bytes. No duplicate keys or non-integer numbers. |
 | PNG size | ≤ 32 MiB encoded; each dimension 1–16383; ≤ 16,000,000 pixels; one decode/compare at a time within a 512 MiB worker budget. The budget is enforced by the decoder's own allocation bound (sized from the checked header) and verified by recorded peak RSS. Worker `resourceLimits` cap only the V8 heap; the worker adds isolation, a timeout and cancellation. |
 | PNG profile | Signature; one IHDR; contiguous IDATs; one final IEND; valid CRCs; 8-bit RGB or RGBA; compression/filter method 0; non-interlaced; only IHDR, IDAT and IEND chunks (no PLTE, ancillary or unknown chunks); no trailing bytes |
-| Inflation | Expected scanline byte count computed from checked dimensions and enforced during inflate. Reject extra data, truncation, bad filter bytes and overflow **before** allocating decoded buffers. |
+| Inflation | Expected scanline byte count computed from checked dimensions and enforced during inflate. The only image-sized allocation is the output buffer the checked header sizes; extra data, truncation, bad filter bytes and overflow are rejected without ever writing past it. |
 | Work | 10-minute hard timeout per ingestion; cancellable per artifact and image. Excess work is refused, never published as a partial pass. |
 
-- Stream entries and count actual decompressed bytes, not ZIP metadata. Validate central/local
-  header consistency and reject duplicates before extraction. The ZIP reader is part of the
+- Budget declared entry sizes, and hold inflation to exactly the declared size, so a lying header
+  fails instead of expanding past it. Validate central/local header consistency and reject
+  duplicates before extraction. The ZIP reader is part of the
   trusted computing base: vendor or pin it, and test it.
 - A malformed part is rejected. Valid sibling parts may still form an explicitly incomplete run.
 - The publisher re-encodes decoded pixels to canonical PNG. It never copies the uploaded file.

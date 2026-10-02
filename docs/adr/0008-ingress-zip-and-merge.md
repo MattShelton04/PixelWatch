@@ -36,11 +36,11 @@ left choices that the design leaves open:
 **Own reader on `node:zlib`** (`packages/core/src/ingest/zip.ts`), with no new dependency. It is
 not run in a worker.
 
-- It works in two passes, like the PNG decoder:
-  - Pass 1 validates structure and layout. It then inflates every entry in 64 KiB pieces,
-    discarding the output, and counts the actual bytes against per-entry and per-ingestion
-    budgets and CRC-32.
-  - Pass 2 extracts one entry on demand into an exact-size buffer and re-checks its size and CRC.
+- Opening validates structure and layout without inflating anything, and charges every
+  entry's declared size to the per-ingestion budget. Extraction inflates one entry in 64 KiB
+  pieces into a buffer of exactly that size and refuses it the moment inflation passes the
+  declared size, ends short, leaves trailing data or fails its CRC. (ADR 0010 replaced an
+  earlier validate-then-extract double inflation; the bounds are the same.)
   - Nothing ever holds an expanded archive.
 - Parsing is linear, and inflation is asynchronous and cancellable between chunks. A worker
   would mean copying archives of up to 128 MiB. Decoding and encoding PNGs stay in the

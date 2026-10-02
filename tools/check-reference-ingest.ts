@@ -9,9 +9,9 @@
 //    coverage, side states and the eight results (canonical blobs decoded and compared in the
 //    worker), checks per-part unit counts against the converter output, and checks that reversed
 //    artifact and entry order gives the same ingestion.
-// 2. Runs the structural and CRC stages of the ZIP reader on the 16 archives GitHub's
-//    upload-artifact produced for the prototype runs. Their entry names are prototype names, so
-//    the name stage is skipped for this check only.
+// 2. Runs the structural stages of the ZIP reader on the 16 archives GitHub's upload-artifact
+//    produced for the prototype runs, then extracts every entry (size and CRC). Their entry names
+//    are prototype names, so the name stage is skipped for this check only.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -28,7 +28,7 @@ import { unitResult } from "../packages/core/src/comparator/result.ts";
 import { ingestArtifacts } from "../packages/core/src/ingest/ingest.ts";
 import { IngestBudget } from "../packages/core/src/ingest/limits.ts";
 import type { ArtifactInput, Ingestion } from "../packages/core/src/ingest/types.ts";
-import { checkLayout, readCentralDirectory, verifyEntries } from "../packages/core/src/ingest/zip.ts";
+import { checkLayout, readCentralDirectory, readEntry } from "../packages/core/src/ingest/zip.ts";
 import { PngWorker } from "../packages/core/src/png/isolated.ts";
 import { buildZip } from "./zip-corpus/zip-builder.ts";
 
@@ -69,11 +69,10 @@ function memoryPool(): BlobPool & { blobs: Map<string, Uint8Array> } {
   const blobs = new Map<string, Uint8Array>();
   return {
     blobs,
-    read: (path) => Promise.resolve(blobs.get(path)),
-    create: (path, bytes) => {
-      if (blobs.has(path)) return Promise.resolve("exists" as const);
+    has: (path) => Promise.resolve(blobs.has(path)),
+    add: (path, bytes) => {
       blobs.set(path, bytes);
-      return Promise.resolve("created" as const);
+      return Promise.resolve();
     },
   };
 }
@@ -173,9 +172,10 @@ for (const dir of existsSync(root) ? readdirSync(root).filter((d) => d.endsWith(
       const directory = readCentralDirectory(bytes, budget);
       const names = directory.records.map((r) => Buffer.from(r.nameBytes).toString("latin1"));
       const entries = checkLayout(bytes, directory, names);
-      await verifyEntries(bytes, entries, budget);
+      let expanded = 0;
+      for (const entry of entries) expanded += (await readEntry({ bytes, entries }, entry.name)).byteLength;
       zips++;
-      console.log(`  ok   ${dir}/${file}: ${String(entries.length)} entries, ${String(bytes.byteLength)} bytes, ${String(budget.expandedBytes)} expanded`);
+      console.log(`  ok   ${dir}/${file}: ${String(entries.length)} entries, ${String(bytes.byteLength)} bytes, ${String(expanded)} expanded`);
     } catch (error) {
       failures++;
       console.log(`  FAIL ${dir}/${file}: ${String(error)}`);

@@ -1,19 +1,15 @@
-// Restricted PNG decoder (02 §5; threat-model R4.3-08). Two passes over the IDAT stream:
+// Restricted PNG decoder (02 §5; threat-model R4.3-08). chunks.ts checks the structure first,
+// so the header is valid before anything image-sized exists. Then one inflate pass streams the
+// IDAT data in fixed-size pieces and reconstructs each scanline straight into the output buffer.
 //
-// 1. `inspectPng` checks the structure (chunks.ts), then inflates in fixed-size pieces while
-//    discarding the output. It enforces the exact scanline byte count computed from the checked
-//    header, a valid filter type on every row, a clean zlib end and no data after it. Memory stays
-//    constant: one row buffer and zlib's window.
-// 2. Only then does `decodePng` allocate the output, and it inflates again, reconstructing each
-//    row into place. Every pass-1 check is enforced again.
-//
-// So extra data, truncation, bad filter bytes and overflow are rejected before any decoded buffer
-// exists. The only image-sized allocation is the output (width × height × channels). Besides
-// it, memory is the input, at most one copy of the compressed stream (≤ 32 MiB), one row and
-// zlib's window.
+// The only image-sized allocation is that output (width × height × channels ≤ 64 MiB, sized from
+// the checked header). Inflation is held to the exact scanline byte count the header implies, so
+// extra data, truncation, bad filter bytes and overflow are refused without ever writing past it.
+// Besides the output, memory is the input, at most one copy of the compressed stream (≤ 32 MiB),
+// one row and zlib's window.
 import { createInflate } from "node:zlib";
 import type { RawPixels } from "../pixel-hash.ts";
-import { type PngHeader, type PngStructure, parsePngStructure } from "./chunks.ts";
+import { type PngStructure, parsePngStructure } from "./chunks.ts";
 import { PngError } from "./errors.ts";
 
 export type { PngHeader } from "./chunks.ts";
@@ -35,7 +31,7 @@ function zlibError(error: unknown): PngError {
 }
 
 /** Streams the IDAT data through zlib, hands each complete scanline to `sink`, and enforces sizes. */
-function inflateRows(structure: PngStructure, sink?: RowSink): Promise<void> {
+function inflateRows(structure: PngStructure, sink: RowSink): Promise<void> {
   const { header, stream, scanlineBytes } = structure;
   const stride = 1 + header.width * header.channels;
   const row = new Uint8Array(stride);
@@ -70,7 +66,7 @@ function inflateRows(structure: PngStructure, sink?: RowSink): Promise<void> {
           return;
         }
         try {
-          sink?.(filter, row.subarray(1), y);
+          sink(filter, row.subarray(1), y);
         } catch (error) {
           fail(error);
           return;
@@ -137,17 +133,9 @@ function unfilter(out: Uint8Array, filter: number, line: Uint8Array, y: number, 
   }
 }
 
-/** Validates the whole file without allocating any image-sized buffer. */
-export async function inspectPng(bytes: Uint8Array): Promise<PngHeader> {
-  const structure = parsePngStructure(bytes);
-  await inflateRows(structure);
-  return structure.header;
-}
-
 /** Decodes a PNG in the restricted profile to tightly packed 8-bit RGB or RGBA. */
 export async function decodePng(bytes: Uint8Array, options: DecodeOptions = {}): Promise<RawPixels> {
   const structure = parsePngStructure(bytes);
-  await inflateRows(structure);
   const { width, height, channels } = structure.header;
   const data = (options.allocate ?? ((n: number) => new Uint8Array(n)))(width * height * channels);
   await inflateRows(structure, (filter, line, y) => {

@@ -92,7 +92,7 @@ async function admitImage(archive: ZipArchive, file: string, index: number, ctx:
 }
 
 export async function validatePart(part: SelectedPart, artifact: ArtifactRef, ctx: PartContext): Promise<ValidPart> {
-  const archive = await openZip(part.artifact.zip, ctx.budget, { signal: ctx.signal });
+  const archive = openZip(part.artifact.zip, ctx.budget, { signal: ctx.signal });
   const bundle = await readBundle(archive, ctx.signal);
   checkIdentity(bundle, part, ctx.attempt);
   checkFiles(bundle, archive);

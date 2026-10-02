@@ -73,8 +73,8 @@ from the branch:
 
 The publisher decodes the restricted bundle PNG, normalizes pixels (02 §3), and writes a
 metadata-free canonical PNG with its own bounded encoder. That one codec serves validation,
-recompute, imports and future migrations. When reusing an existing blob, validate it against its
-name and never overwrite it.
+recompute, imports and future migrations. An existing blob with the right name is reused as is
+and never overwritten; it isn't decoded again (ADR 0010).
 
 Lossless WebP measured −58 % on PropertyScope, but a WebP-only pool would need a second trusted
 decoder. It's a possible **later derived representation** (immutable path including profile and

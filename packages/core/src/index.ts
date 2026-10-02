@@ -5,7 +5,7 @@ export * from "./blob-pool.ts";
 export * from "./comparator/compare.ts";
 export * from "./comparator/policy.ts";
 export * from "./comparator/result.ts";
-export { type DecodeOptions, type PngHeader, decodePng, inspectPng } from "./png/decode.ts";
+export { type DecodeOptions, type PngHeader, decodePng } from "./png/decode.ts";
 export { encodePng } from "./png/encode.ts";
 export { PngError, type PngErrorCode } from "./png/errors.ts";
 export { type JobOptions, PngWorker, type PngWorkerOptions } from "./png/isolated.ts";

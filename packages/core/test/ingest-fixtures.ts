@@ -110,11 +110,10 @@ export function memoryPool(): BlobPool & { readonly blobs: Map<string, Uint8Arra
   const blobs = new Map<string, Uint8Array>();
   return {
     blobs,
-    read: (path) => Promise.resolve(blobs.get(path)),
-    create: (path, bytes) => {
-      if (blobs.has(path)) return Promise.resolve("exists" as const);
+    has: (path) => Promise.resolve(blobs.has(path)),
+    add: (path, bytes) => {
       blobs.set(path, bytes);
-      return Promise.resolve("created" as const);
+      return Promise.resolve();
     },
   };
 }

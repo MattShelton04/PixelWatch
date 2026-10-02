@@ -16,7 +16,7 @@ import { IngressError } from "../packages/core/src/ingest/errors.ts";
 import { ingestArtifacts } from "../packages/core/src/ingest/ingest.ts";
 import { IngestBudget } from "../packages/core/src/ingest/limits.ts";
 import type { ArtifactInput, Ingestion } from "../packages/core/src/ingest/types.ts";
-import { openZip } from "../packages/core/src/ingest/zip.ts";
+import { openZip, readEntry } from "../packages/core/src/ingest/zip.ts";
 import { PngWorker } from "../packages/core/src/png/isolated.ts";
 import { buildPng } from "./png-corpus/png-builder.ts";
 import { buildZip } from "./zip-corpus/zip-builder.ts";
@@ -74,7 +74,7 @@ function configOf(providers: readonly [string, number][]): Config {
 }
 
 /** A discarding pool: every blob is new and nothing is kept, so RSS reflects ingestion only. */
-const DISCARD: BlobPool = { read: () => Promise.resolve(undefined), create: () => Promise.resolve("created") };
+const DISCARD: BlobPool = { has: () => Promise.resolve(false), add: () => Promise.resolve() };
 
 function part(revision: "base" | "head", providerId: string, index: number, count: number, units: [string, Uint8Array][]): [string, Uint8Array] {
   const files = units.map(([viewId, png]) => [unitFileName({ providerId, viewId, variantId: "desktop" }), viewId, png] as const);
@@ -159,8 +159,11 @@ async function child(mode: Mode, input: string): Promise<Measurement> {
       result.outcome = "no ingestion";
     } else if (mode === "zip") {
       const budget = new IngestBudget();
-      for (const a of artifacts) await openZip(a.zip, budget);
-      result.outcome = "opened";
+      for (const a of artifacts) {
+        const archive = openZip(a.zip, budget);
+        for (const entry of archive.entries) await readEntry(archive, entry.name);
+      }
+      result.outcome = "extracted";
       result.entries = budget.entries;
       result.expandedBytes = budget.expandedBytes;
     } else {
