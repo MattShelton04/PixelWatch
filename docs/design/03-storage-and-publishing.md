@@ -106,6 +106,14 @@ disclose expiry. Pinning never bypasses the hard budget. Daily/weekly archive th
   error, never a reason to widen deletion.
 - **Over budget:** drop the oldest unpinned closed-PR history first, then other oldest unpinned
   runs. Always keep the latest main run and each retained open PR's latest run.
+- ADR 0012 fills in the details:
+  - Runs in no stream keep their latest `runsPerPr` and are pruned after closed-PR history.
+  - Live grace copies are pruned before any history.
+  - Pinned runs are pruned last.
+  - The new run is protected.
+  - An unknown PR state ranks and is protected like an open one.
+  - Pins, PR states, grace records, derived-file references and projected sizes are injected
+    inputs; there's no schema change.
 - A `workflow_dispatch` maintenance run of the report workflow does GC and repair without new
   captures. No hidden background process.
 - **Migration backups:** unique refs `pixelwatch/backup/<from>-<to>-<date>`, deleted by the
