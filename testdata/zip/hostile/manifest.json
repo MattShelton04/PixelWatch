@@ -599,7 +599,7 @@
       "file": "bomb-expanded-total.zip",
       "code": "zip-expanded-total",
       "class": "deflate-bomb",
-      "why": "17 honest 32 MiB PNG entries: 544 MiB, past the 512 MiB per-ingestion budget counted from inflated bytes"
+      "why": "17 honest 32 MiB PNG entries: 544 MiB declared, past the 512 MiB per-ingestion budget"
     },
     {
       "file": "bomb-entry-count.zip",

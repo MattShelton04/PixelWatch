@@ -188,11 +188,11 @@ export function hostileCorpus(): HostileCase[] {
   add("stored-size-mismatch", "zip-size-mismatch", "deflate", "stored entry whose sizes differ", zip(BUNDLE, png(1, { method: 0, size: data.length + 1 })));
   add("inflate-short", "zip-inflate-short", "deflate", "header claims 10 more bytes than the entry inflates to", zip(BUNDLE, png(1, { size: data.length + 10 })));
 
-  // Bombs. Budgets count actual inflated bytes; header sizes only give early refusals.
+  // Bombs. The budget counts declared sizes, and inflation is held to them (ADR 0010).
   add("bomb-lying-header", "zip-inflate-overflow", "deflate-bomb", "header claims 1 KiB; the entry inflates to 64 MiB of zeros", zip(BUNDLE, png(1, { data: new Uint8Array(64 * MiB), size: 1024 })));
   add("bomb-declared-png", "zip-entry-too-large", "deflate-bomb", "a PNG entry declaring 33 MiB (over the 32 MiB PNG limit)", zip(BUNDLE, png(1, { size: 33 * MiB })));
   add("bomb-declared-bundle", "zip-entry-too-large", "deflate-bomb", "bundle.json declaring 2 MiB (over the 1 MiB JSON limit)", zip({ ...BUNDLE, size: 2 * MiB }, png(1)));
-  add("bomb-expanded-total", "zip-expanded-total", "deflate-bomb", "17 honest 32 MiB PNG entries: 544 MiB, past the 512 MiB per-ingestion budget counted from inflated bytes", zip(BUNDLE, ...Array.from({ length: 17 }, (_, i) => png(i + 1, { data: new Uint8Array(32 * MiB) }))));
+  add("bomb-expanded-total", "zip-expanded-total", "deflate-bomb", "17 honest 32 MiB PNG entries: 544 MiB declared, past the 512 MiB per-ingestion budget", zip(BUNDLE, ...Array.from({ length: 17 }, (_, i) => png(i + 1, { data: new Uint8Array(32 * MiB) }))));
   add("bomb-entry-count", "zip-too-many-entries", "entry-count-bomb", "EOCD declares 5000 entries (over 4096 per ingestion)", archive({ eocd: { totalEntries: 5000 } }, BUNDLE, png(1)));
 
   return cases;

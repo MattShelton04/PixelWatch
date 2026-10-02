@@ -52,12 +52,12 @@ const MAX_UNITS = 2000;
 
 const SCENARIOS: readonly Scenario[] = [
   { id: "baseline", what: "Node, modules and reading the max set; no ingestion", mode: "baseline", input: "max" },
-  { id: "max-zip", what: "Max set, ZIP stages only (structure, layout, inflate + CRC, shared budget)", mode: "zip", input: "max" },
+  { id: "max-zip", what: "Max set, ZIP stages only (structure, layout, declared-size budget, inflate + CRC)", mode: "zip", input: "max" },
   { id: "max-ingest", what: "Max set, full ingestion, in-process codec", mode: "ingest", input: "max" },
   { id: "max-ingest-worker", what: "Max set, full ingestion, PngWorker codec", mode: "ingest-worker", input: "max" },
   { id: "tall-ingest-worker", what: "200 units of 1440×2000 screenshot-like PNGs, PngWorker codec", mode: "ingest-worker", input: "tall" },
   { id: "bomb-expanded-total", what: "17 honest 32 MiB entries (544 MiB)", mode: "ingest", input: "bomb-expanded-total.zip" },
-  { id: "bomb-lying-header", what: "Header says 1 KiB, inflates to 64 MiB", mode: "ingest", input: "bomb-lying-header.zip" },
+  { id: "bomb-lying-header", what: "Header says 1 KiB, inflates to 64 MiB (ZIP stages only)", mode: "zip", input: "bomb-lying-header.zip" },
   { id: "bomb-entry-count", what: "EOCD declares 5000 entries", mode: "ingest", input: "bomb-entry-count.zip" },
   { id: "bomb-declared-png", what: "Central record declares a 33 MiB PNG", mode: "ingest", input: "bomb-declared-png.zip" },
   { id: "overlap-shared-offset", what: "Two entries share one local header", mode: "ingest", input: "overlap-shared-offset.zip" },
@@ -223,6 +223,7 @@ function main(): void {
       sets.set(name, at);
     }
     const rows: string[] = [];
+    let tallMs = 0;
     for (const s of SCENARIOS) {
       const input = sets.get(s.input) ?? join(HOSTILE, s.input);
       const runs: Measurement[] = [];
@@ -238,6 +239,7 @@ function main(): void {
         `| ${s.id} | ${s.what} | ${String(first?.archives ?? 0)} | ${MiB(first?.archiveBytes)} | ${first?.entries?.toLocaleString("en-US") ?? "–"} | ${MiB(first?.expandedBytes)} | ${first?.units?.toLocaleString("en-US") ?? "–"} | ${first?.outcome ?? "?"} | ${median(runs.map((r) => r.totalMs)).toFixed(0)} | ${Math.max(...runs.map((r) => r.maxRssMiB)).toFixed(0)} |`,
       );
       console.log(rows.at(-1));
+      if (s.id === "tall-ingest-worker") tallMs = median(runs.map((r) => r.totalMs));
     }
     const doc = `# M1.4 ingestion: peak RSS and time
 
@@ -253,20 +255,28 @@ ${provenance()}
 - The blob pool discards what it is given, so RSS reflects ingestion, not stored blobs.
 - Max set: 1 provider × ${String(MAX_SHARDS)} shards × base and head = 96 parts, 96 \`bundle.json\` + 4000 PNGs = 4096
   entries, ${String(MAX_UNITS)} declared units. Each PNG is 1440×30 RGB in a stored zlib stream, so inflated bytes
-  are nearly all pixels. Entries and expanded MiB are counted by the shared budget from inflated
-  output (zip row).
+  are nearly all pixels. Entries and expanded MiB are the shared budget's declared-size totals
+  (zip rows).
 - Bombs come from \`testdata/zip/hostile/\`, ingested as the only part of a one-shard provider.
+  The lying header runs the ZIP stages only: in a full ingestion its placeholder \`bundle.json\`
+  is rejected before the bomb entry is read.
 
 | Scenario | Input | Archives | Archive MiB | Entries | Expanded MiB | Units | Outcome | Time | Peak RSS |
 |---|---|---|---|---|---|---|---|---|---|
 ${rows.join("\n")}
 
-The ZIP reader never holds an expanded archive: pass 1 inflates every entry in 64 KiB pieces and
-discards them, and pass 2 extracts one entry at a time. The 544 MiB bomb is refused when the
-running total of actually inflated bytes passes 512 MiB, without an entry-sized buffer; the lying
-header stops one chunk past its declared size; the entry-count and declared-size bombs and the
-overlap fail before any inflation. Only this Windows machine was measured; CI runs the same code
-on Linux but doesn't record RSS.
+The ZIP reader never holds an expanded archive. Opening it charges every entry's declared size to
+the per-ingestion budget without inflating anything, and each entry is then extracted on its own,
+held to exactly its declared size (ADR 0010). The 544 MiB bomb is refused at open, before any
+inflation; the lying header stops one 64 KiB piece past its declared size; the entry-count and
+declared-size bombs and the overlap fail before any inflation. Only this Windows machine was
+measured; CI runs the same code on Linux but doesn't record RSS.
+
+Capacity observation: the tall worker row averages about ${(tallMs / 200).toFixed(0)} ms per image. A linear
+extrapolation to 2000 such images is about ${(tallMs * 10 / 60_000).toFixed(1)} minutes, against the 10-minute hard timeout.
+This is an estimate, not a measured large-image attempt or timeout result. The maximum set uses
+short images; passing the entry and byte limits does not guarantee that a real capture finishes
+within the work limit. Excess work must still be refused per 02 §5.
 `;
     writeFileSync(EVIDENCE, doc);
     console.log(`wrote ${EVIDENCE}`);
