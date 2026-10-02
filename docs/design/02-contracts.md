@@ -15,9 +15,8 @@ keys are rejected.
 | `bundle@1` | `schemaVersion: 1`; source claims; `revision: base\|head`; provider; shard index/count; complete declared unit catalog; per-unit result. No publishing decisions. |
 | `config@1` | Allowed source workflow IDs/events; providers and fixed shard counts (at most 128 shards in total, so base and head parts fit `run@1`'s 256 `parts`); base policy (01 §4.4); comparator policy/version; store branch and prefix; retention and byte limits; comment on/off; theme preset |
 | `store@1` | Ownership marker, repository ID, data version, transaction counter, run index. No app code. |
-| `run@1` | Run key; authenticated source envelope; capture claims; config/release/comparator versions; ingestion digest; base and head snapshot refs; results; coverage; ordering fields |
-| `snapshot@1` | Revision claim, normalized capture environment, sorted unit entries with explicit side states |
-| `stream@1` | Ordered bounded run-key list plus latest pointer. Only `main` and `pr-<number>` in the MVP. |
+| `run@1` | Run key; authenticated source envelope; capture claims per side; config/release/comparator versions; parts by artifact ID; results with both side states; coverage. Self-contained: there are no separate snapshot records. |
+| `stream@1` | Ordered bounded run-key list plus latest pointer, **projected** from `store.json`'s run index, never stored. Only `main` and `pr-<number>` in the MVP. |
 | `site@1` | Base path, release/data/API versions, data references, generation, theme preset. No code URLs. |
 | `changes@1` | Public agent projection (§7), not internal store objects |
 
@@ -51,8 +50,8 @@ in ADR 0003.
 ## 3. Identity and hashing
 
 - **Unit key:** `(providerId, viewId, variantId)`. Each ID matches `[a-z0-9][a-z0-9_-]{0,63}`.
-  Display labels are separate bounded text. Serialize the key as a three-element JSON array for
-  hashing; never join with a delimiter.
+  Display labels are separate bounded text. IDs never contain a dot, so `<viewId>.<variantId>`
+  is an unambiguous file name.
 - **SHA-256 strings:** 64 lowercase hex. Git commit OIDs are validated as Git OIDs, not as content
   hashes.
 - **GitHub numeric IDs:** nonzero decimal **strings**. Compare numerically, never lexically or as
@@ -60,8 +59,8 @@ in ADR 0003.
 - **Run key:** `<sourceRunId>-a<sourceAttempt>`. A publisher retry is not a new attempt. Imported
   history uses `import-<sha256>`.
 - **Canonical JSON for hashing:** UTF-8, keys sorted recursively, no whitespace, finite integers
-  only, arrays in order, no Unicode normalization of values, and the object's own ID/digest field
-  excluded. Tests pin the exact bytes and hashes.
+  only, arrays in order, no Unicode normalization of values. Tests pin the exact bytes and hashes.
+  Only the generation ID (03 §3) and import run keys hash canonical JSON.
 - **Pixel hash:**
 
   ```text
@@ -73,9 +72,6 @@ in ADR 0003.
   Fixed test vectors must cover: dimension byte order, hidden RGB under alpha 0, alpha 1 and 254,
   RGB vs RGBA equivalence, and different dimensions with the same byte count. Changing
   normalization later needs a new domain string (`v2`) and a migration.
-- **Snapshot ID:** SHA-256 of the canonical snapshot payload (sorted units, pixel hashes, claimed
-  environment, provenance references), excluding its own ID. Unit arrays are sorted by the three
-  ASCII IDs.
 - **Derived images** (comment previews, thumbnails): named by SHA-256 of their encoded bytes.
 
 ADR 0003 fixes the details: code-point key order, safe integers only, history order.
@@ -221,12 +217,10 @@ corroborated base/head commits, config SHA, release SHA. It requires a completed
 configured workflow and an allowed event. `workflow_run` payload data must match the REST
 response; a mismatch fails safely.
 
-- **Ingestion digest:** covers the capture-source identity plus sorted validated artifact content
-  hashes. It excludes the publisher release, config, current PR head, URLs and timestamps.
-- Same run key + same digest → no-op. Same run key + different digest → conflict, reported,
-  never overwritten.
-- A retry under a newer publisher returns the existing result unchanged. Reanalysis is a separate
-  explicit operation.
+- **Idempotency is by run key.** A run key already in `store.json` is a no-op: the stored run is
+  returned unchanged and never overwritten, whatever publisher release or config the retry has.
+  A completed attempt's artifacts can't change, so the key identifies the input; there is no
+  content digest to compare (ADR 0010). Reanalysis is a separate explicit operation.
 - **History order:** source-created time, then numeric run ID, then numeric attempt. Publisher
   finish time doesn't count.
 

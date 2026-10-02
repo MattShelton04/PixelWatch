@@ -44,11 +44,6 @@
     "bundle": 1,
     "data": 1
   },
-  "ingestionDigest": "8f1f56bf2d4785b26a4e7bb8cca2207ce135d518297e473f1577453a582ace33",
-  "snapshots": {
-    "base": "47f3652d2d2f23d27b1aec75ac3ea9d9964d3a93e9c3e57c57ea6573ec681788",
-    "head": "4e80bab86cd030e4d74c4de4d3e810e33e549a5079205fb57b1f43a89508a985"
-  },
   "parts": [
     {
       "revision": "base",
@@ -58,7 +53,7 @@
         "count": 1
       },
       "status": "valid",
-      "artifactSha256": "0894637c475ebd23c503111d6c097338b9c698d1e42202e41464af58ac5e03e5"
+      "artifactId": "4000000001"
     },
     {
       "revision": "base",
@@ -68,7 +63,7 @@
         "count": 2
       },
       "status": "valid",
-      "artifactSha256": "0ce50d31f5d30295437e215f66cec9f077ee783a1f9dedc13e686c9202230195"
+      "artifactId": "4000000002"
     },
     {
       "revision": "base",
@@ -78,7 +73,7 @@
         "count": 2
       },
       "status": "valid",
-      "artifactSha256": "16b2708628bfbd6f13991d34b7173a4bec59cf0eb6353af842e40485c97dd023"
+      "artifactId": "4000000003"
     },
     {
       "revision": "head",
@@ -88,7 +83,7 @@
         "count": 1
       },
       "status": "valid",
-      "artifactSha256": "64324109b8472aa38a68d53aabf01559e48fd7c50a4982d7827b8eef3a6331cf"
+      "artifactId": "4000000004"
     },
     {
       "revision": "head",
@@ -98,7 +93,7 @@
         "count": 2
       },
       "status": "valid",
-      "artifactSha256": "292d5e641584003d77a854a32e0b791166ad4dbad703e4595164ea438e3bee77"
+      "artifactId": "4000000005"
     },
     {
       "revision": "head",
@@ -108,7 +103,7 @@
         "count": 2
       },
       "status": "rejected",
-      "artifactSha256": "cbd9f21228656d136bee3142e4b8734a2bf8503389d13381daf2635da31ba92c",
+      "artifactId": "4000000006",
       "diagnostic": "entry name is not bundle.json or <viewId>.<variantId>.png"
     }
   ],

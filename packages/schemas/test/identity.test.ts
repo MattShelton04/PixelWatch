@@ -1,10 +1,9 @@
 // Provider and attempt identity: the same view name under two providers stays two units, and a
 // part's attempt/revision/provider/shard agree between its artifact name and its bundle.json.
 import { describe, expect, it } from "vitest";
-import { canonicalSha256 } from "../src/canonical.ts";
 import { convertPropertyScope } from "../src/convert/propertyscope.ts";
 import { convertTracePilot } from "../src/convert/tracepilot.ts";
-import type { Snapshot } from "../src/generated/types.ts";
+import type { Run } from "../src/generated/types.ts";
 import { formatRunKey, parseArtifactName } from "../src/ids.ts";
 import { validateDocument } from "../src/validate.ts";
 import { testdata, tinyPng } from "./helpers.ts";
@@ -28,30 +27,11 @@ describe("provider identity", () => {
     expect(fixture.artifactName).not.toBe(stack.artifactName);
   });
 
-  it("keeps both as separate units in one snapshot", () => {
-    const body: Omit<Snapshot, "snapshotId"> = {
-      schemaVersion: 1,
-      claims: {},
-      providers: [
-        { providerId: "fixture", environment: {} },
-        { providerId: "stack", environment: {} },
-      ],
-      parts: [],
-      units: ["fixture", "stack"].map((providerId) => ({
-        providerId,
-        viewId: "home",
-        variantId: "desktop",
-        state: "captured" as const,
-        pixelHash: "0".repeat(64),
-        width: 1,
-        height: 1,
-      })),
-    };
-    const snapshot = { ...body, snapshotId: canonicalSha256(body) };
-    expect(validateDocument("snapshot", snapshot).ok).toBe(true);
-    // The ID is over the canonical payload, so key order and position don't matter.
-    const reordered = Object.fromEntries(Object.entries(snapshot).reverse());
-    expect(validateDocument("snapshot", reordered).ok).toBe(true);
+  it("keeps both as separate results in one run", () => {
+    const run = JSON.parse(testdata("schemas", "run", "valid", "all-eight-statuses.json").toString("utf8")) as Run;
+    expect(validateDocument("run", run).ok).toBe(true);
+    const homes = run.results.filter((r) => r.viewId === "home" && r.variantId === "desktop").map((r) => r.providerId);
+    expect(homes).toEqual(["fixture", "stack"]);
   });
 });
 

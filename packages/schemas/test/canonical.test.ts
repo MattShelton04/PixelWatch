@@ -34,12 +34,6 @@ describe("canonical JSON (02 §3)", () => {
     expect(canonicalJson({ "\u{1F600}": 1, "Ａ": 2 })).toBe('{"Ａ":2,"\u{1F600}":1}');
   });
 
-  it("omits only the named top-level field", () => {
-    const doc = { snapshotId: "x", units: [{ snapshotId: "kept" }] };
-    expect(canonicalJson(doc, { omit: "snapshotId" })).toBe('{"units":[{"snapshotId":"kept"}]}');
-    expect(doc.snapshotId).toBe("x");
-  });
-
   it("rejects anything that isn't finite-integer JSON", () => {
     for (const bad of [1.5, Number.NaN, Number.POSITIVE_INFINITY, -0, 2 ** 53, undefined, 1n, () => 1, Symbol("x")]) {
       expect(() => canonicalJson({ v: bad }), String(bad)).toThrow(CanonicalJsonError);

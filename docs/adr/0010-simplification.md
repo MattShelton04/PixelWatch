@@ -68,3 +68,32 @@ part has exactly one provider.
   own variant instead of every screenshot being filed under one hard-coded desktop setting.
 - bundle@1 hasn't shipped, so this is an in-place change with no migration. The hostile ZIP
   corpus was regenerated with `node tools/zip-corpus/generate.ts`.
+
+### 5. No snapshot records
+
+snapshot@1 was a per-revision manifest keyed by the SHA-256 of its canonical JSON. Its content
+(units, side states, claims, parts) is already in run@1, and because it embedded its own run's
+part provenance, two runs never produced the same snapshot ID, so it deduplicated nothing.
+
+- snapshot@1, its fixtures and semantic check, run@1's `snapshots` field and the canonical
+  encoder's `omit` option are gone. `data/v1/snapshots/` isn't written.
+- Later baseline reuse (`future/review-features.md` §5) reads a main run's head side.
+
+### 6. Idempotency by run key; streams are derived
+
+- **No ingestion digest.** run@1's `ingestionDigest` and the per-part archive SHA-256s are gone;
+  parts carry the API's `artifactId`. A completed attempt's artifacts can't change, so the run
+  key already identifies the input, and the "same key, different digest" conflict could only
+  fire on a publisher bug. A run key already in `store.json` is a no-op, never an overwrite
+  (R4.5-04 is unchanged in effect).
+- **No stored streams.** `store.json` already lists every run with its stream, in history order,
+  so `data/v1/streams/*.json` was a second, mutable copy of the same index. The projector
+  generates stream@1 from `store.json`; the store branch holds only `store.json`, runs and blobs.
+
+## Consequences
+
+- Less contract surface for M1.5: build a run from an `Ingestion` plus the envelope, append it to
+  `store.json`, and treat an existing run key as done.
+- bundle@1 and run@1 change in place. Neither has shipped, so no data migration is needed.
+- Benchmarks in `docs/evidence/m1.1-png-bench.md` and `m1.4-ingest-bench.md` were measured
+  before §2 and §3; rerun them before quoting their numbers.

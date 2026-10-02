@@ -1,5 +1,5 @@
-// Inputs and outputs of ingestion (M1.4; 02 §§5–6; ADR 0008). M1.5 builds snapshots and runs from
-// an Ingestion; `unitResult(identity, unit.base, unit.head, comparison?)` gives each result.
+// Inputs and outputs of ingestion (M1.4; 02 §§5–6; ADR 0008). M1.5 builds runs from an
+// Ingestion; `unitResult(identity, unit.base, unit.head, comparison?)` gives each result.
 import type { Claims, Config, Coverage, Geometry, Labels, Revision, Shard, Side } from "@pixelwatch/schemas";
 import type { BlobCodec, BlobPool } from "../blob-pool.ts";
 import type { IngressErrorCode } from "./errors.ts";
@@ -37,9 +37,8 @@ export interface PartKey {
 }
 
 export interface ArtifactRef {
+  /** API-returned artifact ID. A completed attempt's artifacts don't change, so the ID identifies the bytes. */
   readonly artifactId: string;
-  /** SHA-256 of the archive bytes. */
-  readonly sha256: string;
 }
 
 export interface Diagnostic {

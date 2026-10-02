@@ -114,7 +114,7 @@ close gaps between 03 §7, 05 §2 and the frozen `site@1`.
 | R4.5-01 | Only the configured, marked data branch is writable. Refuse the default branch, unmarked branches, foreign repository markers and any other ref. | TB6, TB14 | Tampering: `contents: write` isn't ref-scoped, so a bug could push elsewhere | Store adapter refusal; branch protection on the default branch |
 | R4.5-02 | Git objects are read as data (`cat-file`/`ls-tree`) with hooks, filters and submodules disabled and a sanitized environment; tree content never runs | TB6, TB13 | Elevation via hostile tree content or Git config | Sanitized isolated Git dir |
 | R4.5-03 | Store writes are CAS with an explicit expected-SHA lease: no blind force, no rebase, no global Actions concurrency group for ingestion | TB7 | Tampering/DoS: lost or dropped runs | `--force-with-lease=<ref>:<sha>`; bounded recompute-retry |
-| R4.5-04 | An uncertain push outcome is resolved by refetching and matching run key + ingestion digest. Same key with a different digest is a reported conflict, never an overwrite. | TB6, TB7 | Tampering: duplicate or overwritten runs | Idempotency (02 §8) |
+| R4.5-04 | An uncertain push outcome is resolved by refetching and looking for the run key. A run key already stored is a no-op: the stored run is never overwritten. | TB6, TB7 | Tampering: duplicate or overwritten runs | Idempotency (02 §8) |
 | R4.5-05 | The served tree is built only from allowlisted validated data plus the pinned release's app; store files are never copied as active files; app hashes in the store are never trusted | TB6, TB9 | Tampering: stored-XSS through the store | Fresh build directory; `site@1` has no code URLs or hashes |
 | R4.5-06 | Projection → deploy → readiness → comment reconciliation is serialized, and the store is read after taking the lock | TB8 | Tampering: a stale generation or comment | Project job order (§6) |
 | R4.5-07 | Readiness: served `site.json` has the expected `generation`; each PR to be commented has `api/v1/pr/<n>/latest.json` naming the expected run key and generation; each fetched body's SHA-256 equals the built bytes. The whole check passes on 3 consecutive polls ≥ 10 s apart. HTTP 200 alone isn't readiness (ADRs 0004, 0005). | TB8, TB12 | Tampering: a comment links to content not yet served | Bounded readiness poll |
@@ -257,8 +257,8 @@ Planned paths are provisional (§1).
 | R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-ingest-cas-race.sim.test.ts` | **CAS race.** Four ingestors fetch the same tip; all four runs are in the final store within 5 attempts each; every push uses an explicit lease; no rebase, no plain `--force` | M2.2 |
 | R4.5-03 | unit | planned | `packages/store/test/git-branch.test.ts` | A stale lease fails; first creation uses an expected-absent lease | M2.2 |
 | R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.4 |
-| R4.5-04 | simulation | planned | `packages/publisher/test/simulation/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds run key + digest; no duplicate, no overwrite | M2.2 |
-| R4.5-04 | unit | planned | `packages/core/test/envelope.test.ts` | Same run key + same digest → no-op; same key + different digest → conflict, reported | M1.5 |
+| R4.5-04 | simulation | planned | `packages/publisher/test/simulation/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds the run key; no duplicate, no overwrite | M2.2 |
+| R4.5-04 | unit | planned | `packages/core/test/envelope.test.ts` | A run key already in the store index → no-op; the stored run is returned unchanged, never overwritten | M1.5 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | `site.json` can't carry an app URL | M0.3 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-hash-in-versions.json` | `site.json` can't carry an app hash | M0.3 |
 | R4.5-05 | unit | planned | `packages/publisher/test/site-tree.test.ts` | A store containing `.html`, `.js`, `.svg` or unknown files produces a served tree without them; app bytes and hashes come from the release only | M2.3 |
@@ -344,10 +344,10 @@ Permissions: `actions: read`, `contents: write`, `pull-requests: read`.
 | I1 Verify source | `workflow_run` payload; REST run, workflow, attempt, PR association | — | mismatch/disallowed → I9 (no write). Ambiguous PR → continue unassociated. | diagnostic |
 | I2 Load config | Config at the recorded default-branch commit | — | unknown version/invalid → I9 (no write) | config error |
 | I3 Collect parts | All artifact pages, by ID, bounded | temp files | malformed part → rejected part, run continues incomplete; download failure → missing part | part diagnostics |
-| I4 Analyse | Validated parts | in-memory run, snapshots, blobs | over limits/timeout → I9 or failure record | — |
+| I4 Analyse | Validated parts | in-memory run, blobs | over limits/timeout → I9 or failure record | — |
 | I5 Fetch tip | `pixelwatch-data` depth 1 | — | unmarked/foreign/default/unknown version → I9 | refusal |
-| I6 Build tx | Tip tree + run (+ retention/GC, budget) | new tree, parentless commit | same key + different digest → conflict (I9); same key + same digest → I8 (no-op); over hard budget → I9 | — |
-| I7 CAS push | — | lease push | lease conflict → I5 (≤ 5 attempts); unknown outcome → refetch; run key + digest present → I8; else I5; exhausted → I9 | — |
+| I6 Build tx | Tip tree + run (+ retention/GC, budget) | new tree, parentless commit | run key already stored → I8 (no-op); over hard budget → I9 | — |
+| I7 CAS push | — | lease push | lease conflict → I5 (≤ 5 attempts); unknown outcome → refetch; run key present → I8; else I5; exhausted → I9 | — |
 | I8 Stored | — | — | — | `stored` + store commit |
 | I9 Failed | — | nothing (or a bounded failure record through I5–I7) | — | failure category + repair command |
 

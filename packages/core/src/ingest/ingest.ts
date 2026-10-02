@@ -7,7 +7,6 @@
 // A part-scope IngressError rejects that part and the run continues, explicitly incomplete. An
 // ingestion-scope error (or any other error) propagates: the ingestion is refused, never
 // published as a partial pass (02 §5 "Work").
-import { sha256Hex } from "@pixelwatch/schemas";
 import { IN_PROCESS_CODEC } from "../blob-pool.ts";
 import { IngressError } from "./errors.ts";
 import { INGEST_LIMITS, IngestBudget } from "./limits.ts";
@@ -26,12 +25,12 @@ export async function ingestArtifacts(input: IngestInput): Promise<Ingestion> {
   const valid: ValidPart[] = [];
   const rejected: RejectedPart[] = selection.duplicates.map((d) => ({
     ...d.key,
-    artifacts: d.artifacts.map((a) => ({ artifactId: a.artifactId, sha256: sha256Hex(a.zip) })),
+    artifacts: d.artifacts.map((a) => ({ artifactId: a.artifactId })),
     diagnostic: { code: "part-duplicate", message: `${String(d.artifacts.length)} artifacts carry this part's name; none is chosen` },
   }));
   const ctx = { config: input.config, attempt: input.attempt, budget, pool: input.pool, codec: input.codec ?? IN_PROCESS_CODEC, signal };
   for (const part of selection.selected) {
-    const artifact = { artifactId: part.artifact.artifactId, sha256: sha256Hex(part.artifact.zip) };
+    const artifact = { artifactId: part.artifact.artifactId };
     try {
       valid.push(await validatePart(part, artifact, ctx));
     } catch (error) {

@@ -32,9 +32,6 @@ The **store branch** `pixelwatch-data` contains only:
 ```text
 store.json                          # ownership marker, repository ID, dataVersion, txn counter, run index
 data/v1/runs/<runKey>/run.json      # immutable accepted run
-data/v1/snapshots/<snapshotId>.json # immutable snapshot manifest
-data/v1/streams/main.json           # mutable
-data/v1/streams/pr-<number>.json    # mutable
 blobs/<ab>/<pixelHash>.png          # canonical PNG, 2-hex fan-out
 derived/<ab>/<bytesHash>.png        # trusted-generated previews/thumbnails
 ```
@@ -48,7 +45,8 @@ from the branch:
   site.json                         # mutable: versions, generation, streams, theme preset
   app/<release>/app.js              # from the pinned release, integrity-pinned
   blobs/…  derived/…                # validated copies from the store
-  data/v1/…                         # validated copies from the store
+  data/v1/runs/…                    # validated copies from the store
+  data/v1/streams/<streamId>.json   # stream@1, generated from store.json's run index
   runs/<runKey>/index.html          # generated permalink page (not data/…/index.html)
   api/v1/index.json
   api/v1/runs/<runKey>/changes.json
@@ -66,6 +64,8 @@ from the branch:
   `{storeTip, releaseCommit, configCommit, projectionVersion}`. These are all known before
   building, so there's no self-reference.
 - Store metadata uses a transaction counter, never its own future commit SHA.
+- Streams aren't stored. Each `store.json` run entry names its stream, so the projector derives
+  every stream's ordered run list and latest pointer; there's no second index to keep in sync.
 - Generated HTML, indices and API files are rebuildable. Canonical PNGs and accepted run records
   are never changed in place.
 
@@ -98,10 +98,10 @@ disclose expiry. Pinning never bypasses the hard budget. Daily/weekly archive th
   isn't closed.
 - **Order** runs by source-created time, numeric run ID, then attempt. Never by publish time or
   lexical order.
-- **GC roots:** retained runs and their snapshots/blobs/derived files, stream/latest pointers,
-  pins, migration grace namespaces and permitted backups.
+- **GC roots:** retained runs and their blobs/derived files, pins, migration grace namespaces and
+  permitted backups.
 - **Sweep:** rebuild indices from retained runs, and delete expired runs, API files, PR pointers
-  and permalink pages as well as unreferenced snapshots and blobs.
+  and permalink pages as well as unreferenced blobs.
 - GC is idempotent and has a dry run that lists exact paths and bytes. A malformed reference is an
   error, never a reason to widen deletion.
 - **Over budget:** drop the oldest unpinned closed-PR history first, then other oldest unpinned
@@ -128,7 +128,7 @@ Each ingestion transaction:
 
 - **On a lease conflict:** refetch, revalidate and recompute from the same accepted input and
   injected timestamp. At most 5 attempts with jittered backoff. Never `git rebase`.
-- **Uncertain push outcome:** refetch and check for the run key/digest before retrying (02 §8).
+- **Uncertain push outcome:** refetch and check for the run key before retrying (02 §8).
 - **Refuse:** a store branch that's the default branch, unmarked or foreign-marked. Never
   "initialize" over existing content.
 - The fresh depth-1 fetch matters. A local test found fetch + parentless commit sent only the new

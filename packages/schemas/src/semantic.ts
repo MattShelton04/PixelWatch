@@ -1,7 +1,6 @@
 // Invariants JSON Schema can't express: uniqueness, ordering, counts, the 02 §4 result
-// precedence, coverage arithmetic and self-referencing digests. Each check returns the first
+// precedence, and coverage arithmetic. Each check returns the first
 // problem found, or undefined.
-import { canonicalSha256 } from "./canonical.ts";
 import type {
   Analysis,
   Bundle,
@@ -14,7 +13,6 @@ import type {
   Run,
   RunResult,
   Site,
-  Snapshot,
   Store,
   Stream,
 } from "./generated/types.ts";
@@ -90,7 +88,7 @@ export const MAX_CONFIG_SHARDS = 128;
 const checkConfig: Check<Config> = (config) => {
   const dup = firstDuplicate(config.providers, (p) => p.id);
   if (dup >= 0) return issue("duplicate-provider", `/providers/${String(dup)}/id`, "provider ID appears twice");
-  // run@1 and snapshot@1 record at most 256 parts: base and head of every provider shard (02 §1).
+  // run@1 records at most 256 parts: base and head of every provider shard (02 §1).
   const shards = config.providers.reduce((sum, p) => sum + p.shards, 0);
   if (shards > MAX_CONFIG_SHARDS) return issue("too-many-parts", "/providers", `shards across providers must total at most ${String(MAX_CONFIG_SHARDS)}`);
   const soft = config.limits?.softBytes ?? 419_430_400;
@@ -300,29 +298,6 @@ const checkChanges: Check<Changes> = (changes) => {
   return checkResults(changes.results, changes.counts, changes.coverage, changes.capabilities.regions);
 };
 
-const checkSnapshot: Check<Snapshot> = (snapshot) => {
-  for (let i = 1; i < snapshot.units.length; i++) {
-    const order = compareUnitKeys(snapshot.units[i - 1] as Snapshot["units"][number], snapshot.units[i] as Snapshot["units"][number]);
-    if (order === 0) return issue("duplicate-unit", `/units/${String(i)}`, "unit key appears twice");
-    if (order > 0) return issue("unsorted-units", `/units/${String(i)}`, "units must be sorted by (providerId, viewId, variantId)");
-  }
-  for (let i = 1; i < snapshot.providers.length; i++) {
-    const a = (snapshot.providers[i - 1] as Snapshot["providers"][number]).providerId;
-    const b = (snapshot.providers[i] as Snapshot["providers"][number]).providerId;
-    if (a >= b) return issue("unsorted-providers", `/providers/${String(i)}`, "providers must be sorted and unique");
-  }
-  const providers = new Set(snapshot.providers.map((p) => p.providerId));
-  const unknown = snapshot.units.findIndex((u) => !providers.has(u.providerId));
-  if (unknown >= 0) return issue("unknown-provider", `/units/${String(unknown)}/providerId`, "unit provider is not listed in providers");
-  const dup = firstDuplicate(snapshot.parts, (p) => `${p.providerId}/${String(p.shard.index)}`);
-  if (dup >= 0) return issue("duplicate-part", `/parts/${String(dup)}`, "part listed twice");
-  const expected = canonicalSha256(snapshot, { omit: "snapshotId" });
-  if (snapshot.snapshotId !== expected) {
-    return issue("snapshot-id-mismatch", "/snapshotId", "snapshotId must be the SHA-256 of the canonical snapshot without snapshotId");
-  }
-  return undefined;
-};
-
 const checkStream: Check<Stream> = (stream) => {
   if (stream.latest !== null && !stream.runs.includes(stream.latest)) {
     return issue("latest-not-in-stream", "/latest", "latest must be one of the stream's runs");
@@ -346,7 +321,6 @@ export const SEMANTIC_CHECKS = {
   config: checkConfig,
   store: checkStore,
   run: checkRun,
-  snapshot: checkSnapshot,
   stream: checkStream,
   site: checkSite,
   changes: checkChanges,

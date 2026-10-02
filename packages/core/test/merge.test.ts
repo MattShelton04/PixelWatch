@@ -24,7 +24,6 @@ import {
   artifact,
   captured,
   config,
-  hex,
   memoryPool,
   tinyPng,
   validPart,
@@ -108,7 +107,7 @@ const worlds = fc
           const artifactId = String(id++);
           if (fate === "valid") valid.push(validPart(revision, providerId, [index, count], listings.get(`${revision}/${providerId}/${String(index)}`) ?? [], artifactId));
           if (fate === "rejected") {
-            rejected.push({ revision, providerId, shard: { index, count }, artifacts: [{ artifactId, sha256: hex(id) }], diagnostic: { code: "part-bundle-invalid", message: "bundle.json is invalid" } });
+            rejected.push({ revision, providerId, shard: { index, count }, artifacts: [{ artifactId }], diagnostic: { code: "part-bundle-invalid", message: "bundle.json is invalid" } });
           }
         }
       });
@@ -344,7 +343,7 @@ describe("artifact selection and merge", () => {
       config: cfg,
       baseline: "expected",
       valid: [validPart("head", "p", [1, 2], [["home", paletteSide(0)]]), validPart("base", "p", [1, 2], [])],
-      rejected: [{ revision: "head", providerId: "q", shard: { index: 1, count: 1 }, artifacts: [{ artifactId: "9", sha256: hex(9) }], diagnostic: { code: "zip-crc", message: "x" } }],
+      rejected: [{ revision: "head", providerId: "q", shard: { index: 1, count: 1 }, artifacts: [{ artifactId: "9" }], diagnostic: { code: "zip-crc", message: "x" } }],
     });
     expect(merged.parts.map((p) => [partKeyString(p), p.status, p.unitCount])).toEqual([
       ["base/p/1", "valid", 0],
@@ -453,7 +452,7 @@ describe("artifact selection and merge", () => {
       config: config([["p", 2]]),
       baseline: "expected",
       valid: [validPart("base", "p", [1, 2], [["home", same]]), validPart("base", "p", [2, 2], [["late", same]]), validPart("head", "p", [1, 2], [["home", same]])],
-      rejected: [{ revision: "head", providerId: "p", shard: { index: 2, count: 2 }, artifacts: [{ artifactId: "3", sha256: hex(3) }], diagnostic: { code: "zip-crc", message: "x" } }],
+      rejected: [{ revision: "head", providerId: "p", shard: { index: 2, count: 2 }, artifacts: [{ artifactId: "3" }], diagnostic: { code: "zip-crc", message: "x" } }],
     });
     expect(merged.units.map((u) => [u.viewId, result(u).status])).toEqual([
       ["home", "unchanged"],

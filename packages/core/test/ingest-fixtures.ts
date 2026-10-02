@@ -127,10 +127,6 @@ export function captured(hash: string, width = 2, height = 2): ListedSide {
 export const ABSENT: ListedSide = { state: "absent", reason: "not-in-revision-catalog" };
 export const FAILED: ListedSide = { state: "failed", category: "capture-error" };
 
-export function hex(n: number): string {
-  return n.toString(16).padStart(64, "0");
-}
-
 export function validPart(
   revision: Revision,
   providerId: string,
@@ -139,5 +135,5 @@ export function validPart(
   artifactId = String(nextId++),
 ): ValidPart {
   const partUnits: PartUnit[] = units.map(([viewId, side]) => ({ viewId, variantId: VARIANT, side, details: {} }));
-  return { revision, providerId, shard: { index: shard[0], count: shard[1] }, artifact: { artifactId, sha256: hex(Number(artifactId)) }, claims: {}, units: partUnits };
+  return { revision, providerId, shard: { index: shard[0], count: shard[1] }, artifact: { artifactId }, claims: {}, units: partUnits };
 }

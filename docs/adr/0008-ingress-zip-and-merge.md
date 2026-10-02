@@ -27,7 +27,7 @@ left choices that the design leaves open:
   merge does with them.
 - **Where images are decoded and stored.**
 - **Parts limits disagree.** config@1 allowed 32 providers × 64 shards (up to 4096 parts per
-  revision), while run@1 and snapshot@1 record at most 256 `parts` and `missingParts`.
+  revision), while run@1 records at most 256 `parts` and `missingParts`.
 
 ## Decision
 
@@ -130,9 +130,9 @@ total at most 128 (`too-many-parts`, `MAX_CONFIG_SHARDS`), so base and head part
   - `mergeParts` is pure and property-tested;
   - the forge (M2.1) supplies `{artifactName, artifactId, zip}` from the API listing, and the
     publisher passes a `PngWorker` and the store's blob pool.
-- M1.5 builds snapshots and runs from `Ingestion`:
+- M1.5 builds runs from `Ingestion` (snapshot@1 was later dropped, ADR 0010):
   - each unit's result is `unitResult(unit, unit.base, unit.head, comparison?)`;
-  - `PartReport` maps to `run.parts` and `snapshot.parts`;
+  - `PartReport` maps to `run.parts`;
   - `coverage` is already in run@1's shape.
 - Evidence:
   - `docs/evidence/m1.4-ingest-bench.md` records peak RSS and time for the largest allowed
