@@ -18,7 +18,7 @@ from.
 - **Axes** combine variants into a matrix. `[desktop, tablet, mobile] × [light, dark]` gives six
   variant keys, such as `mobile+dark`.
 - A capture's identity is `(providerId, viewId, variantId)`. History, timelines and flake scores use that full tuple. `mobile+dark` is a display label; an encoded variant ID must meet the active schema (e.g. `mobile-dark`), not bypass it.
-- Variant definitions live in `views.yml`. Their display order and labels live in `config.yml`.
+- Variant definitions live in `views.yml`. Their display order and labels live in `config.json`.
 
 ### 1.2 Viewer
 

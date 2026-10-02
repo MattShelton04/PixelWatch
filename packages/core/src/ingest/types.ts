@@ -17,7 +17,7 @@ export interface ArtifactInput {
 export type Baseline = "expected" | "none";
 
 export interface IngestInput {
-  /** Already-validated config@1 from the recorded default-branch commit (parseConfig). */
+  /** config@1 from the recorded default-branch commit, already validated by parseDocument("config", bytes). */
   readonly config: Config;
   /** The authenticated source attempt. */
   readonly attempt: string;

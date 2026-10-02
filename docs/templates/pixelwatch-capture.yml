@@ -67,7 +67,7 @@ jobs:
       fail-fast: false
       matrix:
         # Base and head are captured in separate jobs. Provider IDs and shard counts must match
-        # the trusted .pixelwatch/config.yml on the default branch (02 §6).
+        # the trusted .pixelwatch/config.json on the default branch (02 §6).
         revision: [base, head]
         provider: [app]
         shard: [1]

@@ -29,7 +29,6 @@
     "fast-png": "8.0.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.0",
-    "vitest": "5.0.2",
-    "yaml": "2.9.1"
+    "vitest": "5.0.2"
   }
 }

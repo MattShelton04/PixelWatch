@@ -1,6 +1,6 @@
 # ADR 0009: Trusted config is a restricted YAML subset
 
-- Status: accepted
+- Status: superseded by ADR 0010 (config is JSON)
 - Date: 2026-10-01
 - Task / spike: M1.4
 

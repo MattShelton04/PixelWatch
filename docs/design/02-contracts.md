@@ -122,7 +122,7 @@ limit needs a measured memory bound, never disabling the check.
 | Artifact download | ≤ 128 MiB compressed each, ≤ 256 MiB per source attempt; 60 s request timeout; bounded retries; never log signed URLs |
 | Archive | ZIP only, single disk, stored/deflate entries. No encryption, ZIP64, links or special files. ≤ 4096 entries and ≤ 512 MiB total expanded per ingestion. |
 | Entry names | Exactly `bundle.json` and `u-<64 hex>.png`, flat ASCII. No separators, drive prefixes, NUL or dot paths. No duplicates or case-fold collisions. |
-| JSON / YAML | ≤ 1 MiB each, nesting ≤ 32, ≤ 2000 units total. Labels ≤ 256 code points / 1024 bytes. Errors ≤ 2048 bytes. No duplicate keys, YAML aliases, custom tags or non-finite numbers. |
+| JSON | ≤ 1 MiB each, nesting ≤ 32, ≤ 2000 units total. Labels ≤ 256 code points / 1024 bytes. Errors ≤ 2048 bytes. No duplicate keys or non-integer numbers. |
 | PNG size | ≤ 32 MiB encoded; each dimension 1–16383; ≤ 16,000,000 pixels; one decode/compare at a time within a 512 MiB worker budget. The budget is enforced by the decoder's own allocation bound (sized from the checked header) and verified by recorded peak RSS. Worker `resourceLimits` cap only the V8 heap; the worker adds isolation, a timeout and cancellation. |
 | PNG profile | Signature; one IHDR; contiguous IDATs; one final IEND; valid CRCs; 8-bit RGB or RGBA; compression/filter method 0; non-interlaced; only IHDR, IDAT and IEND chunks (no PLTE, ancillary or unknown chunks); no trailing bytes |
 | Inflation | Expected scanline byte count computed from checked dimensions and enforced during inflate. Reject extra data, truncation, bad filter bytes and overflow **before** allocating decoded buffers. |
@@ -245,11 +245,11 @@ changed areas is presentation, derived from stored regions, and not part of the 
 
 ## 10. Trusted config parsing
 
-- Parse default-branch YAML as a restricted JSON-compatible mapping, then validate the exact
-  schema. ADR 0009 defines the subset: every accepted document means the same under YAML 1.1
-  and 1.2.
-- Unknown versions, unsafe paths/URLs/limits and source-policy errors stop **before any store
-  write, deployment or comment**. No "fall back to defaults" for these.
-- Only a malformed *optional presentation* setting in a known version may fall back to the fixed
-  default, with a warning.
+- The config is `.pixelwatch/config.json` at the recorded default-branch commit. It goes through
+  the same strict JSON parser and schema validation as every other document
+  (`parseDocument("config", bytes)`): duplicate keys, non-integer numbers and anything over 1 MiB
+  are refused. JSON has none of YAML's version-dependent scalars, so there is no subset parser
+  (ADR 0010 supersedes ADR 0009).
+- Unknown versions, unsafe paths/URLs/limits, source-policy errors and any other invalid setting
+  stop **before any store write, deployment or comment**. Nothing falls back to a default.
 - Unknown `bundle` schema versions produce an actionable unsupported-input diagnostic.

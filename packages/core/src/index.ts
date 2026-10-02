@@ -10,8 +10,6 @@ export { encodePng } from "./png/encode.ts";
 export { PngError, type PngErrorCode } from "./png/errors.ts";
 export { type JobOptions, PngWorker, type PngWorkerOptions } from "./png/isolated.ts";
 export { MAX_DIMENSION, MAX_PIXELS, MAX_PNG_BYTES } from "./png/limits.ts";
-export { type ConfigParse, type ConfigWarning, parseConfig } from "./config/parse.ts";
-export { YAML_LIMITS, YamlError, type YamlErrorCode, type YamlLimits, parseYamlSubset } from "./config/yaml.ts";
 export { IngressError, type IngressErrorCode, type IngestionErrorCode, type PartErrorCode, type ZipErrorCode } from "./ingest/errors.ts";
 export { ingestArtifacts } from "./ingest/ingest.ts";
 export { INGEST_LIMITS, IngestBudget } from "./ingest/limits.ts";

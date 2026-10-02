@@ -28,7 +28,7 @@ everything committed so far and repairs every PR comment that needs it (03 §7).
 
 | File / input | Read by, from where | Authority |
 |---|---|---|
-| `.pixelwatch/config.yml` | Publisher, at one resolved **default-branch commit** recorded per run | Trusted policy, parsed as bounded data, never code |
+| `.pixelwatch/config.json` | Publisher, at one resolved **default-branch commit** recorded per run | Trusted policy, parsed as bounded data, never code |
 | Capture workflow, capture code, converter | Runs on the PR's code | Untrusted. Produces claims. |
 | Artifacts, `bundle.json`, PNGs | Publisher, as data | Untrusted. Validated, never executed. They don't prove what was rendered. |
 | Report workflow | `workflow_run`, default branch, full-SHA-pinned reusable workflow | Trusted code |
@@ -112,7 +112,7 @@ Permissions are per job (GitHub can't narrow per step):
 | project/deploy/comment | `contents: read`, `pages: write`, `id-token: write`, `pull-requests: write` |
 
 Keep deploy and comment in one job so one lock covers both. The trusted computing base still
-includes the ZIP/YAML/schema parsers, zlib, Git, Node and the build toolchain: pin them, track
+includes the ZIP/JSON/schema parsers, zlib, Git, Node and the build toolchain: pin them, track
 advisories, and test them with bounded hostile input.
 
 ### 4.3 Authenticate the envelope, distrust the contents
@@ -129,7 +129,7 @@ advisories, and test them with bounded hostile input.
 - Download only by API-returned artifact ID. HTTPS only. Cap redirects, time and bytes. Strip
   `Authorization` on every cross-origin redirect (use `redirect: "manual"`). Never log tokens or
   signed URLs.
-- Validate archives, JSON/YAML and PNGs **before and during** allocation, per 02 §5. Re-encode
+- Validate archives, JSON and PNGs **before and during** allocation, per 02 §5. Re-encode
   accepted pixels; never serve the raw artifact file. Never publish HTML, SVG, JS, CSS, XML,
   source maps, HARs, traces or arbitrary attachments from capture.
 - Diffs and hashes are authoritative only about the **submitted pixels**. They don't prove the PR

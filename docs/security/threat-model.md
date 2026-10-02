@@ -69,7 +69,7 @@ path and test title. Trusted-path PRs name the rule IDs they touch (08 §10).
 | TB10 | Publisher → PR comment | Markdown built from untrusted labels, posted under a bot identity |
 | TB11 | Served data → viewer/browser | JSON and PNGs rendered by the pinned app; origin-shared storage |
 | TB12 | CDN/Camo caches → readiness | Possibly stale generations, 404s and images |
-| TB13 | Toolchain and parsers (TCB) | Node, Git, zlib, the ZIP/JSON/YAML/schema parsers, and build tools |
+| TB13 | Toolchain and parsers (TCB) | Node, Git, zlib, the ZIP/JSON/schema parsers, and build tools |
 | TB14 | Repository settings | Settings the code can't enforce (M0.2) |
 
 ## 4. Rules
@@ -99,7 +99,7 @@ close gaps between 03 §7, 05 §2 and the frozen `site@1`.
 | R4.3-05 | Download only by API-returned artifact ID, HTTPS only, with capped redirects, time and bytes | TB2, TB3 | DoS/tampering via redirects or oversized downloads | Forge download client |
 | R4.3-06 | `Authorization` is stripped on every cross-origin redirect (`redirect: "manual"`) | TB3 | Disclosure: the token is sent to the blob host | Manual redirect handling |
 | R4.3-07 | Tokens and signed URLs are never logged | TB3, TB13 | Disclosure in public logs | Redacting logger; log assertions |
-| R4.3-08 | Archives, JSON/YAML and PNGs are validated before and during allocation (02 §5) | TB2, TB4, TB13 | DoS: bombs, overflow, duplicate keys; tampering: prototype pollution | Strict JSON parser, bounded ZIP, bounded PNG decoder |
+| R4.3-08 | Archives, JSON and PNGs are validated before and during allocation (02 §5) | TB2, TB4, TB13 | DoS: bombs, overflow, duplicate keys; tampering: prototype pollution | Strict JSON parser, bounded ZIP, bounded PNG decoder |
 | R4.3-09 | Accepted pixels are re-encoded to canonical PNG; the raw artifact file is never served | TB2, TB9 | Tampering: polyglot or metadata-carrying files | Own encoder; blob named by pixel hash |
 | R4.3-10 | Never publish HTML, SVG, JS, CSS, XML, source maps, HARs, traces or attachments from capture | TB2, TB9 | Tampering: active content on the shared origin | Entry-name allowlist; served-tree allowlist |
 | R4.3-11 | Diffs and hashes are authoritative only about submitted pixels; reports are advisory, with no mandatory gate | TB2 | Repudiation: over-trusted results | `captureClaimsTrusted: false`; docs and `llms.txt` wording |
@@ -171,8 +171,6 @@ Planned paths are provisional (§1).
 | R4.2-05 | unit | passing | `testdata/schemas/store/invalid/schema.data-version-2.json` | A store with `dataVersion` 2 is rejected | M0.3 |
 | R4.2-05 | unit | passing | `testdata/schemas/config/invalid/schema.comparator-version-2.json` | An unknown comparator version in config is rejected | M0.3 |
 | R4.2-05 | unit | passing | `packages/core/test/comparator.test.ts` › "refuses an unknown comparator version" | The core maps only comparator version 1 to a policy; any other version throws | M1.3 |
-| R4.2-05 | unit | passing | `packages/core/test/config-parse.test.ts` › "reports an unknown config version before any schema or policy problem" | Config YAML with an unknown `schemaVersion` reports `unsupported-version` whatever else is wrong | M1.4 |
-| R4.2-05 | unit | passing | `packages/core/test/config-parse.test.ts` › "falls back to the default theme with a warning, and never for policy" | Only a malformed `theme` falls back (with a warning); invalid source, limits, store, base, comparator, retention or comment settings fail | M1.4 |
 | R4.2-05 | simulation | planned | `packages/publisher/test/simulation/sim-unknown-version.sim.test.ts` | Unknown config/bundle/store version → zero store pushes, zero deployments, zero comment writes | M2.3 |
 | R4.2-06 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Top-level `permissions: {}`; the ingest and project jobs have exactly the 01 §4.2 sets | M2.5 |
 | R4.2-06 | evidence | recorded | `docs/evidence/s4-self-reference.md` | Inside a foreign-called reusable workflow, each called job's logged `GITHUB_TOKEN` permissions were exactly its own 01 §4.2 set, not the caller's union | S4 |
@@ -220,9 +218,6 @@ Planned paths are provisional (§1).
 | R4.3-08 | unit | passing | `packages/core/test/ingress-zip.test.ts` › "shares the 4096-entry and 512 MiB budgets across every archive of one ingestion" | > 4096 entries or > 512 MiB of actually inflated bytes across all archives of one ingestion refuse it | M1.4 |
 | R4.3-08 | unit | passing | `packages/core/test/ingest.test.ts` › "rejects a part whose PNG fails the bounded decoder" | Every captured image passes the bounded decoder (in process and in the PngWorker); a failing one rejects its part | M1.4 |
 | R4.3-08 | unit | passing | `packages/core/test/ingest.test.ts` › "takes dimensions from decoding, never from bundle.json" | Side dimensions come from decoding; the stored blob is the canonical re-encoding | M1.4 |
-| R4.3-08 | unit | passing | `packages/core/test/config-parse.test.ts` › "rejects aliases, anchors, custom tags, duplicate keys, non-finite numbers and input over 1 MiB before validation" | Config YAML with aliases, anchors, tags, merge keys, duplicate or unsafe keys, non-finite or non-integer numbers, block scalars, directives, several documents or > 1 MiB fails before validation | M1.4 |
-| R4.3-08 | unit | passing | `packages/core/test/config-parse.test.ts` › "rejects scalars whose meaning differs between YAML 1.1 and 1.2" | yes/no/on/off, leading zeros, `1_000`, `1:30`, timestamps, bare exponents and merge keys are refused | M1.4 |
-| R4.3-08 | unit | passing | `packages/core/test/config-parse.test.ts` › "agrees with the yaml package under YAML 1.1 and 1.2 on every accepted document" | Differential: every generated document the subset accepts reads the same under the `yaml` package (dev-only) in both versions | M1.4 |
 | R4.3-09 | unit | passing | `packages/core/test/png-decode.test.ts` › "encodes output that fits the profile and round-trips the normalized pixels" | Encoded output fits the profile (checked by the independent converter-side `normalizePng`) and decodes to the normalized pixels | M1.1 |
 | R4.3-09 | unit | passing | `packages/core/test/png-decode.test.ts` › "never echoes uploaded bytes that carry extra chunks" | Encoded output never equals the uploaded bytes when those carry extra chunks | M1.1 |
 | R4.3-09 | unit | passing | `packages/core/test/blob-pool.test.ts` › "reuses an existing valid blob and never overwrites it" | A blob is named by its pixel hash; an existing blob is revalidated and never overwritten | M1.2 |
