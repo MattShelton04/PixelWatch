@@ -217,6 +217,19 @@ corroborated base/head commits, config SHA, release SHA. It requires a completed
 configured workflow and an allowed event. `workflow_run` payload data must match the REST
 response; a mismatch fails safely.
 
+- **Commits** (run@1 `source.commits`, 01 §4.3). Each SHA has its own field, and no field is ever
+  filled in from another one or from a claim:
+  - `head`: the target;
+  - `base`: the selected baseline;
+  - `baseBranch`: the event's base-branch commit (ADR 0007), pull requests only.
+  The workflow SHA is `workflowSha`. With no `base`, every base side is `none`, and no base part
+  is expected (ADR 0011).
+- **Stream** (ADR 0011). Only the envelope decides a run's stream:
+  - `push` joins `main`;
+  - `pull_request` with a corroborated association joins `pr-<number>`;
+  - every other run (no association, an ambiguous one, or `workflow_dispatch`) is stored and in
+    history but joins no stream, so no comment ever shows it.
+
 - **Idempotency is by run key.** A run key already in `store.json` is a no-op: the stored run is
   returned unchanged and never overwritten, whatever publisher release or config the retry has.
   A completed attempt's artifacts can't change, so the key identifies the input; there is no

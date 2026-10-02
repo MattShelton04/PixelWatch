@@ -41,6 +41,27 @@ export function parseRunKey(key: string): ParsedRunKey | undefined {
   return undefined;
 }
 
+/** A store.json run entry's ordering fields. */
+export interface RunOrderKey {
+  readonly runKey: string;
+  readonly sourceCreatedAt: string;
+}
+
+/**
+ * History order (02 §8): source-created time, then numeric run ID, then numeric attempt. Publish
+ * time never counts. Timestamps are fixed-width UTC, so they compare as strings. Imported runs
+ * sort after source runs created at the same second, then by digest.
+ */
+export function compareRunOrder(a: RunOrderKey, b: RunOrderKey): number {
+  if (a.sourceCreatedAt !== b.sourceCreatedAt) return a.sourceCreatedAt < b.sourceCreatedAt ? -1 : 1;
+  const x = parseRunKey(a.runKey);
+  const y = parseRunKey(b.runKey);
+  if (x === undefined || y === undefined) throw new Error("not a run key");
+  if (x.kind === "source" && y.kind === "source") return compareGitHubIds(x.runId, y.runId) || compareGitHubIds(x.attempt, y.attempt);
+  if (x.kind === "import" && y.kind === "import") return x.digest < y.digest ? -1 : x.digest > y.digest ? 1 : 0;
+  return x.kind === "source" ? -1 : 1;
+}
+
 /** Identity of one uploaded part: attempt × revision × provider × shard. */
 export interface PartIdentity {
   readonly attempt: string;

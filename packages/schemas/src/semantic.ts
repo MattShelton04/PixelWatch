@@ -16,7 +16,7 @@ import type {
   Store,
   Stream,
 } from "./generated/types.ts";
-import { compareGitHubIds, compareUnitKeys, formatRunKey, parseRunKey } from "./ids.ts";
+import { compareRunOrder, compareUnitKeys, formatRunKey } from "./ids.ts";
 import { MAX_MESSAGE_BYTES, utf8Length } from "./text.ts";
 
 export interface SemanticIssue {
@@ -96,20 +96,6 @@ const checkConfig: Check<Config> = (config) => {
   if (soft > hard) return issue("limit-order", "/limits", "softBytes must not exceed hardBytes");
   return undefined;
 };
-
-/** History order (02 §8): created time, then numeric run ID, then numeric attempt. */
-function compareRunOrder(a: { runKey: string; sourceCreatedAt: string }, b: { runKey: string; sourceCreatedAt: string }): number {
-  if (a.sourceCreatedAt !== b.sourceCreatedAt) return a.sourceCreatedAt < b.sourceCreatedAt ? -1 : 1;
-  const x = parseRunKey(a.runKey);
-  const y = parseRunKey(b.runKey);
-  if (x === undefined || y === undefined) return 0;
-  if (x.kind !== y.kind) return x.kind === "source" ? -1 : 1;
-  if (x.kind === "source" && y.kind === "source") {
-    return compareGitHubIds(x.runId, y.runId) || compareGitHubIds(x.attempt, y.attempt);
-  }
-  if (x.kind === "import" && y.kind === "import") return x.digest < y.digest ? -1 : x.digest > y.digest ? 1 : 0;
-  return 0;
-}
 
 const checkStore: Check<Store> = (store) => {
   const dup = firstDuplicate(store.runs, (r) => r.runKey);
@@ -257,6 +243,22 @@ const checkRun: Check<Run> = (run) => {
   }
   const association = checkAssociation(run.source.association.status, run.source.association.prNumber, "/source/association");
   if (association) return association;
+  const { commits } = run.source;
+  if (commits.baseBranch !== undefined && run.source.event !== "pull_request") {
+    return issue("base-branch-inconsistent", "/source/commits/baseBranch", "only a pull_request run has a base-branch commit");
+  }
+  // The baseline comes only from the envelope (01 §4.4): with no baseline commit every base side is
+  // none and no base part was expected; with one, no base side is none.
+  if (commits.base === undefined) {
+    const part = run.parts.findIndex((p) => p.revision === "base");
+    if (part >= 0) return issue("baseline-inconsistent", `/parts/${String(part)}`, "a run without a baseline commit has no base parts");
+    const missing = run.coverage.missingParts.findIndex((p) => p.revision === "base");
+    if (missing >= 0) return issue("baseline-inconsistent", `/coverage/missingParts/${String(missing)}`, "a run without a baseline commit expects no base parts");
+  }
+  const side = run.results.findIndex((r) => (r.base.state === "none") !== (commits.base === undefined));
+  if (side >= 0) {
+    return issue("baseline-inconsistent", `/results/${String(side)}/base`, "the base side is none exactly when the run has no baseline commit");
+  }
   const partKey = (p: { revision: string; providerId: string; shard: { index: number } }) =>
     `${p.revision}/${p.providerId}/${String(p.shard.index)}`;
   const dup = firstDuplicate(run.parts, partKey);

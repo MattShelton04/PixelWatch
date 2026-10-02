@@ -2,7 +2,7 @@
   "name": "@pixelwatch/core",
   "version": "0.0.0",
   "private": true,
-  "description": "PixelWatch pure engine: restricted PNG codec, pixel hash, canonical blob pool, comparator-v1, bounded ZIP ingestion, fixed-part merge and trusted config parsing; projection follows in M1.",
+  "description": "PixelWatch pure engine: restricted PNG codec, pixel hash, canonical blob pool, comparator-v1, bounded ZIP ingestion, fixed-part merge, trusted config parsing, runs and the store run index; projection follows in M1.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
