@@ -12,7 +12,7 @@ export const INGEST_LIMITS = Object.freeze({
   maxCompressedBytes: 256 * MiB,
   /** ZIP entries per ingestion, across every archive. */
   maxEntries: 4096,
-  /** Expanded bytes per ingestion, counted from actual inflated output. */
+  /** Expanded bytes per ingestion: declared entry sizes, which extraction holds inflation to. */
   maxExpandedBytes: 512 * MiB,
   /** `bundle.json` (02 §5 JSON limit). */
   maxJsonBytes: 1 * MiB,
@@ -42,12 +42,11 @@ export class IngestBudget {
     this.entries += count;
   }
 
-  /** Called with every inflated piece; refuses as soon as the actual total passes the limit. */
   addExpanded(bytes: number): void {
-    this.expandedBytes += bytes;
-    if (this.expandedBytes > INGEST_LIMITS.maxExpandedBytes) {
-      throw new IngressError("zip-expanded-total", `entries inflate past ${String(INGEST_LIMITS.maxExpandedBytes)} bytes in one ingestion`);
+    if (bytes > INGEST_LIMITS.maxExpandedBytes - this.expandedBytes) {
+      throw new IngressError("zip-expanded-total", `entries expand past ${String(INGEST_LIMITS.maxExpandedBytes)} bytes in one ingestion`);
     }
+    this.expandedBytes += bytes;
   }
 
   addCompressed(bytes: number): void {

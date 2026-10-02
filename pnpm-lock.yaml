@@ -32,9 +32,6 @@ importers:
       vitest:
         specifier: 5.0.2
         version: 5.0.2(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(yaml@2.9.1))
-      yaml:
-        specifier: 2.9.1
-        version: 2.9.1
 
   packages/core:
     dependencies:
@@ -1626,6 +1623,7 @@ snapshots:
 
   word-wrap@1.2.5: {}
 
-  yaml@2.9.1: {}
+  yaml@2.9.1:
+    optional: true
 
   yocto-queue@0.1.0: {}

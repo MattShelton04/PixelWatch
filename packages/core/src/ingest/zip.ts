@@ -3,24 +3,23 @@
 //
 // The accepted profile is the layout GitHub's upload-artifact writes, and nothing looser:
 // single disk; stored or deflate; no encryption, ZIP64, extra fields, comments, links or
-// special files; flat ASCII names from a two-pattern allowlist; entries contiguous from offset 0
+// special files; flat ASCII names from a two-pattern allowlist (`bundle.json`, `<viewId>.<variantId>.png`); entries contiguous from offset 0
 // up to the central directory, which the end record immediately follows. Data descriptors
 // (general-purpose bit 3) are accepted because upload-artifact sets them on every entry. Data is
 // always located by the central record's compressed size, never by scanning for a descriptor,
 // and the descriptor must be the signed 16-byte form that repeats the central CRC and sizes.
 //
-// Two passes, as in the PNG decoder:
-//
-// 1. `openZip` checks the structure, then inflates every entry in 64 KiB pieces while
-//    discarding the output. It counts actual inflated bytes against the per-entry size and the
-//    shared per-ingestion budget, checks CRC-32, and refuses data left after the deflate end.
-//    Nothing entry-sized is allocated, so a bomb is refused at the cost of one piece.
-// 2. `readEntry` extracts one entry on demand into a buffer of the size pass 1 verified, and
-//    re-checks the size and CRC while doing so.
+// `openZip` checks the structure, names and layout without inflating anything, and charges every
+// entry's declared size to the shared per-ingestion budget. `readEntry` then inflates one entry
+// into a buffer of exactly that size (each capped at 1 MiB for bundle.json, 32 MiB for a PNG) and
+// refuses it the moment inflation passes the declared size, ends short, leaves trailing data or
+// fails its CRC. A lying header therefore can't hide expansion: the budget counts the declared
+// sizes, and inflation is held to them.
 //
 // No worker: parsing is linear in the entry count (≤ 4096), inflation is async and stops between
 // pieces when the signal aborts, and memory is bounded by construction (ADR 0008).
 import { crc32, createInflateRaw } from "node:zlib";
+import { UNIT_FILE_PATTERN } from "@pixelwatch/schemas";
 import { IngressError, type IngressErrorCode } from "./errors.ts";
 import { INGEST_LIMITS, type IngestBudget } from "./limits.ts";
 
@@ -56,14 +55,13 @@ const DOS_SPECIAL = 0x08 | 0x10;
 const INFLATE_CHUNK = 64 * 1024;
 
 const BUNDLE_NAME = "bundle.json";
-const UNIT_FILE = /^u-[0-9a-f]{64}\.png$/;
 
 export interface ZipEntry {
   readonly name: string;
   readonly method: 0 | 8;
   readonly crc32: number;
   readonly compressedSize: number;
-  /** Uncompressed size; pass 1 verified it against the actual inflated bytes. */
+  /** Declared uncompressed size; readEntry holds inflation to exactly this. */
   readonly size: number;
   /** Offset of the entry's compressed data in the archive. */
   readonly dataOffset: number;
@@ -259,7 +257,7 @@ function checkRecord(index: number, nameBytes: Uint8Array, extra: Uint8Array, ra
 /**
  * Stage 2: entry names. Each name must be flat ASCII without NUL, drive, separator or dot path;
  * the set must have no duplicates or ASCII case-fold collisions; and every name must be exactly
- * `bundle.json` or `u-<64 hex>.png`, with one `bundle.json`. Messages carry indices, never names.
+ * `bundle.json` or `<viewId>.<variantId>.png`, with one `bundle.json`. Messages carry indices, never names.
  */
 export function checkEntryNames(records: readonly CentralRecord[]): string[] {
   const names = records.map((record) => {
@@ -289,7 +287,7 @@ export function checkEntryNames(records: readonly CentralRecord[]): string[] {
     folded.set(key, i);
   });
   names.forEach((name, i) => {
-    if (name !== BUNDLE_NAME && !UNIT_FILE.test(name)) fail("zip-name-not-allowed", `entry ${String(i)} is neither bundle.json nor a unit PNG name`);
+    if (name !== BUNDLE_NAME && !UNIT_FILE_PATTERN.test(name)) fail("zip-name-not-allowed", `entry ${String(i)} is neither bundle.json nor a unit PNG name`);
   });
   if (!exact.has(BUNDLE_NAME)) fail("zip-bundle-missing", "the archive has no bundle.json");
   return names;
@@ -362,8 +360,7 @@ export function checkLayout(bytes: Uint8Array, directory: CentralDirectory, name
 }
 
 interface InflateOptions {
-  readonly budget?: IngestBudget | undefined;
-  readonly sink?: ((piece: Uint8Array) => void) | undefined;
+  readonly sink: (piece: Uint8Array) => void;
   readonly signal?: AbortSignal | undefined;
 }
 
@@ -373,15 +370,14 @@ function zlibError(error: unknown): IngressError {
   return new IngressError("zip-deflate", `invalid deflate data (${typeof code === "string" && /^Z_[A-Z_]{1,20}$/.test(code) ? code : "unknown"})`);
 }
 
-/** Inflates one entry, enforcing its size, the shared budget, the CRC and a clean stream end. */
+/** Inflates one entry, enforcing its declared size, the CRC and a clean stream end. */
 function inflateEntry(bytes: Uint8Array, entry: ZipEntry, options: InflateOptions): Promise<void> {
-  const { budget, sink, signal } = options;
+  const { sink, signal } = options;
   const raw = bytes.subarray(entry.dataOffset, entry.dataOffset + entry.compressedSize);
   if (entry.method === 0) {
     checkSignal(signal);
-    budget?.addExpanded(raw.byteLength);
     if (crc32(raw) !== entry.crc32) fail("zip-crc", "stored entry fails its CRC-32");
-    sink?.(raw);
+    sink(raw);
     return Promise.resolve();
   }
   return new Promise((resolve, reject) => {
@@ -415,14 +411,8 @@ function inflateEntry(bytes: Uint8Array, entry: ZipEntry, options: InflateOption
         return;
       }
       produced += piece.byteLength;
-      try {
-        budget?.addExpanded(piece.byteLength);
-      } catch (error) {
-        finish(error);
-        return;
-      }
       crc = crc32(piece, crc);
-      sink?.(piece);
+      sink(piece);
     });
     inflate.on("error", finish);
     inflate.on("end", () => {
@@ -441,25 +431,17 @@ function inflateEntry(bytes: Uint8Array, entry: ZipEntry, options: InflateOption
   });
 }
 
-/** Stage 4 (pass 1): inflates every entry, discarding the output. */
-export async function verifyEntries(bytes: Uint8Array, entries: readonly ZipEntry[], budget: IngestBudget, signal?: AbortSignal): Promise<void> {
-  for (const entry of entries) {
-    checkSignal(signal);
-    await inflateEntry(bytes, entry, { budget, signal });
-  }
-}
-
-/** Validates the whole archive (all four stages) without allocating any entry-sized buffer. */
-export async function openZip(bytes: Uint8Array, budget: IngestBudget, options: ZipOptions = {}): Promise<ZipArchive> {
+/** Validates the archive's structure, names and layout, and charges its declared sizes to the budget. */
+export function openZip(bytes: Uint8Array, budget: IngestBudget, options: ZipOptions = {}): ZipArchive {
   checkSignal(options.signal);
   const directory = readCentralDirectory(bytes, budget);
   const names = checkEntryNames(directory.records);
   const entries = checkLayout(bytes, directory, names);
-  await verifyEntries(bytes, entries, budget, options.signal);
+  budget.addExpanded(entries.reduce((sum, e) => sum + e.size, 0));
   return { bytes, entries };
 }
 
-/** Pass 2: extracts one entry of an opened archive, re-checking its size and CRC. */
+/** Extracts one entry of an opened archive, holding it to its declared size and CRC. */
 export async function readEntry(archive: ZipArchive, name: string, options: ExtractOptions = {}): Promise<Uint8Array> {
   const entry = archive.entries.find((e) => e.name === name);
   if (entry === undefined) fail("zip-entry-missing", "the archive has no such entry");

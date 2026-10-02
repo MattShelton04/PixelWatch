@@ -31,7 +31,7 @@ export interface MergeInput {
 export type MergeResult = Pick<Ingestion, "units" | "coverage" | "parts" | "excluded">;
 
 function compareArtifacts(a: ArtifactRef, b: ArtifactRef): number {
-  return compareGitHubIds(a.artifactId, b.artifactId) || (a.sha256 < b.sha256 ? -1 : a.sha256 > b.sha256 ? 1 : 0);
+  return compareGitHubIds(a.artifactId, b.artifactId);
 }
 
 function keyOf(part: PartKey): PartKey {

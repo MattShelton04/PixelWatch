@@ -69,10 +69,10 @@ logic imagined from file names.
 | ID | Task | Done when |
 |---|---|---|
 | M1.1 | Restricted PNG validate/decode/encode in TS: bounded `node:zlib` inflate, filter reconstruction, 02 §5 limits, worker isolation. No third-party decoder in the trusted path. | Hostile corpus fails before large allocation; decoded RGBA matches an independent decoder on the real PNGs; output PNG fits the profile; peak RSS/time recorded |
-| M1.2 | Pixel hash (02 §3) and canonical blob reuse | Fixed vectors pass; hidden-alpha RGB ignored; existing blobs reused, never overwritten; corrupt named blob fails. No WebP. |
+| M1.2 | Pixel hash (02 §3) and canonical blob reuse | Fixed vectors pass; hidden-alpha RGB ignored; existing blobs reused, never overwritten (ADR 0010: not re-decoded). No WebP. |
 | M1.3 | Diff, thresholds, regions, classification from `comparator-v1` | Real bundles and tiny fixtures match goldens, or each delta has an approved ADR + new comparator version; missing/failed/incomparable never become unchanged |
 | M1.4 | Bounded ZIP/JSON ingress + fixed-part merge (02 §§5–6) | Traversal, duplicates, links, ZIP64, bombs rejected; name/attempt/provider/revision consistency enforced; no mixed attempts; missing parts have unknown counts |
-| M1.5 | Snapshots, runs, streams; envelope vs claims; ingestion digest + idempotency (02 §8) | Permuted inputs hash identically; same key + different digest fails; ordering is numeric source order; same view name in two providers stays separate |
+| M1.5 | Runs and the store run index; envelope vs claims; idempotency by run key; streams derived from the index (02 §8, ADR 0010) | Permuted inputs build identical runs; an already-stored run key is a no-op, never an overwrite; ordering is numeric source order; same view name in two providers stays separate |
 | M1.6 | Retention + GC + budget planning (03 §§1, 5) | Fixed time/PR-state inputs reproduce selection; nothing referenced deleted; budget includes API/stubs/derived/grace; protected-root overflow refuses; GC idempotent |
 | M1.7 | `changes@1` projection and path generation (02 §7, 03 §3) | Schema-valid goldens for tiny + real bundles; counts sum; coverage/source/policy present |
 | M1.8 | Internal `pixelwatch-dev compare base/ head/` | Reproduces M1.3 locally; no network or credentials; stable non-zero exit codes and bounded errors |

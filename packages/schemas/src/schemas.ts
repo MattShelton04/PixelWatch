@@ -6,11 +6,10 @@ import common from "../schemas/common.json" with { type: "json" };
 import config from "../schemas/config-1.json" with { type: "json" };
 import run from "../schemas/run-1.json" with { type: "json" };
 import site from "../schemas/site-1.json" with { type: "json" };
-import snapshot from "../schemas/snapshot-1.json" with { type: "json" };
 import store from "../schemas/store-1.json" with { type: "json" };
 import stream from "../schemas/stream-1.json" with { type: "json" };
 
-export const DOCUMENT_KINDS = ["bundle", "config", "store", "run", "snapshot", "stream", "site", "changes"] as const;
+export const DOCUMENT_KINDS = ["bundle", "config", "store", "run", "stream", "site", "changes"] as const;
 export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
 
 /** Schema versions this release reads, per kind. Anything else is refused before use. */
@@ -19,7 +18,6 @@ export const SUPPORTED_VERSIONS: Readonly<Record<DocumentKind, readonly number[]
   config: [1],
   store: [1],
   run: [1],
-  snapshot: [1],
   stream: [1],
   site: [1],
   changes: [1],
@@ -32,7 +30,6 @@ const SOURCES: Readonly<Record<DocumentKind, unknown>> = {
   config,
   store,
   run,
-  snapshot,
   stream,
   site,
   changes,

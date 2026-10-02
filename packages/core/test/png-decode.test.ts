@@ -12,11 +12,11 @@ import { describe, expect, it } from "vitest";
 import { IEND, buildPng, chunk, concat, filterScanlines, ihdr, png } from "../../../tools/png-corpus/png-builder.ts";
 import { type TinyCase, paintTinyImage } from "../../../tools/prototype-goldens/tiny-cases.ts";
 import { type RawPixels, normalizeRgba, pixelHash } from "../src/pixel-hash.ts";
-import { decodePng, inspectPng } from "../src/png/decode.ts";
+import { decodePng } from "../src/png/decode.ts";
 import { encodePng } from "../src/png/encode.ts";
 import { PngError } from "../src/png/errors.ts";
 import { PngWorker } from "../src/png/isolated.ts";
-import { MAX_PNG_BYTES } from "../src/png/limits.ts";
+import { MAX_PIXELS, MAX_PNG_BYTES } from "../src/png/limits.ts";
 
 const TESTDATA = join(import.meta.dirname, "..", "..", "..", "testdata");
 const read = (...parts: string[]): Uint8Array => readFileSync(join(TESTDATA, ...parts));
@@ -79,19 +79,19 @@ interface HostileManifest {
 describe("hostile PNG corpus (02 §5)", () => {
   const manifest = json("png", "hostile", "manifest.json") as HostileManifest;
 
-  it("rejects every hostile PNG with its code before allocating decoded buffers", async () => {
+  it("rejects every hostile PNG with its code, allocating at most the header-sized output", async () => {
     for (const c of manifest.cases) {
       const bytes = read("png", "hostile", c.file);
       const started = performance.now();
-      // inspectPng never allocates image-sized buffers; it must already refuse.
-      expect(await outcome(inspectPng(bytes)), `${c.file}: ${c.why}`).toBe(c.code);
-      let allocations = 0;
+      const sizes: number[] = [];
       const allocate = (n: number) => {
-        allocations++;
+        sizes.push(n);
         return new Uint8Array(n);
       };
-      expect(await outcome(decodePng(bytes, { allocate })), `${c.file} via decodePng`).toBe(c.code);
-      expect(allocations, `${c.file}: decodePng allocated an output buffer`).toBe(0);
+      expect(await outcome(decodePng(bytes, { allocate })), `${c.file}: ${c.why}`).toBe(c.code);
+      // Structural failures allocate nothing; inflate failures only the output the checked header sized.
+      expect(sizes.length, `${c.file}: allocations`).toBeLessThanOrEqual(1);
+      for (const n of sizes) expect(n, `${c.file}: output size`).toBeLessThanOrEqual(MAX_PIXELS * 4);
       expect(performance.now() - started, `${c.file}: rejection time`).toBeLessThan(5_000);
     }
   });
@@ -122,7 +122,6 @@ describe("hostile PNG corpus (02 §5)", () => {
   it("rejects input over 32 MiB before parsing it", async () => {
     const huge = new Uint8Array(MAX_PNG_BYTES + 1);
     huge.set(read("comparator", "crops", "crops", "36287837535-config-injector-base.png"));
-    expect(await outcome(inspectPng(huge))).toBe("too-large");
     expect(await outcome(decodePng(huge))).toBe("too-large");
   });
 
@@ -253,7 +252,7 @@ describe("decoder against an independent decoder (07 §2)", () => {
     expect(elapsed).toBeLessThan(5_000);
   });
 
-  it("allocates only the output buffer, and only after validation", async () => {
+  it("allocates only the output buffer", async () => {
     const data = Uint8Array.from({ length: 5 * 3 * 4 }, (_, i) => i);
     const sizes: number[] = [];
     const decoded = await decodePng(buildPng(5, 3, 4, data, { filters: (y) => y + 2 }), {
@@ -264,11 +263,6 @@ describe("decoder against an independent decoder (07 §2)", () => {
     });
     expect(sizes).toEqual([5 * 3 * 4]);
     expect([...decoded.data]).toEqual([...data]);
-  });
-
-  it("reports the checked header from inspectPng", async () => {
-    const bytes = buildPng(3, 2, 4, new Uint8Array(24));
-    expect(await inspectPng(bytes)).toEqual({ width: 3, height: 2, channels: 4 });
   });
 });
 

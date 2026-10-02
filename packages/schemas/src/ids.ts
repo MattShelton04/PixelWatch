@@ -85,6 +85,13 @@ export function parseArtifactName(name: string): PartIdentity | undefined {
   return isValidShard(part.shard) ? part : undefined;
 }
 
+/** A captured unit's image in its bundle: `<viewId>.<variantId>.png` (IDs never contain a dot). */
+export const UNIT_FILE_PATTERN = /^[a-z0-9][a-z0-9_-]{0,63}\.[a-z0-9][a-z0-9_-]{0,63}\.png$/;
+
+export function unitFileName(unit: { readonly viewId: string; readonly variantId: string }): string {
+  return `${unit.viewId}.${unit.variantId}.png`;
+}
+
 /** Orders unit keys by their three ASCII IDs (02 §3). */
 export function compareUnitKeys(
   a: { readonly providerId: string; readonly viewId: string; readonly variantId: string },

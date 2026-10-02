@@ -13,7 +13,7 @@ import { cpus, platform, release, tmpdir, totalmem } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
-import { COMPARATOR_V1, type Comparison, compareImages, decodePng, encodePng, inspectPng, pixelHash, PngError, PngWorker } from "../packages/core/src/index.ts";
+import { COMPARATOR_V1, type Comparison, compareImages, decodePng, encodePng, pixelHash, PngError, PngWorker } from "../packages/core/src/index.ts";
 import { IEND, buildPng, chunk, concat, filterScanlines, ihdr, png } from "./png-corpus/png-builder.ts";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -21,7 +21,7 @@ const EVIDENCE = join(ROOT, "docs", "evidence", "m1.1-png-bench.md");
 const COMPARE_EVIDENCE = join(ROOT, "docs", "evidence", "m1.3-compare-bench.md");
 const RUNS = 3;
 
-type Mode = "baseline" | "inspect" | "decode" | "canonicalize" | "worker-decode";
+type Mode = "baseline" | "decode" | "canonicalize" | "worker-decode";
 
 interface Scenario {
   id: string;
@@ -34,7 +34,6 @@ interface Scenario {
 interface Measurement {
   ok: boolean;
   code?: string;
-  inspectMs?: number;
   decodeMs?: number;
   hashMs?: number;
   encodeMs?: number;
@@ -139,7 +138,6 @@ const BOMB = "testdata/png/hostile/bomb-4000x4000-rgba.png";
 
 const SCENARIOS: Scenario[] = [
   { id: "baseline", what: "Node + core modules loaded, input read, no codec call", mode: "baseline", input: REAL },
-  { id: "real-inspect", what: "Largest committed real screenshot, validation pass only", mode: "inspect", input: REAL },
   { id: "real-decode", what: "Largest committed real screenshot, 1440×1013 RGB, 23 IDATs", mode: "decode", input: REAL },
   { id: "real-canonical", what: "Same, decode + hash + canonical encode", mode: "canonicalize", input: REAL },
   { id: "tall-decode", what: "Synthetic 1440×6000 RGB (PropertyScope's tallest)", mode: "decode", input: "synthetic-1440x6000-rgb" },
@@ -147,7 +145,6 @@ const SCENARIOS: Scenario[] = [
   { id: "max-decode", what: "Synthetic 4000×4000 RGBA (16 MP limit)", mode: "decode", input: "synthetic-4000x4000-rgba" },
   { id: "max-canonical", what: "Same, decode + hash + canonical encode", mode: "canonicalize", input: "synthetic-4000x4000-rgba" },
   { id: "max-worker", what: "Same, decoded in a PngWorker (process RSS includes the worker)", mode: "worker-decode", input: "synthetic-4000x4000-rgba" },
-  { id: "max-inspect", what: "Synthetic 4000×4000 RGBA, validation pass only", mode: "inspect", input: "synthetic-4000x4000-rgba" },
   { id: "many-idat", what: "Hostile shape: 2,551,241 one-byte IDAT chunks (31.6 MiB), valid 1000×850 RGB", mode: "decode", input: "many-idat-1000x850-rgb" },
   { id: "bomb", what: "Hostile: 4000×4000 RGBA inflate bomb (64 MB + 1 MiB of zeros)", mode: "decode", input: BOMB },
   { id: "too-large", what: "Hostile: 32 MiB + 1 byte", mode: "decode", input: "too-large-32mib-plus-1" },
@@ -163,9 +160,7 @@ async function child(mode: Mode, path: string): Promise<Measurement> {
   };
   const result: Measurement = { ok: true, totalMs: 0, maxRssMiB: 0 };
   try {
-    if (mode === "inspect") {
-      [, result.inspectMs] = await timed(() => inspectPng(bytes));
-    } else if (mode === "decode" || mode === "canonicalize") {
+    if (mode === "decode" || mode === "canonicalize") {
       const [image, decodeMs] = await timed(() => decodePng(bytes));
       result.decodeMs = decodeMs;
       [, result.hashMs] = await timed(() => pixelHash(image));
@@ -372,7 +367,7 @@ function main(): void {
       };
       const inputBytes = readFileSync(path).byteLength;
       rows.push(
-        `| ${s.id} | ${s.what} | ${inputBytes.toLocaleString("en-US")} | ${s.mode === "baseline" ? "no codec call" : first?.ok === true ? (s.mode === "inspect" ? "valid" : "decoded") : `rejected \`${first?.code ?? "?"}\``} | ${fmt(pick("inspectMs"))} | ${fmt(pick("decodeMs"))} | ${fmt(pick("hashMs"))} | ${fmt(pick("encodeMs"))} | ${fmt(pick("totalMs"))} | ${first?.encodedBytes?.toLocaleString("en-US") ?? "–"} | ${fmt(Math.max(...runs.map((r) => r.maxRssMiB)))} |`,
+        `| ${s.id} | ${s.what} | ${inputBytes.toLocaleString("en-US")} | ${s.mode === "baseline" ? "no codec call" : first?.ok === true ? "decoded" : `rejected \`${first?.code ?? "?"}\``} | ${fmt(pick("decodeMs"))} | ${fmt(pick("hashMs"))} | ${fmt(pick("encodeMs"))} | ${fmt(pick("totalMs"))} | ${first?.encodedBytes?.toLocaleString("en-US") ?? "–"} | ${fmt(Math.max(...runs.map((r) => r.maxRssMiB)))} |`,
       );
       console.log(rows.at(-1));
     }
@@ -388,15 +383,15 @@ ${provenance()}
 - Total is the measured work from the first codec call to the end, including a rejection.
 - Encoded bytes is the canonical PNG's size (canonicalize rows only).
 
-| Scenario | Input | Input bytes | Outcome | Inspect | Decode | Hash | Encode | Total | Encoded bytes | Peak RSS |
-|---|---|---|---|---|---|---|---|---|---|---|
+| Scenario | Input | Input bytes | Outcome | Decode | Hash | Encode | Total | Encoded bytes | Peak RSS |
+|---|---|---|---|---|---|---|---|---|---|
 ${rows.join("\n")}
 
-\`decodePng\` runs the validating pass (\`inspectPng\`) itself, so the Decode column includes it.
-The bomb is refused by that pass: it never allocates the 64,000,000-byte output buffer
-(\`packages/core/test/png-decode.test.ts\` checks that no output buffer is allocated for any
-hostile file). Only this Windows machine was measured; CI runs the same code on Linux but doesn't
-record RSS.
+\`decodePng\` inflates once, straight into the output buffer the checked header sizes. The bomb
+allocates that 64,000,000-byte buffer and is refused one 64 KiB piece past the expected size; it
+never writes past it (\`packages/core/test/png-decode.test.ts\` checks that a hostile file
+allocates at most that one buffer). Only this Windows machine was measured; CI runs the same code
+on Linux but doesn't record RSS.
 `;
     writeFileSync(EVIDENCE, doc);
     console.log(`wrote ${EVIDENCE}`);

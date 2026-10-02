@@ -1,15 +1,15 @@
 // Shared bundle@1 builder for the prototype converters (02 §2). Runs on the untrusted capture
 // side. Pure: inputs are bytes and maps, output is the artifact's files.
-import { canonicalBytes, unitFileName } from "../canonical.ts";
+import { canonicalBytes } from "../canonical.ts";
 import type { Bundle, BundleUnit, Claims, FailedCategory, Labels, Revision, Shard } from "../generated/types.ts";
-import { formatArtifactName, isGitHubId, isId } from "../ids.ts";
+import { formatArtifactName, isGitHubId, isId, unitFileName } from "../ids.ts";
 import { type JsonValue, parseJson } from "../json.ts";
 import { boundLabel, boundMessage } from "../text.ts";
 import { validateDocument } from "../validate.ts";
 import { normalizePng } from "./png-profile.ts";
 
-/** Both prototypes capture one desktop setting (ADR 0003). */
-export const PROTOTYPE_VARIANT_ID = "desktop";
+/** The variant when a caller doesn't name one: both prototypes capture one desktop setting (ADR 0003). */
+export const DEFAULT_VARIANT_ID = "desktop";
 export const MAX_UNITS = 2000;
 
 export class ConversionError extends Error {
@@ -41,13 +41,18 @@ export interface BuildInput {
   readonly images: ReadonlyMap<string, Uint8Array>;
   /** View IDs the captured revision's own case inventory declares (ADR 0003). */
   readonly revisionCatalog?: Iterable<string> | undefined;
+  /**
+   * The capture setting these screenshots were taken with (e.g. `desktop`, `mobile-390`). Convert
+   * each viewport or theme separately under its own variant. Defaults to DEFAULT_VARIANT_ID.
+   */
+  readonly variantId?: string | undefined;
 }
 
 export interface ConvertedBundle {
   /** The 02 §6 artifact name to upload under. */
   readonly artifactName: string;
   readonly bundle: Bundle;
-  /** Every file of the artifact: `bundle.json` plus one `u-<digest>.png` per captured unit. */
+  /** Every file of the artifact: `bundle.json` plus one `<viewId>.<variantId>.png` per captured unit. */
   readonly files: ReadonlyMap<string, Uint8Array>;
 }
 
@@ -70,6 +75,8 @@ export function buildBundle(input: BuildInput): ConvertedBundle {
   if (!isId(input.providerId)) throw new ConversionError(`invalid provider ID ${JSON.stringify(input.providerId)}`);
   if (!isGitHubId(input.attempt)) throw new ConversionError("attempt must be a GitHub run attempt (decimal, no leading zeros)");
   if (input.cases.length > MAX_UNITS) throw new ConversionError(`more than ${String(MAX_UNITS)} cases`);
+  const variantId = input.variantId ?? DEFAULT_VARIANT_ID;
+  if (!isId(variantId)) throw new ConversionError(`invalid variant ID ${JSON.stringify(variantId.slice(0, 80))}`);
   const catalog = input.revisionCatalog === undefined ? undefined : new Set(input.revisionCatalog);
   const files = new Map<string, Uint8Array>();
   const seen = new Set<string>();
@@ -79,10 +86,9 @@ export function buildBundle(input: BuildInput): ConvertedBundle {
     if (!isId(record.id)) throw new ConversionError(`case ID ${JSON.stringify(record.id.slice(0, 80))} is not a valid view ID`);
     if (seen.has(record.id)) throw new ConversionError(`case ${record.id} appears twice`);
     seen.add(record.id);
-    const key = { providerId: input.providerId, viewId: record.id, variantId: PROTOTYPE_VARIANT_ID };
     const common = {
       viewId: record.id,
-      variantId: PROTOTYPE_VARIANT_ID,
+      variantId,
       ...optional("labels", withBoundedLabels(record.labels)),
       ...optional("notes", boundedList(record.notes)),
     };
@@ -99,9 +105,8 @@ export function buildBundle(input: BuildInput): ConvertedBundle {
         units.push({ ...common, state: "failed", category: "image-invalid", message: `screenshot rejected: ${normalized.reason}` });
         continue;
       }
-      const file = unitFileName(key);
-      files.set(file, normalized.png);
-      units.push({ ...common, state: "captured", file });
+      files.set(unitFileName(common), normalized.png);
+      units.push({ ...common, state: "captured" });
     } else if (catalog !== undefined && !catalog.has(record.id)) {
       // Explicit catalog absence: the revision itself doesn't declare this view.
       units.push({ ...common, state: "absent", reason: "not-in-revision-catalog" });

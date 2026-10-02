@@ -18,7 +18,7 @@ from.
 - **Axes** combine variants into a matrix. `[desktop, tablet, mobile] × [light, dark]` gives six
   variant keys, such as `mobile+dark`.
 - A capture's identity is `(providerId, viewId, variantId)`. History, timelines and flake scores use that full tuple. `mobile+dark` is a display label; an encoded variant ID must meet the active schema (e.g. `mobile-dark`), not bypass it.
-- Variant definitions live in `views.yml`. Their display order and labels live in `config.yml`.
+- Variant definitions live in `views.yml`. Their display order and labels live in `config.json`.
 
 ### 1.2 Viewer
 
@@ -186,11 +186,11 @@ The goal: "what I see locally is what CI will post". Three layers:
    the pinned image
    (`mcr.microsoft.com/playwright:v<version>-noble` plus the project's fonts layer), which is the
    image the reusable CI workflow uses by default. The environment tuple (image digest, browser
-   build, fonts hash) is recorded in every snapshot.
+   build, fonts hash) is recorded in every run's capture claims.
 3. **Same baseline.**
    - `pixelwatch pull main` downloads the latest main snapshot whose environment tuple matches the
-     local one, straight from the public site. That's just static files: `data/v1/snapshots/…` plus
-     blobs.
+     local one, straight from the public site. That's just static files: a main run's head side
+     (`data/v1/runs/…`) plus blobs.
    - A developer can then compare the working tree against CI's baseline without capturing base
      at all.
    - If the tuple doesn't match (the developer isn't using Docker), the CLI refuses by default,

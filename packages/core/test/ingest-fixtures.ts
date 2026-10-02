@@ -51,7 +51,7 @@ export interface PartSpec {
 export function bundleFor(spec: PartSpec): Bundle {
   const units: BundleUnit[] = spec.units.map((u) => {
     const variantId = u.variantId ?? VARIANT;
-    if (u.state === "captured") return { viewId: u.viewId, variantId, state: "captured", file: unitFileName({ providerId: spec.providerId, viewId: u.viewId, variantId }) };
+    if (u.state === "captured") return { viewId: u.viewId, variantId, state: "captured" };
     if (u.state === "absent") return { viewId: u.viewId, variantId, state: "absent", reason: "not-in-revision-catalog" };
     return { viewId: u.viewId, variantId, state: "failed", category: "capture-error", message: "boom" };
   });
@@ -93,7 +93,7 @@ export function partZip(spec: PartSpec, options: ZipOptions = {}): Uint8Array {
   let entries: EntrySpec[] = [{ name: "bundle.json", data: options.bundleBytes ?? canonicalBytes(document) }];
   spec.units.forEach((u, i) => {
     if (u.state !== "captured") return;
-    const name = unitFileName({ providerId: spec.providerId, viewId: u.viewId, variantId: u.variantId ?? VARIANT });
+    const name = unitFileName({ viewId: u.viewId, variantId: u.variantId ?? VARIANT });
     entries.push({ name, data: u.png ?? tinyPng(i + 1) });
   });
   entries.push(...(options.extra ?? []));
@@ -110,11 +110,10 @@ export function memoryPool(): BlobPool & { readonly blobs: Map<string, Uint8Arra
   const blobs = new Map<string, Uint8Array>();
   return {
     blobs,
-    read: (path) => Promise.resolve(blobs.get(path)),
-    create: (path, bytes) => {
-      if (blobs.has(path)) return Promise.resolve("exists" as const);
+    has: (path) => Promise.resolve(blobs.has(path)),
+    add: (path, bytes) => {
       blobs.set(path, bytes);
-      return Promise.resolve("created" as const);
+      return Promise.resolve();
     },
   };
 }
@@ -128,10 +127,6 @@ export function captured(hash: string, width = 2, height = 2): ListedSide {
 export const ABSENT: ListedSide = { state: "absent", reason: "not-in-revision-catalog" };
 export const FAILED: ListedSide = { state: "failed", category: "capture-error" };
 
-export function hex(n: number): string {
-  return n.toString(16).padStart(64, "0");
-}
-
 export function validPart(
   revision: Revision,
   providerId: string,
@@ -140,5 +135,5 @@ export function validPart(
   artifactId = String(nextId++),
 ): ValidPart {
   const partUnits: PartUnit[] = units.map(([viewId, side]) => ({ viewId, variantId: VARIANT, side, details: {} }));
-  return { revision, providerId, shard: { index: shard[0], count: shard[1] }, artifact: { artifactId, sha256: hex(Number(artifactId)) }, claims: {}, units: partUnits };
+  return { revision, providerId, shard: { index: shard[0], count: shard[1] }, artifact: { artifactId }, claims: {}, units: partUnits };
 }

@@ -1,6 +1,6 @@
 // Canonical JSON for hashing (02 §3): UTF-8, object keys sorted recursively by Unicode code
-// point, no whitespace, safe integers only, arrays in order, no Unicode normalization, and
-// optionally the object's own ID/digest field left out. Tests pin exact bytes and hashes.
+// point, no whitespace, safe integers only, arrays in order, no Unicode normalization. Tests pin
+// exact bytes and hashes.
 import { createHash } from "node:crypto";
 
 export class CanonicalJsonError extends Error {
@@ -8,11 +8,6 @@ export class CanonicalJsonError extends Error {
     super(message);
     this.name = "CanonicalJsonError";
   }
-}
-
-export interface CanonicalOptions {
-  /** A top-level key to leave out, e.g. the document's own `snapshotId`. */
-  readonly omit?: string;
 }
 
 /** Orders strings by code point (UTF-8 byte order), not by UTF-16 code unit. */
@@ -74,44 +69,18 @@ function serialize(value: unknown, path: string, ancestors: Set<object>): string
   }
 }
 
-export function canonicalJson(value: unknown, options: CanonicalOptions = {}): string {
-  let root = value;
-  if (options.omit !== undefined) {
-    if (typeof value !== "object" || value === null || Array.isArray(value)) {
-      throw new CanonicalJsonError("omit needs an object at the top level");
-    }
-    const copy: Record<string, unknown> = { ...(value as Record<string, unknown>) };
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- the caller names one own field
-    delete copy[options.omit];
-    root = copy;
-  }
-  return serialize(root, "", new Set());
+export function canonicalJson(value: unknown): string {
+  return serialize(value, "", new Set());
 }
 
-export function canonicalBytes(value: unknown, options: CanonicalOptions = {}): Uint8Array {
-  return Buffer.from(canonicalJson(value, options), "utf8");
+export function canonicalBytes(value: unknown): Uint8Array {
+  return Buffer.from(canonicalJson(value), "utf8");
 }
 
 export function sha256Hex(data: Uint8Array | string): string {
   return createHash("sha256").update(data).digest("hex");
 }
 
-export function canonicalSha256(value: unknown, options: CanonicalOptions = {}): string {
-  return sha256Hex(canonicalBytes(value, options));
-}
-
-export interface UnitKey {
-  readonly providerId: string;
-  readonly viewId: string;
-  readonly variantId: string;
-}
-
-/** SHA-256 of the unit key as a canonical three-element array; never a joined string (02 §3). */
-export function unitKeyDigest(key: UnitKey): string {
-  return canonicalSha256([key.providerId, key.viewId, key.variantId]);
-}
-
-/** The only image file name a bundle may contain for a unit (02 §2). */
-export function unitFileName(key: UnitKey): string {
-  return `u-${unitKeyDigest(key)}.png`;
+export function canonicalSha256(value: unknown): string {
+  return sha256Hex(canonicalBytes(value));
 }

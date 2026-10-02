@@ -5,6 +5,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { crc32, deflateRawSync } from "node:zlib";
 import fc from "fast-check";
+import { UNIT_FILE_PATTERN } from "@pixelwatch/schemas";
 import { describe, expect, it } from "vitest";
 import { REQUIRED_CLASSES, hostileCorpus } from "../../../tools/zip-corpus/generate.ts";
 import { type EntrySpec, ascii, buildZip, pngName } from "../../../tools/zip-corpus/zip-builder.ts";
@@ -34,12 +35,17 @@ async function outcome(work: Promise<unknown>): Promise<string> {
   }
 }
 
+/** openZip as a promise, so a synchronous refusal reads like an asynchronous one. */
+function opened(bytes: Uint8Array, budget = new IngestBudget(), options: { signal?: AbortSignal } = {}): Promise<ZipArchive> {
+  return Promise.resolve().then(() => openZip(bytes, budget, options));
+}
+
 /** Opens and fully extracts an archive, recording every entry-buffer allocation. */
-async function extractAll(bytes: Uint8Array, budget = new IngestBudget(), allocations: number[] = []): Promise<Map<string, Uint8Array>> {
-  const archive = await openZip(bytes, budget);
+async function extractAll(bytes: Uint8Array, budget = new IngestBudget(), allocations: number[] = [], signal?: AbortSignal): Promise<Map<string, Uint8Array>> {
+  const archive = openZip(bytes, budget);
   const out = new Map<string, Uint8Array>();
   for (const entry of archive.entries) {
-    out.set(entry.name, await readEntry(archive, entry.name, { allocate: (n) => (allocations.push(n), new Uint8Array(n)) }));
+    out.set(entry.name, await readEntry(archive, entry.name, { signal, allocate: (n) => (allocations.push(n), new Uint8Array(n)) }));
   }
   return out;
 }
@@ -47,13 +53,13 @@ async function extractAll(bytes: Uint8Array, budget = new IngestBudget(), alloca
 describe("hostile ZIP corpus (02 §5)", () => {
   const manifest = JSON.parse(readFileSync(join(HOSTILE, "manifest.json"), "utf8")) as Manifest;
 
-  it("rejects every hostile ZIP with its code before allocating entry buffers", async () => {
+  it("rejects every hostile ZIP with its code, allocating only capped declared-size entry buffers", async () => {
     for (const c of manifest.cases) {
       const bytes = readFileSync(join(HOSTILE, c.file));
       const allocations: number[] = [];
       const started = performance.now();
       expect(await outcome(extractAll(bytes, new IngestBudget(), allocations)), `${c.file}: ${c.why}`).toBe(c.code);
-      expect(allocations, `${c.file}: an entry buffer was allocated`).toEqual([]);
+      for (const n of allocations) expect(n, `${c.file}: entry buffer size`).toBeLessThanOrEqual(INGEST_LIMITS.maxPngBytes);
       expect(performance.now() - started, `${c.file}: rejection time`).toBeLessThan(c.class === "deflate-bomb" ? 15_000 : 2_000);
     }
   });
@@ -100,20 +106,20 @@ describe("hostile ZIP corpus (02 §5)", () => {
 });
 
 describe("entry names (02 §5; R4.3-10)", () => {
-  it("rejects any entry name but bundle.json and u-<64 hex>.png", async () => {
+  it("rejects any entry name but bundle.json and <viewId>.<variantId>.png", async () => {
     const suspicious = fc.oneof(
       fc.constantFrom(
         "index.html", "a.svg", "app.js", "x.css", "d.xml", "app.js.map", "n.har", "trace.zip", "bundle.json.png", "Bundle.json",
-        "bundle.JSON", "bundle.json ", " bundle.json", "bundle.json.", "u-.png", `u-${"0".repeat(64)}.PNG`, `u-${"0".repeat(64)}.png.html`,
-        `U-${"0".repeat(64)}.png`, `u-${"g".repeat(64)}.png`, `u-${"0".repeat(65)}.png`, `${pngName(1)}\0`, `./${pngName(1)}`,
+        "bundle.JSON", "bundle.json ", " bundle.json", "bundle.json.", "home.png", "home.desktop.PNG", "home.desktop.png.html",
+        "Home.desktop.png", "home..png", ".desktop.png", "home.desktop.x.png", `${"a".repeat(65)}.desktop.png`, `${pngName(1)}\0`, `./${pngName(1)}`,
         "bundle.json/", "con", "aux.png", "~bundle.json", ".bundle.json",
       ),
-      fc.string({ unit: fc.constantFrom(..."abu-.0123456789fjsonpg/\\:\0 ".split("")), maxLength: 80 }),
+      fc.string({ unit: fc.constantFrom(..."abu-_.0123456789fjsonpg/\\:\0 ".split("")), maxLength: 80 }),
       fc.string({ unit: "binary-ascii", maxLength: 80 }),
     );
     await fc.assert(
       fc.asyncProperty(suspicious, async (name) => {
-        const allowed = name === "bundle.json" || /^u-[0-9a-f]{64}\.png$/.test(name);
+        const allowed = name === "bundle.json" || UNIT_FILE_PATTERN.test(name);
         const entries = name === "bundle.json" ? [BUNDLE, png(1)] : [BUNDLE, { name, data: ascii("x") }];
         const result = await outcome(extractAll(buildZip({ entries })));
         if (allowed) expect(result).toBe("ok");
@@ -125,22 +131,21 @@ describe("entry names (02 §5; R4.3-10)", () => {
 });
 
 describe("expanded-size accounting (02 §5)", () => {
-  it("counts expanded bytes from inflation, never from headers", async () => {
-    // Header claims less than the data: stopped within one 64 KiB piece of the claim.
+  it("budgets declared sizes and holds inflation to them", async () => {
+    // Header claims less than the data: the budget counts the claim, and extraction stops there.
     const lying = new IngestBudget();
-    expect(await outcome(openZip(buildZip({ entries: [BUNDLE, png(1, { data: new Uint8Array(8 * MiB), size: 1000 })] }), lying))).toBe("zip-inflate-overflow");
-    expect(lying.expandedBytes).toBeLessThanOrEqual(BUNDLE.data.length + 1000 + 64 * 1024);
+    const small = buildZip({ entries: [BUNDLE, png(1, { data: new Uint8Array(8 * MiB), size: 1000 })] });
+    expect(await outcome(extractAll(small, lying))).toBe("zip-inflate-overflow");
+    expect(lying.expandedBytes).toBe(BUNDLE.data.length + 1000);
 
-    // Header claims more than the data: refused, and only the actual bytes were counted.
-    const short = new IngestBudget();
+    // Header claims more than the data: refused when the stream ends short.
     const entry = png(1);
-    expect(await outcome(openZip(buildZip({ entries: [BUNDLE, { ...entry, size: 20 * MiB }] }), short))).toBe("zip-inflate-short");
-    expect(short.expandedBytes).toBe(BUNDLE.data.length + entry.data.length);
+    expect(await outcome(extractAll(buildZip({ entries: [BUNDLE, { ...entry, size: 20 * MiB }] })))).toBe("zip-inflate-short");
 
-    // A valid archive counts exactly its inflated bytes.
+    // A valid archive is charged exactly its entry sizes, before anything is inflated.
     const exact = new IngestBudget();
     const entries = [BUNDLE, png(1), png(2), png(3, { method: 0, descriptor: false })];
-    await openZip(buildZip({ entries }), exact);
+    openZip(buildZip({ entries }), exact);
     expect(exact.expandedBytes).toBe(entries.reduce((sum, e) => sum + e.data.length, 0));
     expect(exact.entries).toBe(4);
   });
@@ -148,28 +153,28 @@ describe("expanded-size accounting (02 §5)", () => {
   it("shares the 4096-entry and 512 MiB budgets across every archive of one ingestion", async () => {
     const many = (count: number, from: number) => buildZip({ entries: [BUNDLE, ...Array.from({ length: count - 1 }, (_, i) => ({ name: pngName(from + i), data: Uint8Array.of(i & 0xff) }))] });
     // Real entries, not a lying EOCD count.
-    expect(await outcome(openZip(many(4096, 0), new IngestBudget()))).toBe("ok");
-    expect(await outcome(openZip(many(4097, 0), new IngestBudget()))).toBe("zip-too-many-entries");
+    expect(await outcome(opened(many(4096, 0)))).toBe("ok");
+    expect(await outcome(opened(many(4097, 0)))).toBe("zip-too-many-entries");
     const entries = new IngestBudget();
-    expect(await outcome(openZip(many(2048, 0), entries))).toBe("ok");
-    expect(await outcome(openZip(many(2048, 10_000), entries))).toBe("ok");
-    expect(await outcome(openZip(many(1, 20_000), entries))).toBe("zip-too-many-entries");
+    expect(await outcome(opened(many(2048, 0), entries))).toBe("ok");
+    expect(await outcome(opened(many(2048, 10_000), entries))).toBe("ok");
+    expect(await outcome(opened(many(1, 20_000), entries))).toBe("zip-too-many-entries");
 
     // 2 × 9 honest 32 MiB entries: each archive fits, the second pushes the ingestion past 512 MiB.
     const zeros = new Uint8Array(32 * MiB);
     const compressed = deflateRawSync(zeros);
     const big = (from: number) => buildZip({ entries: [BUNDLE, ...Array.from({ length: 9 }, (_, i) => ({ name: pngName(from + i), data: zeros, compressed }))] });
     const bytes = new IngestBudget();
-    expect(await outcome(openZip(big(0), bytes))).toBe("ok");
+    expect(await outcome(opened(big(0), bytes))).toBe("ok");
     expect(bytes.expandedBytes).toBe(9 * 32 * MiB + BUNDLE.data.length);
-    expect(await outcome(openZip(big(100), bytes))).toBe("zip-expanded-total");
-    expect(bytes.expandedBytes).toBeLessThanOrEqual(INGEST_LIMITS.maxExpandedBytes + 64 * 1024);
+    expect(await outcome(opened(big(100), bytes))).toBe("zip-expanded-total");
+    expect(bytes.expandedBytes).toBe(9 * 32 * MiB + BUNDLE.data.length);
   });
 
   it("refuses an archive over 128 MiB before parsing it", async () => {
     const huge = new Uint8Array(INGEST_LIMITS.maxArchiveBytes + 1);
     huge.set(buildZip({ entries: [BUNDLE, png(1)] }));
-    expect(await outcome(openZip(huge, new IngestBudget()))).toBe("zip-archive-too-large");
+    expect(await outcome(opened(huge))).toBe("zip-archive-too-large");
   });
 });
 
@@ -181,7 +186,7 @@ describe("accepted layouts (ADR 0008)", () => {
     const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
     expect(view.getUint16(6, true) & 0x08).toBe(0x08);
     expect([view.getUint32(14, true), view.getUint32(18, true), view.getUint32(22, true)]).toEqual([0, 0, 0]);
-    const archive = await openZip(bytes, new IngestBudget());
+    const archive = openZip(bytes, new IngestBudget());
     expect(archive.entries.map((e) => [e.name, e.method, e.size])).toEqual(entries.map((e) => [e.name, 8, e.data.length]));
     for (const e of entries) expect(await readEntry(archive, e.name as string)).toEqual(e.data);
   });
@@ -216,9 +221,9 @@ describe("accepted layouts (ADR 0008)", () => {
     );
   });
 
-  it("re-verifies size and CRC when extracting", async () => {
+  it("verifies size and CRC when extracting", async () => {
     const bytes = buildZip({ entries: [BUNDLE, png(1, { method: 0 })] });
-    const archive: ZipArchive = await openZip(bytes, new IngestBudget());
+    const archive: ZipArchive = openZip(bytes, new IngestBudget());
     const entry = archive.entries.find((e) => e.name === pngName(1));
     if (entry === undefined) throw new Error("missing entry");
     bytes[entry.dataOffset] = (bytes[entry.dataOffset] ?? 0) ^ 0xff; // the caller's buffer changes after opening
@@ -255,15 +260,15 @@ describe("accepted layouts (ADR 0008)", () => {
   it("stops between chunks when the signal aborts", async () => {
     const already = new AbortController();
     already.abort();
-    expect(await outcome(openZip(buildZip({ entries: [BUNDLE, png(1)] }), new IngestBudget(), { signal: already.signal }))).toBe("ingest-aborted");
+    expect(await outcome(opened(buildZip({ entries: [BUNDLE, png(1)] }), new IngestBudget(), { signal: already.signal }))).toBe("ingest-aborted");
 
     const zeros = new Uint8Array(32 * MiB);
     const compressed = deflateRawSync(zeros);
     const slow = buildZip({ entries: [BUNDLE, ...Array.from({ length: 15 }, (_, i) => ({ name: pngName(i), data: zeros, compressed }))] });
-    const budget = new IngestBudget();
-    expect(await outcome(openZip(slow, budget, { signal: AbortSignal.timeout(30) }))).toBe("ingest-aborted");
-    // Stopped part-way: not every entry was inflated.
-    expect(budget.expandedBytes).toBeLessThan(15 * 32 * MiB);
+    const allocations: number[] = [];
+    expect(await outcome(extractAll(slow, new IngestBudget(), allocations, AbortSignal.timeout(30)))).toBe("ingest-aborted");
+    // Stopped part-way: not every entry was extracted.
+    expect(allocations.length).toBeLessThan(16);
   });
 });
 

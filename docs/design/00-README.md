@@ -95,9 +95,8 @@ Earlier drafts (and `reference/`) mention these. They were replaced for concrete
 | View / variant | A captured screen / a named capture setting (viewport, theme) |
 | Unit | The identity `(providerId, viewId, variantId)` |
 | Part / shard | One uploaded artifact: one revision × provider × shard index |
-| Snapshot | One revision's captured units, keyed by the hash of its canonical manifest |
-| Run | A comparison of a base snapshot and a head snapshot, with results. Key: `runKey = <sourceRunId>-a<attempt>` |
-| Stream | Ordered run list: `main` or `pr-<number>` |
+| Run | A comparison of one attempt's base and head captures, with results. Key: `runKey = <sourceRunId>-a<attempt>` |
+| Stream | Ordered run list, `main` or `pr-<number>`, derived from the store's run index |
 | Store | The `pixelwatch-data` branch: `store.json`, `data/`, `blobs/`, `derived/` |
 | Projection | Building the served site from the store plus the pinned release |
 | Generation | One deployed site build, identified by `hash(storeTip, releaseSha, configSha, projectionVersion)` |

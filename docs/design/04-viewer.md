@@ -45,7 +45,7 @@ and no production v1 → v2 migration invented to replace one.
 
 ## 3. Data versioning and migrations
 
-- The MVP writes `data/v1/`. Run and snapshot records are immutable, including their comparison
+- The MVP writes `data/v1/`. Run records are immutable, including their comparison
   policy, config hash and provenance. `api/v1` is versioned separately; incompatible API changes
   need `api/v2`.
 - **The writer refuses** newer or unrecognized store metadata **before** any mutation ("site

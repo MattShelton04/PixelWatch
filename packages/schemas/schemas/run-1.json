@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Run",
-  "description": "run@1 (02 §§4, 6, 8): one immutable comparison of a base and a head snapshot.",
+  "description": "run@1 (02 §§4, 6, 8): one immutable comparison of a base and a head capture.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,8 +10,6 @@
     "source",
     "claims",
     "versions",
-    "ingestionDigest",
-    "snapshots",
     "parts",
     "coverage",
     "counts",
@@ -42,16 +40,6 @@
         "data": { "const": 1 }
       }
     },
-    "ingestionDigest": { "$ref": "common.json#/$defs/Sha256" },
-    "snapshots": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["base", "head"],
-      "properties": {
-        "base": { "$ref": "common.json#/$defs/NullableSha256" },
-        "head": { "$ref": "common.json#/$defs/NullableSha256" }
-      }
-    },
     "parts": {
       "description": "Every received part and what happened to it. Rejected parts also appear in coverage.missingParts.",
       "type": "array",
@@ -59,13 +47,13 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["revision", "providerId", "shard", "status", "artifactSha256"],
+        "required": ["revision", "providerId", "shard", "status", "artifactId"],
         "properties": {
           "revision": { "$ref": "common.json#/$defs/Revision" },
           "providerId": { "$ref": "common.json#/$defs/Id" },
           "shard": { "$ref": "common.json#/$defs/Shard" },
           "status": { "enum": ["valid", "rejected"] },
-          "artifactSha256": { "$ref": "common.json#/$defs/Sha256" },
+          "artifactId": { "$ref": "common.json#/$defs/GitHubId" },
           "diagnostic": { "$ref": "common.json#/$defs/Message" }
         }
       }

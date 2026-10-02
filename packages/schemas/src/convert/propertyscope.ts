@@ -29,6 +29,8 @@ export interface PropertyScopeInput {
   readonly providerId?: string;
   /** View IDs the captured revision's own case inventory declares (ADR 0003). */
   readonly revisionCatalog?: Iterable<string>;
+  /** The capture setting (viewport, theme) of these screenshots; defaults to `desktop`. */
+  readonly variantId?: string;
 }
 
 export function convertPropertyScope(input: PropertyScopeInput): ConvertedBundle {
@@ -75,5 +77,6 @@ export function convertPropertyScope(input: PropertyScopeInput): ConvertedBundle
     cases,
     images: input.images,
     revisionCatalog: input.revisionCatalog,
+    variantId: input.variantId,
   });
 }

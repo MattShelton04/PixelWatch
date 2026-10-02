@@ -7,7 +7,7 @@
 // Image admission is the only place uploaded PNG bytes are used (ADR 0008). Each captured image
 // is decoded, hashed and stored as a canonical blob here; later stages see only the pixel hash
 // and the dimensions from decoding, never the uploaded file or the manifest's claims.
-import { type Bundle, type BundleUnit, type Config, parseDocument } from "@pixelwatch/schemas";
+import { type Bundle, type BundleUnit, type Config, parseDocument, unitFileName } from "@pixelwatch/schemas";
 import { type BlobCodec, type BlobPool, storeBlob } from "../blob-pool.ts";
 import type { RawPixels } from "../pixel-hash.ts";
 import { PngError } from "../png/errors.ts";
@@ -55,7 +55,7 @@ function checkIdentity(bundle: Bundle, part: SelectedPart, attempt: string): voi
 }
 
 function checkFiles(bundle: Bundle, archive: ZipArchive): void {
-  const listed = new Set(bundle.units.flatMap((u) => (u.state === "captured" ? [u.file] : [])));
+  const listed = new Set(bundle.units.flatMap((u) => (u.state === "captured" ? [unitFileName(u)] : [])));
   const present = new Set(archive.entries.map((e) => e.name).filter((n) => n !== "bundle.json"));
   const missing = [...listed].filter((f) => !present.has(f)).length;
   if (missing > 0) throw new IngressError("part-file-missing", `${String(missing)} captured units have no image in the archive`);
@@ -92,7 +92,7 @@ async function admitImage(archive: ZipArchive, file: string, index: number, ctx:
 }
 
 export async function validatePart(part: SelectedPart, artifact: ArtifactRef, ctx: PartContext): Promise<ValidPart> {
-  const archive = await openZip(part.artifact.zip, ctx.budget, { signal: ctx.signal });
+  const archive = openZip(part.artifact.zip, ctx.budget, { signal: ctx.signal });
   const bundle = await readBundle(archive, ctx.signal);
   checkIdentity(bundle, part, ctx.attempt);
   checkFiles(bundle, archive);
@@ -101,7 +101,7 @@ export async function validatePart(part: SelectedPart, artifact: ArtifactRef, ct
   for (const [index, unit] of ordered.entries()) {
     if (ctx.signal?.aborted === true) throw new IngressError("ingest-aborted", "ingestion cancelled");
     let side: ListedSide;
-    if (unit.state === "captured") side = await admitImage(archive, unit.file, index, ctx);
+    if (unit.state === "captured") side = await admitImage(archive, unitFileName(unit), index, ctx);
     else if (unit.state === "absent") side = { state: "absent", reason: unit.reason };
     else side = { state: "failed", category: unit.category };
     units.push({ viewId: unit.viewId, variantId: unit.variantId, side, details: detailsOf(unit) });

@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { unitFileName } from "../src/canonical.ts";
 import { ConversionError, type ConvertedBundle } from "../src/convert/bundle.ts";
 import { convertPropertyScope } from "../src/convert/propertyscope.ts";
 import { convertTracePilot } from "../src/convert/tracepilot.ts";
 import type { Bundle, BundleUnit } from "../src/generated/types.ts";
-import { parseArtifactName } from "../src/ids.ts";
+import { UNIT_FILE_PATTERN, parseArtifactName, unitFileName } from "../src/ids.ts";
 import { parseDocument } from "../src/validate.ts";
 import { testdata, testdataDir, tinyPng } from "./helpers.ts";
 
@@ -26,11 +25,8 @@ function expectWellFormed(converted: ConvertedBundle, caseCount: number): void {
   expect(bundle.units).toHaveLength(caseCount);
   const captured = bundle.units.filter((u): u is Extract<BundleUnit, { state: "captured" }> => u.state === "captured");
   const pngs = [...files.keys()].filter((name) => name !== "bundle.json");
-  expect(pngs.sort()).toEqual(captured.map((u) => u.file).sort());
-  for (const unit of captured) {
-    expect(unit.file).toBe(unitFileName({ providerId: bundle.providerId, viewId: unit.viewId, variantId: "desktop" }));
-  }
-  for (const name of files.keys()) expect(name).toMatch(/^(bundle\.json|u-[0-9a-f]{64}\.png)$/);
+  expect(pngs.sort()).toEqual(captured.map((u) => unitFileName(u)).sort());
+  for (const name of pngs) expect(name).toMatch(UNIT_FILE_PATTERN);
   expect(parseArtifactName(converted.artifactName)).toEqual({
     attempt: bundle.attempt,
     revision: bundle.revision,

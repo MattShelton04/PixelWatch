@@ -67,7 +67,7 @@ the store tip (`sim-ingest-cas-race`) and projectors vs deploy/comment ordering
 | ID | Scenario | Must hold |
 |---|---|---|
 | `sim-ingest-cas-race` | Four ingestors fetch the same tip | Every valid run survives bounded CAS retries |
-| `sim-push-outcome-unknown` | Push accepted, client times out | Refetch finds the run key/digest; no duplicate or overwrite |
+| `sim-push-outcome-unknown` | Push accepted, client times out | Refetch finds the run key; no duplicate or overwrite |
 | `sim-lease-exhausted` | Lease conflict, retries exhausted | Old consistent site remains; repair instruction reported |
 | `sim-deploy-comment-race` (A) | Projectors A and B reordered | Each reads the store after the lock; the final generation has both |
 | `sim-deploy-comment-race` (B) | Coalesced pending projector | The later projector publishes and comments for earlier runs too |

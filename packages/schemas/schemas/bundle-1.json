@@ -52,14 +52,14 @@
           "title": "CapturedUnit",
           "type": "object",
           "additionalProperties": false,
-          "required": ["viewId", "variantId", "state", "file"],
+          "description": "The image is the archive entry <viewId>.<variantId>.png.",
+          "required": ["viewId", "variantId", "state"],
           "properties": {
             "viewId": { "$ref": "common.json#/$defs/Id" },
             "variantId": { "$ref": "common.json#/$defs/Id" },
             "labels": { "$ref": "common.json#/$defs/Labels" },
             "notes": { "$ref": "common.json#/$defs/Notes" },
             "state": { "const": "captured" },
-            "file": { "type": "string", "pattern": "^u-[0-9a-f]{64}\\.png$" },
             "geometry": { "$ref": "#/$defs/Geometry" }
           }
         },

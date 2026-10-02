@@ -1,19 +1,18 @@
 // Canonical blob pool (03 §§3–4; threat-model R4.3-09). A blob is the canonical PNG of an image,
-// stored at `blobs/<ab>/<pixelHash>.png`. Existing blobs are never overwritten: one with the right
-// name is revalidated (bounded decode, pixel hash must equal the name) and reused, and a corrupt
-// one is an error. Validity is the decoded pixel hash, not byte equality with today's encoder.
+// stored at `blobs/<ab>/<pixelHash>.png`. A blob that already exists is reused and never
+// overwritten. It isn't read back or decoded: the store is publisher-owned and Git checks its own
+// objects, so re-verifying every reused image would only double the decode work of each run.
 //
 // The core does no I/O: the store adapter (M2.2) supplies the pool, and the codec is the
 // in-process one or a PngWorker (which satisfies BlobCodec).
 import { type RawPixels, checkPixels, pixelHash } from "./pixel-hash.ts";
 import { decodePng } from "./png/decode.ts";
 import { encodePng } from "./png/encode.ts";
-import { PngError } from "./png/errors.ts";
 
 export interface BlobPool {
-  read(path: string): Promise<Uint8Array | undefined>;
-  /** Creates `path` only if it doesn't exist; reports "exists" instead of overwriting. */
-  create(path: string, bytes: Uint8Array): Promise<"created" | "exists">;
+  has(path: string): Promise<boolean>;
+  /** Adds a blob at a path `has` reported absent. Adapters never overwrite an existing path. */
+  add(path: string, bytes: Uint8Array): Promise<void>;
 }
 
 export interface BlobCodec {
@@ -24,55 +23,24 @@ export interface BlobCodec {
 export interface StoredBlob {
   readonly pixelHash: string;
   readonly path: string;
-  /** True when a valid blob already existed and was left untouched. */
+  /** True when the blob already existed and was left untouched. */
   readonly reused: boolean;
 }
 
-export type BlobErrorCode = "blob-name" | "blob-corrupt";
-
-export class BlobError extends Error {
-  readonly code: BlobErrorCode;
-
-  constructor(code: BlobErrorCode, message: string, options?: ErrorOptions) {
-    super(message, options);
-    this.name = "BlobError";
-    this.code = code;
-  }
-}
-
-const IN_PROCESS: BlobCodec = { decode: (bytes) => decodePng(bytes), encode: encodePng };
+export const IN_PROCESS_CODEC: BlobCodec = { decode: (bytes) => decodePng(bytes), encode: encodePng };
 const PIXEL_HASH = /^[0-9a-f]{64}$/;
 
 export function blobPath(hash: string): string {
-  if (!PIXEL_HASH.test(hash)) throw new BlobError("blob-name", "a blob name must be a 64-hex pixel hash");
+  if (!PIXEL_HASH.test(hash)) throw new RangeError("a blob name must be a 64-hex pixel hash");
   return `blobs/${hash.slice(0, 2)}/${hash}.png`;
 }
 
-/** Throws `blob-corrupt` unless `bytes` is an in-profile PNG whose pixel hash is `hash`. */
-export async function verifyBlob(hash: string, bytes: Uint8Array, codec: Pick<BlobCodec, "decode"> = IN_PROCESS): Promise<void> {
-  const path = blobPath(hash);
-  let actual: string;
-  try {
-    actual = pixelHash(await codec.decode(bytes));
-  } catch (error) {
-    if (!(error instanceof PngError)) throw error;
-    throw new BlobError("blob-corrupt", `${path} is not a valid PNG (${error.code})`, { cause: error });
-  }
-  if (actual !== hash) throw new BlobError("blob-corrupt", `${path} holds pixels with hash ${actual}`);
-}
-
-/** Stores `image` as a canonical blob unless a valid one already exists. Never overwrites. */
-export async function storeBlob(pool: BlobPool, image: RawPixels, codec: BlobCodec = IN_PROCESS): Promise<StoredBlob> {
+/** Stores `image` as a canonical blob unless one with its pixel hash already exists. */
+export async function storeBlob(pool: BlobPool, image: RawPixels, codec: BlobCodec = IN_PROCESS_CODEC): Promise<StoredBlob> {
   checkPixels(image);
   const hash = pixelHash(image);
   const path = blobPath(hash);
-  const existing = await pool.read(path);
-  if (existing === undefined) {
-    if ((await pool.create(path, await codec.encode(image))) === "created") return { pixelHash: hash, path, reused: false };
-  }
-  // It existed, or another writer created it first: whatever is there must match its name.
-  const current = existing ?? (await pool.read(path));
-  if (current === undefined) throw new BlobError("blob-corrupt", `${path} was reported to exist but can't be read`);
-  await verifyBlob(hash, current, codec);
-  return { pixelHash: hash, path, reused: true };
+  if (await pool.has(path)) return { pixelHash: hash, path, reused: true };
+  await pool.add(path, await codec.encode(image));
+  return { pixelHash: hash, path, reused: false };
 }

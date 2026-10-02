@@ -5,55 +5,55 @@
       "file": "name-traversal-dotdot.zip",
       "code": "zip-name-traversal",
       "class": "traversal",
-      "why": "entry ../u-….png"
+      "why": "entry ../<unit>.png"
     },
     {
       "file": "name-traversal-backslash.zip",
       "code": "zip-name-traversal",
       "class": "traversal",
-      "why": "entry ..\\u-….png"
+      "why": "entry ..\\<unit>.png"
     },
     {
       "file": "name-traversal-inner.zip",
       "code": "zip-name-traversal",
       "class": "traversal",
-      "why": "entry a/../u-….png"
+      "why": "entry a/../<unit>.png"
     },
     {
       "file": "name-absolute-slash.zip",
       "code": "zip-name-absolute",
       "class": "absolute",
-      "why": "entry /u-….png"
+      "why": "entry /<unit>.png"
     },
     {
       "file": "name-absolute-backslash.zip",
       "code": "zip-name-absolute",
       "class": "absolute",
-      "why": "entry \\u-….png"
+      "why": "entry \\<unit>.png"
     },
     {
       "file": "name-unc.zip",
       "code": "zip-name-absolute",
       "class": "absolute",
-      "why": "entry \\\\server\\share\\u-….png"
+      "why": "entry \\\\server\\share\\<unit>.png"
     },
     {
       "file": "name-drive-relative.zip",
       "code": "zip-name-drive",
       "class": "drive",
-      "why": "entry C:u-….png"
+      "why": "entry C:<unit>.png"
     },
     {
       "file": "name-drive-absolute.zip",
       "code": "zip-name-drive",
       "class": "drive",
-      "why": "entry C:\\u-….png"
+      "why": "entry C:\\<unit>.png"
     },
     {
       "file": "name-nested.zip",
       "code": "zip-name-separator",
       "class": "separator",
-      "why": "entry dir/u-….png"
+      "why": "entry dir/<unit>.png"
     },
     {
       "file": "name-directory-entry.zip",
@@ -101,7 +101,7 @@
       "file": "duplicate-png.zip",
       "code": "zip-duplicate-name",
       "class": "duplicate",
-      "why": "the same u-….png twice"
+      "why": "the same <unit>.png twice"
     },
     {
       "file": "case-collision-bundle.zip",
@@ -113,7 +113,7 @@
       "file": "case-collision-png.zip",
       "code": "zip-name-collision",
       "class": "case-collision",
-      "why": "u-…abc.png and U-…ABC.PNG"
+      "why": "<unit>.png and <UNIT>.PNG"
     },
     {
       "file": "extra-file-index-html.zip",
@@ -170,16 +170,16 @@
       "why": "an attachment entry notes.txt next to valid entries"
     },
     {
-      "file": "extra-file-short-hex.zip",
+      "file": "extra-file-no-variant.zip",
       "code": "zip-name-not-allowed",
       "class": "extra-file",
-      "why": "u-<63 hex>.png"
+      "why": "<view>.png without a variant"
     },
     {
-      "file": "extra-file-upper-hex.zip",
+      "file": "extra-file-upper-case.zip",
       "code": "zip-name-not-allowed",
       "class": "extra-file",
-      "why": "u-<64 upper-case hex>.png on its own"
+      "why": "<View>.<variant>.png with an upper-case ID, on its own"
     },
     {
       "file": "bundle-missing.zip",
@@ -485,7 +485,7 @@
       "file": "mismatch-name.zip",
       "code": "zip-header-mismatch",
       "class": "header-mismatch",
-      "why": "local name index.html, central name u-….png"
+      "why": "local name index.html, central name <unit>.png"
     },
     {
       "file": "mismatch-method.zip",
@@ -599,7 +599,7 @@
       "file": "bomb-expanded-total.zip",
       "code": "zip-expanded-total",
       "class": "deflate-bomb",
-      "why": "17 honest 32 MiB PNG entries: 544 MiB, past the 512 MiB per-ingestion budget counted from inflated bytes"
+      "why": "17 honest 32 MiB PNG entries: 544 MiB declared, past the 512 MiB per-ingestion budget"
     },
     {
       "file": "bomb-entry-count.zip",

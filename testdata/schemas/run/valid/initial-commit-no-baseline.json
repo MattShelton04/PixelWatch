@@ -31,11 +31,6 @@
     "bundle": 1,
     "data": 1
   },
-  "ingestionDigest": "4410f6dc300485b76b21f2fd6f36eb29a51323ee50a02911c35fcdcad087da91",
-  "snapshots": {
-    "base": null,
-    "head": "8b43958d23e6c890690d500c57006ef0302eba564c152220dd884aafa5546400"
-  },
   "parts": [
     {
       "revision": "head",
@@ -45,7 +40,7 @@
         "count": 1
       },
       "status": "valid",
-      "artifactSha256": "359e085dc99c0ea9f354c7db114c3688b4bc4456ef5c0045c8fed9fd815a6428"
+      "artifactId": "4000000001"
     }
   ],
   "coverage": {
