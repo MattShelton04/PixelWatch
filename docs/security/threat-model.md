@@ -5,9 +5,10 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-02 (main @ `b7e1cde` plus M1.5): `packages/schemas`, the pixel hash, the
+Status on 2026-10-02 (main @ `c2981ef` plus M1.6): `packages/schemas`, the pixel hash, the
 restricted PNG codec, the canonical blob pool, comparator-v1, bounded ZIP ingestion, the
-fixed-part merge, trusted config parsing, runs and the store run index are implemented. Most checks below are therefore **planned**. A planned check is never counted as
+fixed-part merge, trusted config parsing, runs and the store run index, and retention, GC and
+budget planning are implemented. Most checks below are therefore **planned**. A planned check is never counted as
 green. M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
 stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
@@ -165,7 +166,8 @@ Planned paths are provisional (§1).
 | R4.2-02 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A fork PR adding scripts, a `package.json` and a poisoned cache sees none of them executed by the report | M2.6 |
 | R4.2-03 | evidence | recorded | `docs/adr/0006-s4-reusable-workflow-self-checkout.md` | A foreign SHA-pinned caller, a nested call and an old pin after a newer release each ran their own bundle, not the caller's impostor; the guard failed on missing or non-SHA fields; recorded with run IDs | S4 |
 | R4.2-03 | live | planned | `tools/release/self-reference.test.ts` | A foreign SHA-pinned caller, a nested call, and an older release after a newer one each run their own bundle; missing job fields fail | M2.5 |
-| R4.2-04 | unit | planned | `packages/core/test/envelope.test.ts` | Every run records the config commit it was validated against; the claim-supplied config is ignored | M1.5 |
+| R4.2-04 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | The envelope's `configSha` is the default-branch commit the forge resolved; no artifact or claim field supplies it | M2.1 |
+| R4.2-04 | unit | planned | `packages/publisher/test/ingest-job.test.ts` | The ingest job validates config at that commit and records it in the run; a config file inside an artifact is ignored | M2.3 |
 | R4.2-04 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case D: the projector reads config at the default-branch head resolved after the lock, and the generation hash includes that commit | M2.3 |
 | R4.2-05 | unit | passing | `packages/schemas/test/schemas.test.ts` › "reports an unknown version before looking at anything else" | Every document kind reports `unsupported-version` before any other check | M0.3 |
 | R4.2-05 | unit | passing | `testdata/schemas/store/invalid/schema.data-version-2.json` | A store with `dataVersion` 2 is rejected | M0.3 |
@@ -187,7 +189,7 @@ Planned paths are provisional (§1).
 | R4.2-08 | evidence | recorded | `docs/evidence/m1.4-ingest-bench.md` | Peak RSS and time recorded for 4096 entries / 495.3 MiB expanded, full ingestion of 2000 units in process and in a PngWorker, tall images and ZIP bombs; measured peak 195 MiB within the 02 §5 512 MiB budget | M1.4 |
 | R4.3-01 | unit | passing | `testdata/schemas/config/invalid/schema.workflow-name-not-id.json` | Config identifies the source workflow by numeric ID, never by name | M0.3 |
 | R4.3-01 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | Wrong repository ID, wrong workflow ID, wrong attempt, disallowed event/ref, incomplete run or payload≠REST mismatch → refused before download | M2.1 |
-| R4.3-01 | unit | planned | `packages/core/test/envelope.test.ts` | The envelope is built only from corroborated fields; a `workflow_run` payload that disagrees with REST fails safely | M1.5 |
+| R4.3-01 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | The envelope is assembled only from REST-corroborated fields, never from the `workflow_run` payload or an artifact; a payload that disagrees with REST fails safely | M2.1 |
 | R4.3-01 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo: the `workflow_run` payload matched REST `runs/{id}` on ID, attempt, event, head SHA/branch, workflow ID, path and PR association in all 8 recordings | S11 |
 | R4.3-02 | unit | passing | `testdata/schemas/changes/invalid/schema.claims-trusted.json` | `changes@1` can never mark capture claims as trusted | M0.3 |
 | R4.3-02 | unit | passing | `packages/core/test/ingest.test.ts` › "rejects identity mismatches between name, bundle.json, attempt and config" | A part can't claim units of another provider: its bundle.json provider must match its artifact name | M1.4 |
@@ -235,17 +237,18 @@ Planned paths are provisional (§1).
 | R4.3-12 | unit | passing | `packages/core/test/merge.test.ts` › "marks a unit absent from one revision's catalogs as missing, never absent" | A unit one revision's complete catalogs omit is `missing/unit-missing`, never `removed` or `added` | M1.4 |
 | R4.3-12 | unit | passing | `packages/core/test/merge.test.ts` › "reports missing parts with unknown unit counts, never zero" | A missing part's catalog size is unknown, never zero; coverage is incomplete or unknown | M1.4 |
 | R4.3-12 | unit | passing | `packages/core/test/merge.test.ts` › "keeps the eight counts exhaustive and disjoint" | Property: every merged unit has exactly one of the eight results; counts sum to the declared units and coverage follows run@1's rule | M1.4 |
-| R4.4-01 | unit | planned | `packages/core/test/envelope.test.ts` | PR run: target = PR head, baseline = merge base with the event's base-branch commit | M1.5 |
+| R4.4-01 | unit | planned | `packages/forge-github/test/baseline.test.ts` | PR run: target = PR head, baseline = merge base with the event's base-branch commit | M2.1 |
 | R4.4-01 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo opened, synchronize (incl. a head that merged the base) and full rerun: merge base of the corroborated `base.sha` and the head equalled the capture's selected base | S11 |
 | R4.4-01 | evidence | evidence-planned | `docs/adr/` (fork identity) | Fork PR payloads confirm the base/head policy or surface a decision | M2.6 |
-| R4.4-02 | unit | planned | `packages/core/test/envelope.test.ts` | Default-branch push: target = pushed commit, baseline = first parent | M1.5 |
+| R4.4-02 | unit | planned | `packages/forge-github/test/baseline.test.ts` | Default-branch push: target = pushed commit, baseline = first parent | M2.1 |
 | R4.4-03 | unit | passing | `testdata/schemas/run/invalid/result-inconsistent.no-baseline-without-reason.json` | A base side of `none` must carry `no-baseline` | M0.3 |
 | R4.4-03 | golden | passing | `packages/core/test/comparator-goldens.test.ts` › "covers all eight results" | Tiny fixtures include `incomparable` from a missing baseline | M0.6 |
 | R4.4-03 | unit | passing | `packages/core/test/comparator.test.ts` › "compares a none base never: incomparable with no-baseline whatever the head" | A `none` base always carries `no-baseline`, is `incomparable` against a captured head, never has a diff, and refuses a pixel comparison | M1.3 |
 | R4.4-04 | unit | passing | `packages/core/test/envelope.test.ts` › "never substitutes latest main for a missing baseline commit: results are incomparable" | Without `commits.base` the ingestion expects no base part, every base side is `none` and a captured head is `incomparable` with `no-baseline`, even with a main run in the store; a comparison offered for such a unit and an ingestion whose baseline disagrees with the envelope are refused | M1.5 |
 | R4.4-04 | unit | passing | `testdata/schemas/run/invalid/baseline-inconsistent.compared-without-baseline-commit.json` | A stored run without a baseline commit can't hold a compared base side; with one, it can't hold a `none` base side (`baseline-inconsistent.none-base-with-baseline-commit.json`) | M1.5 |
 | R4.4-05 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs and `llms.txt` state that the PR controls the harness for both sides | M3.8 |
-| R4.4-06 | unit | planned | `packages/core/test/envelope.test.ts` | A historical PR with an uncorroborated base is stored unassociated with a diagnostic | M1.5 |
+| R4.4-06 | unit | planned | `packages/forge-github/test/pr-association.test.ts` | A historical PR whose base can't be corroborated gets association `none` with a diagnostic, never today's base branch | M2.1 |
+| R4.4-06 | unit | planned | `packages/publisher/test/ingest-job.test.ts` | The ingest job stores that run unassociated (no stream, no comment) with the diagnostic | M2.3 |
 | R4.4-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case C: a stale run enters history but never replaces the current head's comment | M2.3 |
 | R4.4-07 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo opened, synchronize and "re-run all jobs" recorded with redacted payloads and REST responses | S11 |
 | R4.4-07 | evidence | evidence-planned | `docs/adr/` (fork identity) | Fork PR, first-time-contributor approval and partial rerun recorded before M2 exits (fork deferred from M0.5 by the owner, 2026-09-30) | M2.6 |
@@ -263,6 +266,7 @@ Planned paths are provisional (§1).
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | `site.json` can't carry an app URL | M0.3 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-hash-in-versions.json` | `site.json` can't carry an app hash | M0.3 |
 | R4.5-05 | unit | planned | `packages/publisher/test/site-tree.test.ts` | A store containing `.html`, `.js`, `.svg` or unknown files produces a served tree without them; app bytes and hashes come from the release only | M2.3 |
+| R4.5-05 | unit | passing | `packages/core/test/housekeeping.test.ts` › "refuses store files outside the 03 §3 layout rather than serving or deleting them" | Housekeeping refuses a store tree holding a file outside the 03 §3 layout (`.html`, `.js`, `.svg`, a misfiled blob, a non-JSON file in a data namespace), and never deletes it. The planned site lists only generated paths, run records, pooled PNGs and grace JSON. The projector's own allowlist is M2.3. | M1.6 |
 | R4.5-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | **Deploy/comment race**, sub-case A: projectors A and B reordered at barriers; each reads the store after the lock; the final deployed generation's store tip contains both runs; no deployment uses an older tip than the one before it | M2.3 |
 | R4.5-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case B: a coalesced pending projector deploys and comments for earlier runs too | M2.3 |
 | R4.5-07 | simulation | planned | `packages/publisher/test/simulation/sim-cdn-stale-generation.sim.test.ts` | HTTP 200 with an older `generation`, a stale `latest.json`, a body whose digest differs from the built bytes, a cached 404, or an edge that regresses after a pass is not ready until 3 consecutive full passes; no comment is written until ready or timeout | M2.3 |

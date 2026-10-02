@@ -19,3 +19,36 @@ export type * from "./ingest/types.ts";
 export { type ZipArchive, type ZipEntry, openZip, readEntry } from "./ingest/zip.ts";
 export { baselineFor, buildRun, unitKeyString } from "./run/build.ts";
 export { MAX_STREAM_RUNS, addRun, deriveStreams, newStore, streamFor } from "./run/store.ts";
+export {
+  type Breakdown,
+  type BudgetInput,
+  type BudgetPlan,
+  type BudgetRefusal,
+  type GraceDrop,
+  type ProjectedSizes,
+  type PruneReason,
+  type PrunedRun,
+  type SiteCategory,
+  type SiteFile,
+  type SizeLimits,
+  planBudget,
+  sizeLimits,
+} from "./housekeeping/budget.ts";
+export { HousekeepingError, type HousekeepingErrorCode } from "./housekeeping/errors.ts";
+export { type GcKeep, type GcPlan, planGc } from "./housekeeping/gc.ts";
+export { changesPath, derivedPath, permalinkPath, prPointerPath, runRecordPath, streamPath } from "./housekeeping/paths.ts";
+export { type HousekeepingInput, type HousekeepingPlan, planHousekeeping } from "./housekeeping/plan.ts";
+export {
+  type ExpiredRun,
+  type ExpiryReason,
+  type PrState,
+  type PrStreamRetention,
+  type RetainedRun,
+  type RetentionInput,
+  type RetentionPlan,
+  type RetentionPolicy,
+  type RunClass,
+  retentionPolicy,
+  selectRetention,
+} from "./housekeeping/retention.ts";
+export { type GraceNamespace, type References, type StoreFile, type StoreGraph, type StoreTree, readStoreTree } from "./housekeeping/tree.ts";
