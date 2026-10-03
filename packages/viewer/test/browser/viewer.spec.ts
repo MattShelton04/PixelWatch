@@ -94,7 +94,7 @@ test("capture labels use text nodes with safe links and standard keyboard focus 
     for (const source of await sources.evaluateAll((nodes) => nodes.map((node) => ({ href: node.getAttribute("href"), rel: node.getAttribute("rel") })))) {
       if (source.href === null) throw new Error("source anchor missing destination"); const destination = new URL(source.href);
       expect(destination.origin).toBe("https://github.com"); expect(destination.search).toBe(""); expect(destination.hash).toBe("");
-      expect(destination.pathname).toMatch(/^\/owner\/repo\/(?:actions\/runs\/[1-9][0-9]*\/attempts\/[1-9][0-9]*|commit\/[a-f0-9]{40}|pull\/[1-9][0-9]*)$/);
+      expect(destination.pathname).toMatch(/^\/PixelWatchPreview\/example\/(?:actions\/runs\/[1-9][0-9]*\/attempts\/[1-9][0-9]*|commit\/[a-f0-9]{40}|pull\/[1-9][0-9]*)$/);
       expect(source.rel?.split(/\s+/)).toContain("noopener");
     }
   }
