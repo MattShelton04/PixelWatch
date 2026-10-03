@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { appScriptPath, classifyStorePath, generationId, parsePngStructure, permalinkPath, projectSite, PROJECTION_VERSION, runRecordPath, siteLocation, siteUrls, sizeLimits, type Breakdown, type SiteCategory } from "@pixelwatch/core";
 import { canonicalBytes } from "@pixelwatch/schemas";
-import { captureContext, captureTree, checkedOid, entryBytes, JSON_BYTES, projection, safely } from "./assembly-input.ts";
+import { captureContext, captureTree, checkedOid, copyBytes, entryBytes, JSON_BYTES, projection, safely } from "./assembly-input.ts";
 import { guarded, refuse, type AssemblyInput, type AssembledFile, type AssembledSite } from "./types.ts";
 
 const sha256 = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
@@ -18,8 +18,9 @@ export function assembleSite(input: AssemblyInput): Promise<AssembledSite> {
   return guarded(async () => {
     const context = safely(() => captureContext(input));
     const tip = input.snapshot.tip; if (tip === null) refuse("store-absent"); const storeTip = checkedOid(tip);
-    const { tree, graph } = safely(() => captureTree(input.snapshot, context.repository.repositoryId));
     const source = input.snapshot;
+    // StoreSnapshot has no derived-reference authority; every derived file is a root.
+    const { tree, graph } = safely(() => captureTree({store:source.store,runs:source.runs,files:source.files}, context.repository.repositoryId));
     if (typeof source.readFile !== "function") refuse("store-reader-invalid");
     // The validated adapter's own bounded function is captured once, never reread after await.
     const readFile = source.readFile.bind(source);
@@ -56,8 +57,7 @@ export function assembleSite(input: AssemblyInput): Promise<AssembledSite> {
     for (const file of copied) {
       let returned: Uint8Array;
       try { returned = await readFile(file.path); } catch { return refuse("store-read-failed"); }
-      if (!(returned instanceof Uint8Array) || returned.byteLength !== file.size) refuse("stored-file-changed");
-      const bytes = Uint8Array.from(returned);
+      const bytes = copyBytes(returned,file.size,file.size);
       const kind = classifyStorePath(file.path);
       if (kind?.kind === "run") {
         const run = tree.runs.get(kind.runKey); if (run === undefined || !equal(bytes, canonicalBytes(run))) refuse("stored-run-changed");

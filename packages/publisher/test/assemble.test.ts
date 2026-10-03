@@ -190,4 +190,34 @@ describe("complete final site assembly", () => {
     const site = await assembleSite({...w.input,snapshot}); expect(site.files.some((file)=>file.path === "index.html")).toBe(true); expect(site.files.some((file)=>file.path.startsWith("runs/"))).toBe(false); expect(w.reads).toEqual([]);
     await refusal({...w.input,snapshot:{...snapshot,tip:null,files:[]}});
   });
+  it("copies native typed-array bytes without invoking caller iterators or understating assembled budgets", async () => {
+    const w = fixture(); const canonical = Uint8Array.from(w.png);
+    const larger = encodePng({ width:4,height:4,channels:3,data:Uint8Array.from({length:48},(_,index)=>(index*37)%256) });
+    expect(larger.byteLength).toBeGreaterThan(canonical.byteLength);
+    let iterators = 0; let getters = 0;
+    Object.defineProperty(canonical,Symbol.iterator,{value:function*(){iterators++;yield* larger;}});w.files.set(w.blob,canonical);
+    const site = await assembleSite(w.input);
+    expect(iterators).toBe(0);expect(Buffer.from(required(site.files.find(file=>file.path===w.blob)).bytes)).toEqual(Buffer.from(w.png));
+    expect(site.totalBytes).toBe(site.files.reduce((sum,file)=>sum+file.bytes.byteLength,0));
+    const assets = { ...w.input.assets, script:Uint8Array.from(script) };
+    Object.defineProperty(assets.script,Symbol.iterator,{value:()=>{iterators++;throw new Error(CANARY);}});
+    Object.defineProperty(assets.script,"byteLength",{get:()=>{getters++;throw new Error(CANARY);}});
+    const native = await assembleSite({...fixture().input,assets});
+    expect(iterators).toBe(0);expect(getters).toBe(0);expect(Buffer.from(required(native.files.find(file=>file.path===appScriptPath(assets.release))).bytes)).toEqual(Buffer.from(script));
+    const returned = fixture(); const pixels = Uint8Array.from(returned.png);Object.defineProperty(pixels,"byteLength",{get:()=>{getters++;throw new Error(CANARY);}});returned.files.set(returned.blob,pixels);
+    expect((await assembleSite(returned.input)).totalBytes).toBe(native.totalBytes);expect(getters).toBe(0);
+  });
+  it("assembly treats snapshot derived references as unknown and retains every valid derived root", async () => {
+    const w = fixture(); const derived=`derived/${hash(w.png).slice(0,2)}/${hash(w.png)}.png`;w.files.set(derived,w.png);refresh(w);
+    Object.assign(w.input.snapshot,{derived:new Map([[w.run.runKey,[]]])});
+    const site=await assembleSite(w.input);expect(Buffer.from(required(site.files.find(file=>file.path===derived)).bytes)).toEqual(Buffer.from(w.png));expect(site.breakdown.derived).toBe(w.png.byteLength);
+    Object.defineProperty(w.input.snapshot,"derived",{get:()=>{throw new Error(CANARY);}});
+    expect(await assembleSite(w.input)).toEqual(site);
+  });
+  it("copies native trusted script bytes without invoking caller iterators or getters", async () => {
+    const w=fixture();let touched=0;const assets={...w.input.assets,script:Uint8Array.from(script)};
+    Object.defineProperty(assets.script,Symbol.iterator,{value:()=>{touched++;throw new Error(CANARY);}});
+    Object.defineProperty(assets.script,"byteLength",{get:()=>{touched++;throw new Error(CANARY);}});
+    const site=await assembleSite({...w.input,assets});expect(touched).toBe(0);expect(Buffer.from(required(site.files.find(file=>file.path===appScriptPath(assets.release))).bytes)).toEqual(Buffer.from(script));
+  });
 });

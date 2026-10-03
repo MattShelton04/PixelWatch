@@ -6,6 +6,31 @@ import { PublisherError, refuse, type PublisherContext } from "./types.ts";
 
 export const JSON_BYTES = 1024 * 1024;
 const OID = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
+const NativeUint8Array = Uint8Array;
+const typedArrayPrototype = Object.getPrototypeOf(NativeUint8Array.prototype) as object;
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply binds this intrinsic getter to the supplied native view.
+const nativeLength = Object.getOwnPropertyDescriptor(typedArrayPrototype,"byteLength")?.get;
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply binds this intrinsic getter to the supplied native view.
+const nativeTag = Object.getOwnPropertyDescriptor(typedArrayPrototype,Symbol.toStringTag)?.get;
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply always binds the private native destination.
+const nativeSet = NativeUint8Array.prototype.set;
+/** Copy internal native bytes, never iterable/species/property claims from a supplied view. */
+export function copyBytes(supplied: Uint8Array, maxBytes: number, expectedBytes?: number): Uint8Array {
+  return safely(() => {
+    if (nativeLength === undefined || nativeTag === undefined || !Number.isSafeInteger(maxBytes) || maxBytes < 0
+      || (expectedBytes !== undefined && (!Number.isSafeInteger(expectedBytes) || expectedBytes < 0))) refuse("byte-array-invalid");
+    const tag: unknown = Reflect.apply(nativeTag,supplied,[]);
+    const length: unknown = Reflect.apply(nativeLength,supplied,[]);
+    if (tag !== "Uint8Array" || typeof length !== "number" || !Number.isSafeInteger(length) || length < 0) refuse("byte-array-invalid");
+    if (length > maxBytes) refuse("byte-array-limit");
+    if (expectedBytes !== undefined && length !== expectedBytes) refuse("stored-file-changed");
+    const copied = new NativeUint8Array(length);
+    Reflect.apply(nativeSet,copied,[supplied]);
+    const copiedLength: unknown = Reflect.apply(nativeLength,copied,[]);
+    if (copiedLength !== length || (expectedBytes !== undefined && copiedLength !== expectedBytes)) refuse("stored-file-changed");
+    return copied;
+  });
+}
 export function checkedOid(value: string): string {
   if (typeof value !== "string" || !OID.test(value)) refuse("invalid-commit");
   return value;
@@ -32,9 +57,8 @@ export function captureContext(input: PublisherContext): PublisherContext {
     || !/^[A-Za-z0-9_.-]{1,100}$/.test(repository.name) || repository.name === "." || repository.name === "..") refuse("repository-invalid");
   appScriptPath(release); siteUrls(siteLocation(config, pages));
   const limits = sizeLimits(config); const supplied = input.assets.script;
-  if (!(supplied instanceof Uint8Array) || supplied.byteLength === 0) refuse("app-invalid");
-  if (supplied.byteLength > limits.hardBytes) refuse("site-budget-refused");
-  const script = Uint8Array.from(supplied);
+  const script = copyBytes(supplied,limits.hardBytes);
+  if (script.byteLength === 0) refuse("app-invalid");
   return { config, configCommit, pages, repository, assets: { release, releaseCommit, script } };
 }
 export interface CapturedTree extends StoreTree { readonly store: Store; readonly runs: ReadonlyMap<string, Run> }
