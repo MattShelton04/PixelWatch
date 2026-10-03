@@ -55,6 +55,15 @@ importers:
         specifier: 16.0.0
         version: 16.0.0
 
+  packages/store:
+    dependencies:
+      '@pixelwatch/core':
+        specifier: workspace:*
+        version: link:../core
+      '@pixelwatch/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+
 packages:
 
   '@apidevtools/json-schema-ref-parser@11.9.3':

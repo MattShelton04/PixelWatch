@@ -6,6 +6,39 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Final store/runner source `7b0743d`: Windows full check exit0, 785 tests / 37 files,
+  workflow linters pass (201.57 s). Full no-network reporter exit2: nine harness PASS,
+  two product cases PASS across all four seeds twice, twelve NOT RUN. Exact trace hashes
+  match independent recordings. P1 manifest ownership and P2 returned-DTO getter defects
+  have strict red/green regressions; final independent fix verification/hosted gates pending.
+- Root publisher dependency branch `.tools/worktrees/m2-publisher` at `373e8d0` combines
+  source main `44420ca`, reviewed store `7b0743d` and local viewer `a56e398`; root retained
+  both evidence/progress records and regenerated only the pinned lockfile offline. This is
+  preparation for M2.3, not a working publisher or M2 exit.
+
+- Latest verified main `44420ca45d2c4854d447369cf36f75b62d0afac2`: PRs #16, #17 and #18
+  merged with owner authorization and every required hosted check green. PR #18 exact head
+  `38a17f2` hosted Linux/Windows each passed 731/31; full simulation each exited 2 with
+  nine harness checks and fourteen NOT RUN. No settings or required checks changed.
+- Store and two real driver slices independently approved: author `b9fad30` + `1ad15a` +
+  `e47c501`, root `6972da4` + `1186b69` + `caef46e`, dependency main `44420ca`.
+  Independent eight driver tests ran both cases for all four seeds twice with exact equality;
+  five harmful mutants refused; credential/time/randomness traps and raw secret scans passed.
+  Root async runner four tests first failed, then passed; real full run/integrated review pending.
+  Root `6e41c8f` full check passed 782/37 and full simulation passed two product cases with
+  twelve NOT RUN/exit2. Independent integration review found a P1 mutation could erase cases,
+  seeds or original verifiers after validation; two regressions red then six runner tests green
+  with private snapshots. Final fix SHA review/check/full run remain required before merge.
+- Viewer source `8445320`, cancellation fix `347d6b` independently verified with fourteen
+  unit tests. Original real browser run 21/24 exposed fixture assertion and WebKit focus issues;
+  root `aba8d91` gives generated anchors explicit tab stops and authenticates preview Host.
+  Root `bb0e05a` fixes real nested entry advertisements and browser report paths. Final author
+  three-engine run pending; independent hostile browser probes passed 18/18. No M2.7 exit claim.
+- Actual specialists: viewer author, independent browser reviewer (former store author),
+  independent tooling/security reviewer, plus root integration/runner. Four total slots.
+
+The following entries are earlier checkpoints, superseded by the facts above.
+
 - Owner explicitly authorized merging completed reviewed slices as the program proceeds.
   Existing squash-only policy and required checks are preserved; no settings were changed.
 - PR #16 merged `64b8c36c751da3902f79521f50bfe4f2b05c5648`; PR #17 merged
