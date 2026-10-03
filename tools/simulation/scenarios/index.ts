@@ -1,0 +1,12 @@
+import ingest from "./sim-ingest-cas-race.sim.test.ts";
+import push from "./sim-push-outcome-unknown.sim.test.ts";
+import lease from "./sim-lease-exhausted.sim.test.ts";
+import deployRace from "./sim-deploy-comment-race.sim.test.ts";
+import comment from "./sim-comment-unknown-outcome.sim.test.ts";
+import deployFails from "./sim-deploy-fails.sim.test.ts";
+import cdn from "./sim-cdn-stale-generation.sim.test.ts";
+import viewer from "./sim-viewer-stale-assets.sim.test.ts";
+import migration from "./sim-migration-vs-writer.sim.test.ts";
+import github from "./sim-github-faults.sim.test.ts";
+import unknown from "./sim-unknown-version.sim.test.ts";
+export const scenarios = [ingest, push, lease, deployRace, comment, deployFails, cdn, viewer, migration, github, unknown];

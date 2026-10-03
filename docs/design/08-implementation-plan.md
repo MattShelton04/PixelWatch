@@ -83,7 +83,7 @@ logic imagined from file names.
 
 | ID | Task | Done when |
 |---|---|---|
-| M2.4 | **First:** local simulation harness (07 §4): fake GitHub, bare Git remote, fake CDN, barriers | All 07 §4 scenarios run deterministically on every PR, and the failure injection reaches the racy interleavings |
+| M2.4 | **First:** local simulation harness (07 §4): typed fake GitHub, isolated bare Git remote, fake CDN, injected clock, seeded barriers/faults, runner and CI (ADR 0015) | Harness self-tests run on every PR and prove repeatable scheduling, named injection reachability, real lease conflicts and secret containment. Every 07 §4 case has a written adapter-backed specification and an explicit coverage result. Missing product adapters are NOT RUN and exit 2; no complete product scenario is claimed before its owning task lands. |
 | M2.1 | `forge-github`: source run/attempt verification, PR association, paginated artifacts, manual-redirect download, bot-owned comments, Pages metadata | Fake-API tests: empty/multiple PR associations, merge vs head SHA, stale head, wrong repo/workflow/attempt, pagination, cross-origin 302 auth stripping, expiry, rate limits, unknown outcomes; ambiguous cases never guess |
 | M2.2 | `store`: marked git-branch adapter (03 §6) + local-dir | Four-writer barrier test keeps every run; stale lease fails; bounded recompute-retry; accepted-push/client-timeout dedupes; default/unmarked/foreign branch refused |
 | M2.3 | Orchestration: ingest job (CAS) → serialized project/deploy/readiness/comment job (03 §7, 05 §2) | Simulation shows no dropped ingestion, no stale generation, no comment rollback; coalesced projector repairs earlier PRs; summary reports stored/deployed/served/commented separately with a repair command |
@@ -92,6 +92,12 @@ logic imagined from file names.
 | M2.7 | **Minimal final viewer** (04 §6 M2 list) | A real Pages run page loads in all three engines with matching CSP/SRI, no store code, safe fallbacks; URL is `runs/<runKey>/`; PNG preview renders through Camo (S1) or the text link works |
 
 No interim gallery. M2 doesn't exit without the live fork test (S11 complete).
+
+**Simulation scope correction (owner approved 2026-10-03, ADR 0015):** M2.4 builds the
+infrastructure first; it does not implement M2.1–M2.3 under test-only substitutes. Full product
+cases become executable in their owning tasks (07 §4), including viewer work in M2.7/M3.1 and
+migration work in M3.4. Every PR runs the full coverage reporter. Its CI job stays non-green
+while any listed case is NOT RUN, even when `pnpm check`'s separate harness tests pass.
 
 ## 6. M3 · Viewer, compatibility, imports, release
 

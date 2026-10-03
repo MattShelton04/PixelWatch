@@ -84,7 +84,7 @@ describe("test:live gate (07 §5)", () => {
 });
 
 describe("suites that don't exist yet", () => {
-  it.each(["simulation", "viewer"])("test:%s fails instead of passing vacuously", (suite) => {
+  it.each(["viewer"])("test:%s fails instead of passing vacuously", (suite) => {
     const result = runScript("not-yet.ts", [suite], childEnv({}));
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("Nothing ran");

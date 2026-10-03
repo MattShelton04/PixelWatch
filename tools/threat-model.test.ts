@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { repoRoot } from "./lib/lint-tools.ts";
+import { scenarios } from "./simulation/scenarios/index.ts";
 
 const doc = readFileSync(path.join(repoRoot, "docs", "security", "threat-model.md"), "utf8");
 
@@ -96,5 +97,21 @@ describe("threat model traceability (07 §6)", () => {
     expect(cas.flatMap((c) => c.rules)).toContain("R4.5-03");
     expect(deploy.flatMap((c) => c.rules)).toEqual(expect.arrayContaining(["R4.5-06", "R4.6-09"]));
     expect(cas.some((c) => deploy.some((d) => d.where === c.where))).toBe(false);
+  });
+
+  it("keeps every simulation row at a registered stable-ID path and requires real titles for harness evidence", () => {
+    for (const c of checks.filter((c) => c.layer === "simulation")) {
+      const [, file = "", title] = WHERE.exec(c.where) ?? [];
+      if (file.endsWith(".sim.test.ts")) {
+        const id = path.basename(file, ".sim.test.ts");
+        expect(scenarios.map((s) => s.id)).toContain(id);
+        expect(file).toBe(`tools/simulation/scenarios/${id}.sim.test.ts`);
+        expect(c.status).toBe("planned"); // Product adapters are absent in M2.4.
+      } else {
+        expect(c.status).toBe("passing");
+        expect(title).toBeDefined();
+        expect(readFileSync(path.join(repoRoot, file), "utf8")).toContain(`it("${title ?? ""}"`);
+      }
+    }
   });
 });

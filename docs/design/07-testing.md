@@ -59,6 +59,20 @@ An in-process typed fake GitHub API (shapes hand-written from the official docs,
 by redacted real recordings), a local bare Git remote, a controllable static/CDN server, an
 injected clock and deterministic barriers.
 
+**M2.4 infrastructure first (ADR 0015, owner approved 2026-10-03).** The harness lives in
+`tools/simulation/`; scenario specifications live in `tools/simulation/scenarios/`. No empty
+publisher package is created. Harness checks and the transport/lease probes run now, in both
+`pnpm check` and `pnpm test:simulation`. They are evidence about the harness, never substitutes
+for absent store, forge, publisher, viewer or migration implementations.
+
+Each table case has a written stimulus, required adapters, barrier/fault plan and executable
+assertions in its stable-ID file. Product cases are NOT RUN until the owning milestone supplies
+the real adapter. `test:simulation` prints every unavailable case and its prerequisites; it
+exits 2 for incomplete coverage, 1 for a failed check (which wins over 2), and may exit 0 only
+after every listed product case genuinely runs and passes. The M2.4 runner deliberately has no
+success path while all product adapters are missing. No skip/todo or `continue-on-error` masks
+that state. A separate Linux/Windows CI job reports it as non-green on every PR.
+
 Each scenario has a stable ID. It's the test file name (`<id>.sim.test.ts`) and the name used in
 `docs/security/threat-model.md`. The two races are **separate** scenarios: concurrent ingestors on
 the store tip (`sim-ingest-cas-race`) and projectors vs deploy/comment ordering
@@ -83,6 +97,18 @@ the store tip (`sim-ingest-cas-race`) and projectors vs deploy/comment ordering
 
 Simulate several CDN TTLs (600 s is one case). Aim for ≤ 4 minutes, but never drop scenarios to
 meet that.
+
+M2.4 probes use TTLs 0, 60, 600 and 900 s, advanced only by the injected clock, and seeds
+1, 42, 1592594996 and 4294967295. Scheduler deadlocks and step exhaustion are deterministic
+failures; failures include the seed. No real sleeps, wall-clock deadlines or ambient randomness
+are part of simulation logic. Simulation self-tests disable Vitest's inherited deadline;
+existing CI process watchdogs are not simulation clocks.
+
+Product prerequisites: store races need M2.2; full lease exhaustion/repair needs M2.2/M2.3;
+deployment/readiness/comment cases need M2.3 (and M2.1/M2.2 where used); full GitHub faults and
+unknown-version write refusals need M2.1–M2.3. Stale viewer assets need M2.7/M3.1; migration vs
+writer needs M2.2/M3.4. The deploy/comment race and CAS race stay separate files. Harness-only
+GitHub faults and lease exhaustion are explicitly partial probes under their stable IDs.
 
 ## 5. Live GitHub e2e (fixed repos)
 

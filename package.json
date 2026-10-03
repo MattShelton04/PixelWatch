@@ -18,7 +18,7 @@
     "tools:install": "node tools/install-lint-tools.ts",
     "schemas:types": "node packages/schemas/scripts/generate-types.ts",
     "dev:compare": "node tools/pixelwatch-dev.ts compare",
-    "test:simulation": "node tools/not-yet.ts simulation",
+    "test:simulation": "node tools/simulation/runner.ts",
     "test:viewer": "node tools/not-yet.ts viewer",
     "test:live": "node tools/live.ts"
   },

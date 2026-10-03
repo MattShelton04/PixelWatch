@@ -18,6 +18,7 @@ signed URLs, emails or real screenshots.
 | [m1.4-ingest-bench.md](m1.4-ingest-bench.md) | M1.4 ZIP / ingestion peak RSS and time (R4.2-08) | pass: peak 195 MiB; 4096 entries / 495.3 MiB expanded admitted; bombs refused | [0008](../adr/0008-ingress-zip-and-merge.md) |
 | [m1.4-reference-ingest.md](m1.4-reference-ingest.md) | M1.4 real prototype ingestion and original GitHub ZIPs | pass: 42/42 and 105/105 coverage; order-independent; 16 original ZIPs accepted by structure / CRC checks | [0008](../adr/0008-ingress-zip-and-merge.md) |
 | [m1.8-dev-compare.md](m1.8-dev-compare.md) | M1.8 full-size parity through `pixelwatch-dev compare` | pass: 207/207 compared views match the goldens; exit 0, 1, 1 | [0014](../adr/0014-dev-compare.md) |
+| [m2.4-simulation-harness.md](m2.4-simulation-harness.md) | M2.4 local infrastructure and full coverage report | harness evidence passes; 14 product cases NOT RUN, exit 2 | [0015](../adr/0015-simulation-harness.md) |
 
 `recordings/` holds machine-readable data behind these records: `s2/timings.json` and the redacted
 S11 payloads and REST responses, one directory per run and attempt (`capture-<run>-a<n>`,
