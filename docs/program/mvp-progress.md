@@ -6,6 +6,50 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Exact publisher source `c319ded5bf8bd99315b286376cca142a2cbf04f4` passed unfiltered
+  `pnpm -s check`:930 tests/48 files, exit0,320.42s, including lint/typecheck/workflow lint.
+  Complete `pnpm -s test:viewer` passed24/24, exit0,34.8s, eight cases in each engine.
+  Independent admission approval at d1b685a covers56/56,206.20s, original3 probes and
+  fifteen additional hostile variants. Independent metadata approval at1678d59 covers28/3
+  existing tests and28 reached production forge/core probes;102 raw values scan clean,
+  deadlines/disposals10/10, delays2 and zero ambient timing/random calls. These reviews
+  exclude each reviewer's own implementation. Full `pnpm -s test:simulation` exited2:
+  nine harness PASS, two production PASS, twelve NOT RUN; all17 normalized trace hashes
+  match the previous integrated proof. Final documentation traceability passed7/7, exit0,
+  2.82s. Hosted exact-head Linux/Windows acceptance remains a gate before this PR merges.
+- Readiness contract/types are frozen on dependency branch0179b2e (ADR0024); its isolated
+  implementation author is writing tests first. Source ingestion, admission cancellation,
+  serialized deploy/comment reconciliation and M2 live exit remain unimplemented. The owner
+  approved bounding source work by ten minutes, checking cancellation before every new CAS,
+  and truthful recovery of already-sent pushes. That approval is not implementation evidence.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Publisher foundation source `c319ded` combines reviewed assembly/diagnostics at67, admission
+  correction author`d1b685a` (pick0916123), and root metadata seam author1678d59 (pickc319ded).
+  Current verified main remainsf60311c; no PR is open yet. Independent admission original3
+  and extra15 probes pass; independent unfiltered56 suite is active. Metadata independent
+  review is active. Neither active review is recorded as approval.
+- Stable67 `pnpm check` passed908/47, exit0,229.47s, including workflow lint; viewer24/24
+  passed26.5s in all3engines using the existing pinned browser installation. Initial concurrent
+  fullcheck failedPNG5s rejection andGit30s timeout/cleanup (906pass/2fail); unchanged fullcheck
+  alone passed without changing assertions/limits. Initial browser setup had no installed
+  engines and ran0cases; its failed report is retained separately from actual24passing.
+- Independent assembly/sharedguard final approval at67: all4originalCAP probes and11
+  additional variants passed; unfiltered35/3 passed12.09s. Forge55/4 passed2.49s plus31
+  hostile observations/56rawerrors, zero diagnostic getters; original callback leaks closed.
+  Store fixed diagnostics independently closed with4native/Proxy probes/all73codes. These
+  approvals exclude their respective implementation authors' own files.
+- Admission self-check exposed caller-map/bind/count/checkpoint captures. RootactualLocalDir
+  original3 failed; independent original3 plus15variants reproduced the same class of defect.
+  Author14newtests first12failed/2passed with42filtered; fullfinal56 passed209.28s and
+  lint/types0, all9rawlogs clean. Exact final independent/fullcombined/hosted gates remain.
+- Full reporter at67 exited2:9harnessPASS/2productPASS/12NOTRUN. All16product hashes plus
+  one harness hash match merged-viewer proof. Metadata8tests first6failed/2passed, final
+  metadata/ingestion/merge28/3 passed2.76s with raw leakage assertions and lint/types0.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Current verified main is `f60311c` (PR #20 merged; viewer/platform evidence below).
   Publisher branch rebased as `c4098ce` with publisher/store source byte-identical to the
   preserved pre-rebase branch. All three conflicts were progress prose; both histories remain.
