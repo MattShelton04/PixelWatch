@@ -15,9 +15,9 @@ const REPOSITORY = "987654321"; const ORIGINAL_TIME = "2000-01-01T00:00:00Z";
 // injected scheduling/timing and each native Git subprocess has its own bounded watchdog.
 const scratches: Scratch[] = []; const clients: GitBranchStore[] = []; const raw: string[] = [];
 const deadlines: string[][] = [];
-afterEach(() => {
+afterEach(async () => {
   try {assertNoSecrets(raw.splice(0)); for (const events of deadlines.splice(0)) {expect(events.filter((event) => event === "deadline").length).toBeGreaterThan(0); expect(events.filter((event) => event === "deadline").length).toBe(events.filter((event) => event === "disposed").length);}}
-  finally {for (const client of clients.splice(0)) client.close(); for (const scratch of scratches.splice(0)) scratch.close();}
+  finally {for (const client of clients.splice(0)) await client.close(); for (const scratch of scratches.splice(0)) scratch.close();}
 });
 function context(): PublisherContext {
   return {config: {schemaVersion: 1, source: {workflowIds: ["123456"], events: ["push", "pull_request"]}, providers: [{id: "fixture", shards: 1}], retention: {mainRuns: 2, runsPerPr: 1, prStreams: 1}},

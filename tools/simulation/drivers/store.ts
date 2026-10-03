@@ -102,7 +102,7 @@ async function race(seed: number): Promise<{ evidence: Evidence; normalized: str
     raw.error(error);
     // eslint-disable-next-line preserve-caught-error -- raw diagnostics are checked/captured; the public boundary has only a fixed case and seed.
     throw new Error(`store-simulation-failed seed=${String(seed)} case=sim-ingest-cas-race/four-writers`);
-  } finally { for (const windows of gates.values()) { windows.resume.release(); windows.push.release(); windows.drain.release(); } await Promise.allSettled(tasks.values()); for (const adapter of adapters) adapter.close(); remote.close(); }
+  } finally { for (const windows of gates.values()) { windows.resume.release(); windows.push.release(); windows.drain.release(); } await Promise.allSettled(tasks.values()); for (const adapter of adapters) await adapter.close(); remote.close(); }
 }
 async function lostReply(seed: number): Promise<{ evidence: Evidence; normalized: string }> {
   const schedule = new Scheduler(seed); schedule.add("a", function* () { yield checkpoint("fetch"); yield checkpoint("push-accepted"); yield checkpoint("recover"); }); schedule.run();
@@ -136,7 +136,7 @@ async function lostReply(seed: number): Promise<{ evidence: Evidence; normalized
     raw.error(error);
     // eslint-disable-next-line preserve-caught-error -- raw diagnostics are checked/captured; the public boundary has only a fixed case and seed.
     throw new Error(`store-simulation-failed seed=${String(seed)} case=sim-push-outcome-unknown/accepted-push`);
-  } finally { for (const adapter of adapters) adapter.close(); remote.close(); }
+  } finally { for (const adapter of adapters) await adapter.close(); remote.close(); }
 }
 export async function runStoreCase(caseKey: StoreCaseKey, seed: number): Promise<{ evidence: Evidence; normalized: string }> {
   try {

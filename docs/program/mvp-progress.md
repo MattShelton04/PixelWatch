@@ -4,7 +4,150 @@ This is the durable orchestration record for M0–M3. Scope and acceptance remai
 `docs/design/08-implementation-plan.md`; security remains normative in 01 §4.
 Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitted.
 
-## Current checkpoint — 2026-10-03
+## Active continuation — 2026-10-03 to 2026-10-04
+
+- Owner resumed the full M0–M3 program and explicitly requested goal tracking. The full MVP
+  goal is active; M2 exit, M3, actual seven-day canaries and release approval remain gates.
+- Preserved integration HEAD `8707bf7` and functional base `83330d2` verified. Main `1fe4821`
+  is an ancestor. Original checkout remains the older branch with uncommitted HANDOVER.md.
+- Priority0 investigation found a concrete lifetime gap: synchronous GitBranchStore.close
+  could delete scratch while an asynchronous pack read still owns its FD and child process.
+  Tests-first correction and independent review are approved. The historical two test
+  timeout causes remain unverified; file scheduling uses separate unit and serial
+  native phases without changing 30000ms deadlines, process budgets or race actors/assertions.
+- Authors and independent reviewers work in disjoint scopes. Native-heavy commands are
+  coordinated serially. Complete current local foundation acceptance is recorded below;
+  projection/metadata/action/live and complete product simulation remain gates.
+- Continuation crosses into2026-10-04. Independent exact051 GitHub review is APPROVED:
+  complete5/5 exit0/45.79s, unchanged compiler/whole-case zero-token-read probes, child
+  no-network closure and original four hashes. Root copies exact source and awaits terminal
+  store close; static registry review preserves all14 cases/all11IDs. Integrated execution
+  executes3PASS/11NOTRUN/exit2 with25verified hashes; this is incomplete product coverage.
+- Native correction actual37/37 across lifecycle17/original15/transport5 passes exit0/59.38s.
+  Independent NL-REV-1 found a throwing native listener-removal hook could strand read/close;
+  tests-first correction passes unchanged reproducer and broadened acquisition/abort probes.
+  Independent final native replay37/37 and full integrated check1197/58 pass. Serial original15
+  measurement passes49.82s; prior timed-out cases now3274ms/3749ms without changed30000ms
+  limits. These observations do not prove the historical timeout cause.
+- Build author d7c2220 is clean: fixed fixture reaches strictred8/8fail, then final complete
+  8/8 passes8.48s with actual separate worker/classic viewer and identical two-root inventories.
+  Tooling host is explicitly a fixture; independent build review and actual host remain gates.
+- Public metadata author now works at exact83330d2 in m2-public-metadata. Root nine frozen
+  tests reach strictred9/9fail,1file,exit1/357ms before implementation; no unhandled errors.
+  This adapter is not integrated or accepted. Projection resumes separately after cleanup DTOs.
+- Initial continuation completecheck exits0 with2060tests/102files/684.36s and workflowlint0,
+  but runtime discovery exposes45duplicated unit files/872cases from parent include array
+  concatenation. Configuration approval is superseded for that defect. Corrected source now
+  independently lists57unique=45unit/12native with no missing/duplicate/misclassified paths;
+  discovery excludes omissions/duplicates. Exact independently approved build84 adds one native
+  file: actual root inventory58unique=45unit/13native, exit0/1.57s. Complete corrected check
+  exits0 at a8d9a72 plus reviewed source changes:1197/58,630.46s, lint/types/workflowlint0.
+  Log root-corrected-native-github-build-check-20261004.log. No assertion or timeout changed.
+- Shared environment accounting omitted by the original DTO is restored at a8d9a72:
+  PreparedProjection.environment plus separate ProjectionResult.environmentId, required by
+  the existing ADR0029/freeze. Types0 and independent alignment/security review approved;
+  no new permissions or bootstrap assertion. Projection dependencies merge as e5c476a.
+- Projection expanded19-case strictred actually executes18fail/1pass/exit1/2.26s before
+  implementation; original12 titles/assertions retained and hostile cleanup/state cases added.
+- Independent BUILD-PATH-1 finds ancestor-junction cleanup escapes the original source root.
+  Author tests-first full-chain identity/realpath correction passes the unchanged independent
+  probe and complete9/9 suite8.65s. Independent root complete9/9 passes8.54s; actual compiler
+  guard blocks four network APIs, reads zero fake-token keys and emits identical artifact
+  hashes. Scoped tooling84fde65 independent security/correctness/concurrency review APPROVED;
+  exact four-file integrated static review also approved. Actual production host remains absent.
+- Native final independent37/37 passes60.36s, original failure cases3578ms/3724ms and barrier
+ 17475ms; no EBUSY. Exact lifecycle/caller/config/ADR0030 scoped approval is complete.
+- Projection author c61dcf9 freezes four files after actual complete20/20 exit0/4.91s,
+  lint/types0. Undefined rejection self-finding added a twentieth strict-red regression before
+  correction (1fail/19NOTRUN,2.03s). Independent adversarial review is active; no integration.
+- Public metadata original13 actual cases passed; corrective final17 now independently pass
+  complete Vitest17/17/959ms, lint/types0. Independent cancellation and contradictory
+  next/future-last pagination blockers close with unchanged probes. PM-REV-3 own-then half is
+  corrected; poisoned nonconfigurable Promise constructor remains an open trusted-port boundary
+  question to the owner. Its unchanged failing probe remains retained. No suppression or scoped
+  acceptance is inferred. Metadata source is frozen/unintegrated in its three assigned files.
+- Root actual unfiltered simulation exits2 with9harness PASS/3product PASS/11NOTRUN, all14cases/
+  11stable IDs retained. All25hashes match exact prior17 plus reviewedGH8. Browser24/24all3
+  exits0/25.5s using cached pinned binaries. Physical logs7137/4571/3997bytes scan0leaks before
+  reporting. Exact-head hosted/integrated final review remain gates before PR23/merge.
+- Root isolated m2-action-host at a8d9a72 is created with offline frozen cached154package
+  install0downloads. Five actual action invocation/filesystem tests plus refusing skeleton
+  exist before implementation; actual5 strictred5fail/331ms, then caller-report identity sixth
+  strictred6fail/359ms. No host implementation or acceptance claimed.
+- Final documentation traceability initially fails2/7 because new simulation passing rows used
+  the driver path without the required registered scenario title. References are corrected to
+  the existing stable scenario path/title; assertions unchanged, complete7/7 then passes.
+- Benchmark summaries are reconciled by Git history to the existing post-ADR0010 records:
+  PNG202MiB; ingestion177MiB/495.0MiB. Earlier209MiB/195MiB/495.3MiB provenance remains in
+  m1-benchmark-summary-reconciliation.md. No benchmark was rerun or measurement invented.
+
+## Previous session checkpoint — 2026-10-03
+
+- SESSION WRAP requested by owner. Agents stopped and preserved clean WIP branches; root
+  creates uncommitted HANDOVER.md and ignored paste-ready.tools/NEXT_SESSION_PROMPT.md.
+  No additional PR/tag/release/live setup or external mutation is made during wrap-up.
+- Final root `pnpm -s check` at83330d2 EXIT1:1164pass/2fail,55files (54pass/1fail),531.35s.
+  Git-branch tests "five lease conflicts exhaust bounded retries without mutating the existing
+  store" (line105) and "validates expired indexed records and missing blob references before
+  returning a snapshot" (line112) exceed unchanged30000ms. Teardown also reports EBUSY at
+  GitBranchStore.close line210. Cause is UNVERIFIED; concurrent native-suite load is context,
+  not a proven diagnosis. Lint/types passed before tests; workflow lint was not reached.
+  Maintenance44 passes in this run with raw226values128852bytes0failures. Root log is
+  root-maintenance-integrated-check.log. Integration is NOT ready for PR/merge. Diagnose
+  lifecycle/scheduling without loosening budgets/assertions, then require full green check.
+- GH source final051e0123cba65ab9333774939c8aafd6aba9af22 is preserved, not integrated or
+  registered. d4c7790 complete5/5 passes77.34s, but independent review finds child guard missing.
+  Final051 loads existing guard before compiler; focused1PASS/4NOTRUN,lint/types0. Independent
+  exact review18d91c7 unchanged compiler probe passes3.20s with0token/real-credential reads.
+  Final complete5 replay and whole-case environment probe remain PENDING; no final approval.
+  Earlier independent4/4 and all repeated hashes remain scoped historical evidence.
+- Projection WIP00d4b2df2bdeea0340189cf11aa4077a192d984d is a refusing skeleton plus12tests,
+  initial11fail/1pass,5.81s. Onlyprojection.ts/test changed; c0daf67 cleanup DTO not yet merged.
+  No implementation/types/lint/full acceptance. Public metadata assignment83330d2 is reserved
+  with nine titles/three owned files/cap60; no implementation began.
+- Build WIP7c1c1873c95666f137aa9815bd4e9d0e6e9867d4 preserves four assigned files atb382cb0.
+  Actual suite0cases/8NOTRUN because fixture beforeAll times out (exit1,28.35s); lint8errors,
+  types0. Initial sandboxEPERM ran0cases. Stubs are unimplemented; no strict eight-case red,
+  compiler/runtime/reproducibility or product acceptance. Fix fixture before implementation.
+
+## Merged baseline and preceding active-work checkpoint
+
+Agent assignments below are historical; all three agents have stopped for the session wrap.
+
+- PR22 is MERGED at1fe48214466d9c76e884791dea7a590ef71baee7 (12:51:06Z), exact reviewed
+  head8d2de3981c8216fc0999d8f33384975dfaa1c767. All five enforced checks, aggregate CodeQL
+  and both viewer jobs pass. No bypass, alert dismissal or settings change. Seven reviewed
+  PRs16–22 are merged under the owner's standing authorization.
+- Hosted corrected head: pnpm check1122/54 on Linux (29.39s) and Windows (212.80s), exit0;
+  browser24/24 across Chromium/Firefox/WebKit on each OS (15.8s/22.2s), exit0. Both full
+  coverage jobs remain2PASS/12NOTRUN/exit2; all17 normalized hashes match local evidence.
+  CI37123807928, CodeQL37123807926, dependency review37123807991.
+- Root integration0bcdc37 aligns next slice with verified main1fe4821, resolving only import/
+  export/type conflicts; whole typecheck and diffcheck exit0. Byte-identical reviewed maintenance
+  source8a95bf5 is integrated at2a04580; its root fullcheck/browser/simulation remain gates.
+  IndependentA approval1caaab4 includes44/44 plus original hostile and real Git recovery probes.
+- GH simulation author278748e passes4/4,31.80s; independentA review661ca7f repeats4/4,37.70s,
+  with identical four seeded hashes. Blocking P2 GH-ENV-1 independently proves esbuild's default
+  subprocess environment reads fake GH_TOKEN/GITHUB_TOKEN once each. No real credentials or
+  observed leak; zero-token-read invariant still fails. AuthorC is correcting the fixture's
+  actual compiler port using a fixed trusted child with explicit allowlisted environment.
+  Case is not registered; unchanged reviewer probe and complete corrected suite are gates.
+- Active writable specialists: B implements reproducible release tooling from b382cb0 in
+  m2-release-build; C owns isolated GH correction and serialized projector from2a04580 in
+  m2-project-caller. A independently reviews GH before the public metadata adapter assignment.
+  Root owns shared DTOs/manifests/workflows/docs/integration. Four agents total; no extra agents.
+- Projection/public-metadata DTOs frozen201e2a; ADR0029, projection and build contracts are
+  committed. Finite truthful cleanup warnings are root-owned; whole typecheck and the complete
+  threat-model suite7/7 pass (exit0,1.90s) after the contract and five maintenance rows change.
+  No production projector/public preflight/action workflow or RC build is claimed yet.
+- Actual generated final viewer entry remains http://127.0.0.1:4173/pixelwatch/runs/11-a1/.
+  Its fixture pixels are local viewer evidence. M2 exit still needs authorized same-repo/fork
+  comments linking actual served run pages, pinned release/workflow checks and live evidence.
+  M3, canaries, seven daily checks, final release and fresh-adopter gates have not started.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+## Earlier checkpoint — 2026-10-03
 
 - PR22 opened at810b157; hosted unit1120/54 and browser24/24 pass on Linux/Windows. CodeQL
   language/action jobs succeeded but aggregateHIGH alerts3/4 flag unanchored marker regexes;
