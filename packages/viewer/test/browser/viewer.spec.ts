@@ -7,7 +7,8 @@ import { buildViewerFixture } from "../../../../tools/viewer/fixture.ts";
 import { startPreview } from "../../../../tools/viewer/serve.ts";
 
 type Fixture = Awaited<ReturnType<typeof buildViewerFixture>>;
-let fixture: Fixture; let temporary: string; let preview: Awaited<ReturnType<typeof startPreview>>;
+let fixture: Fixture; let temporary: string; let preview: Awaited<ReturnType<typeof startPreview>> | undefined;
+function currentPreview(): Awaited<ReturnType<typeof startPreview>> { if (preview === undefined) throw new Error("preview fixture was not started"); return preview; }
 test.beforeAll(async () => {
   temporary = mkdtempSync(join(tmpdir(), "pixelwatch-viewer-")); fixture = await buildViewerFixture(temporary);
   preview = await startPreview(fixture.root);
@@ -18,11 +19,11 @@ test.afterAll(async () => {
   if (isAbsolute(confined) || !/^pixelwatch-viewer-[A-Za-z0-9_-]+$/.test(confined)) throw new Error("refuse fixture cleanup");
   rmSync(target, { recursive: true, force: true });
 });
-const entry = () => new URL(fixture.entryPath.replaceAll("\\", "/"), `${preview.origin}/`).href;
+const entry = () => new URL(fixture.entryPath.replaceAll("\\", "/"), `${currentPreview().origin}/`).href;
 test.beforeEach(async ({ page }) => {
   // Browser traffic has its own guard; the Node no-network guard cannot police a browser.
   await page.route("**/*", async (route) => {
-    if (new URL(route.request().url()).origin === preview.origin) await route.continue(); else await route.abort();
+    if (new URL(route.request().url()).origin === currentPreview().origin) await route.continue(); else await route.abort();
   });
 });
 
@@ -59,7 +60,7 @@ test("JSON and PNG unavailability produce useful visible fallbacks without reloa
 
 test("disabled JavaScript preserves the actual entry summary warnings source and recovery links", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false }); const page = await context.newPage();
-  await context.route("**/*", async (route) => { if (new URL(route.request().url()).origin === preview.origin) await route.continue(); else await route.abort(); });
+  await context.route("**/*", async (route) => { if (new URL(route.request().url()).origin === currentPreview().origin) await route.continue(); else await route.abort(); });
   await page.goto(entry()); await expect(page.getByLabel("Run summary")).toBeVisible(); await expect(page.getByText(/capture claims are untrusted/)).toBeVisible();
   await expect(page.getByRole("link", { name: "Source capture" })).toBeVisible(); await expect(page.getByRole("link", { name: "Reload report" })).toBeVisible(); await context.close();
 });
@@ -70,7 +71,7 @@ test("poisoned shared origin storage cannot select app code destinations or appr
     sessionStorage.setItem("pixelwatch", "javascript:alert(1)");
   });
   const external: string[] = []; await page.route("**/*", async (route) => {
-    if (new URL(route.request().url()).origin !== preview.origin) { external.push(route.request().url()); await route.abort(); } else await route.continue();
+    if (new URL(route.request().url()).origin !== currentPreview().origin) { external.push(route.request().url()); await route.abort(); } else await route.continue();
   });
   await page.goto(entry()); await expect(page.getByLabel("Visual result")).toBeVisible(); expect(external).toEqual([]);
   expect(await page.evaluate(() => document.cookie)).toBe("");
@@ -86,8 +87,16 @@ test("capture labels use text nodes with safe links and standard keyboard focus 
     await page.setViewportSize({ width, height: 900 }); await page.goto(entry()); await expect(page.getByLabel("Visual result")).toBeVisible();
     await expect(page.locator("#pixelwatch")).toContainText("<img src=x"); expect(await page.evaluate(() => Object.hasOwn(globalThis, "__injected"))).toBe(false);
     expect(await page.locator("#pixelwatch [onerror]").count()).toBe(0); expect(await page.locator("#pixelwatch").textContent()).not.toContain("\u202e");
+    await expect(page.locator("#pixelwatch")).toContainText("＠maintainer"); expect(await page.locator("#pixelwatch").textContent()).not.toContain("@maintainer");
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.getByLabel("Visual result").focus(); await expect(page.getByLabel("Visual result")).toBeFocused(); await page.keyboard.press("Tab"); expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe("BODY");
-    for (const value of await page.locator('#pixelwatch a[target="_blank"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute("rel")))) expect(value).toContain("noopener");
+    const sources = page.getByRole("navigation", { name: "Source links" }).locator("a"); expect(await sources.count()).toBeGreaterThan(0);
+    for (const source of await sources.evaluateAll((nodes) => nodes.map((node) => ({ href: node.getAttribute("href"), rel: node.getAttribute("rel") })))) {
+      if (source.href === null) throw new Error("source anchor missing destination"); const destination = new URL(source.href);
+      expect(destination.origin).toBe("https://github.com"); expect(destination.search).toBe(""); expect(destination.hash).toBe("");
+      expect(destination.pathname).toMatch(/^\/owner\/repo\/(?:actions\/runs\/[1-9][0-9]*\/attempts\/[1-9][0-9]*|commit\/[a-f0-9]{40}|pull\/[1-9][0-9]*)$/);
+      expect(source.rel?.split(/\s+/)).toContain("noopener");
+    }
   }
 });
 
@@ -103,7 +112,7 @@ test("only the selected pair is requested and switching units removes prior imag
   await select.selectOption(next); await expect(page.locator("#pixelwatch figure")).toHaveCount(2); expect(await page.locator("#pixelwatch img").count()).toBeLessThanOrEqual(2);
   expect(await previous.evaluate((nodes) => nodes.every((node) => !node.isConnected && !node.hasAttribute("src")))).toBe(true);
   await previous.dispose();
-  expect(firstPair.every((value) => typeof value === "string" && new URL(value).origin === preview.origin)).toBe(true);
+  expect(firstPair.every((value) => typeof value === "string" && new URL(value).origin === currentPreview().origin)).toBe(true);
 });
 
 test("large valid runs keep at most one hundred result options and one selected pair in the DOM", async ({ page }) => {
