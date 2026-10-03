@@ -4,6 +4,62 @@ This is the durable orchestration record for M0–M3. Scope and acceptance remai
 `docs/design/08-implementation-plan.md`; security remains normative in 01 §4.
 Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitted.
 
+## Current action composition checkpoint — 2026-10-04
+
+PR [#23](https://github.com/MattShelton04/PixelWatch/pull/23) is merged at main
+`f3b998b428e1db11c0bcd8d0ae782e0149f47010`. Independently reviewed exact head `891e42d`
+passed all five required hosted checks and aggregate CodeQL. Both Linux and Windows ran
+1197 tests across 58 distinct files and 24 browser cases across Chromium, Firefox and WebKit.
+Full simulation remains 3 PASS / 11 NOTRUN, exit 2, with all 25 normalized hashes identical
+between local, Linux and Windows. Its hosted jobs remain failed; this is incomplete coverage.
+The next action branch merges actual main without resetting preserved integration history.
+
+The action's invocation and staging helpers are independently approved within their scope:
+complete 16/16 tests, 13.41s runner duration, focused lint and whole typecheck exit 0. Hostile
+path ownership, same-inode inventory replacement, late output getters and real 100,008-file
+assembly accounting reproducers are closed unchanged. The exact metadata seam accepts
+44,254,887 canonical bytes below the unchanged 64 MiB bound. This proves metadata accounting,
+not physical staging of 100,008 files. The immutable `state.json` is an inventory; overwriting
+it with publisher state was never authorized.
+
+The root's separate prepared-payload codec first executed 5 failing tests before implementation.
+Independent review then found an array-method/accessor/Proxy validation bypass; the expanded
+13-test strict red run executed 7 passes and 6 failures before correction. The corrected
+complete file passes 13/13 locally and independently (1.45s and 1.46s); focused lint and whole
+typecheck pass. Both original input and descriptor reproducers close unchanged, the immediate
+input-mutation probe retains owned bytes, and retained PR records/targets plus actual rehashed
+HTML are validated against real site reassembly. URL functions and credentials are not
+serialized. Scope is data-only IO; physical process handoff, shared publisher restoration and
+the production host remain gates.
+The codec remains local WIP: a later independent cost probe found that metadata extraction
+copies repeated file buffers before aggregate or duplicate-path refusal (eight real 2 MiB
+copies under a 1 MiB configured hard limit). This blocker has an unchanged strict red probe;
+the passing 13-case result is retained and does not close the cost finding.
+
+Projection now uses the genuine adapter's exact privately recorded operation promise to join
+bounded completion and retain finite cleanup warnings. Its complete 31-case file currently
+reports 30 PASS / 1 FAIL. The new retry-cancellation expectation remains under owner approval:
+after a real POST receives 503 and cancellation rejects the retry without a validated reply,
+the independent reviewer agrees that `failed/comment-operation-failed` preserves the unknown
+sent outcome. Automatic approval review twice rejected that precise assertion edit because it
+requires direct owner approval; neither rejected action ran. Existing accepted-201, changed-head
+503 deferral, zero-write readiness and all work-bound assertions remain intact. The correction
+to the deterministic timer fixture has its own tests-first red and preserves the exact
+600000ms bound. Independent final consumer review and complete green integration remain gates.
+
+The independent GitHub adapter replay passes 77/77 across six files, closing signal acquisition,
+cleanup and shadow-getter findings with unchanged reproducers. The nonconfigurable native
+Promise constructor boundary remains an open owner decision shared with public metadata.
+Historical uncaught red logs containing a fake canary remain visible as failed scans; later
+corrected logs have zero unexpected leaks. Public metadata is not integrated or approved overall.
+
+The fixed live setup proposal is prepared locally with finite refs, scoped credentials, Pages
+policy, nine actual scenarios and exact-ID cleanup. Numeric IDs, account choices, release pins
+and the runnable two-shard capture workload remain unresolved. No external resource or setting
+was changed. Actual host, separate worker bundles, reusable workflow, reproducibility,
+production simulations and same-repository plus fork comments linking served pages remain M2
+gates. M2 is not complete; M3 has not begun.
+
 ## Active continuation — 2026-10-03 to 2026-10-04
 
 - Owner resumed the full M0–M3 program and explicitly requested goal tracking. The full MVP

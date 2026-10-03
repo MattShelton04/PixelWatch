@@ -33,6 +33,16 @@ these warnings in its accepted result. Cleanup before acceptance still fails saf
 existing fixed diagnostic and retry behavior. Only a genuine current operation's actual
 HTTP422 can authorize one newly guarded fallback; a public error constructor cannot.
 
+Mutation authorization is monotonic within each genuine invocation. A later retry guard cannot
+erase the fact that an earlier POST or PATCH was sent. When cancellation rejects that operation
+without a validated reply after authorization, projection reports comment-operation-failed;
+it cannot manufacture a readiness deferral for an unknown sent write. An actual returned
+validated deferred result retains its existing meaning, including a changed head after a 503.
+A fresh invocation that has never authorized a mutation can defer after readiness cancellation,
+and an already validated acceptance retains its created, updated or recovered result. The
+independent reviewer agreed to this distinction before the new cancellation regression was
+corrected; original accepted-result, head-change and no-write readiness assertions remain intact.
+
 The independent nonconfigurable native Promise.constructor reproducer remains an OPEN review
 gate shared with public metadata. ECMAScript intrinsic then performs SpeciesConstructor before
 attaching handlers; the current remedy fixes own-then assimilation but does not solve this
