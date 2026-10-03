@@ -64,6 +64,23 @@ export type CommentResult =
   | { readonly status: "deferred" };
 export interface PullRequestMetadata { readonly prNumber: string; readonly state: "open" | "closed"; readonly headSha: string; readonly headRepositoryId: string | null }
 export interface PagesMetadata { readonly url: string; readonly customDomain: string | null }
+interface OwnedCommentOperation { readonly repositoryId: string; readonly input: CommentInput }
+const ownedCommentOperations = new WeakMap<object, OwnedCommentOperation>();
+/** The promise itself and one immutable invocation grant authority, never a public error code. */
+export function isOwnedCommentOperation(pending: unknown, repositoryId: string, input: CommentInput): boolean {
+  if ((typeof pending !== "object" || pending === null) && typeof pending !== "function") return false;
+  const owned = ownedCommentOperations.get(pending);
+  return owned !== undefined && owned.repositoryId === repositoryId && owned.input === input;
+}
+function immutableInvocation(caller: CommentInput, captured: CommentInput): boolean {
+  if (!Object.isFrozen(caller)) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(caller);
+  return ["prNumber", "botId", "body", "beforeMutation", "signal"].every(key => {
+    const descriptor = descriptors[key];
+    return key === "signal" && descriptor === undefined && captured.signal === undefined
+      || descriptor !== undefined && "value" in descriptor && descriptor.value === captured[key as keyof CommentInput];
+  });
+}
 export interface RepositoryMetadata { readonly repositoryId: string; readonly owner: string; readonly name: string; readonly defaultBranch: string }
 export interface DefaultConfig { readonly repository: RepositoryMetadata; readonly config: Config; readonly configSha: string }
 export interface GitHubClientOptions {
@@ -111,7 +128,10 @@ export class GitHubClient {
     try {
       if (combined.aborted) throw new ForgeError("request-cancelled");
       const response = await Promise.race([
-        Promise.resolve().then(() => this.#transport.request({ ...request, signal: combined })),
+        Promise.resolve().then(() => {
+          if (combined.aborted) throw new ForgeError("request-cancelled");
+          return this.#transport.request({ ...request, signal: combined });
+        }),
         new Promise<never>((_resolve, reject) => {
           aborted = () => { reject(new ForgeError("request-cancelled")); };
           combined.addEventListener("abort", aborted, { once: true });
@@ -142,8 +162,27 @@ export class GitHubClient {
   }
 
   async #delay(ms: number, signal?: AbortSignal): Promise<void> {
-    try { await this.#timing.delay(ms, signal); }
+    try { await this.#untilCancelled(() => this.#timing.delay(ms, signal), signal); }
     catch { throw new ForgeError("request-cancelled"); }
+  }
+
+  /** Existing caller cancellation also bounds injected guards and delays that ignore it. */
+  async #untilCancelled<T>(operation: () => Promise<T>, signal?: AbortSignal): Promise<T> {
+    if (signal === undefined) return operation();
+    let aborted: (() => void) | undefined;
+    try {
+      if (signal.aborted) throw new ForgeError("request-cancelled");
+      return await Promise.race([
+        Promise.resolve().then(() => {
+          if (signal.aborted) throw new ForgeError("request-cancelled");
+          return operation();
+        }),
+        new Promise<never>((_resolve, reject) => {
+          aborted = () => { reject(new ForgeError("request-cancelled")); };
+          signal.addEventListener("abort", aborted);
+        }),
+      ]);
+    } finally { if (aborted !== undefined) signal.removeEventListener("abort", aborted); }
   }
 
   async #get(path: string, signal?: AbortSignal, accept = "application/vnd.github+json"): Promise<HttpResponse> {
@@ -331,6 +370,10 @@ export class GitHubClient {
   }
 
   async discoverComment(prNumber: string, botId: string, signal?: AbortSignal): Promise<BotComment | null> {
+    return this.#discoverComment(prNumber, botId, signal);
+  }
+
+  async #discoverComment(prNumber: string, botId: string, signal?: AbortSignal): Promise<BotComment | null> {
     trustedId(prNumber); trustedId(botId);
     let found: BotComment | null = null;
     let count = 0;
@@ -356,20 +399,25 @@ export class GitHubClient {
   }
 
   /** Publisher must separately hold the projection lock and recheck head/order/readiness. */
-  async reconcileComment(callerInput: CommentInput): Promise<CommentResult> {
-    try { return await this.#reconcileComment(callerInput); }
-    catch (error) {
+  reconcileComment(callerInput: CommentInput): Promise<CommentResult> {
+    // Capture once. Accessors and mutable inputs still receive the ordinary safe operation,
+    // but cannot grant a publisher permission to await completion after its outer abort.
+    let input: CommentInput, immutable: boolean;
+    try { input = { ...callerInput }; immutable = immutableInvocation(callerInput, input); }
+    catch { return Promise.reject(new ForgeError("request-failed")); }
+    const pending = this.#reconcileComment(input).catch((error: unknown) => {
       if (error === definitiveCommentRejection) throw new ForgeError("comment-body-rejected");
       throw withoutRejectionProof(error, "request-failed");
-    }
+    });
+    if (immutable) ownedCommentOperations.set(pending, { repositoryId: this.#repositoryId, input: callerInput });
+    return pending;
   }
 
-  async #reconcileComment(callerInput: CommentInput): Promise<CommentResult> {
-    const input: CommentInput = { ...callerInput };
+  async #reconcileComment(input: CommentInput): Promise<CommentResult> {
     trustedId(input.prNumber); trustedId(input.botId);
     if (typeof input.beforeMutation !== "function") throw new ForgeError("comment-guard-failed");
     if (!input.body.isWellFormed() || encoder.encode(input.body).byteLength > LIMITS.maxCommentBytes || !input.body.includes(this.#marker())) throw new ForgeError("comment-body");
-    let existing = await this.discoverComment(input.prNumber, input.botId, input.signal);
+    let existing = await this.#discoverComment(input.prNumber, input.botId, input.signal);
     const originalId = existing?.commentId;
     if (existing?.body === input.body) return { status: "unchanged", commentId: existing.commentId };
     const body = encoder.encode(JSON.stringify({ body: input.body }));
@@ -377,7 +425,7 @@ export class GitHubClient {
       // This callback rechecks publisher-owned head/order/readiness immediately before each
       // mutation, including retries. It cannot be omitted or implicitly defaulted to true.
       let permitted: unknown;
-      try { permitted = await input.beforeMutation(existing === null ? null : Object.freeze({ ...existing })); }
+      try { permitted = await this.#untilCancelled(() => input.beforeMutation(existing === null ? null : Object.freeze({ ...existing })), input.signal); }
       catch { throw new ForgeError("comment-guard-failed"); }
       if (typeof permitted !== "boolean") throw new ForgeError("comment-guard-failed");
       if (!permitted) return { status: "deferred" };
@@ -409,7 +457,7 @@ export class GitHubClient {
       // Backoff happens before the final owned-comment read and eligibility guard. A comment
       // or PR can change during the delay; a read before sleeping is not a retry authorization.
       if (attempt + 1 < LIMITS.maxAttempts) await this.#delay(delay, input.signal);
-      const rediscovered = await this.discoverComment(input.prNumber, input.botId, input.signal);
+      const rediscovered = await this.#discoverComment(input.prNumber, input.botId, input.signal);
       if (rediscovered?.body === input.body && (originalId === undefined || rediscovered.commentId === originalId)) return { status: "recovered", commentId: rediscovered.commentId };
       if ((originalId !== undefined && (rediscovered?.commentId !== originalId || rediscovered.body !== existing?.body)) || (originalId === undefined && rediscovered !== null)) throw new ForgeError("comment-outcome");
       existing = rediscovered;
