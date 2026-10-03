@@ -96,6 +96,21 @@ describe("authenticated source envelope", () => {
     expect(routes.calls).toHaveLength(0);
   });
 
+  it("copies validated trusted provenance before asynchronous source verification", async () => {
+    const { client, routes, event } = fixture();
+    const trusted = input(event);
+    const request = routes.request.bind(routes);
+    routes.request = (call) => {
+      trusted.configSha = "ghs_FAKE_MUTATED_PROVENANCE_CANARY";
+      trusted.releaseSha = "ghs_FAKE_MUTATED_PROVENANCE_CANARY";
+      return request(call);
+    };
+    const result = await client.verifySource(trusted);
+    expect(result.envelope.configSha).toBe(SHA);
+    expect(result.envelope.releaseSha).toBe("f".repeat(40));
+    expect(JSON.stringify(result)).not.toContain("CANARY");
+  });
+
   it("payload and selected attempt must match repository, workflow, run, attempt, event, ref and completed status", async () => {
     for (const [field, value] of [["id", 1], ["workflow_id", 2], ["run_attempt", 3], ["event", "push"], ["head_branch", "other"], ["head_sha", "d".repeat(40)], ["status", "in_progress"]] as const) {
       const { client, routes, event, run, attempt } = fixture();
@@ -195,6 +210,42 @@ describe("authenticated source envelope", () => {
     expect(result.envelope.repositoryId).toBe(REPOSITORY);
     expect(result.envelope.association.prNumber).toBe("1");
     expect(result.envelope.commits.head).toBe(run["head_sha"]);
+  });
+
+  it("unavailable historical comparison keeps an authenticated unassociated history run", async () => {
+    const { client, routes, event, run } = fixture();
+    const base = String(obj(obj((run["pull_requests"] as RecordValue[])[0])["base"])["sha"]);
+    routes.routes.set(`${API}/compare/${base}...${String(run["head_sha"])}`, { status: 404, headers: {}, body: new TextEncoder().encode("not found") });
+    const result = await client.verifySource(input(event));
+    expect(result.envelope.commits).toEqual({ head: run["head_sha"] });
+    expect(result.envelope.association).toEqual({ status: "none", diagnostic: "pr-base-unavailable" });
+    expect(result.envelope.association.prNumber).toBeUndefined();
+    expect(result.diagnostics).toContain("pr-base-unavailable");
+    expect(routes.calls).toHaveLength(7);
+    expect(routes.calls.every((call) => call.method === "GET")).toBe(true);
+  });
+
+  it("missing historical association is unassociated while auth, network and malformed comparison failures refuse", async () => {
+    for (const suffix of ["/pulls/1", `/commits/${String(fixture().run["head_sha"])}/pulls?per_page=100&page=1`]) {
+      const { client, routes, event } = fixture();
+      routes.routes.set(`${API}${suffix}`, { status: 404, headers: {}, body: new Uint8Array() });
+      expect((await client.verifySource(input(event))).envelope.association.status).toBe("none");
+    }
+    for (const [response, code] of [
+      [{ status: 403, headers: {}, body: new Uint8Array() }, "api-refused"],
+      [{ status: 503, headers: {}, body: new Uint8Array() }, "retry-exhausted"],
+      [{ status: 200, headers: {}, body: new TextEncoder().encode("not JSON") }, "invalid-response"],
+      [{ status: 200, headers: {}, body: new TextEncoder().encode("null") }, "invalid-response"],
+    ] as const) {
+      const { client, routes, event, run } = fixture();
+      const base = String(obj(obj((run["pull_requests"] as RecordValue[])[0])["base"])["sha"]);
+      routes.routes.set(`${API}/compare/${base}...${String(run["head_sha"])}`, response);
+      await refuses(client.verifySource(input(event)), code);
+    }
+    const network = fixture();
+    const base = String(obj(obj((network.run["pull_requests"] as RecordValue[])[0])["base"])["sha"]);
+    network.routes.routes.delete(`${API}/compare/${base}...${String(network.run["head_sha"])}`);
+    await refuses(network.client.verifySource(input(network.event)), "retry-exhausted");
   });
 
   it("stale identifiable head enters history with separate current head while changed historical base defers association", async () => {

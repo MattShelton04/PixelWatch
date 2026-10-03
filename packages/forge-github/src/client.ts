@@ -152,6 +152,11 @@ export class GitHubClient {
       const response = await this.#get(path, signal);
       if (response.status !== 200) throw new ForgeError("api-refused");
       return parse(response);
+    }, lookup: async (path, signal) => {
+      const response = await this.#get(path, signal);
+      if (response.status === 404) return { status: "not-found" };
+      if (response.status !== 200) throw new ForgeError("api-refused");
+      return { status: "found", value: parse(response) };
     } }, input);
   }
 

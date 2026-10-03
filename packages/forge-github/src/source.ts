@@ -18,6 +18,7 @@ interface SourceContext {
   readonly repositoryId: string;
   readonly namespace: string;
   read(path: string, signal?: AbortSignal): Promise<JsonValue>;
+  lookup(path: string, signal?: AbortSignal): Promise<{ readonly status: "found"; readonly value: JsonValue } | { readonly status: "not-found" }>;
 }
 interface PullFacts {
   readonly id: string;
@@ -108,11 +109,13 @@ const immutable = (run: RunFacts): string => canonicalJson({
 const associations = (run: RunFacts): string => canonicalJson([...run.pulls].sort((a, b) => Number(a.number) - Number(b.number)));
 const none = (diagnostic: SourceDiagnostic, ambiguous = false): SourceEnvelope["association"] => ({ status: ambiguous ? "ambiguous" : "none", diagnostic });
 
-async function commitPulls(context: SourceContext, head: string, signal?: AbortSignal): Promise<readonly PullFacts[]> {
+async function commitPulls(context: SourceContext, head: string, signal?: AbortSignal): Promise<readonly PullFacts[] | null> {
   const found: PullFacts[] = [];
   const seen = new Set<string>();
   for (let page = 1; page <= Math.ceil(LIMITS.maxComments / 100); page++) {
-    const value = await context.read(`/commits/${head}/pulls?per_page=100&page=${String(page)}`, signal);
+    const result = await context.lookup(`/commits/${head}/pulls?per_page=100&page=${String(page)}`, signal);
+    if (result.status === "not-found") return null;
+    const value = result.value;
     if (!Array.isArray(value) || value.length > 100 || found.length + value.length > LIMITS.maxComments) throw new ForgeError("invalid-response");
     for (const item of value) {
       const pull = pullFacts(item);
@@ -126,9 +129,14 @@ async function commitPulls(context: SourceContext, head: string, signal?: AbortS
 
 /** Internal adapter composition; exported from this module solely for the client seam. */
 export async function verifySource(context: SourceContext, input: VerifySourceInput): Promise<VerifiedSource> {
-  const checked = validateDocument("config", input.config);
+  // Copy validated trusted provenance and policy before transport/callbacks can mutate caller
+  // references. Every later field and cancellation decision uses these owned values.
+  const configSha = input.configSha; const releaseSha = input.releaseSha; const signal = input.signal;
+  let policy: Config;
+  try { policy = structuredClone(input.config); } catch { throw new ForgeError("invalid-config"); }
+  const checked = validateDocument("config", policy);
   if (!checked.ok) throw new ForgeError("invalid-config");
-  if (typeof input.configSha !== "string" || typeof input.releaseSha !== "string" || !GIT_OID_PATTERN.test(input.configSha) || !GIT_OID_PATTERN.test(input.releaseSha)) throw new ForgeError("invalid-identity");
+  if (typeof configSha !== "string" || typeof releaseSha !== "string" || !GIT_OID_PATTERN.test(configSha) || !GIT_OID_PATTERN.test(releaseSha) || (signal !== undefined && !(signal instanceof AbortSignal))) throw new ForgeError("invalid-identity");
   let payload: JsonObject;
   try { payload = object(parseJson(input.event, { maxBytes: LIMITS.maxJsonBytes, maxDepth: 32 })); }
   catch { throw new ForgeError("source-mismatch"); }
@@ -136,15 +144,15 @@ export async function verifySource(context: SourceContext, input: VerifySourceIn
   const requested = runFacts(payload["workflow_run"] as JsonValue);
   const eventRepository = object(payload["repository"]);
   if (requested.status !== "completed" || id(eventRepository["id"]) !== context.repositoryId || text(eventRepository["full_name"]).toLowerCase() !== context.namespace.toLowerCase() || requested.repositoryId !== context.repositoryId || requested.namespace.toLowerCase() !== context.namespace.toLowerCase()) throw new ForgeError("source-mismatch");
-  if (!input.config.source.workflowIds.includes(requested.workflowId) || !input.config.source.events.includes(requested.event)) throw new ForgeError("source-policy");
+  if (!policy.source.workflowIds.includes(requested.workflowId) || !policy.source.events.includes(requested.event)) throw new ForgeError("source-policy");
 
-  const repository = object(await context.read("", input.signal));
+  const repository = object(await context.read("", signal));
   if (id(repository["id"]) !== context.repositoryId || text(repository["full_name"]).toLowerCase() !== context.namespace.toLowerCase()) throw new ForgeError("source-mismatch");
   const defaultBranch = ref(repository["default_branch"]);
-  const original = runFacts(await context.read(`/actions/runs/${requested.id}`, input.signal));
-  const selected = runFacts(await context.read(`/actions/runs/${requested.id}/attempts/${requested.attempt}`, input.signal));
+  const original = runFacts(await context.read(`/actions/runs/${requested.id}`, signal));
+  const selected = runFacts(await context.read(`/actions/runs/${requested.id}/attempts/${requested.attempt}`, signal));
   if (immutable(original) !== immutable(requested) || immutable(selected) !== immutable(requested) || selected.attempt !== requested.attempt || Number(original.attempt) < Number(requested.attempt) || selected.status !== "completed" || associations(selected) !== associations(requested) || original.createdAt !== requested.createdAt) throw new ForgeError("source-mismatch");
-  const workflow = object(await context.read(`/actions/workflows/${requested.workflowId}`, input.signal));
+  const workflow = object(await context.read(`/actions/workflows/${requested.workflowId}`, signal));
   if (id(workflow["id"]) !== requested.workflowId || text(workflow["path"]) !== requested.path.split("@")[0]) throw new ForgeError("source-mismatch");
   if (requested.event === "push" && requested.headBranch !== defaultBranch) throw new ForgeError("source-policy");
 
@@ -152,11 +160,11 @@ export async function verifySource(context: SourceContext, input: VerifySourceIn
     repositoryId: context.repositoryId, workflowId: requested.workflowId, runId: requested.id,
     attempt: requested.attempt, event: requested.event, createdAt: original.createdAt,
     association: { status: "none" }, commits: { head: requested.headSha },
-    configSha: input.configSha, releaseSha: input.releaseSha,
+    configSha, releaseSha,
   };
   const diagnostics: SourceDiagnostic[] = ["source-workflow-provenance-unavailable"];
   if (requested.event === "push") {
-    const commit = object(await context.read(`/commits/${requested.headSha}`, input.signal));
+    const commit = object(await context.read(`/commits/${requested.headSha}`, signal));
     if (sha(commit["sha"]) !== requested.headSha || !Array.isArray(commit["parents"]) || commit["parents"].length > 100) throw new ForgeError("source-mismatch");
     const parents = commit["parents"].map((parent) => sha(object(parent)["sha"]));
     if (parents[0] !== undefined) envelope.commits.base = parents[0];
@@ -172,15 +180,20 @@ export async function verifySource(context: SourceContext, input: VerifySourceIn
   const candidate = selected.pulls[0];
   if (candidate === undefined) throw new ForgeError("invalid-response");
   if (candidate.head.sha !== requested.headSha || candidate.head.ref !== requested.headBranch || candidate.head.repositoryId === null || candidate.head.repositoryId !== selected.headRepositoryId || candidate.base.repositoryId !== context.repositoryId) return refuseAssociation("pr-association-disagreement");
-  const linked = await commitPulls(context, requested.headSha, input.signal);
+  const linked = await commitPulls(context, requested.headSha, signal);
+  if (linked === null) return refuseAssociation("pr-base-unavailable");
   if (linked.length === 0) return refuseAssociation("pr-association-none");
   if (linked.length !== 1) return refuseAssociation("pr-association-ambiguous", true);
   const corroborated = linked[0];
   if (corroborated === undefined || corroborated.id !== candidate.id || corroborated.number !== candidate.number || corroborated.head.repositoryId !== candidate.head.repositoryId || corroborated.base.repositoryId !== context.repositoryId) return refuseAssociation("pr-association-disagreement");
-  const current = pullFacts(await context.read(`/pulls/${candidate.number}`, input.signal));
+  const currentResponse = await context.lookup(`/pulls/${candidate.number}`, signal);
+  if (currentResponse.status === "not-found") return refuseAssociation("pr-base-unavailable");
+  const current = pullFacts(currentResponse.value);
   if (current.id !== candidate.id || current.number !== candidate.number || current.head.repositoryId !== candidate.head.repositoryId || current.base.repositoryId !== context.repositoryId) return refuseAssociation("pr-association-disagreement");
   if (current.base.sha !== candidate.base.sha || corroborated.base.sha !== candidate.base.sha || current.base.ref !== candidate.base.ref || corroborated.base.ref !== candidate.base.ref) return refuseAssociation("pr-base-unavailable");
-  const comparison = object(await context.read(`/compare/${candidate.base.sha}...${requested.headSha}`, input.signal));
+  const comparisonResponse = await context.lookup(`/compare/${candidate.base.sha}...${requested.headSha}`, signal);
+  if (comparisonResponse.status === "not-found") return refuseAssociation("pr-base-unavailable");
+  const comparison = object(comparisonResponse.value);
   if (sha(object(comparison["base_commit"])["sha"]) !== candidate.base.sha) return refuseAssociation("pr-base-unavailable");
   envelope.commits.baseBranch = candidate.base.sha;
   envelope.commits.base = sha(object(comparison["merge_base_commit"])["sha"]);
