@@ -9,7 +9,13 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 - PR22 opened at810b157; hosted unit1120/54 and browser24/24 pass on Linux/Windows. CodeQL
   language/action jobs succeeded but aggregateHIGH alerts3/4 flag unanchored marker regexes;
   merge HELD. Root replaces searches with bounded literal parsing;22/22 tests pass before/
-  after, preserving semantics. Independent correction review and new exact-head gates pending.
+  after, preserving semantics. IndependentC exact94cea3f passes22/22 plus57variants twice,
+  identical normalizedd8163dcd… and6rawlogs clean. New local/hosted exact-head gates pending.
+- Hosted810b157 actual Linux1120/54,42.99s and Windows1120/54,220.42s; browsers24/24 each,
+  19.4/24.5s. Both fullcoverage jobs print2PASS/12NOTRUN/exit2 and all17hashes equal local.
+- Maintenance author8a95bf5 final44/44,152.18s/raw226clean; A independentlyAPPROVED exactsource
+  (review1caaab4),44/44,156.82s plus29repeatedownership/cleanup,9unchangedpathvariants and
+  2actualnativeconflict/lostreply/cancellationprobes. Integration remains nextslice gate.
 - Integrated source6547d469800593f23a74a8cc2bd503c03d1ff070 passes complete `pnpm -s check`:
   1120tests/54files,exit0,359.25s; lint,typecheck,actionlint,zizmor0. Browser24/24 across all
   three engines,exit0,26.0s. Exact source-job bytes match author3e315b1; public ingestJob exists.
