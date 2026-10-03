@@ -5,6 +5,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { repoRoot } from "./lib/lint-tools.ts";
 import { scenarios } from "./simulation/scenarios/index.ts";
+import { productCaseKeys } from "./simulation/runner.ts";
 
 const doc = readFileSync(path.join(repoRoot, "docs", "security", "threat-model.md"), "utf8");
 
@@ -106,7 +107,13 @@ describe("threat model traceability (07 §6)", () => {
         const id = path.basename(file, ".sim.test.ts");
         expect(scenarios.map((s) => s.id)).toContain(id);
         expect(file).toBe(`tools/simulation/scenarios/${id}.sim.test.ts`);
-        expect(c.status).toBe("planned"); // Product adapters are absent in M2.4.
+        const scenario = scenarios.find((item) => item.id === id);
+        expect(scenario).toBeDefined();
+        if (c.status === "passing") {
+          expect(title).toBeDefined();
+          expect(scenario?.cases.some((item) => item.name === title)).toBe(true);
+          expect(productCaseKeys).toContain(`${id}/${title ?? ""}`);
+        } else expect(c.status).toBe("planned");
       } else {
         expect(c.status).toBe("passing");
         expect(title).toBeDefined();

@@ -1,0 +1,10 @@
+{
+  "name": "@pixelwatch/store",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Validated local-directory and marked Git data-branch stores with explicit CAS leases and bounded run ingestion recovery.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@pixelwatch/core": "workspace:*", "@pixelwatch/schemas": "workspace:*" }
+}

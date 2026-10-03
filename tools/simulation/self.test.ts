@@ -263,13 +263,13 @@ describe("simulation harness (ADR 0015; not product acceptance)", { timeout: 0 }
     probeGitHubFaults();
   });
 
-  it("runner failures print the seed safely and win over incomplete coverage", () => {
-    const result = runSimulation([{ name: "failure-probe", run() { throw new Error(`seed=42 ${CANARY_TOKEN} ${SIGNED_URL}`); } }]);
+  it("runner failures print the seed safely and win over incomplete coverage", async () => {
+    const result = await runSimulation([{ name: "failure-probe", run() { throw new Error(`seed=42 ${CANARY_TOKEN} ${SIGNED_URL}`); } }], new Map());
     expect(result.code).toBe(1);
     expect(result.output).toContain("seed=42");
     assertNoSecrets([result.output]);
     let help = "";
-    expect(main(["--help"], (value) => { help += value; })).toBe(4);
+    expect(await main(["--help"], (value) => { help += value; })).toBe(4);
     expect(help).toContain("No scenario ran");
   });
 
@@ -283,10 +283,11 @@ describe("simulation harness (ADR 0015; not product acceptance)", { timeout: 0 }
     }
   });
 
-  it("the runner lists every unavailable case and exits incomplete instead of passing", () => {
+  it("the runner lists every unavailable case and exits incomplete instead of passing", async () => {
     const checks = [{ name: "runner-report-probe", run() {} }];
-    const first = runSimulation(checks);
-    const second = runSimulation(checks);
+    // Explicit empty registry models missing adapters, without filtering the production CLI.
+    const first = await runSimulation(checks, new Map());
+    const second = await runSimulation(checks, new Map());
     expect(first).toEqual(second);
     expect(first.code).toBe(2);
     for (const scenario of scenarios) for (const test of scenario.cases) {

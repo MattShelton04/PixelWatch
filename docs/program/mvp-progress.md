@@ -6,6 +6,25 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Latest verified main `44420ca45d2c4854d447369cf36f75b62d0afac2`: PRs #16, #17 and #18
+  merged with owner authorization and every required hosted check green. PR #18 exact head
+  `38a17f2` hosted Linux/Windows each passed 731/31; full simulation each exited 2 with
+  nine harness checks and fourteen NOT RUN. No settings or required checks changed.
+- Store and two real driver slices independently approved: author `b9fad30` + `1ad15a` +
+  `e47c501`, root `6972da4` + `1186b69` + `caef46e`, dependency main `44420ca`.
+  Independent eight driver tests ran both cases for all four seeds twice with exact equality;
+  five harmful mutants refused; credential/time/randomness traps and raw secret scans passed.
+  Root async runner four tests first failed, then passed; real full run/integrated review pending.
+- Viewer source `8445320`, cancellation fix `347d6b` independently verified with fourteen
+  unit tests. Original real browser run 21/24 exposed fixture assertion and WebKit focus issues;
+  root `aba8d91` gives generated anchors explicit tab stops and authenticates preview Host.
+  Root `bb0e05a` fixes real nested entry advertisements and browser report paths. Final author
+  three-engine run pending; independent hostile browser probes passed 18/18. No M2.7 exit claim.
+- Actual specialists: viewer author, independent browser reviewer (former store author),
+  independent tooling/security reviewer, plus root integration/runner. Four total slots.
+
+The following entries are earlier checkpoints, superseded by the facts above.
+
 - Owner explicitly authorized merging completed reviewed slices as the program proceeds.
   Existing squash-only policy and required checks are preserved; no settings were changed.
 - PR #16 merged `64b8c36c751da3902f79521f50bfe4f2b05c5648`; PR #17 merged

@@ -51,6 +51,7 @@ jobs:
   simulation:
     name: Simulation coverage (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     permissions:
       contents: read
     strategy:

@@ -23,6 +23,7 @@ signed URLs, emails or real screenshots.
 | [m2.4-simulation-harness.md](m2.4-simulation-harness.md) | M2.4 local infrastructure and full coverage report | harness evidence passes; 14 product cases NOT RUN, exit 2 | [0015](../adr/0015-simulation-harness.md) |
 | [mvp-foundation-corrections.md](mvp-foundation-corrections.md) | MVP baseline audit and corrective regressions | baseline check 672 passes; corrective slice verification recorded separately | [0016](../adr/0016-mvp-foundation-corrections.md) |
 | [m2.1a-forge-infrastructure.md](m2.1a-forge-infrastructure.md) | M2.1a transport/artifacts/comments/Pages | 25 tests; independent retry-race fix verified; source auth and integrated gates pending | [0017](../adr/0017-bounded-forge-and-comment-recovery.md) |
+| [m2.2-store.md](m2.2-store.md) | M2.2 adapters and real simulation activation | 39 store tests; two production cases across four repeated seeds independently reviewed; integrated/hosted gates recorded after execution | [0018](../adr/0018-validated-store-adapters.md) |
 
 `recordings/` holds machine-readable data behind these records: `s2/timings.json` and the redacted
 S11 payloads and REST responses, one directory per run and attempt (`capture-<run>-a<n>`,

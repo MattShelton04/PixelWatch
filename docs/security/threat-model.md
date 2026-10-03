@@ -5,13 +5,15 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-03 (main @ `a331236` plus M2.4): `packages/schemas`, the pixel hash, the
+Status on 2026-10-03 (verified main @ `44420ca` plus reviewed M2.2 integration): `packages/schemas`, the pixel hash, the
 restricted PNG codec, the canonical blob pool, comparator-v1, bounded ZIP ingestion, the
 fixed-part merge, trusted config parsing, runs and the store run index, retention, GC and
 budget planning, the `changes@1` projection with its served paths and URLs, and the internal
 `pixelwatch-dev compare` (M1.8, ADR 0014) are implemented. Most checks below are therefore **planned**. A planned check is never counted as
-green. M2.4 adds tested local simulation infrastructure (ADR 0015), but no complete product
-scenario has run: `test:simulation` reports all 14 product cases NOT RUN and exits 2.
+green. M2.1 authenticates source attempts and trusted config. M2.2 supplies validated adapters;
+two production store scenarios have run for all four seeds twice on Windows. The full runner
+now registers those cases; twelve cases still need publisher/viewer/migration work. It remains
+incomplete and non-green (ADR 0015). Hosted platform agreement is a separate evidence gate.
 M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
 stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
@@ -282,13 +284,20 @@ Planned paths are provisional (§1).
 | R4.5-01 | unit | passing | `testdata/schemas/store/invalid/schema.foreign-marker.json` | `store.json` with a foreign marker is rejected | M0.3 |
 | R4.5-01 | unit | passing | `testdata/schemas/config/invalid/schema.store-branch-traversal.json` | Config can't point the store at a traversal ref | M0.3 |
 | R4.5-01 | unit | passing | `testdata/schemas/config/invalid/schema.store-branch-lock.json` | Config can't point the store at a `.lock` ref | M0.3 |
-| R4.5-01 | unit | planned | `packages/store/test/git-branch.test.ts` | The default branch, an unmarked existing branch, a foreign repository ID, or any ref other than the configured one is refused before any write; never "initialized" over content | M2.2 |
+| R4.5-01 | unit | passing | `packages/store/test/git-branch.test.ts` › "refuses the default branch unsafe refs and production remotes before any write" | Default branch, unsafe refs and non-allowlisted remotes refuse before any write | M2.2 |
+| R4.5-01, R4.2-05 | unit | passing | `packages/store/test/git-branch.test.ts` › "refuses unmarked foreign and newer stores without initializing over them" | Existing unmarked content, foreign repository ID and newer metadata preserve the exact remote tip | M2.2 |
 | R4.5-01 | evidence | recorded | `docs/security/repo-settings.md` | Row 2: this repo's default branch is protected; adopter docs recommend the same | M0.2 |
-| R4.5-02 | unit | planned | `packages/store/test/git-branch.test.ts` | Hooks, filters, submodules, credential helpers, `core.sshCommand` and hostile tree modes (symlink, gitlink, exec) never execute or get followed | M2.2 |
-| R4.5-03 | simulation | planned | `tools/simulation/scenarios/sim-ingest-cas-race.sim.test.ts` | **CAS race.** Four ingestors fetch the same tip; all four runs are in the final store within 5 attempts each; every push uses an explicit lease; no rebase, no plain `--force` | M2.2 |
-| R4.5-03 | unit | planned | `packages/store/test/git-branch.test.ts` | A stale lease fails; first creation uses an expected-absent lease | M2.2 |
+| R4.5-02 | unit | passing | `packages/store/test/git-branch.test.ts` › "refuses hostile tree modes active files and attributes without executing hooks filters or helpers" | Hostile modes/attributes refuse; configured hooks/helpers are not executed; native Git is sanitized | M2.2 |
+| R4.5-02 | unit | passing | `packages/store/test/local-dir.test.ts` › "refuses symbolic links junctions and hard-linked store data without following them" | Local store refuses links and hardlinks before reading or writing through them | M2.2 |
+| R4.5-03 | simulation | passing | `tools/simulation/scenarios/sim-ingest-cas-race.sim.test.ts` › "four-writers" | **CAS race.** Real adapters and isolated Git: four readers fetch one marked tip, real stale leases refuse, all four runs survive within five attempts; named conflict reached; all seeds repeated | M2.2 |
+| R4.5-03 | unit | passing | `tools/simulation/drivers/store.test.ts` › "four production writers survive the same-tip lease conflict for seed %i" | Production driver invokes original scenario assertions and proves reached fault plus exact normalized equality for every fixed seed twice | M2.2 |
+| R4.5-03 | unit | passing | `packages/store/test/git-branch.test.ts` › "uses expected-absent and explicit stale leases and creates parentless commits" | Actual native Git uses expected-absent and stale-tip leases; commits have no parent | M2.2 |
 | R4.5-03 | simulation | planned | `tools/simulation/scenarios/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.3 |
-| R4.5-04 | simulation | planned | `tools/simulation/scenarios/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds the run key; no duplicate, no overwrite | M2.2 |
+| R4.5-04 | simulation | passing | `tools/simulation/scenarios/sim-push-outcome-unknown.sim.test.ts` › "accepted-push" | Actual push accepted then reply lost; original immutable run is rediscovered before retry despite caller mutation; exactly one push; named fault reached | M2.2 |
+| R4.5-04 | unit | passing | `tools/simulation/drivers/store.test.ts` › "an accepted production push survives a lost reply and changed input for seed %i" | Production driver checks unchanged canonical bytes/tip, reached lost-reply injection and exact replay for all fixed seeds twice | M2.2 |
+| R4.3-07 | unit | passing | `packages/store/test/git-branch.test.ts` › "lost accepted replies contain no fake token signed URL or native Git diagnostic" | Raw returned errors and accepted/recovered result contain no fake token, signed URL or native Git diagnostics | M2.2 |
+| R4.3-08, R4.2-08 | unit | passing | `packages/store/test/pack.test.ts` › "checks raw declared sizes and compressed bombs before trusted Git indexing" | Declared-object and compressed expansion bounds refuse before native indexing; logical-byte limits are not peak-RSS evidence | M2.2 |
+| R4.3-08 | unit | passing | `packages/store/test/transport.test.ts` › "keeps the deadline active when rejected-body cancellation fails and sanitizes native fetch errors" | Rejected-body cancellation cannot dispose an active transfer deadline prematurely or expose native credential-bearing diagnostics | M2.2 |
 | R4.5-04 | unit | passing | `packages/core/test/envelope.test.ts` › "treats an already-stored run key as a no-op and never replaces the stored run" | A run key already in the store index → no-op (`added: false`, the same store, `txn` unchanged), even when the retry has different results and created time | M1.5 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | `site.json` can't carry an app URL | M0.3 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-hash-in-versions.json` | `site.json` can't carry an app hash | M0.3 |
