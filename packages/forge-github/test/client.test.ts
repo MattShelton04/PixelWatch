@@ -265,7 +265,7 @@ describe("GitHub adapter boundaries", () => {
   it("mandatory publisher mutation guard refuses absent, malformed or throwing guards without leaking errors", async () => {
     for (const guard of [undefined, () => Promise.resolve("yes"), () => { throw new Error(`${TOKEN} ${SIGNED}`); }]) {
       const { client, script } = setup(); script.add(json([]));
-      await failure(client.reconcileComment({ prNumber: "8", botId: "7", body: MARKER, beforeMutation: guard as (() => Promise<boolean>) }), "comment-guard-failed");
+      await failure(client.reconcileComment({ prNumber: "8", botId: "7", body: MARKER, beforeMutation: guard as unknown as (() => Promise<boolean>) }), "comment-guard-failed");
       expect(script.calls.filter((call) => call.method !== "GET")).toHaveLength(0);
     }
   });
