@@ -101,7 +101,10 @@ Existing schema/core exports and changes@1 bytes are preserved.
   redirect permanently strips authorization, including a redirect back to the API.
 - Sticky discovery uses exact repository marker and bot numeric ID; duplicate matches
   refuse all writes. Mutations do not blindly retry unknown outcomes; rediscovery is
-  required. PR targets come only from trusted caller inputs/envelope.
+  required after backoff. Mandatory `beforeMutation(existing): Promise<boolean>` rechecks
+  publisher head/order/readiness immediately before each POST/PATCH, including retries;
+  false defers without writing, and missing/malformed/throwing guards refuse safely.
+  PR targets come only from trusted caller inputs/envelope.
 - Pages metadata validates Actions source and Pages URL/host. Preflight never changes
   settings. Source verification consumes the frozen SourceEnvelope only after the
   root workflow provenance gap below is resolved; no fabricated SHA/ref fills.
@@ -153,6 +156,43 @@ Evidence records command, dependency SHA, exit/count/output, platform and not-ru
   source verification M2.1b is separate, not yet implemented.
 - W1-S: isolated implementation active; first 11 adapter tests pass, broader hostile/race
   assertions running. Independent review and production simulation activation remain gates.
+
+## Pull requests and integration
+
+- PR [#16](https://github.com/MattShelton04/PixelWatch/pull/16), draft, foundation corrections,
+  head `3ef45da`; independently reviewed and pushed. Hosted run `37096070619`: Linux/Windows
+  check passed, 27 files / 679 tests each; both coverage commands report exit 2, 9 harness /
+  14 NOT RUN and identical digest `81ffc411…`. Coverage jobs remain red (Windows shell reports
+  job exit 1 after pnpm exit 2). CodeQL/dependency review passed. No merge authorized.
+- Root continues on `codex/m2-integration` from PR #16 while it awaits human review.
+- REVIEW-W1-G-1 (P1): internal comment retries bypassed fresh head/order checks and could
+  overwrite newer comment content during backoff. Author fix `3506ce47f208a976564368108cfd41db51a6b514`,
+  25 tests pass; independent verification passed. Mandatory beforeMutation guard is now
+  part of the frozen contract; every retry rediscovers the owned comment after backoff.
+- REVIEW-W1-S-1 (P1): post-process disk checks do not bound a live fetch. Author is replacing
+  opaque fetch with exact-ref/depth-1 stateless transfer bounded before disk writes and before
+  pack expansion; implementation and independent verification remain gates.
+- REVIEW-W1-S-C-1/C-2 (P1): retained mutable recomputation/CAS maps can change accepted records
+  after validation, and add traversal paths before the local write loop. Real independent
+  probes reproduced both; synchronous private candidate/input copies and regressions required.
+- W1-G source auth author `4f3546ba5a6a373e368edf78a2abc981f8e1396e`: 37 tests / 3 suites,
+  lint/typecheck pass. Independent security/correctness review active; not integrated yet.
+- W1-G integrated infrastructure: root check exit 0, 29 files / 704 tests plus workflow lint;
+  full simulation exit 2, 9 harness / 0 product / 14 NOT RUN. One invalid phase-owner label
+  initially failed traceability; corrected the document without loosening the assertion.
+- REVIEW-W1-G-SOURCE-1/-2 (P2): comparison 404 must become unassociated history, and trusted
+  validated provenance primitives must not be reread from a mutable caller after awaits.
+  Both independently reproduced; fix `fe8ff27719e6eacaba63ce63282a865261c0d60d` verified by
+  independent 40-test suite and hostile probes. Source auth integration is a separate slice.
+- Forge async ownership fix `276cc0ef281d6fce5116f60f1ae6993030390966` independently verified:
+  selections/targets/body/guard and private owned-comment ID survive hostile callback changes.
+  Root picks `a7844cb`; final infrastructure check and hosted evidence next.
+  Final root check exit 0, 29 files / 707 tests plus lint/types/workflow lint. Independent
+  manifest/lock/threat/test-proof review passed. Forge infrastructure can be proposed separately
+  from source authentication; hosted checks still pending for this new slice.
+- REVIEW-W1-S-C-3 (P2): changing caller metadata during retry changed injected timestamp.
+  Author copied/validated metadata; independent current-code probes verify all three candidate
+  races fixed. Committed SHA, final pack review and store integration remain gates.
 
 ## External gates (not blanket blockers)
 

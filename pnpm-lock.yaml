@@ -39,6 +39,12 @@ importers:
         specifier: workspace:*
         version: link:../schemas
 
+  packages/forge-github:
+    dependencies:
+      '@pixelwatch/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+
   packages/schemas:
     dependencies:
       ajv:
