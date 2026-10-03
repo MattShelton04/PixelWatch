@@ -170,7 +170,11 @@ function collect(root:string,known:readonly FileIdentity[]):{files:FileIdentity[
 function removeOwned(root:string,known:readonly FileIdentity[]):void {
   const entries=collect(root,known);
   for(const item of entries.files){checkDirectories(known);checkDirectories(chain(item.path));if(!same(regular(item.path),item))fail("file-changed");unlinkSync(item.path);}
-  for(const item of entries.directories.reverse()){checkDirectories(known.filter(parent=>parent.path!==item.path&&!inside(item.path,parent.path)));if(!same(directory(item.path),item))fail("directory-changed");rmdirSync(item.path);}
+  const removed=new Set<string>();
+  for(const item of entries.directories.reverse()){
+    checkDirectories(known.filter(parent=>parent.path!==item.path&&!removed.has(parent.path)));if(!same(directory(item.path),item))fail("directory-changed");
+    rmdirSync(item.path);removed.add(item.path);
+  }
 }
 /** Only trusted generated relative paths become files below a new private runner directory. */
 export function stageSite(runnerTemp:string,sitePrefix:string,source:readonly SiteFile[],preparedPayload?:Uint8Array):StagedSite {

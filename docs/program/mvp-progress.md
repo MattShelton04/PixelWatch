@@ -83,6 +83,32 @@ approved; focused lint and whole types pass. The root scans 25 physical codec/st
 logs (42,095 bytes), zero failures. The default Vite EPERM startup ran zero cases and is retained
 beside the authorized complete run. This proves the handoff helpers, not host composition.
 
+Actual host composition then exposed a cleanup defect in a generated tree with sibling
+directories: cleanup rechecked an owned directory it had already removed. The twenty-fifth
+regression first executed 24 PASS / 1 FAIL (21.25s). Cleanup now tracks only its successful
+directory removals; remaining inode, ancestor and unexpected-file checks stay intact. The
+author's complete 25/25 passes (21.07s), and independent root replay passes 25/25 (20.87s).
+The original payload-inode replacement reproducer still refuses unchanged. Frozen source
+`4611038a` and test `0341f306` are scoped approved; focused lint and whole types pass. Root
+scanned 32 physical codec/staging/producer/composition logs, 74,923 bytes, zero failures.
+
+The separate runtime release loader is independently approved at source `9f98e47c` and test
+`9148a71e`: complete 14/14 (1.89s), focused lint and whole types pass. It validates the fixed
+sibling canonical release inventory against embedded version/source, hashes, native file and
+ancestor identities, and the existing 8 MiB aggregate bundle allowance. Independent probes
+accept exactly 8 MiB, refuse one byte over before bundle reads, reject late file/ancestor
+replacement and read no ambient credentials. These are helper IO results; an actual action
+entry, production worker execution and reproducible production bundles remain unproved.
+
+Root composition currently executes nine passing dispatch/IO cases using explicit unit ports.
+It preserves proven storage after output failure, refuses unknown ingestion before projection,
+stages only a rebuilt configured prefix, and validates private finish binding before granting
+cleanup authority. Independent composition review remains pending. The policy helper and live
+manifest have author tests-first evidence but no independent approval. Live manifest review
+found an unnecessary refusal of distinct release candidates built from the same source SHA;
+the unchanged reproducer confirms the finding. No product simulation case is activated by
+these unit results.
+
 The fixed live setup proposal is prepared locally with finite refs, scoped credentials, Pages
 policy, nine actual scenarios and exact-ID cleanup. Numeric IDs, account choices, release pins
 and the runnable two-shard capture workload remain unresolved. No external resource or setting

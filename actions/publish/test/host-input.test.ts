@@ -212,4 +212,15 @@ describe("trusted action invocation and private filesystem boundary (composition
     });
     assert.deepEqual(observations,["payload","restart","verify","cleanup","output"].map(mode=>({mode,exchanged:true,refused:true})));
   });
+  it("restart cleanup removes the complete actual assembled sibling tree and preserves outside files",async()=>{
+    const store:Store={schemaVersion:1,marker:"pixelwatch-store",repositoryId:"11",dataVersion:1,txn:0,runs:[]},bytes=canonicalBytes(store);
+    const site=await assembleSite({config:{schemaVersion:1,source:{workflowIds:["9"],events:["workflow_dispatch"]},providers:[{id:"p",shards:1}]},configCommit:oid,pages:{url:"https://adopter.github.io/visual-app/",host:"adopter.github.io"},repository:{repositoryId:"11",owner:"adopter",name:"visual-app"},assets:{release:"0.1.0-rc.1",releaseCommit:"b".repeat(40),script:encoded.encode("/* staging I/O fixture, not production-host evidence */")},snapshot:{tip:"c".repeat(40),store,runs:new Map(),files:[{path:"store.json",bytes:bytes.byteLength}],readFile:()=>Promise.resolve(bytes)}});
+    assert.ok(site.files.some(item=>item.path.startsWith("api/v1/schemas/")));assert.ok(site.files.some(item=>item.path.startsWith("app/")));
+    fixture(root=>{
+      const sentinel=join(root,"outside-stage.txt"),sentinelBytes=encoded.encode("outside stage survives");writeFileSync(sentinel,sentinelBytes);
+      const staged=stageSite(root,site.urls.prefix,site.files,encoded.encode("{\"prepared\":1}")),restarted=readStagedSite(staged.capsulePath,staged.capsuleSha256,root);
+      verifyStagedSite(restarted,root);cleanupStagedSite(restarted,root);
+      assert.equal(existsSync(staged.taskRoot),false);assert.deepEqual(readFileSync(sentinel),Buffer.from(sentinelBytes));assert.deepEqual(readdirSync(root),["outside-stage.txt"]);
+    });
+  });
 });
