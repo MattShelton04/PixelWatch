@@ -1,7 +1,7 @@
 import type { Breakdown, ExpiryReason, IgnoredArtifact, PagesSite, PngWorker, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
-import type { Config, Run } from "@pixelwatch/schemas";
+import type { Config, Run, Store } from "@pixelwatch/schemas";
 import type { CommitMetadata, StoreAdapter, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
-import type { GitHubClient, HttpTransport, MissingArtifact, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
+import type { DeploymentHistory, GitHubClient, HttpTransport, MissingArtifact, PublicPagesMetadata, ReportJobIdentity, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
 
 /** Trusted default-branch policy, authenticated target and pinned release inputs. */
 export interface PublisherContext {
@@ -138,6 +138,66 @@ export interface CommentStamp {
   readonly headSha?: string;
   readonly generation: string;
 }
+export interface ProjectionPrepareInput {
+  readonly repository: PublisherContext["repository"];
+  readonly assets: PublisherContext["assets"];
+  readonly report: ReportJobIdentity;
+}
+export type ProjectionDeferredReason = "comment-disabled" | "pr-closed" | "pr-unavailable"
+  | "no-eligible-run" | "pointer-mismatch" | "head-changed" | "comment-order-unproved";
+export interface ProjectionDeferred {readonly prNumber: string; readonly reason: ProjectionDeferredReason}
+/** Exact prepared generation. Persisted capsules omit and reconstruct derived URL methods. */
+export interface PreparedProjection {
+  readonly schemaVersion: 1;
+  readonly context: PublisherContext;
+  readonly defaultBranch: string;
+  readonly report: ReportJobIdentity;
+  readonly deployment: DeploymentHistory;
+  readonly store: Store;
+  readonly records: readonly Run[];
+  readonly site: AssembledSite;
+  readonly targets: readonly ReadinessTarget[];
+  readonly deferred: readonly ProjectionDeferred[];
+}
+export type ProjectionPreparation = {readonly status: "absent"; readonly repositoryId: string}
+  | {readonly status: "prepared"; readonly projection: PreparedProjection};
+export interface ProjectionPrepareDependencies {
+  readonly forge: Pick<GitHubClient, "readDefaultConfig" | "getPages" | "getPullRequest">;
+  readonly metadata: PublicPagesMetadata;
+  /** Constructed from fresh authenticated policy after the workflow lock, never preloaded. */
+  readonly openStore: (input: {readonly repository: PublisherContext["repository"]; readonly defaultBranch: string; readonly branch: string})
+    => Promise<{readonly store: Pick<StoreAdapter, "read">; close(): void | Promise<void>}>;
+  readonly transport: HttpTransport;
+  readonly timing: Timing;
+  readonly signal?: AbortSignal;
+}
+export interface ProjectionDeploymentObservation {
+  readonly outcome: "success" | "failure" | "cancelled" | "unknown" | "not-attempted";
+}
+export type ProjectionCommentResult = {readonly prNumber: string; readonly runKey: string} & (
+  {readonly status: "unchanged" | "created" | "updated" | "recovered"; readonly commentId: string}
+  | {readonly status: "deferred"; readonly reason: ProjectionDeferredReason | "readiness-pending"}
+  | {readonly status: "failed"; readonly reason: "comment-operation-failed"}
+  | {readonly status: "disabled"}
+);
+export interface ProjectionFinishDependencies {
+  readonly forge: Pick<GitHubClient, "getRepository" | "getPullRequest" | "getPublishingBot" | "reconcileComment">;
+  readonly readiness: ReadinessDependencies;
+  readonly signal?: AbortSignal;
+}
+export interface ProjectionResult {
+  readonly defaultBranch: string;
+  readonly reportWorkflowPath: string;
+  readonly storeTip: string;
+  readonly generation: string;
+  readonly configCommit: string;
+  readonly releaseCommit: string;
+  readonly deploymentId: string;
+  readonly deployment: ProjectionDeploymentObservation["outcome"];
+  readonly readiness: ReadinessResult;
+  readonly comments: readonly ProjectionCommentResult[];
+  readonly deferred: readonly ProjectionDeferred[];
+}
 export interface CommentRenderInput {
   readonly context: PublisherContext;
   readonly run: Run;
@@ -178,6 +238,8 @@ const DIAGNOSTIC_CODES = new Set([
   "maintenance-input-invalid", "maintenance-budget-refused", "maintenance-plan-invalid",
   "maintenance-cas-invalid", "maintenance-checkpoint-failed", "maintenance-lease-exhausted",
   "maintenance-cancelled", "maintenance-operation-failed", "maintenance-timing-invalid",
+  "projection-input-invalid", "projection-operation-failed", "projection-cancelled",
+  "projection-site-ownership-refused", "projection-pages-setup-required", "projection-state-invalid",
 ]);
 const diagnosticIdentity = new WeakMap<object, string | undefined>();
 export class PublisherError extends Error {

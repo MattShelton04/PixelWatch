@@ -5,8 +5,11 @@ Base: aa3dcb98acaa60b1c445e9958a1ee6e33e6043d2, functional6547d469. Required rea
 15/16/19/22/24–29; source/readiness/comment/maintenance contracts and actual forge/store/core.
 The root owns shared contracts/errors/index/manifests/workflows/ADRs/docs and integration.
 
-This freeze implements no projector and proves no deployment. Exact TypeScript DTOs will be
-committed before a dependent author starts; no agent invents ports during implementation.
+This freeze implements no projector and proves no deployment. Exact TypeScript DTOs are in
+publisher/src/types.ts and forge-github/src/public-metadata-types.ts. `prepareProjection(input,
+dependencies):Promise<ProjectionPreparation>`, `finishProjection(prepared,observation,
+dependencies):Promise<ProjectionResult>` and `renderProjectionSummary(result):string` are the
+fixed future exports. No dependent author starts before this commit or invents new ports.
 
 ## Inputs and operations
 
@@ -40,6 +43,15 @@ must be privately owned. Public persistence/restoration verifies versions/genera
 all allowlisted paths/categories/sizes/hashes/exact bytes and reconstructs equivalent actual
 assembly before writes. No token/raw artifact/foreign executable/arbitrary callbacks or URLs.
 The action keeps its private capsule outside the uploaded root; no cross-workflow cache/upload.
+AssembledSite's URL methods are derived trusted functions, never persisted function data. Disk
+capsules record bounded JSON metadata/byte inventories, and reconstruct URL builders and exact
+assembly from checked context/records/file bytes. No caller function is restored from disk.
+Preparation and finish each use an injected600000ms outer scope, intrinsic private cancellation,
+and complete acquisition/cleanup accounting. Finish also uses the actual readiness scope; if
+its outer scope expires after a served observation, it records that observation but starts no
+new sticky mutation. Already-sent comment recovery remains bounded and truthful through the
+adapter; teardown cannot invent successful mutations or conceal a received accepted operation.
+Summary derives trusted workflow basename/default ref for a fixed gh workflow repair command.
 
 `finishProjection` consumes only this prepared generation and an actual official step outcome.
 It never substitutes later store runs. Actual waitForReadiness checks all selected pointers/site
