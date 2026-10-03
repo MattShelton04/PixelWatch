@@ -66,6 +66,10 @@ export type GitOid2 = string;
  * Git object ID (SHA-1 or SHA-256), not a content hash.
  */
 export type GitOid3 = string;
+/**
+ * Git object ID (SHA-1 or SHA-256), not a content hash.
+ */
+export type GitOid4 = string;
 export type ReleaseVersion = string;
 export type ResultStatus =
   "missing" | "failed" | "incomparable" | "added" | "removed" | "unchanged" | "subtle" | "changed";
@@ -87,15 +91,15 @@ export type NullableRunKey = RunKey | null;
 /**
  * Git object ID (SHA-1 or SHA-256), not a content hash.
  */
-export type GitOid4 = string;
-/**
- * Git object ID (SHA-1 or SHA-256), not a content hash.
- */
 export type GitOid5 = string;
 /**
  * Git object ID (SHA-1 or SHA-256), not a content hash.
  */
 export type GitOid6 = string;
+/**
+ * Git object ID (SHA-1 or SHA-256), not a content hash.
+ */
+export type GitOid7 = string;
 /**
  * Absolute HTTPS URL built from the configured origin/prefix and generated IDs only.
  */
@@ -103,7 +107,7 @@ export type HttpsUrl = string;
 /**
  * Git object ID (SHA-1 or SHA-256), not a content hash.
  */
-export type GitOid7 = string;
+export type GitOid8 = string;
 
 /**
  * bundle@1 (02 §2): one uploaded part's complete unit catalog. Written by the untrusted capture side; everything here is a claim.
@@ -328,16 +332,19 @@ export interface SourceEnvelope {
   attempt: GitHubId;
   event: "pull_request" | "push" | "workflow_dispatch";
   createdAt: Timestamp;
-  workflowRef: string;
-  workflowSha: GitOid;
+  /**
+   * Executed source workflow ref, only when independently corroborated. Omitted when unavailable; never inferred from another ref or a capture claim.
+   */
+  workflowRef?: string;
+  workflowSha?: GitOid1;
   association: Association;
   /**
    * Corroborated commits, each in its own field and never copied from another (01 §4.3).
    */
   commits: {
-    head?: GitOid1;
-    base?: GitOid2;
-    baseBranch?: GitOid3;
+    head?: GitOid2;
+    base?: GitOid3;
+    baseBranch?: GitOid4;
   };
   configSha: GitOid;
   releaseSha: GitOid;
@@ -512,9 +519,9 @@ export interface Changes {
     createdAt: Timestamp;
     association: "corroborated" | "none" | "ambiguous";
     prNumber?: GitHubId;
-    headSha?: GitOid4;
-    baseSha?: GitOid5;
-    baseBranchSha?: GitOid6;
+    headSha?: GitOid5;
+    baseSha?: GitOid6;
+    baseBranchSha?: GitOid7;
   };
   captureClaimsTrusted: false;
   claims: {
@@ -600,6 +607,6 @@ export interface PrPointer {
   schemaVersion: 1;
   prNumber: GitHubId;
   runKey: RunKey;
-  headSha?: GitOid7;
+  headSha?: GitOid8;
   generation: Sha256;
 }

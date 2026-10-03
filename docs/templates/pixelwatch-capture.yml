@@ -8,8 +8,8 @@
 # PixelWatch can't enforce these on your workflow. If you weaken them, the fork-safety guarantees
 # no longer hold.
 #
-# Status: pre-release. The conversion step needs the M0.3 converters. The base-commit rule is
-# written from 01 §4.4 and will be confirmed by live spike S11 (M0.5).
+# Status: pre-release. M0.3 converters are implemented. The base rule is confirmed for
+# same-repo capture (ADR 0007); integrated fork evidence remains required in M2.6.
 name: PixelWatch Capture
 
 on:

@@ -220,7 +220,8 @@ analysis version and never rewrites an existing `changes.json` URL.
 ## 8. Source envelope and idempotency
 
 The publisher builds the envelope itself: repository ID, workflow ID, source run ID and attempt,
-event, source-created timestamp, workflow ref/SHA from GitHub, resolved PR association (or none),
+event, original run-created timestamp, optional independently corroborated workflow ref/SHA,
+resolved PR association (or none),
 corroborated base/head commits, config SHA, release SHA. It requires a completed run of the
 configured workflow and an allowed event. `workflow_run` payload data must match the REST
 response; a mismatch fails safely.
@@ -230,7 +231,8 @@ response; a mismatch fails safely.
   - `head`: the target;
   - `base`: the selected baseline;
   - `baseBranch`: the event's base-branch commit (ADR 0007), pull requests only.
-  The workflow SHA is `workflowSha`. With no `base`, every base side is `none`, and no base part
+  The workflow SHA is optional `workflowSha`; unavailable workflow provenance is omitted with
+  a summary diagnostic, never filled from another SHA or claim (ADR 0016). With no `base`, every base side is `none`, and no base part
   is expected (ADR 0011).
 - **Stream** (ADR 0011). Only the envelope decides a run's stream:
   - `push` joins `main`;
@@ -242,7 +244,7 @@ response; a mismatch fails safely.
   returned unchanged and never overwritten, whatever publisher release or config the retry has.
   A completed attempt's artifacts can't change, so the key identifies the input; there is no
   content digest to compare (ADR 0010). Reanalysis is a separate explicit operation.
-- **History order:** source-created time, then numeric run ID, then numeric attempt. Publisher
+- **History order:** original `runs/{id}.created_at`, then numeric run ID, then numeric attempt (ADR 0016). Publisher
   finish time doesn't count.
 
 ## 9. Comparator policy (M0 input gate)
@@ -271,3 +273,5 @@ changed areas is presentation, derived from stored regions, and not part of the 
 - Unknown versions, unsafe paths/URLs/limits, source-policy errors and any other invalid setting
   stop **before any store write, deployment or comment**. Nothing falls back to a default.
 - Unknown `bundle` schema versions produce an actionable unsupported-input diagnostic.
+  For selected expected parts they refuse the whole ingestion before sibling image admission;
+  name-excluded artifacts remain unopened (ADR 0016).

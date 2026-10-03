@@ -6,6 +6,7 @@ export * from "./comparator/compare.ts";
 export * from "./comparator/policy.ts";
 export * from "./comparator/result.ts";
 export { type DecodeOptions, type PngHeader, decodePng } from "./png/decode.ts";
+export { type PngStructure, parsePngStructure } from "./png/chunks.ts";
 export { encodePng } from "./png/encode.ts";
 export { PngError, type PngErrorCode } from "./png/errors.ts";
 export { type JobOptions, PngWorker, type PngWorkerOptions } from "./png/isolated.ts";
@@ -43,8 +44,10 @@ export {
   LLMS_TXT,
   SITE_JSON,
   type ApiSchemaKind,
+  type StorePath,
   apiSchemaPath,
   appScriptPath,
+  classifyStorePath,
   changesPath,
   derivedPath,
   permalinkPath,

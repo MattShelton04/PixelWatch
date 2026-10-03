@@ -34,7 +34,7 @@ export interface StoreTree {
   readonly store: Store;
   /** Every file in the store tree, with its size. */
   readonly files: readonly StoreFile[];
-  /** Run records by run key: at least every run a plan keeps. */
+  /** Run records by run key: every indexed run, including ones retention may expire. */
   readonly runs: ReadonlyMap<string, Run>;
   readonly grace?: readonly GraceNamespace[] | undefined;
   /**
@@ -126,6 +126,10 @@ export class StoreGraph {
     this.sizes = sizes;
     this.graceFiles = graceFiles;
     this.derivedFiles = derivedFiles.sort();
+    // Validate the whole indexed graph before selection. Otherwise an expired malformed or
+    // newer-version record could evade refs() and become a deletion instead of a refusal.
+    for (const key of this.entries.keys()) this.refs(key);
+    for (const namespace of this.grace.keys()) this.graceRefs(namespace);
   }
 
   /** Every file in the tree, by path. */

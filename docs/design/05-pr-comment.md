@@ -36,6 +36,8 @@ Reconciliation runs inside the serialized projection job (03 §7), after readine
 
 1. For each retained PR needing an update, choose the newest eligible stored run for its
    **current** head (by source order).
+   If the projected latest pointer does not name this run, defer with a diagnostic (ADR 0016).
+   The pointer remains the stream's latest run under ADR 0013.
 2. Immediately before writing, re-fetch the PR head and the existing comment. If the head
    changed, skip and record why; the next capture repairs it. An older publisher can never roll
    a comment back.
@@ -89,6 +91,6 @@ Adversarial cases:
 - expired preview image;
 - the 60,000-byte boundary with multibyte text;
 - required-warning retention;
-- invalid presentation config (fallback);
+- invalid presentation config (hard refusal, ADR 0010);
 - unknown config version (hard failure);
 - GitHub rejecting the body (fallback).

@@ -5,7 +5,7 @@ import { convertPropertyScope } from "../src/convert/propertyscope.ts";
 import { convertTracePilot } from "../src/convert/tracepilot.ts";
 import type { Run } from "../src/generated/types.ts";
 import { formatRunKey, parseArtifactName } from "../src/ids.ts";
-import { validateDocument } from "../src/validate.ts";
+import { parseDocument, validateDocument } from "../src/validate.ts";
 import { testdata, tinyPng } from "./helpers.ts";
 
 function psManifest(provider: string, revision = "head"): string {
@@ -16,6 +16,33 @@ function psManifest(provider: string, revision = "head"): string {
     cases: [{ id: "home", provider, status: "captured", errors: [] }],
   });
 }
+
+describe("source workflow provenance", () => {
+  it("accepts unavailable workflow provenance without inventing a SHA or ref", () => {
+    const parsed = parseDocument("run", testdata("schemas", "run", "valid", "all-eight-statuses.json"));
+    if (!parsed.ok) throw new Error("invalid fixture");
+    const original = parsed.value;
+    const run = structuredClone(original);
+    delete (run.source as Partial<Run["source"]>).workflowRef;
+    delete (run.source as Partial<Run["source"]>).workflowSha;
+    const checked = validateDocument("run", run);
+    expect(checked.ok).toBe(true);
+    if (checked.ok) {
+      expect(checked.value.source).not.toHaveProperty("workflowRef");
+      expect(checked.value.source).not.toHaveProperty("workflowSha");
+      expect(checked.value.source.commits).toEqual(original.source.commits);
+    }
+    expect(validateDocument("run", original).ok).toBe(true);
+  });
+
+  it("still validates optional workflow provenance when present", () => {
+    const parsed = parseDocument("run", testdata("schemas", "run", "valid", "all-eight-statuses.json"));
+    if (!parsed.ok) throw new Error("invalid fixture");
+    for (const fields of [{ workflowSha: "main" }, { workflowRef: "../../head" }]) {
+      expect(validateDocument("run", { ...parsed.value, source: { ...parsed.value.source, ...fields } })).toMatchObject({ ok: false, issue: { code: "schema" } });
+    }
+  });
+});
 
 describe("provider identity", () => {
   const images = new Map([["home.png", tinyPng()]]);

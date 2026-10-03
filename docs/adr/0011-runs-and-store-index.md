@@ -30,7 +30,7 @@ hasn't shipped (as in ADR 0010).
 
 | Field | Meaning |
 |---|---|
-| `workflowSha` | The source run's workflow SHA |
+| `workflowSha` | Optional independently corroborated source workflow SHA; unavailable provenance is omitted, never inferred (ADR 0016) |
 | `commits.head` | Target: the PR head or the pushed commit |
 | `commits.base` | Selected baseline: the merge base for a PR, the first parent for a push. Absent means no baseline. |
 | `commits.baseBranch` | The event's base-branch commit (`pull_request.base.sha`). Pull requests only. |

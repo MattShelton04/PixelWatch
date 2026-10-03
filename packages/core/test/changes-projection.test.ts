@@ -40,6 +40,17 @@ const BASE = "https://owner.github.io/repo/pixelwatch/";
 const URLS = siteUrls(LOCATION);
 const decoder = new TextDecoder("utf-8", { fatal: true });
 
+describe("optional source workflow provenance", () => {
+  it("preserves exact changes.json bytes when unavailable workflow provenance is omitted", () => {
+    for (const original of Object.values(GOLDEN_RUNS)) {
+      const run = structuredClone(original);
+      delete run.source.workflowRef;
+      delete run.source.workflowSha;
+      expect(canonicalBytes(projectChanges(run, URLS))).toEqual(canonicalBytes(projectChanges(original, URLS)));
+    }
+  });
+});
+
 function golden(name: keyof typeof GOLDEN_RUNS): Run {
   return structuredClone(GOLDEN_RUNS[name]);
 }

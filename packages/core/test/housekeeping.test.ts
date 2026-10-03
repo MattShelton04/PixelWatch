@@ -157,6 +157,31 @@ function applied(before: HousekeepingInput, plan: Extract<HousekeepingPlan, { ok
 }
 
 describe("retention (03 §5)", () => {
+  it("refuses malformed expired grace references before GC can delete their namespace", () => {
+    for (const refs of [{ blobs: [hash(8)] }, { blobs: [], derived: [hash(9)] }]) {
+      const w = world([{ key: "6-a1", at: 6, stream: "main" }]);
+      const files = [...w.files, { path: "data/v2/runs/old/run.json", bytes: 100 }];
+      const grace = [{ namespace: "data/v2", until: "2026-10-01T00:00:00Z", ...refs }];
+      expectCode(() => planHousekeeping(input({ ...w, files }, { grace })), "missing-file");
+    }
+  });
+
+  it("refuses unknown or malformed expired run records before retention can delete them", () => {
+    for (const edit of [
+      (run: Run) => ({ ...run, schemaVersion: 999 }),
+      (run: Run) => ({ ...run, source: { ...run.source, repositoryId: "99" } }),
+      (run: Run) => ({ ...run, source: { ...run.source, createdAt: t(9) } }),
+    ]) {
+      const w = world([{ key: "5-a1", at: 5, stream: "main" }, { key: "6-a1", at: 6, stream: "main" }]);
+      const old = w.runs.get("5-a1");
+      if (old === undefined) throw new Error("missing fixture");
+      w.runs.set("5-a1", edit(old) as Run);
+      expectCode(() => planHousekeeping(input(w, { policy: { ...POLICY, mainRuns: 1 } })), "run-mismatch");
+    }
+    const missing = world([{ key: "5-a1", at: 5, stream: "main", blobs: [1] }, { key: "6-a1", at: 6, stream: "main" }]);
+    expectCode(() => planHousekeeping(input({ ...missing, files: missing.files.filter((f) => f.path !== blobPath(hash(1))) }, { policy: { ...POLICY, mainRuns: 1 } })), "missing-file");
+  });
+
   it("keeps the latest N main runs and the latest N runs per PR", () => {
     const w = world([
       ...[1, 2, 3, 4, 5].map((n) => ({ key: `${String(n)}-a1`, at: n, stream: "main" })),

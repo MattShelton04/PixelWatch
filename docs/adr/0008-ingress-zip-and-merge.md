@@ -74,6 +74,8 @@ not run in a worker.
 - **Part scope:** a malformed archive, invalid `bundle.json`, identity mismatch, file-set
   mismatch, an image outside the PNG profile, or a conflict. The part is rejected with a bounded
   diagnostic, and valid siblings form an explicitly incomplete run (02 §5).
+  ADR 0016 makes a selected unsupported bundle schema an ingestion-scope refusal, before
+  sibling image admission. Name-excluded artifacts remain unopened.
 - **Ingestion scope:** the whole ingestion is refused, and nothing is published (02 §5 "Work").
   This covers:
   - more than 4096 entries, or more than 512 MiB actually inflated, summed across every archive

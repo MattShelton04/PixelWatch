@@ -5,7 +5,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { type Bundle, unitFileName } from "@pixelwatch/schemas";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { type BlobCodec, blobPath } from "../src/blob-pool.ts";
 import { IngressError } from "../src/ingest/errors.ts";
 import { ingestArtifacts } from "../src/ingest/ingest.ts";
@@ -43,6 +43,35 @@ async function refusal(promise: Promise<unknown>): Promise<IngressError> {
 }
 
 describe("ingestion", () => {
+  it("refuses selected unknown bundle versions before decoding or writing any sibling blob", async () => {
+    const cfg = config([["p", 2]]);
+    const good = artifact(head([{ viewId: "a", state: "captured" }], [1, 2]));
+    const bad = artifact(head([{ viewId: "b", state: "captured" }], [2, 2]), { edit: (bundle) => ({ ...bundle, schemaVersion: 2 }) });
+    for (const order of [[good, bad], [bad, good]]) {
+      const pool = memoryPool();
+      let decodes = 0;
+      const codec: BlobCodec = { decode(bytes) { decodes++; return decodePng(bytes); }, encode: encodePng };
+      const error = await refusal(ingest(order, { config: cfg, pool, codec }));
+      expect(error).toMatchObject({ code: "ingest-unsupported-version", scope: "ingestion" });
+      expect(decodes).toBe(0);
+      expect(pool.blobs.size).toBe(0);
+    }
+  });
+
+  it("uses an injected ingestion deadline without creating a wall-clock timer", async () => {
+    const timer = vi.spyOn(AbortSignal, "timeout");
+    try {
+      const deadline = new AbortController();
+      const part = artifact(head([{ viewId: "a", state: "captured" }]));
+      const pool = memoryPool();
+      const codec: BlobCodec = { decode(bytes) { deadline.abort(); return decodePng(bytes); }, encode: encodePng };
+      const error = await refusal(ingest([part], { pool, codec, deadline: deadline.signal }));
+      expect(error).toMatchObject({ code: "ingest-aborted", scope: "ingestion" });
+      expect(pool.blobs.size).toBe(0);
+      expect(timer).not.toHaveBeenCalled();
+    } finally { timer.mockRestore(); }
+  });
+
   it("takes dimensions from decoding, never from bundle.json", async () => {
     const png = tinyPng(5, 3, 7);
     const spec = head([{ viewId: "home", state: "captured", png }]);
