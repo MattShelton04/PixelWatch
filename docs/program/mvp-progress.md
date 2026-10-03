@@ -6,6 +6,10 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR22 opened at810b157; hosted unit1120/54 and browser24/24 pass on Linux/Windows. CodeQL
+  language/action jobs succeeded but aggregateHIGH alerts3/4 flag unanchored marker regexes;
+  merge HELD. Root replaces searches with bounded literal parsing;22/22 tests pass before/
+  after, preserving semantics. Independent correction review and new exact-head gates pending.
 - Integrated source6547d469800593f23a74a8cc2bd503c03d1ff070 passes complete `pnpm -s check`:
   1120tests/54files,exit0,359.25s; lint,typecheck,actionlint,zizmor0. Browser24/24 across all
   three engines,exit0,26.0s. Exact source-job bytes match author3e315b1; public ingestJob exists.

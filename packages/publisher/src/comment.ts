@@ -76,15 +76,22 @@ export function renderComment(input: CommentRenderInput): RenderedComment {
 }
 
 /** Stamp data alone authenticates no author and selects no mutation target. */
+function isolatedMarker(body: string, prefix: string): string | undefined {
+  // Literal searches have bounded linear work even for a body full of partial markers.
+  // Count partial duplicates before extracting the first terminator; none certify ownership.
+  const start = body.indexOf(prefix);
+  if (start < 0 || body.indexOf(prefix,start + prefix.length) >= 0) return undefined;
+  const end = body.indexOf(" -->",start + prefix.length);
+  if (end < 0) return undefined;
+  const marker = body.slice(start,end + 4);
+  return marker.includes("\r") || marker.includes("\n") ? undefined : marker;
+}
 export function readCommentStamp(body: string, repositoryId: string): CommentStamp | undefined {
   try {
     if (typeof body !== "string" || length(body) > MAX_BODY || typeof repositoryId !== "string" || !isGitHubId(repositoryId)) return undefined;
-    if ([...body.matchAll(/<!-- pixelwatch:repo:/gu)].length !== 1 || [...body.matchAll(/<!-- pixelwatch:report:/gu)].length !== 1) return undefined;
-    const ownership = [...body.matchAll(/<!-- pixelwatch:repo:[^\r\n]*? -->/gu)];
-    if (ownership.length !== 1 || ownership[0]?.[0] !== `<!-- pixelwatch:repo:${repositoryId} -->`) return undefined;
-    const reports = [...body.matchAll(/<!-- pixelwatch:report:[^\r\n]*? -->/gu)];
-    if (reports.length !== 1) return undefined;
-    const match = /^<!-- pixelwatch:report:v1:([0-9]+-a[0-9]+):([a-f0-9]+|none):([a-f0-9]{64}) -->$/u.exec(reports[0]?.[0] ?? "");
+    if (isolatedMarker(body,"<!-- pixelwatch:repo:") !== `<!-- pixelwatch:repo:${repositoryId} -->`) return undefined;
+    const report = isolatedMarker(body,"<!-- pixelwatch:report:"); if (report === undefined) return undefined;
+    const match = /^<!-- pixelwatch:report:v1:([0-9]+-a[0-9]+):([a-f0-9]+|none):([a-f0-9]{64}) -->$/u.exec(report);
     if (match === null) return undefined;
     const [,runKey = "",head = "",generation = ""] = match;
     if (parseRunKey(runKey)?.kind !== "source" || (head !== "none" && !OID.test(head))) return undefined;
