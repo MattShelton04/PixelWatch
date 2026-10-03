@@ -6,6 +6,41 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR #20 is held for REVIEW-W2-V-PATH-1 (P2), a reproduced local preview substitution race;
+  hosted CodeQL reported two path-injection alerts on the original preview. Root replaced
+  request-derived filesystem resolution with a captured inventory and checked descriptor reads.
+  New inventory regression first failed (one failure / six tests); the forced native race
+  first failed (one test, actual 200 versus expected 404). Corrected focused suite passes
+  seven tests / two files; independent current-diff verification also passes. Stable source
+  `3bffa7e` full check exit0, 826/43 (254.75 s), browser exit0 24/24 all three engines (50.1 s),
+  full simulation exit2, 9 harness / 2 product PASS / 12 NOT RUN with unchanged normalized hashes.
+  Stable-SHA independent review and hosted exact-head CodeQL remain integration gates.
+- Independent review capacity rotated after three service-interrupted reviewer turns. Assembly
+  author now reviews root viewer tooling, admission author reviews assembly/shared diagnostics;
+  neither approves their own implementation. Prior concrete findings remain tracked until fix
+  verification; interrupted turns are not approvals.
+
+- Combined viewer/store source `47e0626`: full check exit0, 42 files / 824 tests (199.51 s),
+  all linters/types pass; full browser acceptance exit0, 24/24 (33.2 s), all three engines.
+  Full simulation exit2, nine harness / two production PASS / twelve NOT RUN; every normalized
+  hash matches final merged-store proof. Independent integrated-source/lock/threat/workflow
+  review passed 14 focused tests and workflow lint. One viewer PR will now run hosted acceptance;
+  real Pages/live fork, M2 exit and all M3 gates remain open.
+
+- PR #19 merged `ce226ca011cca71882a0f102ef8f33de42783d2f` after final independent review
+  and every required check passed. Exact head `fe1ff57` hosted run `37103496303`: Linux and
+  Windows each passed 785/37; both full simulation commands exited2, 9 harness / 2 product
+  PASS / 12 NOT RUN. All sixteen normalized trace hashes match each other and local source
+  `7b0743d` results. Runner P1/P2 findings are independently verified closed (14 focused tests).
+- Viewer `a56e398` full check exit0, 770/36 (55.86 s); independent docs/workflow review
+  passed 7 trace tests and workflow lint. Actual retained hostile-browser rerun at a56e398
+  passed 18/18; raw transcript independently inspected/scanned clean. The viewer has been
+  rebased onto merged store main with empty viewer/schema/tool source diff. Root corrected
+  the workspace-importer lockfile conflict explicitly; no dependency versions changed.
+  Final combined check/browser/coverage and hosted viewer gates are now running/pending.
+
+The entries below are historical checkpoints, superseded by the current facts above.
+
 - Final store/runner source `7b0743d`: Windows full check exit0, 785 tests / 37 files,
   workflow linters pass (201.57 s). Full no-network reporter exit2: nine harness PASS,
   two product cases PASS across all four seeds twice, twelve NOT RUN. Exact trace hashes
@@ -38,6 +73,18 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   independent tooling/security reviewer, plus root integration/runner. Four total slots.
 
 The following entries are earlier checkpoints, superseded by the facts above.
+- Viewer author and independent unfiltered browser acceptance each passed 24/24 at `bb0e05a`
+  (eight per Chromium/Firefox/WebKit); independent eighteen hostile browser probes passed.
+  P1/P2 cancellation, Host and nested-entry findings all independently closed; exact transcripts
+  and initial 21/24 failure are retained. Rebase onto main `44420ca` produced `b500453` with
+  empty viewer/schema/tool tree diff; frozen offline install and actual fixture generation pass.
+- Supported actual final app preview is running at `http://127.0.0.1:4173/pixelwatch/runs/11-a1/`
+  via `pixelwatch-dev serve`; synthetic local inputs explicitly labelled, real core projection/
+  PNGs/generated entries/app. Root CI now runs all three engines on Linux/Windows with no
+  credentials/cache/filters/skips. Owner approved separate-suite threat status bookkeeping.
+  Final integrated check and hosted/real Pages/live gates remain pending.
+
+The entries below are earlier checkpoints, superseded by current facts above.
 
 - Owner explicitly authorized merging completed reviewed slices as the program proceeds.
   Existing squash-only policy and required checks are preserved; no settings were changed.

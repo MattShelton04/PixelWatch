@@ -4,6 +4,7 @@
 // On top of RFC 8259 it rejects: inputs over the byte limit, nesting over the depth limit, a
 // byte-order mark, invalid UTF-8, lone surrogate escapes, duplicate keys, prototype-pollution
 // keys, and any number that isn't a safe integer (PixelWatch documents hold integers only).
+import { utf8Length } from "./text.ts";
 
 export type JsonValue = null | boolean | number | string | JsonValue[] | JsonObject;
 export interface JsonObject {
@@ -49,7 +50,7 @@ function describeKey(key: string): string {
 export function parseJson(input: Uint8Array | string, limits: JsonLimits = DEFAULT_JSON_LIMITS): JsonValue {
   let text: string;
   if (typeof input === "string") {
-    if (Buffer.byteLength(input, "utf8") > limits.maxBytes) {
+    if (utf8Length(input) > limits.maxBytes) {
       throw new JsonError("json-too-large", `JSON exceeds ${String(limits.maxBytes)} bytes`);
     }
     if (!input.isWellFormed()) throw new JsonError("json-encoding", "JSON text is not well-formed Unicode");

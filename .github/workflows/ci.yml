@@ -79,3 +79,33 @@ jobs:
       # No continue-on-error, filtered case list, credential, cache or GitHub settings change.
       - name: Run harness and report full simulation coverage
         run: pnpm test:simulation
+
+  viewer:
+    name: Viewer (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.tools/playwright
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up pnpm (version from packageManager)
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Set up Node (version from .node-version)
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install all three pinned browser engines and platform dependencies
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Run every viewer case in all three engines
+        run: pnpm test:viewer

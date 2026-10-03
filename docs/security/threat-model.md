@@ -28,13 +28,16 @@ stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
 | Status | Meaning |
 |---|---|
-| `passing` | The test exists and runs in `pnpm check`. It may cover only part of the rule; the invariant column says which part. |
+| `passing` | The named test exists and executes in its acceptance suite: unit/property in `pnpm check`, browser in unfiltered `pnpm test:viewer` across Chromium/Firefox/WebKit, product simulation in the full `pnpm test:simulation` reporter. The invariant/evidence gives the exact scope and command; a partial rule or incomplete full simulation is never whole-MVP acceptance. |
 | `planned` | Not executable yet. A written simulation specification may exist, but absent product adapters are NOT RUN. The owner task supplies the implementation at this path, or moves it and updates this row in the same PR. |
 | `recorded` | Manual evidence exists at the path given. |
 | `evidence-planned` | Manual evidence the owner task or spike must record (usually under `docs/evidence/`, 07 §7). |
 
 When a task lands a planned test, it flips the row to `passing` in the same PR, with the real
 path and test title. Trusted-path PRs name the rule IDs they touch (08 §10).
+Owner approved this acceptance-suite clarification on 2026-10-03. Browser passing rows below
+have actual local three-engine evidence in `docs/evidence/m2.7-minimal-viewer.md`; hosted and
+real Pages/live evidence remain separate gates.
 
 ## 2. Assets and actors
 
@@ -313,6 +316,9 @@ Planned paths are provisional (§1).
 | R4.5-08 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | Sub-case D: an older-release projector running after a newer one deploys a store tip no older than the previous one, doesn't roll back any comment, and its `site.json` names its own release | M2.3 |
 | R4.6-01 | browser | planned | `packages/viewer/test/storage.spec.ts` | Poisoned `localStorage` values are validated and ignored; the app never writes tokens or approvals | M2.7 |
 | R4.6-02 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | Data can't select app code | M0.3 |
+| R4.6-02 | unit | passing | `packages/schemas/test/browser-validation.test.ts` › "the browser validation bundle executes hostile fixtures without Node globals or string code generation" | Actual bundled static validation works with code generation forbidden and no Node globals; the direct new Function control fails. Real engine CSP remains M2.7. | M2.7 |
+| R4.3-08 | unit | passing | `packages/schemas/test/browser-utf8.test.ts` › "bounds and parses Unicode JSON without a browser Buffer global" | String byte limits apply without Node Buffer and before encoding allocation; ill-formed text and encoded overflow refuse | M2.7 |
+| R4.2-05 | unit | passing | `packages/schemas/test/browser-validation.test.ts` › "static browser parsing rejects duplicate keys unsafe keys unknown versions and oversized JSON" | Browser schema dispatch and strict JSON cannot misparse unknown versions or hostile document structure | M2.7 |
 | R4.6-02 | browser | planned | `packages/viewer/test/csp.spec.ts` | In Chromium, Firefox and WebKit the entry page's CSP meta is first, the app loads only with a matching SRI hash, a tampered app is blocked, and no service worker registers | M2.7 |
 | R4.6-03 | evidence | recorded | `docs/security/threat-model.md` | §7 records that framing isn't prevented on Pages without a header | M0.4 |
 | R4.6-04 | lint | passing | `tools/eslint-smoke.test.ts` › "reports a sink error on every marked line of the bad fixture, and nowhere else" | `innerHTML`, `outerHTML` and `insertAdjacentHTML` fail lint | M0.1 |
@@ -369,6 +375,30 @@ Planned paths are provisional (§1).
 | R4.3-05 | unit | passing | `packages/forge-github/test/client.test.ts` › "copies selected API-listed artifacts before asynchronous download callbacks can append forged IDs" | Appending an unlisted descriptor during the first download cannot bypass original selection validation or budgets | M2.1 |
 | R4.3-02, R4.6-07 | unit | passing | `packages/forge-github/test/client.test.ts` › "copies trusted comment targets before asynchronous ownership checks and guards" | Callback changes to PR number, bot identity and body cannot redirect the captured trusted mutation | M2.1 |
 | R4.6-07 | unit | passing | `packages/forge-github/test/client.test.ts` › "comment guard cannot redirect validated mutation targets or payloads" | A guard receives a separate frozen comment snapshot; changing it cannot redirect the private owned comment ID or payload | M2.1 |
+| R4.6-02, R4.5-05 | unit | passing | `packages/viewer/test/entry.test.ts` › "puts the hash-only CSP first and pins exactly one classic defer script with matching SRI" | Generated entry pins exact trusted style/script bytes with first-in-head hash-only CSP and one classic defer script; no store-selected executable | M2.7 |
+| R4.6-04, R4.6-06 | unit | passing | `packages/viewer/test/entry.test.ts` › "uses escaped bounded capture text and suppresses bidi controls and mentions in the static failure summary" | Static capture text stays escaped and bounded, without bidi controls or literal mentions | M2.7 |
+| R4.6-05 | unit | passing | `packages/viewer/test/entry.test.ts` › "builds source links only from the trusted repository and validated source identity" | Source links derive from trusted repository/source IDs, never claims, with noopener | M2.7 |
+| R4.3-11, R4.3-12 | unit | passing | `packages/viewer/test/entry.test.ts` › "keeps static reload home summary and source links outside the app root when JavaScript is absent" | Failed/missing counts and coverage remain visible with advisory warning and static recovery/source links | M2.7 |
+| R4.3-12 | unit | passing | `packages/viewer/test/entry.test.ts` › "shows unknown missing-part unit counts without claiming complete coverage or zero missing work" | Missing catalogs retain unknown counts; incomplete coverage cannot become complete or zero work | M2.7 |
+| R4.6-05 | unit | passing | `packages/viewer/test/client.test.ts` › "validates every generated bootstrap marker and the compiled release before transport" | Invalid generated source/release/root/run markers refuse before requests | M2.7 |
+| R4.6-05 | unit | passing | `packages/viewer/test/client.test.ts` › "requires the exact HTTPS production root while only literal HTTP loopback origins can remap it" | Production observed root must equal canonical HTTPS; literal HTTP loopback alone remaps fixed paths | M2.7 |
+| R4.6-05 | unit | passing | `packages/viewer/test/client.test.ts` › "image mapping requires the exact captured-side pixel hash pool fanout and canonical site namespace" | Images use exact validated canonical hash paths; remote hosts, traversal and alternate hashes refuse | M2.7 |
+| R4.6-02 | unit | passing | `packages/viewer/test/client.test.ts` › "refuses unknown site versions release or repository mismatches before any run request" | Unknown or mismatched site data refuses without selecting new code or requesting a run | M2.7 |
+| R4.3-08 | unit | passing | `packages/viewer/test/client.test.ts` › "bounds streamed JSON to one MiB and cancels the reader before accepting excess bytes" | JSON streams stop at the existing one-MiB cap; overflow reader is cancelled | M2.7 |
+| R4.3-08 | unit | passing | `packages/viewer/test/client.test.ts` › "keeps the request deadline active when native body cancellation rejects" | Rejected cancellation leaves the live deadline until injected abort rather than prematurely disposing resources | M2.7 |
+| R4.3-07, R4.3-08 | unit | passing | `packages/viewer/test/client.test.ts` › "cancels a transport response arriving after the request deadline without parsing or echoing it" | Late ignored-abort response is cancelled, never parsed; fake canary and URL are absent from full errors | M2.7 |
+| R4.6-05 | unit | passing | `tools/viewer/tooling.test.ts` › "loopback preview refuses foreign ambiguous or missing Host before serving generated bytes" | Preview binds exact emitted loopback authority and refuses DNS-rebinding/ambiguous Host before serving bytes | M2.7 |
+| R4.6-05 | unit | passing | `tools/viewer/tooling.test.ts` › "preview CLI advertises existing generated entries for nested prefixes and ignores unrelated directories" | Supported preview advertises validated existing generated roots/run entries for configured prefixes, without unrelated directory guesses | M2.7 |
+| R4.6-05 | unit | passing | `tools/viewer/tooling.test.ts` › "preview request paths select only the captured generated inventory and cannot add active files" | Actual generated files added after startup cannot expand request targets; requests select only captured owned paths. Focused seven-test suite passed; integrated/hosted evidence remains separately gated. | M2.7 |
+| R4.6-05 | unit | passing | `tools/viewer/serve-race.test.ts` › "preview refuses a file replaced by a link after canonical path validation before reading" | A forced native file-substitution interleaving reaches exactly once; descriptor identity/link checks refuse before sending outside bytes. Red and green results are retained in M2.7 evidence. | M2.7 |
+| R4.6-02 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "actual generated run entry loads the final classic app with matching CSP SRI and before after images" | Local test:viewer in all three engines loads real core projection/final app/PNGs with CSP/SRI and no service worker; real Pages remains pending | M2.7 |
+| R4.6-02 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "missing or tampered app bytes leave the generated static reload home and summary usable" | Three-engine local acceptance: missing/substituted app preserves summary/recovery and substituted code never executes | M2.7 |
+| R4.6-01, R4.6-02 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "poisoned shared origin storage cannot select app code destinations or approvals" | Three-engine local acceptance: poisoned storage cannot select code/data/approval destinations, no external request or cookie write | M2.7 |
+| R4.6-04, R4.6-05, R4.6-06 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "capture labels use text nodes with safe links and standard keyboard focus at each viewport" | Three-engine local acceptance at 390/820/1440: markup stays text, bidi removed, mentions neutralized, actual source links/noopener checked, keyboard focus/no overflow | M2.7 |
+| R4.3-11, R4.3-12 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "disabled JavaScript preserves the actual entry summary warnings source and recovery links" | Three-engine local acceptance preserves static warnings/counts/coverage/source/recovery with JavaScript disabled | M2.7 |
+| R4.6-02 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "JSON and PNG unavailability produce useful visible fallbacks without reload loops" | Three-engine local missing JSON/PNG shows fixed visible fallback with recovery links and no automatic navigation loop | M2.7 |
+| R4.3-08 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "large valid runs keep at most one hundred result options and one selected pair in the DOM" | Three-engine local valid 1000-result JSON within one MiB keeps 100 options/one pair; M3 long-image/worker budgets remain separate | M2.7 |
+| R4.6-05 | browser | passing | `packages/viewer/test/browser/viewer.spec.ts` › "only the selected pair is requested and switching units removes prior image sources" | Three-engine local selected images stay under preview root; previous pair sources removed on selection changes | M2.7 |
 <!-- verification:end -->
 
 ### Named race tests (acceptance)
