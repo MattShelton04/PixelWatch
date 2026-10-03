@@ -52,7 +52,13 @@ Corrective `pnpm check`: exit 0, 27 files / 679 tests (42.02 s), lint/typecheck/
 passed. An initial attempt stopped at one unnecessary type assertion; corrected and rerun.
 `pnpm -s test:simulation`: exit 2, 9 harness PASS, 0 product cases ran, 14 NOT RUN / 11 IDs.
 Logs: `.tools/program-pre-check.log`, `.tools/program-pre-simulation.log` (ignored).
-New-commit hosted Linux/Windows checks have not run. Core exports additionally expose the
+Hosted PR #16 exact head `3ef45da`, CI run `37096070619`: Ubuntu 24.04 and Windows 2025
+checks pass, 27 files / 679 tests each. Both full simulation commands report exit 2, 9 harness
+PASS / 14 NOT RUN and identical normalized digest above. Jobs remain red; Windows wrapper
+reports job exit 1 after pnpm's exit 2. CodeQL and dependency review pass. Logs read with
+`gh run view 37096070619 --repo MattShelton04/PixelWatch --log`, saved in ignored
+`.tools/foundation-ci.log`. No complete product coverage claim.
+Core exports additionally expose the
 existing bounded PNG structure and store-path validators for adapters; no new validator or dependency.
 All 14 product simulations, browser, live fork, real publisher Pages/comments, action/release,
 canaries and adoption remain unproved. Historical spikes are not product acceptance.
