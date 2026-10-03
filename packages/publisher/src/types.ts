@@ -1,7 +1,7 @@
 import type { Breakdown, ExpiryReason, IgnoredArtifact, PagesSite, PngWorker, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
 import type { Config, Run, Store } from "@pixelwatch/schemas";
 import type { CommitMetadata, StoreAdapter, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
-import type { DeploymentHistory, GitHubClient, HttpTransport, MissingArtifact, PublicPagesMetadata, ReportJobIdentity, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
+import type { DeploymentHistory, EnvironmentMetadata, GitHubClient, HttpTransport, MissingArtifact, PublicPagesMetadata, ReportJobIdentity, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
 
 /** Trusted default-branch policy, authenticated target and pinned release inputs. */
 export interface PublisherContext {
@@ -153,6 +153,7 @@ export interface PreparedProjection {
   readonly context: PublisherContext;
   readonly defaultBranch: string;
   readonly report: ReportJobIdentity;
+  readonly environment: EnvironmentMetadata;
   readonly deployment: DeploymentHistory;
   readonly store: Store;
   readonly records: readonly Run[];
@@ -194,6 +195,7 @@ export interface ProjectionResult {
   readonly generation: string;
   readonly configCommit: string;
   readonly releaseCommit: string;
+  readonly environmentId: string;
   readonly deploymentId: string;
   readonly deployment: ProjectionDeploymentObservation["outcome"];
   readonly readiness: ReadinessResult;

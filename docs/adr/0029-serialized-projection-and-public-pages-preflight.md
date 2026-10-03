@@ -58,6 +58,11 @@ store closure or listener cleanup fails. Prepared state carries its warnings int
 warnings never certify an unknown operation or turn a refusal into success. This is inferred
 implementation accounting under ADR0014, not an owner change to the security model.
 
+The2026-10-04 contract audit found the frozen DTO omitted the environment identity required
+above. PreparedProjection.environment now holds the validated EnvironmentMetadata, and
+ProjectionResult.environmentId carries it separately from deploymentId. This aligns the DTO
+with the existing decision; it grants no new ownership assertion, route or token permission.
+
 Public metadata uses no token, cookie, redirect following or caller/API-returned destinations.
 Authenticate the trusted report run/selected attempt/ref/SHA, identify the unique API-listed
 project job by exact trusted runner name and fixed project label, and compare only constructed

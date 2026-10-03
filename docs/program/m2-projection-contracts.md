@@ -43,8 +43,13 @@ to name exactly it. Closed/unavailable/no-eligible/pointer-mismatched PRs have f
 diagnostics. Unknown is not closed. No optional image until real generated PNG/probe is proved.
 
 Prepared state contains exact context, original marked store, retained records, generated site,
-readiness targets/deferred outcomes and authenticated report/environment identity. This state
-must be privately owned. Public persistence/restoration verifies versions/generation/provenance/
+readiness targets/deferred outcomes and authenticated report/environment identity. It
+includes the actual validated EnvironmentMetadata as `environment`; ProjectionResult carries
+its numeric `environmentId` separately from the current deployment ID. This2026-10-04 DTO
+correction supplies an omitted field already required by this freeze and ADR0029, rather than
+introducing a new bootstrap or permission decision. Capture and validate the default branch
+alongside that environment ID, and include both in private persistence/restoration validation.
+Prepared state must be privately owned. Public persistence/restoration verifies versions/generation/provenance/
 all allowlisted paths/categories/sizes/hashes/exact bytes and reconstructs equivalent actual
 assembly before writes. No token/raw artifact/foreign executable/arbitrary callbacks or URLs.
 The action keeps its private capsule outside the uploaded root; no cross-workflow cache/upload.
