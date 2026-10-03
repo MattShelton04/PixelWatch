@@ -100,14 +100,31 @@ accept exactly 8 MiB, refuse one byte over before bundle reads, reject late file
 replacement and read no ambient credentials. These are helper IO results; an actual action
 entry, production worker execution and reproducible production bundles remain unproved.
 
-Root composition currently executes nine passing dispatch/IO cases using explicit unit ports.
+Root composition now has independent scoped approval of all nine dispatch/IO cases (10.66s),
+focused lint and whole types. Nine additional physical probes validate six report/runtime/app
+binding mismatches, complete cleanup after output failure, fixed rejection diagnostics and a
+late upload junction that preserves the returned outcome with one finite cleanup warning.
+Eight reviewer and five root raw artifacts total 36,713 bytes with zero scan failures. It uses
+explicit trusted unit ports and proves no production publisher execution.
 It preserves proven storage after output failure, refuses unknown ingestion before projection,
 stages only a rebuilt configured prefix, and validates private finish binding before granting
-cleanup authority. Independent composition review remains pending. The policy helper and live
-manifest have author tests-first evidence but no independent approval. Live manifest review
+cleanup authority. The policy helper is also independently scoped approved: root complete
+14/14 (1.26s), focused lint and whole types exit 0, frozen source `9a3cf5d5` and test `e5296908`.
+Seven supplemental root probes validate identity refusal before Pages, captured config/assets,
+exact 1000-stream/over-bound behavior, prompt cancellation and zero shadow/credential reads.
+Twelve physical policy artifacts total 49,522 bytes, zero scan failures. This trusts actual
+main-constructed adapter ports and does not close the shared Promise constructor decision.
+The live manifest has author tests-first evidence but no independent approval. Live manifest review
 found an unnecessary refusal of distinct release candidates built from the same source SHA;
 the unchanged reproducer confirms the finding. No product simulation case is activated by
 these unit results.
+
+The actual projection renderer's existing simulation vocabulary mismatch is corrected in two
+string literals after the new 32nd regression executed strict red (30 PASS / 2 FAIL, 7.21s).
+Independent final complete 32 reports 31 PASS / 1 FAIL (7.15s), with the repair regression and
+all five original adversarial reproducers passing unchanged. The only failing expectation is
+the already owner-gated retry cancellation. This scoped wording approval does not approve or
+integrate projection overall; all full simulation predicates remain unchanged.
 
 The fixed live setup proposal is prepared locally with finite refs, scoped credentials, Pages
 policy, nine actual scenarios and exact-ID cleanup. Numeric IDs, account choices, release pins
