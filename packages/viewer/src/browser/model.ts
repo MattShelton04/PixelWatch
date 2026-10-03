@@ -52,12 +52,16 @@ export function readBootstrap(markers: Readonly<Record<string, string | undefine
 /** Fixed generated path only; data cannot choose a fetch destination. */
 async function readJson(target: string, dependencies: ViewerDependencies): Promise<Uint8Array> {
   const deadline = dependencies.clock.deadline(60_000); const signal = deadline.signal;
-  let response: Response | undefined; let reader: ReadableStreamDefaultReader<Uint8Array> | undefined; let listener: (() => void) | undefined;
+  const interrupted = (): boolean => signal.aborted;
+  let response: Response | undefined; let pendingResponse: Promise<Response> | undefined;
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined; let listener: (() => void) | undefined;
   const cancelled = new Promise<never>((_resolve, reject) => { listener = () => { reject(new Error("PixelWatch viewer: unavailable or incompatible report")); }; signal.addEventListener("abort", listener, { once: true }); });
   const race = <T>(operation: Promise<T>): Promise<T> => Promise.race([operation, cancelled]);
   try {
-    if (signal.aborted) fail();
-    response = await race(dependencies.fetch(target, { method: "GET", redirect: "manual", credentials: "omit", cache: "no-cache", signal }));
+    if (interrupted()) fail();
+    pendingResponse = dependencies.fetch(target, { method: "GET", redirect: "manual", credentials: "omit", cache: "no-cache", signal });
+    response = await race(pendingResponse);
+    if (interrupted()) fail();
     if (response.status !== 200 || response.body === null) fail();
     const size = response.headers.get("content-length");
     if (size !== null && (!/^(?:0|[1-9][0-9]*)$/.test(size) || !Number.isSafeInteger(Number(size)) || Number(size) > MAX_JSON_BYTES)) fail();
@@ -70,11 +74,19 @@ async function readJson(target: string, dependencies: ViewerDependencies): Promi
     const bytes = new Uint8Array(total); let at = 0; for (const chunk of chunks) { bytes.set(chunk, at); at += chunk.byteLength; } return bytes;
   } catch { return fail(); }
   finally {
-    // Cancellation precedes deadline disposal for refused, overflowing and interrupted bodies.
-    const stop = reader !== undefined ? reader.cancel() : response?.body?.cancel();
-    if (stop !== undefined) await Promise.race([stop.catch(() => {}), cancelled.catch(() => {})]);
-    reader?.releaseLock();
-    if (listener !== undefined) signal.removeEventListener("abort", listener); deadline.dispose();
+    // A transport that ignores abort may resolve after this request has already failed.
+    if (response === undefined && pendingResponse !== undefined) void pendingResponse.then((late) => {
+      try { void late.body?.cancel().catch(() => {}); } catch { /* No untrusted transport error escapes cleanup. */ }
+    }).catch(() => {});
+    try {
+      // Rejected cancellation does not confirm that transfer stopped: keep its deadline live.
+      const stop = reader !== undefined ? reader.cancel() : response?.body?.cancel();
+      if (stop !== undefined) await Promise.race([stop, cancelled]);
+    } catch { if (!signal.aborted) await cancelled.catch(() => {}); }
+    finally {
+      try { reader?.releaseLock(); } catch { /* Deadline disposal is required even for a locked reader. */ }
+      if (listener !== undefined) signal.removeEventListener("abort", listener); deadline.dispose();
+    }
   }
 }
 

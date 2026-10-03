@@ -120,6 +120,29 @@ describe("minimal final viewer client boundaries", () => {
     await cancellationReached; controller.abort(CANARY); await safeFailure(pending); expect(disposed).toBe(1);
   });
 
+  it("keeps the request deadline active when native body cancellation rejects", async () => {
+    const controller = new AbortController(); let cancelled = 0; let disposed = 0; let settled = false;
+    const body = new ReadableStream<Uint8Array>({ start: (stream) => { stream.enqueue(Uint8Array.of(1)); }, cancel: () => { cancelled++; return Promise.reject(new Error(`${CANARY} https://signed.invalid/?token=${CANARY}`)); } });
+    const requests = new Requests().add(new Response(body, { status: 302 }));
+    const pending = safeFailure(loadViewerModel(bootstrap(), { fetch: requests.fetch, clock: { deadline: () => ({ signal: controller.signal, dispose: () => { disposed++; } }) } })).then(() => { settled = true; });
+    for (let step = 0; step < 50; step++) await Promise.resolve();
+    const beforeAbort = { cancelled, disposed, settled, aborted: controller.signal.aborted };
+    controller.abort(CANARY); await pending;
+    expect(beforeAbort).toEqual({ cancelled: 1, disposed: 0, settled: false, aborted: false }); expect(disposed).toBe(1); expect(requests.calls).toHaveLength(1);
+  });
+
+  it("cancels a transport response arriving after the request deadline without parsing or echoing it", async () => {
+    const controller = new AbortController(); let deliver: ((response: Response) => void) | undefined; let reached: (() => void) | undefined;
+    const requestReached = new Promise<void>((resolve) => { reached = resolve; }); let cancelled = 0; let disposed = 0;
+    const requests = new Requests().add(() => { reached?.(); return new Promise<Response>((resolve) => { deliver = resolve; }); });
+    const pending = safeFailure(loadViewerModel(bootstrap(), { fetch: requests.fetch, clock: { deadline: () => ({ signal: controller.signal, dispose: () => { disposed++; } }) } }));
+    await requestReached; controller.abort(CANARY); await pending;
+    if (deliver === undefined) throw new Error("fake request delivery not reached");
+    deliver(new Response(new ReadableStream<Uint8Array>({ start: (stream) => { stream.enqueue(new TextEncoder().encode(CANARY)); }, cancel: () => { cancelled++; return Promise.reject(new Error(`${CANARY} https://signed.invalid/?token=${CANARY}`)); } }), { status: 200 }));
+    for (let step = 0; step < 50; step++) await Promise.resolve();
+    expect(cancelled).toBe(1); expect(disposed).toBe(1); expect(requests.calls).toHaveLength(1);
+  });
+
   it("image mapping requires the exact captured-side pixel hash pool fanout and canonical site namespace", () => {
     const value = bootstrap("http://127.0.0.1:1234/local/runs/10-a1/"); const hash = "a".repeat(64); const side = { state: "captured" as const, pixelHash: hash, width: 4, height: 4 };
     expect(imageUrl(value, side, `${BASE}blobs/aa/${hash}.png`)).toBe(`http://127.0.0.1:1234/local/blobs/aa/${hash}.png`);
