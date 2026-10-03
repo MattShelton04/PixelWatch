@@ -7,6 +7,7 @@ import { harnessChecks, type HarnessCheck } from "./checks.ts";
 import { SEEDS } from "./schedule.ts";
 import { scenarios } from "./scenarios/index.ts";
 import { runStoreCase } from "./drivers/store.ts";
+import { runGitHubCase } from "./drivers/github.ts";
 import type { Evidence } from "./scenarios/spec.ts";
 const EXPECTED = ["sim-ingest-cas-race", "sim-push-outcome-unknown", "sim-lease-exhausted", "sim-deploy-comment-race",
   "sim-comment-unknown-outcome", "sim-deploy-fails", "sim-cdn-stale-generation", "sim-viewer-stale-assets",
@@ -15,6 +16,7 @@ export type ProductDriver = (seed: number) => Promise<{evidence: Evidence; norma
 const productDrivers: ReadonlyMap<string, ProductDriver> = new Map([
   ["sim-ingest-cas-race/four-writers", (seed: number) => runStoreCase("sim-ingest-cas-race/four-writers", seed)],
   ["sim-push-outcome-unknown/accepted-push", (seed: number) => runStoreCase("sim-push-outcome-unknown/accepted-push", seed)],
+  ["sim-github-faults/expiry-rate-limit-redirect-and-server-errors", (seed: number) => runGitHubCase("sim-github-faults/expiry-rate-limit-redirect-and-server-errors", seed)],
 ]);
 export const productCaseKeys: readonly string[] = Object.freeze([...productDrivers.keys()]);
 /** Injectable runner probes are unit orchestration checks; the CLI always uses production drivers. */

@@ -8,7 +8,7 @@ import { candidate, METADATA, REPOSITORY_ID, run, Scratch } from "./helpers.ts";
 
 const scratches: Scratch[] = [];
 const adapters: GitBranchStore[] = [];
-afterEach(() => { for (const adapter of adapters.splice(0)) adapter.close(); for (const scratch of scratches.splice(0)) scratch.close(); });
+afterEach(async () => { for (const adapter of adapters.splice(0)) await adapter.close(); for (const scratch of scratches.splice(0)) scratch.close(); });
 function fixture() {
   const scratch = new Scratch(); scratches.push(scratch);
   const make = (extra = {}) => { const adapter = new GitBranchStore({ remote: scratch.remote, repositoryId: REPOSITORY_ID, defaultBranch: "main", testRemote: { root: scratch.root }, ...extra }); adapters.push(adapter); return adapter; };
