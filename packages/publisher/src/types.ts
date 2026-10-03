@@ -1,5 +1,5 @@
 import type { Breakdown, ExpiryReason, IgnoredArtifact, PagesSite, PngWorker, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
-import type { Config } from "@pixelwatch/schemas";
+import type { Config, Run } from "@pixelwatch/schemas";
 import type { CommitMetadata, StoreAdapter, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
 import type { GitHubClient, HttpTransport, MissingArtifact, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
 
@@ -118,6 +118,24 @@ export interface ReadinessResult {
   readonly elapsedMilliseconds: number;
   readonly polls: readonly ReadinessPoll[];
 }
+export interface CommentStamp {
+  readonly runKey: string;
+  readonly headSha?: string;
+  readonly generation: string;
+}
+export interface CommentRenderInput {
+  readonly context: PublisherContext;
+  readonly run: Run;
+  readonly generation: string;
+}
+export type RenderedComment = { readonly status: "disabled" } | {
+  readonly status: "rendered";
+  readonly body: string;
+  readonly fallbackBody: string;
+  readonly bytes: number;
+  readonly degradation: "full" | "shortened" | "summary";
+  readonly stamp: CommentStamp;
+};
 const DIAGNOSTIC_CODES = new Set([
   "publisher-operation-failed", "publisher-input-invalid", "invalid-commit", "json-limit",
   "unsupported-document-version", "invalid-document", "repository-invalid", "app-invalid",
@@ -141,6 +159,7 @@ const DIAGNOSTIC_CODES = new Set([
   "source-job-input-invalid", "source-job-operation-failed", "source-job-cancelled",
   "source-job-source-invalid", "source-job-download-invalid", "source-job-codec-failed",
   "source-job-staging-invalid", "source-job-staging-limit", "source-job-timing-invalid",
+  "comment-input-invalid", "comment-budget-refused",
 ]);
 const diagnosticIdentity = new WeakMap<object, string | undefined>();
 export class PublisherError extends Error {

@@ -6,6 +6,25 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Independent root signal/admission review CLOSED original2P1 plus new native-state/listener
+  findings at ec7051e+18d5b89, reviewca030ceb:82/82 at ec,255.73s; new4/4,1.27s;
+  original16 plus own9interleavings/9hookvariants reached, fullraw115/58/27 scans clean,
+  ambient0. Source diff vs18 empty for covered files. Integrated check/simulation/browser
+  and source-job interaction review remain required; no self-approval.
+- Readiness immutableaaf87cb dependsrootec+18;45/45 exit0,3.17s/linttypes0/raw32logs clean.
+  Independent fa61392 reproduces45/45,2.50s, closes originalC1/C2/C3 sequences and repeats
+  original9traces identically (ac91140a…);14input boundaries pass. Broadened hook cleanup
+  and final scoped verdict are still pending, so readiness is not integrated/approved yet.
+- Root commentrenderer20/20 exit0,1.45s/linttypes0, strict initial11red plus5numeric/partial
+  stamp regressions red beforefix. ADR0026 minimal owner correction committed; renderer
+  independent review and serialized/live use remain gates.
+- Source author is fixing actual reused-blob/GC admission race: initialcanonicalB can vanish
+  before current CAS. Root corrected its own overstrict inferred contract: carry accepted-run
+  exact existing canonical bytes with bounds, never rehash/decode/overwrite (ADR0010/25).
+  Independent A inspects source; no final source approval yet. No full new product simulation.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Source ingestion immutable author091d3a96c11093001c1839a7b0442b68cc38c19b has54/54 local
   tests,12.12s, raw290values/203875bytes clean andlint/types0. Actual same-repo/fork fixtures
   remain local. Root signal followup adoption, independent source security/concurrency
