@@ -3,6 +3,7 @@ import { expect, it } from "vitest";
 import { runSimulation, type ProductDriver } from "./runner.ts";
 import { CANARY_TOKEN } from "./capture.ts";
 import { SEEDS } from "./schedule.ts";
+import { scenarios } from "./scenarios/index.ts";
 
 const checks = [{name: "runner-probe", run() {}}];
 const key = "sim-push-outcome-unknown/accepted-push";
@@ -39,4 +40,44 @@ it("raw product evidence is scanned before capture redaction and unsafe driver r
   expect(result.code).toBe(1); expect(result.output).not.toContain(CANARY_TOKEN); expect(result.output).toContain("secret-leak");
   expect((await runSimulation(checks, new Map([["fake-case", valid]]))).code).toBe(1);
   expect((await runSimulation([], new Map())).code).toBe(1);
+});
+
+it("async registry mutation cannot remove or weaken any of the fourteen registered cases or seeds", async () => {
+  const savedCases = scenarios.map((scenario) => [...scenario.cases]); const savedSeeds = [...SEEDS];
+  const selected = scenarios.find((scenario) => scenario.id === "sim-push-outcome-unknown")?.cases[0];
+  if (selected === undefined) throw new Error("missing authoritative case"); const verify = selected.verify;
+  const calls: number[] = [];
+  const driver: ProductDriver = async (seed) => {
+    calls.push(seed);
+    if (calls.length === 1) {
+      for (const scenario of scenarios) (scenario.cases as typeof selected[]).splice(0);
+      (SEEDS as number[]).splice(0); selected.verify = () => {};
+    }
+    return await valid(seed);
+  };
+  try {
+    const result = await runSimulation(checks, new Map([[key, driver]]));
+    expect(calls).toEqual(savedSeeds.flatMap((seed) => [seed, seed]));
+    expect(result.code).toBe(2); expect(result.output.match(/^NOT RUN /gm)).toHaveLength(13);
+    expect(result.output).not.toContain("PRODUCT COVERAGE COMPLETE");
+  } finally {
+    scenarios.forEach((scenario, index) => { (scenario.cases as typeof selected[]).splice(0, Infinity, ...(savedCases[index] ?? [])); });
+    (SEEDS as number[]).splice(0, Infinity, ...savedSeeds); selected.verify = verify;
+  }
+});
+
+it("awaited callbacks cannot replace the original verifier or alter later harness checks", async () => {
+  const selected = scenarios.find((scenario) => scenario.id === "sim-push-outcome-unknown")?.cases[0];
+  if (selected === undefined) throw new Error("missing authoritative case"); const verify = selected.verify;
+  const later = {name: "mandatory-failing-check", run() {throw new Error("required-harness-failure");}};
+  const first = {name: "mutating-check", run() {later.name = "fake-pass"; later.run = () => {};}};
+  const driver: ProductDriver = (seed) => {
+    selected.verify = () => {};
+    return Promise.resolve({evidence: {}, normalized: JSON.stringify({caseKey: key, seed, evidence: {}})});
+  };
+  try {
+    const result = await runSimulation([first, later], new Map([[key, driver]]));
+    expect(result.code).toBe(1); expect(result.output).toContain("HARNESS FAIL mandatory-failing-check");
+    expect(result.output).not.toContain(`PRODUCT PASS ${key}`); expect(result.output).toContain(`PRODUCT FAIL ${key}`);
+  } finally { selected.verify = verify; }
 });

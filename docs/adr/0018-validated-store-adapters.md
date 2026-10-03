@@ -37,6 +37,9 @@ and real isolated temporary Git repositories. Every seed executes twice with exa
 equality, original scenario assertions and reached named injections. The asynchronous full
 runner scans raw evidence before redaction and preserves exits 1/2/0 for failure/incomplete/
 all registered cases passed. All eleven IDs and fourteen cases remain visible.
+Before any injected callback or await it privately snapshots the complete flattened manifest,
+original verifiers, prerequisites, fixed seeds and harness checks. Callbacks cannot shrink the
+coverage denominator, replace an acceptance assertion or turn a later harness failure into a pass.
 
 ## Consequences
 

@@ -15,6 +15,10 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   Independent eight driver tests ran both cases for all four seeds twice with exact equality;
   five harmful mutants refused; credential/time/randomness traps and raw secret scans passed.
   Root async runner four tests first failed, then passed; real full run/integrated review pending.
+  Root `6e41c8f` full check passed 782/37 and full simulation passed two product cases with
+  twelve NOT RUN/exit2. Independent integration review found a P1 mutation could erase cases,
+  seeds or original verifiers after validation; two regressions red then six runner tests green
+  with private snapshots. Final fix SHA review/check/full run remain required before merge.
 - Viewer source `8445320`, cancellation fix `347d6b` independently verified with fourteen
   unit tests. Original real browser run 21/24 exposed fixture assertion and WebKit focus issues;
   root `aba8d91` gives generated anchors explicit tab stops and authenticates preview Host.

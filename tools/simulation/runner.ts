@@ -19,16 +19,22 @@ const productDrivers: ReadonlyMap<string, ProductDriver> = new Map([
 export const productCaseKeys: readonly string[] = Object.freeze([...productDrivers.keys()]);
 /** Injectable runner probes are unit orchestration checks; the CLI always uses production drivers. */
 export async function runSimulation(checks: readonly HarnessCheck[] = harnessChecks, callerDrivers: ReadonlyMap<string, ProductDriver> = productDrivers): Promise<{ code: number; output: string }> {
+  // Private records before any injected callback or await: exported spec objects are mutable.
+  const ids = scenarios.map((scenario) => scenario.id);
+  const manifest = scenarios.flatMap((scenario) => scenario.cases.map((test) => ({
+    id: scenario.id, name: test.name, requires: [...test.requires], verify: test.verify,
+  })));
+  const seeds = [...SEEDS];
+  const checkRecords = checks.map((check) => ({name: check.name, run: check.run}));
   const drivers = new Map(callerDrivers);
   const capture = new Capture();
-  const lines = [drivers.size === 0 ? "PixelWatch local simulation: HARNESS ONLY; product coverage reported below." : "PixelWatch local simulation: real product drivers and full coverage report.", `Seeds: ${SEEDS.join(", ")}; every product case repeats each seed twice.`];
+  const lines = [drivers.size === 0 ? "PixelWatch local simulation: HARNESS ONLY; product coverage reported below." : "PixelWatch local simulation: real product drivers and full coverage report.", `Seeds: ${seeds.join(", ")}; every product case repeats each seed twice.`];
   let failed = 0;
-  const ids = scenarios.map((s) => s.id);
-  const keys = scenarios.flatMap((scenario) => scenario.cases.map((test) => `${scenario.id}/${test.name}`));
-  if (JSON.stringify(ids) !== JSON.stringify(EXPECTED) || keys.length !== 14 || checks.length === 0 || [...drivers].some(([key, driver]) => !keys.includes(key) || typeof driver !== "function")) {
+  const keys = manifest.map((test) => `${test.id}/${test.name}`);
+  if (JSON.stringify(ids) !== JSON.stringify(EXPECTED) || keys.length !== 14 || JSON.stringify(seeds) !== "[1,42,1592594996,4294967295]" || checkRecords.length === 0 || [...drivers].some(([key, driver]) => !keys.includes(key) || typeof driver !== "function")) {
     return { code: 1, output: "simulation-manifest-invalid; nothing may be reported as passed.\n" };
   }
-  for (const check of checks) {
+  for (const check of checkRecords) {
     try {
       const evidence = check.run();
       if (evidence !== undefined && (typeof evidence !== "string" || !/^[0-9a-f]{64}$/.test(evidence))) throw new Error("invalid-harness-evidence");
@@ -41,11 +47,11 @@ export async function runSimulation(checks: readonly HarnessCheck[] = harnessChe
     }
   }
   let unavailable = 0; let ran = 0; let passed = 0; let productFailed = 0;
-  for (const scenario of scenarios) for (const test of scenario.cases) {
-    const key = `${scenario.id}/${test.name}`; const driver = drivers.get(key);
+  for (const test of manifest) {
+    const key = `${test.id}/${test.name}`; const driver = drivers.get(key);
     if (driver === undefined) { unavailable++; lines.push(`NOT RUN ${key}: requires ${test.requires.join(" + ")}; production adapter unavailable`); continue; }
     ran++; let caseFailed = false; const hashes: string[] = [];
-    for (const seed of SEEDS) {
+    for (const seed of seeds) {
       let first: string | undefined;
       for (const repeat of [1, 2]) {
         try {
@@ -72,7 +78,7 @@ export async function runSimulation(checks: readonly HarnessCheck[] = harnessChe
     else { passed++; lines.push(`PRODUCT PASS ${key}: ${hashes.join("; ")}`); }
   }
   const code = failed > 0 || productFailed > 0 ? 1 : unavailable > 0 ? 2 : 0;
-  lines.push(`Harness checks: ${String(checks.length - failed)} passed, ${String(failed)} failed. Product cases: ${String(ran)} ran, ${String(passed)} passed, ${String(productFailed)} failed, ${String(unavailable)} NOT RUN (${String(scenarios.length)} scenario IDs).`);
+  lines.push(`Harness checks: ${String(checkRecords.length - failed)} passed, ${String(failed)} failed. Product cases: ${String(ran)} ran, ${String(passed)} passed, ${String(productFailed)} failed, ${String(unavailable)} NOT RUN (${String(ids.length)} scenario IDs).`);
   if (unavailable > 0) lines.push("PRODUCT COVERAGE INCOMPLETE. Harness evidence does not satisfy product scenario acceptance.");
   else if (code === 0) lines.push("PRODUCT COVERAGE COMPLETE: every registered case ran and passed.");
   lines.push(`Exit ${String(code)}.`);
