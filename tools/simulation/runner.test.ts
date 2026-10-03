@@ -50,8 +50,8 @@ it("async registry mutation cannot remove or weaken any of the fourteen register
   const driver: ProductDriver = async (seed) => {
     calls.push(seed);
     if (calls.length === 1) {
-      for (const scenario of scenarios) (scenario.cases as typeof selected[]).splice(0);
-      (SEEDS as number[]).splice(0); selected.verify = () => {};
+      for (const scenario of scenarios) scenario.cases.splice(0);
+      (SEEDS as unknown as number[]).splice(0); selected.verify = () => {};
     }
     return await valid(seed);
   };
@@ -61,15 +61,15 @@ it("async registry mutation cannot remove or weaken any of the fourteen register
     expect(result.code).toBe(2); expect(result.output.match(/^NOT RUN /gm)).toHaveLength(13);
     expect(result.output).not.toContain("PRODUCT COVERAGE COMPLETE");
   } finally {
-    scenarios.forEach((scenario, index) => { (scenario.cases as typeof selected[]).splice(0, Infinity, ...(savedCases[index] ?? [])); });
-    (SEEDS as number[]).splice(0, Infinity, ...savedSeeds); selected.verify = verify;
+    scenarios.forEach((scenario, index) => { scenario.cases.splice(0, Infinity, ...(savedCases[index] ?? [])); });
+    (SEEDS as unknown as number[]).splice(0, Infinity, ...savedSeeds); selected.verify = verify;
   }
 });
 
 it("awaited callbacks cannot replace the original verifier or alter later harness checks", async () => {
   const selected = scenarios.find((scenario) => scenario.id === "sim-push-outcome-unknown")?.cases[0];
   if (selected === undefined) throw new Error("missing authoritative case"); const verify = selected.verify;
-  const later = {name: "mandatory-failing-check", run() {throw new Error("required-harness-failure");}};
+  const later: {name: string; run(): void} = {name: "mandatory-failing-check", run() {throw new Error("required-harness-failure");}};
   const first = {name: "mutating-check", run() {later.name = "fake-pass"; later.run = () => {};}};
   const driver: ProductDriver = (seed) => {
     selected.verify = () => {};
