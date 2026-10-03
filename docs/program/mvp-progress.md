@@ -21,9 +21,9 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 - Readiness independent review45/45 plus9 repeated temporal traces,14boundaries/10cleanup
   probes passes. Pure comment renderer independent20/20 plus71variants twice passes. Both are
   integrated and covered by the1120-test check; full deploy/reconcile pipeline remains absent.
-- Last complete simulation at documentation-only0516268 exited2:9harness PASS,2product PASS,
-  12product NOT RUN. All17ordered normalized hashes match prior local and PR21Linux/Windows.
-  Final current full simulation is pending native maintenance acceptance; no new driver yet.
+- Final full simulation at documentation-onlyaa3dcb9 exited2:9harness PASS,2product PASS,
+  12product NOT RUN. All17ordered normalized hashes match0516268/priorlocal/PR21Linux/Windows.
+  Logroot-reviewed-source-simulation.log; no new driver is registered yet.
   ADR0015 requires this incomplete coverage to remain visibly non-green.
 - Six reviewed PRs16–21 merged under owner authorization; verified mainba4831d. Next grouped
   PR22 is not yet opened. It groups reviewed source/readiness/comment/prerequisites; maintenance
