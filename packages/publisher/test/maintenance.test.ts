@@ -43,7 +43,7 @@ afterEach(async () => {
     }
     finally {
         for (const client of clients.splice(0))
-            client.close();
+            await client.close();
         for (const scratch of scratches.splice(0))
             scratch.close();
     }

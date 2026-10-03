@@ -4,7 +4,84 @@ This is the durable orchestration record for M0–M3. Scope and acceptance remai
 `docs/design/08-implementation-plan.md`; security remains normative in 01 §4.
 Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitted.
 
-## Current checkpoint — 2026-10-03
+## Active continuation — 2026-10-03 to 2026-10-04
+
+- Owner resumed the full M0–M3 program and explicitly requested goal tracking. The full MVP
+  goal is active; M2 exit, M3, actual seven-day canaries and release approval remain gates.
+- Preserved integration HEAD `8707bf7` and functional base `83330d2` verified. Main `1fe4821`
+  is an ancestor. Original checkout remains the older branch with uncommitted HANDOVER.md.
+- Priority0 investigation found a concrete lifetime gap: synchronous GitBranchStore.close
+  could delete scratch while an asynchronous pack read still owns its FD and child process.
+  Tests-first correction and independent review are approved. The historical two test
+  timeout causes remain unverified; file scheduling uses separate unit and serial
+  native phases without changing 30000ms deadlines, process budgets or race actors/assertions.
+- Authors and independent reviewers work in disjoint scopes. Native-heavy commands are
+  coordinated serially. Complete current local foundation acceptance is recorded below;
+  projection/metadata/action/live and complete product simulation remain gates.
+- Continuation crosses into2026-10-04. Independent exact051 GitHub review is APPROVED:
+  complete5/5 exit0/45.79s, unchanged compiler/whole-case zero-token-read probes, child
+  no-network closure and original four hashes. Root copies exact source and awaits terminal
+  store close; static registry review preserves all14 cases/all11IDs. Integrated execution
+  executes3PASS/11NOTRUN/exit2 with25verified hashes; this is incomplete product coverage.
+- Native correction actual37/37 across lifecycle17/original15/transport5 passes exit0/59.38s.
+  Independent NL-REV-1 found a throwing native listener-removal hook could strand read/close;
+  tests-first correction passes unchanged reproducer and broadened acquisition/abort probes.
+  Independent final native replay37/37 and full integrated check1197/58 pass. Serial original15
+  measurement passes49.82s; prior timed-out cases now3274ms/3749ms without changed30000ms
+  limits. These observations do not prove the historical timeout cause.
+- Build author d7c2220 is clean: fixed fixture reaches strictred8/8fail, then final complete
+  8/8 passes8.48s with actual separate worker/classic viewer and identical two-root inventories.
+  Tooling host is explicitly a fixture; independent build review and actual host remain gates.
+- Public metadata author now works at exact83330d2 in m2-public-metadata. Root nine frozen
+  tests reach strictred9/9fail,1file,exit1/357ms before implementation; no unhandled errors.
+  This adapter is not integrated or accepted. Projection resumes separately after cleanup DTOs.
+- Initial continuation completecheck exits0 with2060tests/102files/684.36s and workflowlint0,
+  but runtime discovery exposes45duplicated unit files/872cases from parent include array
+  concatenation. Configuration approval is superseded for that defect. Corrected source now
+  independently lists57unique=45unit/12native with no missing/duplicate/misclassified paths;
+  discovery excludes omissions/duplicates. Exact independently approved build84 adds one native
+  file: actual root inventory58unique=45unit/13native, exit0/1.57s. Complete corrected check
+  exits0 at a8d9a72 plus reviewed source changes:1197/58,630.46s, lint/types/workflowlint0.
+  Log root-corrected-native-github-build-check-20261004.log. No assertion or timeout changed.
+- Shared environment accounting omitted by the original DTO is restored at a8d9a72:
+  PreparedProjection.environment plus separate ProjectionResult.environmentId, required by
+  the existing ADR0029/freeze. Types0 and independent alignment/security review approved;
+  no new permissions or bootstrap assertion. Projection dependencies merge as e5c476a.
+- Projection expanded19-case strictred actually executes18fail/1pass/exit1/2.26s before
+  implementation; original12 titles/assertions retained and hostile cleanup/state cases added.
+- Independent BUILD-PATH-1 finds ancestor-junction cleanup escapes the original source root.
+  Author tests-first full-chain identity/realpath correction passes the unchanged independent
+  probe and complete9/9 suite8.65s. Independent root complete9/9 passes8.54s; actual compiler
+  guard blocks four network APIs, reads zero fake-token keys and emits identical artifact
+  hashes. Scoped tooling84fde65 independent security/correctness/concurrency review APPROVED;
+  exact four-file integrated static review also approved. Actual production host remains absent.
+- Native final independent37/37 passes60.36s, original failure cases3578ms/3724ms and barrier
+ 17475ms; no EBUSY. Exact lifecycle/caller/config/ADR0030 scoped approval is complete.
+- Projection author c61dcf9 freezes four files after actual complete20/20 exit0/4.91s,
+  lint/types0. Undefined rejection self-finding added a twentieth strict-red regression before
+  correction (1fail/19NOTRUN,2.03s). Independent adversarial review is active; no integration.
+- Public metadata original13 actual cases passed; corrective final17 now independently pass
+  complete Vitest17/17/959ms, lint/types0. Independent cancellation and contradictory
+  next/future-last pagination blockers close with unchanged probes. PM-REV-3 own-then half is
+  corrected; poisoned nonconfigurable Promise constructor remains an open trusted-port boundary
+  question to the owner. Its unchanged failing probe remains retained. No suppression or scoped
+  acceptance is inferred. Metadata source is frozen/unintegrated in its three assigned files.
+- Root actual unfiltered simulation exits2 with9harness PASS/3product PASS/11NOTRUN, all14cases/
+  11stable IDs retained. All25hashes match exact prior17 plus reviewedGH8. Browser24/24all3
+  exits0/25.5s using cached pinned binaries. Physical logs7137/4571/3997bytes scan0leaks before
+  reporting. Exact-head hosted/integrated final review remain gates before PR23/merge.
+- Root isolated m2-action-host at a8d9a72 is created with offline frozen cached154package
+  install0downloads. Five actual action invocation/filesystem tests plus refusing skeleton
+  exist before implementation; actual5 strictred5fail/331ms, then caller-report identity sixth
+  strictred6fail/359ms. No host implementation or acceptance claimed.
+- Final documentation traceability initially fails2/7 because new simulation passing rows used
+  the driver path without the required registered scenario title. References are corrected to
+  the existing stable scenario path/title; assertions unchanged, complete7/7 then passes.
+- Benchmark summaries are reconciled by Git history to the existing post-ADR0010 records:
+  PNG202MiB; ingestion177MiB/495.0MiB. Earlier209MiB/195MiB/495.3MiB provenance remains in
+  m1-benchmark-summary-reconciliation.md. No benchmark was rerun or measurement invented.
+
+## Previous session checkpoint — 2026-10-03
 
 - SESSION WRAP requested by owner. Agents stopped and preserved clean WIP branches; root
   creates uncommitted HANDOVER.md and ignored paste-ready.tools/NEXT_SESSION_PROMPT.md.

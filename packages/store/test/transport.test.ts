@@ -47,7 +47,7 @@ describe("bounded Git pack transport (M2.2)", () => {
       } } });
       try {
         await expect(adapter.read()).rejects.toThrow("git-pack-response-invalid"); expect(observations).toEqual(["body-cancelled", "deadline-disposed"]); expect(reads).toBe(0); expect(requests).toBe(1); expect(controller.signal.aborted).toBe(false);
-      } finally { childProcess.spawnSync = nativeSpawn; syncBuiltinESMExports(); vi.unstubAllGlobals(); adapter.close(); scratch.close(); }
+      } finally { childProcess.spawnSync = nativeSpawn; syncBuiltinESMExports(); vi.unstubAllGlobals(); await adapter.close(); scratch.close(); }
     }
   });
   it("bounds rejected-body cleanup by the injected deadline and refuses a null pack body", async () => {

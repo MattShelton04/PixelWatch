@@ -19,7 +19,7 @@ const scratches: Scratch[] = [];
 const clients: GitBranchStore[] = [];
 const raw: (string | Uint8Array)[] = [];
 let scannedValues = 0, scannedBytes = 0, scanFailures = 0;
-afterEach(() => {
+afterEach(async () => {
   let failure: Error | undefined;
   try {
     const values = raw.splice(0);
@@ -34,7 +34,7 @@ afterEach(() => {
   }
   try {
     for (const client of clients.splice(0))
-      client.close();
+      await client.close();
     for (const scratch of scratches.splice(0))
       scratch.close();
     for (const root of roots.splice(0)) {
