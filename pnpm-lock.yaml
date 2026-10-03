@@ -61,11 +61,16 @@ importers:
         specifier: 16.0.0
         version: 16.0.0
 
-<<<<<<< HEAD
   packages/store:
-=======
+    dependencies:
+      '@pixelwatch/core':
+        specifier: workspace:*
+        version: link:../core
+      '@pixelwatch/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+
   packages/viewer:
->>>>>>> 9f53270 (feat(viewer): build and preview the actual generated app with three-engine runner)
     dependencies:
       '@pixelwatch/core':
         specifier: workspace:*

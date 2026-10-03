@@ -6,6 +6,20 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR #19 merged `ce226ca011cca71882a0f102ef8f33de42783d2f` after final independent review
+  and every required check passed. Exact head `fe1ff57` hosted run `37103496303`: Linux and
+  Windows each passed 785/37; both full simulation commands exited2, 9 harness / 2 product
+  PASS / 12 NOT RUN. All sixteen normalized trace hashes match each other and local source
+  `7b0743d` results. Runner P1/P2 findings are independently verified closed (14 focused tests).
+- Viewer `a56e398` full check exit0, 770/36 (55.86 s); independent docs/workflow review
+  passed 7 trace tests and workflow lint. Actual retained hostile-browser rerun at a56e398
+  passed 18/18; raw transcript independently inspected/scanned clean. The viewer has been
+  rebased onto merged store main with empty viewer/schema/tool source diff. Root corrected
+  the workspace-importer lockfile conflict explicitly; no dependency versions changed.
+  Final combined check/browser/coverage and hosted viewer gates are now running/pending.
+
+The entries below are historical checkpoints, superseded by the current facts above.
+
 - Final store/runner source `7b0743d`: Windows full check exit0, 785 tests / 37 files,
   workflow linters pass (201.57 s). Full no-network reporter exit2: nine harness PASS,
   two product cases PASS across all four seeds twice, twelve NOT RUN. Exact trace hashes
