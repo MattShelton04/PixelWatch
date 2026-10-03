@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { canonicalBytes, parseDocument, type Run } from "@pixelwatch/schemas";
 import { addRun, blobPath, encodePng, newStore, pixelHash, runRecordPath } from "@pixelwatch/core";
-import { GitBranchStore, LocalDirStore, writeRun, type StoreAdapter, type StoreCandidate, type StoreSnapshot, type GitCheckpoint, type StoreTiming } from "@pixelwatch/store";
+import { GitBranchStore, LocalDirStore, STORE_LIMITS, writeRun, type StoreAdapter, type StoreCandidate, type StoreSnapshot, type GitCheckpoint, type StoreTiming } from "@pixelwatch/store";
 import { Scratch } from "../../store/test/helpers.ts";
 import { CANARY_TOKEN, SIGNED_URL, assertNoSecrets } from "../../../tools/simulation/capture.ts";
 import { Clock, Scheduler, checkpoint } from "../../../tools/simulation/schedule.ts";
@@ -63,6 +63,77 @@ async function failure(operation: Promise<unknown>, code?: string): Promise<void
   if (code !== undefined) expect(value.code).toBe(code); expect(value.cause).toBeUndefined();
 }
 describe.each(["local", "git"] as const)("controlled admission with actual %s CAS", (kind) => {
+  it("bounds snapshot listing count before invoking any caller map or indexed getter", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let maps = 0; let indices = 0; let lengths = 0; let readers = 0; let mutations = 0;
+    const listing = new Proxy(before.files, {get(target, key, receiver) {
+      if (key === "length") {lengths++; return STORE_LIMITS.maxFiles + 1;}
+      if (key === "map") {maps++; return () => [];}
+      if (typeof key === "string" && /^[0-9]+$/.test(key)) indices++;
+      return Reflect.get(target, key, receiver) as unknown;
+    }});
+    const observed: StoreAdapter = {read: () => Promise.resolve({...before, files: listing, readFile: (path) => {readers++; return before.readFile(path);}}), cas: (...args) => {mutations++; return f.adapter.cas(...args);}};
+    await failure(admission(observed, input(3), dependencies()), "admission-files-limit");
+    expect({maps, indices, lengths, readers, mutations}).toEqual({maps: 0, indices: 0, lengths: 1, readers: 0, mutations: 0}); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("captures the first snapshot listing count and metadata without a supplied map override", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let parents = 0; let lengths = 0; let maps = 0; let paths = 0; let sizes = 0;
+    const listed = before.files.map((file) => ({get path() {paths++; return file.path;}, get bytes() {sizes++; return file.bytes;}}));
+    Object.defineProperty(listed, "map", {get() {maps++; return () => [];}});
+    const listing = new Proxy(listed, {get(target, key, receiver) {if (key === "length") lengths++; return Reflect.get(target, key, receiver) as unknown;}});
+    const source = {...before, get files() {parents++; return parents === 1 ? listing : [];}};
+    const result = await admission({read: () => Promise.resolve(source), cas: (...args) => f.adapter.cas(...args)}, input(3), dependencies());
+    expect(result.status).toBe("stored"); expect({parents, lengths, maps, paths, sizes}).toEqual({parents: 1, lengths: 1, maps: 0, paths: before.files.length, sizes: before.files.length});
+    const after = await f.adapter.read(); expect(after.runs.has("2-a1")).toBe(true); expect(await after.readFile(runRecordPath("3-a1"))).toEqual(canonicalBytes(input(3).run)); await files(after);
+  }, 0);
+  it("captures snapshot readFile once without invoking its bind and preserves snapshot this", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let gets = 0; let binds = 0; let reads = 0;
+    function reader(this: StoreSnapshot, path: string): Promise<Uint8Array> {expect(this).toBe(source); reads++; return before.readFile(path);}
+    Object.defineProperty(reader, "bind", {get() {binds++; throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);}});
+    const source: StoreSnapshot = {...before, get readFile() {gets++; return gets === 1 ? reader : () => Promise.reject(new Error(CANARY_TOKEN));}};
+    const result = await admission({read: () => Promise.resolve(source), cas: (...args) => f.adapter.cas(...args)}, input(3), dependencies());
+    expect(result.status).toBe("stored"); expect({gets, binds, reads}).toEqual({gets: 1, binds: 0, reads: before.files.length}); await files(await f.adapter.read());
+  }, 0);
+  it("captures checkpoint once before an asynchronous dependency mutation can substitute it", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); const deps = dependencies(); let gets = 0; let substitutions = 0; const reached: string[] = [];
+    const selected: NonNullable<AdmissionDependencies["checkpoint"]> = (event) => {reached.push(event.point); return Promise.resolve();};
+    const substituted = () => {substitutions++; return Promise.reject(new Error(`${CANARY_TOKEN} ${SIGNED_URL}`));};
+    Object.defineProperty(deps, "checkpoint", {configurable: true, get() {gets++; return gets === 1 ? selected : substituted;}});
+    const observed: StoreAdapter = {read: () => {Object.defineProperty(deps, "checkpoint", {value: substituted}); return Promise.resolve(before);}, cas: (...args) => f.adapter.cas(...args)};
+    const result = await admission(observed, input(3), deps);
+    expect(result.status).toBe("stored"); expect(gets).toBe(1); expect(substitutions).toBe(0); expect(reached).toEqual(["after-read", "before-cas", "after-cas"]); await files(await f.adapter.read());
+  }, 0);
+  it("refuses malformed snapshot counts before calling supplied listing or reader operations", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let mutations = 0;
+    for (const count of [-1, NaN, Infinity, 1.5]) {
+      let lengths = 0; let maps = 0; let indices = 0; let reads = 0;
+      const listing = new Proxy(before.files, {get(target, key, receiver) {if (key === "length") {lengths++; return count;} if (key === "map") maps++; if (typeof key === "string" && /^[0-9]+$/.test(key)) indices++; return Reflect.get(target, key, receiver) as unknown;}});
+      const observed: StoreAdapter = {read: () => Promise.resolve({...before, files: listing, readFile: (path) => {reads++; return before.readFile(path);}}), cas: (...args) => {mutations++; return f.adapter.cas(...args);}};
+      await failure(admission(observed, input(3), dependencies()), "admission-listing-invalid"); expect({lengths, maps, indices, reads}).toEqual({lengths: 1, maps: 0, indices: 0, reads: 0});
+    }
+    expect(mutations).toBe(0); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("sanitizes snapshot listing reader and checkpoint getter failures without raw fake secrets", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let reached = 0; let mutations = 0;
+    const fail = () => {reached++; throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);};
+    for (const property of ["files", "readFile"] as const) {
+      const source = {...before}; Object.defineProperty(source, property, {get: fail});
+      await failure(admission({read: () => Promise.resolve(source), cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), dependencies()), "publisher-operation-failed");
+    }
+    const listing = new Proxy(before.files, {get(target, key, receiver) {if (key === "length") return fail(); return Reflect.get(target, key, receiver) as unknown;}});
+    await failure(admission({read: () => Promise.resolve({...before, files: listing}), cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), dependencies()), "publisher-operation-failed");
+    const deps = dependencies(); Object.defineProperty(deps, "checkpoint", {get: fail}); let reads = 0;
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), deps), "publisher-operation-failed");
+    expect(reached).toBe(4); expect(reads).toBe(0); expect(mutations).toBe(0); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("captures adapter read and cas once without invoking supplied bind and preserves adapter this", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let readGets = 0; let casGets = 0; let binds = 0; let reads = 0; let mutations = 0;
+    function read(this: StoreAdapter): Promise<StoreSnapshot> {expect(this).toBe(observed); reads++; return f.adapter.read();}
+    function cas(this: StoreAdapter, ...args: Parameters<StoreAdapter["cas"]>): ReturnType<StoreAdapter["cas"]> {expect(this).toBe(observed); mutations++; return f.adapter.cas(...args);}
+    for (const operation of [read, cas]) Object.defineProperty(operation, "bind", {get() {binds++; throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);}});
+    const observed: StoreAdapter = {get read() {readGets++; return read;}, get cas() {casGets++; return cas;}};
+    const result = await admission(observed, input(3), dependencies()); expect(result.status).toBe("stored");
+    expect({readGets, casGets, binds, reads, mutations}).toEqual({readGets: 1, casGets: 1, binds: 0, reads: 1, mutations: 1}); const after = await f.adapter.read(); expect(after.tip).not.toBe(before.tip); expect(after.runs.has("2-a1")).toBe(true); await files(after);
+  }, 0);
   it("admits a retained run with unchanged canonical bytes", async () => {
     const f = fixture(kind); const value = input(3, true); const expected = canonicalBytes(value.run); const result = await admission(f.adapter, value, dependencies()); raw.push(JSON.stringify(result));
     expect(result.status).toBe("stored"); if (result.status !== "stored") throw new Error("expected retained input"); expect(result.added).toBe(true); expect(result.attempts).toBe(1);

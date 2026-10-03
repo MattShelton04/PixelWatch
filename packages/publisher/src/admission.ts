@@ -10,7 +10,14 @@ interface ReadView { readonly snapshot: StoreSnapshot; readonly bytes: ReadonlyM
 export function admitRun(adapter: StoreAdapter, input: WriteRunInput, dependencies: AdmissionDependencies): Promise<AdmissionResult> {
   return guarded(async () => {
     const accepted = captureAdmission(input, dependencies); const run = accepted.input.run; const deps = accepted.dependencies;
-    const read = adapter.read.bind(adapter); const cas = adapter.cas.bind(adapter); const repositoryId = deps.context.repository.repositoryId;
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply binds the captured operation to this same adapter.
+    const readOperation = adapter.read;
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply binds the captured operation to this same adapter.
+    const casOperation = adapter.cas;
+    if (typeof readOperation !== "function" || typeof casOperation !== "function") refuse("publisher-input-invalid");
+    const read = (): Promise<StoreSnapshot> => Reflect.apply<StoreAdapter,[],Promise<StoreSnapshot>>(readOperation,adapter,[]);
+    const cas = (...args: Parameters<StoreAdapter["cas"]>): ReturnType<StoreAdapter["cas"]> => Reflect.apply<StoreAdapter,Parameters<StoreAdapter["cas"]>,ReturnType<StoreAdapter["cas"]>>(casOperation,adapter,args);
+    const repositoryId = deps.context.repository.repositoryId;
     const acceptedBytes = canonicalBytes(run); const policy = retentionPolicy(deps.context.config); const limits = sizeLimits(deps.context.config);
     const readView = async (): Promise<ReadView> => {
       const snapshot = captureSnapshot(await read(), repositoryId); const bytes = await materialize(snapshot);

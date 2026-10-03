@@ -24,8 +24,10 @@ export function captureAdmission(input: WriteRunInput, dependencies: AdmissionDe
   const context = captureContext(dependencies.context);
   const metadata = {timestamp: dependencies.metadata.timestamp}; const now = dependencies.now;
   const prStates = new Map(dependencies.prStates); const pins = new Set(dependencies.pins ?? []);
-  const copied: AdmissionDependencies = {context, metadata, now, prStates, pins, delay: dependencies.delay, jitter: dependencies.jitter,
-    ...(dependencies.checkpoint === undefined ? {} : {checkpoint: dependencies.checkpoint})};
+  const delay = dependencies.delay; const jitter = dependencies.jitter; const checkpoint = dependencies.checkpoint;
+  if (typeof delay !== "function" || typeof jitter !== "function" || (checkpoint !== undefined && typeof checkpoint !== "function")) refuse("publisher-input-invalid");
+  const copied: AdmissionDependencies = {context, metadata, now, prStates, pins, delay, jitter,
+    ...(checkpoint === undefined ? {} : {checkpoint})};
   if (context.repository.repositoryId !== run.source.repositoryId) refuse("admission-repository-invalid");
   timestamp(now); timestamp(metadata.timestamp);
   for (const [pr, state] of prStates) if (!isGitHubId(pr) || !["open", "closed", "unknown"].includes(state)) refuse("admission-pr-state-invalid");
@@ -40,11 +42,20 @@ export function captureAdmission(input: WriteRunInput, dependencies: AdmissionDe
 /** A snapshot DTO and its byte-reader are privately owned before any callback or read. */
 export function captureSnapshot(snapshot: StoreSnapshot, repositoryId: string): StoreSnapshot {
   const tip = snapshot.tip; checkedTip(tip); const store = structuredClone(snapshot.store);
-  const runs = new Map([...snapshot.runs].map(([key, value]) => [key, structuredClone(value)])); const files = snapshot.files.map((file) => ({...file}));
-  const originalRead = snapshot.readFile.bind(snapshot);
+  const sourceFiles = snapshot.files; const count = sourceFiles.length;
+  if (!Number.isSafeInteger(count) || count < 0) refuse("admission-listing-invalid");
+  if (count > STORE_LIMITS.maxFiles) refuse("admission-files-limit");
+  const files: {path: string; bytes: number}[] = [];
+  for (let index = 0; index < count; index++) {
+    const file = sourceFiles[index] as StoreSnapshot["files"][number] | null; if (typeof file !== "object" || file === null) refuse("admission-listing-invalid");
+    files.push({path: file.path, bytes: file.bytes});
+  }
+  const runs = new Map([...snapshot.runs].map(([key, value]) => [key, structuredClone(value)]));
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply binds this captured reader to the same source snapshot.
+  const originalRead = snapshot.readFile;
+  if (typeof originalRead !== "function") refuse("store-reader-invalid");
   if (store.repositoryId !== repositoryId) refuse("admission-foreign-store");
   if (tip === null && (files.length !== 0 || runs.size !== 0 || store.runs.length !== 0 || store.txn !== 0)) refuse("admission-absent-store-invalid");
-  if (files.length > STORE_LIMITS.maxFiles) refuse("admission-files-limit");
   let total = 0; const listing = new Map<string, number>();
   for (const file of files) {
     const kind = classifyStorePath(file.path); const json = kind?.kind === "index" || kind?.kind === "run";
@@ -57,7 +68,7 @@ export function captureSnapshot(snapshot: StoreSnapshot, repositoryId: string): 
   try {readStoreTree({store, runs, files});} catch {refuse("admission-store-graph-invalid");}
   return {tip, store, runs, files, readFile: async (path) => {
     const expected = listing.get(path); if (expected === undefined) refuse("admission-file-missing");
-    return copyBytes(await originalRead(path), expected, expected);
+    return copyBytes(await Reflect.apply<typeof snapshot,[string],Promise<Uint8Array>>(originalRead,snapshot,[path]), expected, expected);
   }};
 }
 function equal(first: Uint8Array, second: Uint8Array): boolean { return Buffer.from(first).equals(Buffer.from(second)); }
