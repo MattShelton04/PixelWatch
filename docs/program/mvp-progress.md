@@ -6,6 +6,14 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Source job independent APPROVAL at3e315b1:83/83 exit0,12.82s;16unchanged hostile/
+  interleaving probes across7commands pass, all4SOURCEfindings andGC closed. Raw470suite/
+  55probe/25transcripts clean, lint/types0. Root exactfourfileintegration is next; no deploy/
+  comment/live acceptance claimed. New internal maintenance writer assignment uses frozen
+  1ceb27d contract, disjoint threefiles; independent reviewer remains separate.
+- Root identity review found P1 false422 proof at43c61de despite31green. Three strictred
+  regressions precede private HTTP carrier correction; complete34/34 exits0,943ms with
+  reached recovery/guard/getter assertions. Independent fixverification still required.
 - Root publishing identity/refusal prerequisites: testsfirst5cases4failed/1passed; final
   complete new+existingclient31/31 exit0,1.10s, lint/types0. Fixed bot endpoint and definitive
   422 refusal proof only (ADR0027); independent review/fullintegration remain gates.

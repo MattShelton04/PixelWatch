@@ -1,6 +1,6 @@
 import { inspect } from "node:util";
 import { expect, it } from "vitest";
-import { GitHubClient, sanitizeForgeError, type HttpRequest, type HttpResponse } from "../src/index.ts";
+import { ForgeError, GitHubClient, sanitizeForgeError, type HttpRequest, type HttpResponse } from "../src/index.ts";
 
 const TOKEN = "ghs_FAKE_PUBLISHING_IDENTITY_CANARY";
 const SIGNED = "https://blob.invalid/?sig=FAKE_IDENTITY_SIGNED_CANARY";
@@ -69,4 +69,44 @@ it("authorization refusal and unknown comment outcomes never masquerade as body 
   const unknown = setup([json([]), json({}, 503), json([{id: 9, body: MARKER + "\nother", user: {id: 7}}])]);
   await refused(unknown.client.reconcileComment({prNumber: "8", botId: "7", body: MARKER, beforeMutation: () => Promise.resolve(true)}), "comment-outcome");
   expect(unknown.calls.map(call => call.method)).toEqual(["GET", "POST", "GET"]);
+});
+
+it("transport error cannot certify definitive HTTP422 rejection after an accepted comment", async () => {
+  for (const kind of ["ordinary", "mutated", "accessors"]) {
+    const supplied = new ForgeError("comment-body-rejected"); let accesses = 0;
+    if (kind === "mutated") Object.assign(supplied, {message: TOKEN + SIGNED, cause: TOKEN + SIGNED, code: "api-refused"});
+    if (kind === "accessors") for (const key of ["code", "message", "stack", "cause"]) Object.defineProperty(supplied, key, {get: () => {accesses++; return TOKEN + SIGNED;}});
+    let stored: string | undefined; let calls = 0; let guards = 0; let disposals = 0; let delays = 0;
+    const body = MARKER + "\nintended";
+    const client = new GitHubClient({owner: "owner", repo: "project", repositoryId: "42", token: TOKEN,
+      transport: {request: request => {calls++; if (request.method === "POST") {stored = body; return Promise.reject(supplied);} return Promise.resolve(json(stored === undefined ? [] : [{id: 9, body: stored, user: {id: 7}}]));}},
+      timing: {deadline: () => ({signal: new AbortController().signal, dispose: () => {disposals++;}}), delay: () => {delays++; return Promise.resolve();}},
+    });
+    let result: unknown; let error: unknown;
+    try {result = await client.reconcileComment({prNumber: "8", botId: "7", body, beforeMutation: () => {guards++; return Promise.resolve(true);}});} catch (value) {error = value;}
+    const raw = inspect({result, error, stored}, {showHidden: true, depth: 12}); expect(raw).not.toContain(TOKEN); expect(raw).not.toContain(SIGNED);
+    expect(error).toBeUndefined(); expect(result).toEqual({status: "recovered", commentId: "9"});
+    expect({calls, guards, disposals, delays, accesses}).toEqual({calls: 3, guards: 1, disposals: 3, delays: 1, accesses: 0});
+  }
+});
+
+it("unaccepted transport rejection needs rediscovery before a real HTTP422 can prove refusal", async () => {
+  let calls = 0; let guards = 0; let delays = 0; let posts = 0;
+  const client = new GitHubClient({owner: "owner", repo: "project", repositoryId: "42", token: TOKEN,
+    transport: {request: request => {calls++; if (request.method !== "POST") return Promise.resolve(json([])); posts++; return posts === 1 ? Promise.reject(new ForgeError("comment-body-rejected")) : Promise.resolve(json({message: TOKEN + SIGNED}, 422));}},
+    timing: {deadline: () => ({signal: new AbortController().signal, dispose: () => undefined}), delay: () => {delays++; return Promise.resolve();}},
+  });
+  await refused(client.reconcileComment({prNumber: "8", botId: "7", body: MARKER, beforeMutation: () => {guards++; return Promise.resolve(true);}}), "comment-body-rejected");
+  expect({calls, guards, delays, posts}).toEqual({calls: 4, guards: 2, delays: 1, posts: 2});
+});
+
+it("caller and response getter exceptions cannot mint HTTP422 refusal proof", async () => {
+  const first = setup([]);
+  const input = {prNumber: "8", botId: "7", beforeMutation: () => Promise.resolve(true), get body(): string {throw new ForgeError("comment-body-rejected");}};
+  await refused(first.client.reconcileComment(input), "request-failed"); expect(first.calls).toHaveLength(0);
+  let headerReads = 0;
+  const second = setup([{status: 403, get headers(): Record<string, string> {headerReads++; throw new ForgeError("comment-body-rejected");}, body: new Uint8Array()}]);
+  await refused(second.client.reconcileComment({prNumber: "8", botId: "7", body: MARKER, beforeMutation: () => Promise.resolve(true)}), "request-failed");
+  expect(second.calls.map(call => call.method)).toEqual(["GET"]);
+  expect(headerReads).toBe(1);
 });

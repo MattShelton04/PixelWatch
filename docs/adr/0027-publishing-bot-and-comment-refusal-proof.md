@@ -34,6 +34,15 @@ The later reconciler may make one freshly guarded renderer-fallback attempt on t
 this adapter change itself never retries with alternate content. Unknown outcomes retain
 existing rediscovery/recovery rules. No raw response body, token, URL or error cause escapes.
 
+Independent review found that public-constructor diagnostic identity is not HTTP outcome
+proof: a transport could throw that category after an accepted POST. Transport/timing errors
+cannot preserve this category. Only the actual422 branch throws a module-private carrier;
+the public reconciler converts that exact carrier to a fresh fixed diagnostic and strips
+unproved refusal categories from every other thrown path, including input/response getters.
+The carrier never escapes to callbacks/callers, so an earlier public rejection cannot certify
+a later invocation. Accepted lost replies still rediscover before any retry. Bot lookup also
+cannot expose a forged comment-refusal category. These are inferred boundary corrections.
+
 ## Consequences
 
 No new dependency, permission, schema, golden or destination override is introduced. Identity

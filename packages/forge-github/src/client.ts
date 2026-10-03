@@ -6,6 +6,13 @@ import { verifySource, type VerifiedSource, type VerifySourceInput } from "./sou
 const API_ORIGIN = "https://api.github.com";
 const encoder = new TextEncoder();
 const REDIRECTS = new Set([301, 302, 303, 307, 308]);
+// Never exposed to callbacks or callers. Only the actual HTTP422 branch can throw this
+// carrier; public constructor diagnostic identity does not prove a mutation's outcome.
+const definitiveCommentRejection = new Error("private definitive comment rejection");
+function withoutRejectionProof(error: unknown, fallback: "request-failed" | "request-cancelled"): ForgeError {
+  const safe = sanitizeForgeError(error, fallback);
+  return safe.code === "comment-body-rejected" ? new ForgeError(fallback) : safe;
+}
 const header = (response: HttpResponse, key: string): string | undefined => {
   const values = Object.entries(response.headers).filter(([name]) => name.toLowerCase() === key);
   if (values.length > 1) throw new ForgeError("invalid-response");
@@ -94,7 +101,7 @@ export class GitHubClient {
 
   async #request(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
     try { return await this.#timedRequest(request, signal); }
-    catch (error) { throw sanitizeForgeError(error, signal?.aborted === true ? "request-cancelled" : "request-failed"); }
+    catch (error) { throw withoutRejectionProof(error, signal?.aborted === true ? "request-cancelled" : "request-failed"); }
   }
 
   async #timedRequest(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
@@ -309,11 +316,13 @@ export class GitHubClient {
 
   /** The production workflow uses github.token, whose comments must have this bot's ID. */
   async getPublishingBot(signal?: AbortSignal): Promise<PublishingBot> {
-    const response = await this.#read(`${API_ORIGIN}/users/github-actions%5Bbot%5D`, signal);
-    if (response.status !== 200) throw new ForgeError("api-refused");
-    const value = object(parse(response));
-    if (value["login"] !== "github-actions[bot]" || value["type"] !== "Bot") throw new ForgeError("invalid-response");
-    return {botId: id(value["id"])};
+    try {
+      const response = await this.#read(`${API_ORIGIN}/users/github-actions%5Bbot%5D`, signal);
+      if (response.status !== 200) throw new ForgeError("api-refused");
+      const value = object(parse(response));
+      if (value["login"] !== "github-actions[bot]" || value["type"] !== "Bot") throw new ForgeError("invalid-response");
+      return {botId: id(value["id"])};
+    } catch (error) { throw withoutRejectionProof(error, "request-failed"); }
   }
 
   #comment(value: JsonValue): { readonly id: string; readonly body: string; readonly author: string } {
@@ -348,6 +357,14 @@ export class GitHubClient {
 
   /** Publisher must separately hold the projection lock and recheck head/order/readiness. */
   async reconcileComment(callerInput: CommentInput): Promise<CommentResult> {
+    try { return await this.#reconcileComment(callerInput); }
+    catch (error) {
+      if (error === definitiveCommentRejection) throw new ForgeError("comment-body-rejected");
+      throw withoutRejectionProof(error, "request-failed");
+    }
+  }
+
+  async #reconcileComment(callerInput: CommentInput): Promise<CommentResult> {
     const input: CommentInput = { ...callerInput };
     trustedId(input.prNumber); trustedId(input.botId);
     if (typeof input.beforeMutation !== "function") throw new ForgeError("comment-guard-failed");
@@ -384,7 +401,7 @@ export class GitHubClient {
       if (response !== undefined) {
         // A definitive rejection may authorize one publisher-owned text fallback. Network,
         // authorization and uncertain outcomes cannot supply that proof; no raw body survives.
-        if (response.status === 422) throw new ForgeError("comment-body-rejected");
+        if (response.status === 422) throw definitiveCommentRejection;
         const retry = this.#retryDelay(response, attempt);
         if (retry === null) throw new ForgeError("api-refused");
         delay = retry;
