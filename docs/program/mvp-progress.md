@@ -38,6 +38,18 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   independent tooling/security reviewer, plus root integration/runner. Four total slots.
 
 The following entries are earlier checkpoints, superseded by the facts above.
+- Viewer author and independent unfiltered browser acceptance each passed 24/24 at `bb0e05a`
+  (eight per Chromium/Firefox/WebKit); independent eighteen hostile browser probes passed.
+  P1/P2 cancellation, Host and nested-entry findings all independently closed; exact transcripts
+  and initial 21/24 failure are retained. Rebase onto main `44420ca` produced `b500453` with
+  empty viewer/schema/tool tree diff; frozen offline install and actual fixture generation pass.
+- Supported actual final app preview is running at `http://127.0.0.1:4173/pixelwatch/runs/11-a1/`
+  via `pixelwatch-dev serve`; synthetic local inputs explicitly labelled, real core projection/
+  PNGs/generated entries/app. Root CI now runs all three engines on Linux/Windows with no
+  credentials/cache/filters/skips. Owner approved separate-suite threat status bookkeeping.
+  Final integrated check and hosted/real Pages/live gates remain pending.
+
+The entries below are earlier checkpoints, superseded by current facts above.
 
 - Owner explicitly authorized merging completed reviewed slices as the program proceeds.
   Existing squash-only policy and required checks are preserved; no settings were changed.

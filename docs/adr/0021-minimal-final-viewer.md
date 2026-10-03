@@ -38,4 +38,9 @@ behavior, not served Pages or live fork safety. Three-engine results, an actual 
 and integrated adversarial review remain required before claiming M2.7 acceptance. No M3
 features or production v2 are introduced. Release/tag publication still needs owner approval.
 
+Owner approved a traceability bookkeeping clarification on 2026-10-03: `passing` identifies
+the actual named acceptance suite, including separate unfiltered three-engine browser tests.
+It does not imply whole-rule/M2/MVP acceptance. Local evidence and remaining hosted/Pages/live
+gates are recorded separately in `docs/evidence/m2.7-minimal-viewer.md`.
+
 Primary tooling reference: [Playwright 1.63.0](https://github.com/microsoft/playwright/releases/tag/v1.63.0).

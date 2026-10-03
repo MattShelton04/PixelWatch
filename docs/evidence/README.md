@@ -24,6 +24,7 @@ signed URLs, emails or real screenshots.
 | [mvp-foundation-corrections.md](mvp-foundation-corrections.md) | MVP baseline audit and corrective regressions | baseline check 672 passes; corrective slice verification recorded separately | [0016](../adr/0016-mvp-foundation-corrections.md) |
 | [m2.1a-forge-infrastructure.md](m2.1a-forge-infrastructure.md) | M2.1a transport/artifacts/comments/Pages | 25 tests; independent retry-race fix verified; source auth and integrated gates pending | [0017](../adr/0017-bounded-forge-and-comment-recovery.md) |
 | [m2.2-store.md](m2.2-store.md) | M2.2 adapters and real simulation activation | 39 store tests; two production cases across four repeated seeds independently reviewed; integrated/hosted gates recorded after execution | [0018](../adr/0018-validated-store-adapters.md) |
+| [m2.7-minimal-viewer.md](m2.7-minimal-viewer.md) | Minimal final app and supported preview | local author and independent 24/24 three-engine tests; real Pages/live gates pending | [0021](../adr/0021-minimal-final-viewer.md) |
 
 `recordings/` holds machine-readable data behind these records: `s2/timings.json` and the redacted
 S11 payloads and REST responses, one directory per run and attempt (`capture-<run>-a<n>`,
