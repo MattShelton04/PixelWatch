@@ -88,9 +88,8 @@ Nothing observed contradicts 01 §4.4 for same-repo PRs.
 - **Partial ("failed jobs only") rerun** is not recorded. It's S3/M2.6.
 - **A PR updated between its capture and its report** wasn't produced. M2.1's fake-API tests
   cover "stale head". A live recording is M2.6.
-- **Which timestamp is "source-created time" (02 §8)?** 02 §8 doesn't say. `runs/{id}.created_at`
-  is constant across attempts, so the attempt is the tiebreak. `attempts/{n}.created_at` would sort
-  a rerun of an old run after newer runs. Flagged for M2.1; no doc change here.
+- **Source-created time resolved by ADR 0016 (owner, 2026-10-03).** Use original
+  `runs/{id}.created_at`, constant across attempts; numeric attempt remains the tiebreak.
 
 ## Consequences
 

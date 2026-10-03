@@ -28,6 +28,8 @@ export interface IngestInput {
   /** Defaults to the in-process codec; the publisher passes a PngWorker. */
   readonly codec?: BlobCodec;
   readonly signal?: AbortSignal;
+  /** Injected 10-minute deadline for deterministic simulation; production defaults to a real timer. */
+  readonly deadline?: AbortSignal;
 }
 
 export interface PartKey {

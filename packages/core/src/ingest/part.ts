@@ -37,6 +37,7 @@ async function readBundle(archive: ZipArchive, signal: AbortSignal | undefined):
   const parsed = parseDocument("bundle", await readEntry(archive, "bundle.json", { signal }));
   if (parsed.ok) return parsed.value;
   const { code, path } = parsed.issue;
+  if (code === "unsupported-version") throw new IngressError("ingest-unsupported-version", "selected bundle schema version is unsupported; use a compatible publisher");
   // Issue messages can quote input (unknown property names); only the code and a sanitized path are kept.
   throw new IngressError("part-bundle-invalid", `bundle.json is invalid (${code.replace(/[^a-z0-9-]/g, "?")} at ${safePath(path)})`);
 }
@@ -82,6 +83,7 @@ async function admitImage(archive: ZipArchive, file: string, index: number, ctx:
     if (ISOLATION_CODES.has(error.code)) throw new IngressError("ingest-codec", `the PNG worker failed (${error.code})`, { cause: error });
     throw new IngressError("part-image-invalid", `unit ${String(index)}'s image is outside the PNG profile (${error.code})`, { cause: error });
   }
+  if (ctx.signal?.aborted === true) throw new IngressError("ingest-aborted", "ingestion cancelled");
   try {
     const stored = await storeBlob(ctx.pool, image, ctx.codec);
     return { state: "captured", pixelHash: stored.pixelHash, width: image.width, height: image.height };
@@ -91,11 +93,24 @@ async function admitImage(archive: ZipArchive, file: string, index: number, ctx:
   }
 }
 
-export async function validatePart(part: SelectedPart, artifact: ArtifactRef, ctx: PartContext): Promise<ValidPart> {
+export interface PreparedPart {
+  readonly part: SelectedPart;
+  readonly artifact: ArtifactRef;
+  readonly archive: ZipArchive;
+  readonly bundle: Bundle;
+}
+
+/** Validate each selected manifest before any sibling's pixels reach the blob pool. */
+export async function preparePart(part: SelectedPart, artifact: ArtifactRef, ctx: PartContext): Promise<PreparedPart> {
   const archive = openZip(part.artifact.zip, ctx.budget, { signal: ctx.signal });
   const bundle = await readBundle(archive, ctx.signal);
   checkIdentity(bundle, part, ctx.attempt);
   checkFiles(bundle, archive);
+  return { part, artifact, archive, bundle };
+}
+
+export async function admitPart(prepared: PreparedPart, ctx: PartContext): Promise<ValidPart> {
+  const { part, artifact, archive, bundle } = prepared;
   const ordered = [...bundle.units].sort((a, b) => (a.viewId === b.viewId ? (a.variantId < b.variantId ? -1 : 1) : a.viewId < b.viewId ? -1 : 1));
   const units: PartUnit[] = [];
   for (const [index, unit] of ordered.entries()) {

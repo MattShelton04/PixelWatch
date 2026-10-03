@@ -20,7 +20,8 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   `81ffc411a10649a6271b55652ccc84c0fa1a8c5bba637e776d0cb995f53d49fe`.
 - Sandboxed `pnpm check`: lint/typecheck passed; Vitest startup failed with spawn
   EPERM. Sandboxed simulation: exit 1, isolated Git subprocesses could not start.
-  Permitted subprocess retry succeeded for simulation. Fresh check capture pending.
+  Permitted subprocess retries succeeded: baseline check exit 0, 27 files / 672 tests,
+  lint/types/actionlint/zizmor passed (Vitest 50.35 s).
 - Historical Linux/Windows evidence exists in m2.4-simulation-harness.md; this is
   distinct from fresh local Windows verification and new-commit hosted checks.
 
@@ -28,14 +29,14 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 | Tasks | State | Evidence / remaining gate |
 |---|---|---|
-| M0.1 | implemented, baseline check being corroborated | strict tooling, network guard, real fixtures, Linux/Windows CI |
+| M0.1 | implemented, local check corroborated | baseline 672 tests; corrective 679; new-commit Linux/Windows CI pending |
 | M0.2 | recorded complete | 14 owner settings checked 2026-10-01; licence/reuse already approved |
 | M0.3 | verified | nine schema fixture suites, generated types, real conversion 8/8 |
 | M0.4 | implemented | complete rule/boundary traceability; planned checks remain planned |
 | M0.5 | recorded complete in approved scope | S2/S4/same-repo S11, durable IDs/recordings; fork remains M2.6 |
 | M0.6 | recorded and locally corroborated | prototype source, binding tiny/crop/full-size outputs and hash vectors |
 | M1.1–M1.5 | implemented, recorded | codec/hash/comparator/ingress/run tests and measured evidence |
-| M1.6 | implemented; audit regression found | unknown expired run can evade lazy validation before GC; fix required |
+| M1.6 | implemented; audit corrections verified | eager expired-run/grace graph checks; independent red/green regressions |
 | M1.7–M1.8 | implemented, recorded | exact projection goldens and 207/207 full-size dev CLI parity |
 | M2.4 | implemented infrastructure | 9 harness checks; all 14 product cases NOT RUN, exit 2 |
 | M2.1–M2.3 | absent at baseline | forge/store/publisher production implementations |
@@ -123,9 +124,9 @@ Simulation scans raw product outputs before any harness redaction.
   §4.2; unrelated/nonselected artifacts remain unopened. Record as delegated judgment.
 - Inject ingress deadline and deterministic codec for production-backed simulations;
   retain the production 10-minute limit. Do not use PngWorker real timers in simulations.
-- Open investigation: authenticated REST run/attempt recordings lack required root
-  workflowSha/workflowRef. Do not substitute head_sha or capture claims. Need official
-  corroboration mechanism or an explicit minimal contract correction before that path.
+- Owner approved optional unavailable workflowSha/workflowRef after authenticated read-only
+  investigation (run/attempt/jobs/workflow/check-suite lack root provenance). ADR 0016;
+  no head_sha or claim substitutes. Root schema/types/tests corrected; forge path pending.
 - Documentation corrections: 00 stale status, nine schemas, converter/S11 template
   prose, actual M1.8 golden paths, strict presentation config (ADR 0010).
 - Benchmark overview/table discrepancies remain unresolved: original measurements
@@ -135,14 +136,23 @@ Simulation scans raw product outputs before any harness redaction.
 
 | ID | Severity | Finding | State |
 |---|---|---|---|
-| AUDIT-C-1 | P1 | housekeeping/tree.ts lazily validates refs; unknown expired run is deleted by retention/GC | reproduced; regression/fix required |
-| AUDIT-C-2 | contract | ingest.ts ambient deadline and PngWorker timers need explicit simulation seams | correction planned |
+| AUDIT-C-1 | P1 | housekeeping/tree.ts lazily validates refs; unknown expired run is deleted by retention/GC | eager validation + red/green regression; independent verification passed |
+| REVIEW-PRE-1 | P1 | expired grace references could likewise evade validation | eager grace refs + red/green regression; independent verification passed |
+| AUDIT-C-2 | contract | ingest.ts ambient deadline and PngWorker timers need explicit simulation seams | injected deadline + codec seam; final cancellation regression independently passed |
 | AUDIT-C-3 | review constraint | Capture redacts; scan raw production outputs first to expose leaks | required at activation |
-| AUDIT-B-4 | contract | workflow provenance unavailable in S11 REST shapes | investigate, affected source verification held |
+| AUDIT-B-4 | contract | workflow provenance unavailable in S11 REST shapes | owner approved omission; ADR 0016/schema tests, forge integration pending |
 
 Each substantive slice gets independent security and correctness/concurrency review;
 reviewers inspect/run/attack the code and verify blocking fixes. Integrated review follows.
 Evidence records command, dependency SHA, exit/count/output, platform and not-run gates.
+
+- PRE: independent final review exit 0, 6 files / 70 tests; no blocking findings.
+  Corrective check exit 0, 27 files / 679 tests; simulation exit 2, 9 harness / 14 NOT RUN.
+- W1-G: author commit `1bbfdf4f10c8a89bc4ae577d1fb73c3e199a0413`, base `f97914e`;
+  23 adapter tests pass, lint/typecheck pass. Independent security/correctness review active;
+  source verification M2.1b is separate, not yet implemented.
+- W1-S: isolated implementation active; first 11 adapter tests pass, broader hostile/race
+  assertions running. Independent review and production simulation activation remain gates.
 
 ## External gates (not blanket blockers)
 

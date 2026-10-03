@@ -11,8 +11,10 @@ repositories. It extracts what TracePilot and PropertyScope each built separatel
 
 It needs no hosted service, GitHub App, secrets or AI in CI.
 
-Status: design complete for the MVP (M0–M3). Nothing is implemented yet. Start with
-[08-implementation-plan.md](08-implementation-plan.md) §3 (M0).
+Status: M0 and M1 are implemented with recorded evidence; the current audit is in
+[the MVP program record](../program/mvp-progress.md). M2.4 supplies simulation infrastructure,
+with product cases still NOT RUN. Remaining publisher work starts with M2.1/M2.2 in
+[08-implementation-plan.md](08-implementation-plan.md) §5.
 
 ## 1. Files and authority
 

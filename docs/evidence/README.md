@@ -19,6 +19,7 @@ signed URLs, emails or real screenshots.
 | [m1.4-reference-ingest.md](m1.4-reference-ingest.md) | M1.4 real prototype ingestion and original GitHub ZIPs | pass: 42/42 and 105/105 coverage; order-independent; 16 original ZIPs accepted by structure / CRC checks | [0008](../adr/0008-ingress-zip-and-merge.md) |
 | [m1.8-dev-compare.md](m1.8-dev-compare.md) | M1.8 full-size parity through `pixelwatch-dev compare` | pass: 207/207 compared views match the goldens; exit 0, 1, 1 | [0014](../adr/0014-dev-compare.md) |
 | [m2.4-simulation-harness.md](m2.4-simulation-harness.md) | M2.4 local infrastructure and full coverage report | harness evidence passes; 14 product cases NOT RUN, exit 2 | [0015](../adr/0015-simulation-harness.md) |
+| [mvp-foundation-corrections.md](mvp-foundation-corrections.md) | MVP baseline audit and corrective regressions | baseline check 672 passes; corrective slice verification recorded separately | [0016](../adr/0016-mvp-foundation-corrections.md) |
 
 `recordings/` holds machine-readable data behind these records: `s2/timings.json` and the redacted
 S11 payloads and REST responses, one directory per run and attempt (`capture-<run>-a<n>`,

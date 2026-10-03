@@ -11,12 +11,12 @@ import { IN_PROCESS_CODEC } from "../blob-pool.ts";
 import { IngressError } from "./errors.ts";
 import { INGEST_LIMITS, IngestBudget } from "./limits.ts";
 import { mergeParts } from "./merge.ts";
-import { validatePart } from "./part.ts";
+import { admitPart, preparePart, type PreparedPart } from "./part.ts";
 import { selectArtifacts } from "./select.ts";
 import type { IngestInput, Ingestion, RejectedPart, ValidPart } from "./types.ts";
 
 export async function ingestArtifacts(input: IngestInput): Promise<Ingestion> {
-  const deadline = AbortSignal.timeout(INGEST_LIMITS.timeoutMs);
+  const deadline = input.deadline ?? AbortSignal.timeout(INGEST_LIMITS.timeoutMs);
   const signal = input.signal === undefined ? deadline : AbortSignal.any([input.signal, deadline]);
   const selection = selectArtifacts(input);
   const budget = new IngestBudget();
@@ -29,13 +29,22 @@ export async function ingestArtifacts(input: IngestInput): Promise<Ingestion> {
     diagnostic: { code: "part-duplicate", message: `${String(d.artifacts.length)} artifacts carry this part's name; none is chosen` },
   }));
   const ctx = { config: input.config, attempt: input.attempt, budget, pool: input.pool, codec: input.codec ?? IN_PROCESS_CODEC, signal };
+  const prepared: PreparedPart[] = [];
   for (const part of selection.selected) {
     const artifact = { artifactId: part.artifact.artifactId };
     try {
-      valid.push(await validatePart(part, artifact, ctx));
+      prepared.push(await preparePart(part, artifact, ctx));
     } catch (error) {
       if (!(error instanceof IngressError) || error.scope === "ingestion") throw error;
       rejected.push({ ...part.key, artifacts: [artifact], diagnostic: { code: error.code, message: error.detail } });
+    }
+  }
+  for (const part of prepared) {
+    try {
+      valid.push(await admitPart(part, ctx));
+    } catch (error) {
+      if (!(error instanceof IngressError) || error.scope === "ingestion") throw error;
+      rejected.push({ ...part.part.key, artifacts: [part.artifact], diagnostic: { code: error.code, message: error.detail } });
     }
   }
   if (signal.aborted) throw new IngressError("ingest-aborted", "ingestion cancelled");

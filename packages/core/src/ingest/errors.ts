@@ -72,6 +72,7 @@ export type IngestionErrorCode =
   | "ingest-too-many-artifacts"
   | "ingest-too-many-units"
   | "ingest-aborted"
+  | "ingest-unsupported-version"
   | "ingest-codec";
 
 export type IngressErrorCode = ZipErrorCode | PartErrorCode | IngestionErrorCode;
@@ -83,6 +84,7 @@ const INGESTION_CODES: ReadonlySet<IngressErrorCode> = new Set<IngestionErrorCod
   "ingest-too-many-artifacts",
   "ingest-too-many-units",
   "ingest-aborted",
+  "ingest-unsupported-version",
   "ingest-codec",
 ]);
 

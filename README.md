@@ -10,8 +10,9 @@ coding agents. There's no hosted service, GitHub App, secret or AI in CI.
 
 ## Status
 
-**Pre-alpha. Nothing is usable yet.** The design is complete for the MVP (milestones M0–M3), and
-implementation has just started. There are no releases, packages or actions to install.
+**Pre-alpha.** M0/M1 supply the validated pure engine and internal `pixelwatch-dev compare`.
+M2.4 supplies simulation infrastructure; remaining publisher/viewer/live acceptance is tracked
+in [the MVP program record](docs/program/mvp-progress.md). There are no releases or actions to install.
 
 - Design: [`docs/design/00-README.md`](docs/design/00-README.md)
 - Plan and milestones: [`docs/design/08-implementation-plan.md`](docs/design/08-implementation-plan.md)
