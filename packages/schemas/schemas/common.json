@@ -179,6 +179,21 @@
         "shard": { "$ref": "#/$defs/Shard" }
       }
     },
+    "ReceivedPart": {
+      "title": "ReceivedPart",
+      "description": "A received part and what happened to it. A rejected part also appears in coverage.missingParts.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "providerId", "shard", "status", "artifactId"],
+      "properties": {
+        "revision": { "$ref": "#/$defs/Revision" },
+        "providerId": { "$ref": "#/$defs/Id" },
+        "shard": { "$ref": "#/$defs/Shard" },
+        "status": { "enum": ["valid", "rejected"] },
+        "artifactId": { "$ref": "#/$defs/GitHubId" },
+        "diagnostic": { "$ref": "#/$defs/Message" }
+      }
+    },
     "MissingPart": {
       "title": "MissingPart",
       "description": "An expected part without a valid catalog. Its unit count is unknown, never zero.",

@@ -3,6 +3,7 @@
 // problem found, or undefined.
 import type {
   Analysis,
+  ApiIndex,
   Bundle,
   ChangeResult,
   Changes,
@@ -10,13 +11,14 @@ import type {
   Counts,
   Coverage,
   Diff,
+  ReceivedPart,
   Run,
   RunResult,
   Site,
   Store,
   Stream,
 } from "./generated/types.ts";
-import { compareRunOrder, compareUnitKeys, formatRunKey } from "./ids.ts";
+import { compareRunOrder, compareStreamIds, compareUnitKeys, formatRunKey } from "./ids.ts";
 import { MAX_MESSAGE_BYTES, utf8Length } from "./text.ts";
 
 export interface SemanticIssue {
@@ -237,6 +239,47 @@ function checkAssociation(status: string, prNumber: string | undefined, path: st
   return undefined;
 }
 
+interface Provenance {
+  readonly event: string;
+  /** Where the base-branch commit is, when the document has one. */
+  readonly baseBranchPath: string | undefined;
+  readonly hasBaseline: boolean;
+  readonly parts: readonly ReceivedPart[];
+  readonly coverage: Coverage;
+  readonly results: readonly AnyResult[];
+}
+
+/** run@1 and changes@1 alike: the commits, the baseline and the parts agree (ADR 0011). */
+function checkProvenance(p: Provenance): SemanticIssue | undefined {
+  if (p.baseBranchPath !== undefined && p.event !== "pull_request") {
+    return issue("base-branch-inconsistent", p.baseBranchPath, "only a pull_request run has a base-branch commit");
+  }
+  // The baseline comes only from the envelope (01 §4.4): with no baseline commit every base side is
+  // none and no base part was expected; with one, no base side is none.
+  if (!p.hasBaseline) {
+    const part = p.parts.findIndex((x) => x.revision === "base");
+    if (part >= 0) return issue("baseline-inconsistent", `/parts/${String(part)}`, "a run without a baseline commit has no base parts");
+    const missing = p.coverage.missingParts.findIndex((x) => x.revision === "base");
+    if (missing >= 0) return issue("baseline-inconsistent", `/coverage/missingParts/${String(missing)}`, "a run without a baseline commit expects no base parts");
+  }
+  const side = p.results.findIndex((r) => (r.base.state === "none") === p.hasBaseline);
+  if (side >= 0) {
+    return issue("baseline-inconsistent", `/results/${String(side)}/base`, "the base side is none exactly when the run has no baseline commit");
+  }
+  const partKey = (x: { revision: string; providerId: string; shard: { index: number } }) =>
+    `${x.revision}/${x.providerId}/${String(x.shard.index)}`;
+  const dup = firstDuplicate(p.parts, partKey);
+  if (dup >= 0) return issue("duplicate-part", `/parts/${String(dup)}`, "part listed twice");
+  const missing = new Map(p.coverage.missingParts.map((x) => [partKey(x), x.reason]));
+  for (const [i, part] of p.parts.entries()) {
+    const listed = missing.get(partKey(part));
+    if (part.status === "valid" ? listed !== undefined : listed !== "rejected") {
+      return issue("part-coverage-mismatch", `/parts/${String(i)}`, "rejected parts, and only those, are missing with reason rejected");
+    }
+  }
+  return undefined;
+}
+
 const checkRun: Check<Run> = (run) => {
   if (run.runKey !== formatRunKey(run.source.runId, run.source.attempt)) {
     return issue("run-key-mismatch", "/runKey", "runKey must be <source.runId>-a<source.attempt>");
@@ -244,41 +287,41 @@ const checkRun: Check<Run> = (run) => {
   const association = checkAssociation(run.source.association.status, run.source.association.prNumber, "/source/association");
   if (association) return association;
   const { commits } = run.source;
-  if (commits.baseBranch !== undefined && run.source.event !== "pull_request") {
-    return issue("base-branch-inconsistent", "/source/commits/baseBranch", "only a pull_request run has a base-branch commit");
-  }
-  // The baseline comes only from the envelope (01 §4.4): with no baseline commit every base side is
-  // none and no base part was expected; with one, no base side is none.
-  if (commits.base === undefined) {
-    const part = run.parts.findIndex((p) => p.revision === "base");
-    if (part >= 0) return issue("baseline-inconsistent", `/parts/${String(part)}`, "a run without a baseline commit has no base parts");
-    const missing = run.coverage.missingParts.findIndex((p) => p.revision === "base");
-    if (missing >= 0) return issue("baseline-inconsistent", `/coverage/missingParts/${String(missing)}`, "a run without a baseline commit expects no base parts");
-  }
-  const side = run.results.findIndex((r) => (r.base.state === "none") !== (commits.base === undefined));
-  if (side >= 0) {
-    return issue("baseline-inconsistent", `/results/${String(side)}/base`, "the base side is none exactly when the run has no baseline commit");
-  }
-  const partKey = (p: { revision: string; providerId: string; shard: { index: number } }) =>
-    `${p.revision}/${p.providerId}/${String(p.shard.index)}`;
-  const dup = firstDuplicate(run.parts, partKey);
-  if (dup >= 0) return issue("duplicate-part", `/parts/${String(dup)}`, "part listed twice");
-  const missing = new Map(run.coverage.missingParts.map((p) => [partKey(p), p.reason]));
-  for (const [i, part] of run.parts.entries()) {
-    const listed = missing.get(partKey(part));
-    if (part.status === "valid" ? listed !== undefined : listed !== "rejected") {
-      return issue("part-coverage-mismatch", `/parts/${String(i)}`, "rejected parts, and only those, are missing with reason rejected");
-    }
-  }
-  return checkResults(run.results, run.counts, run.coverage);
+  const provenance = checkProvenance({
+    event: run.source.event,
+    baseBranchPath: commits.baseBranch === undefined ? undefined : "/source/commits/baseBranch",
+    hasBaseline: commits.base !== undefined,
+    parts: run.parts,
+    coverage: run.coverage,
+    results: run.results,
+  });
+  return provenance ?? checkResults(run.results, run.counts, run.coverage);
 };
 
 const checkChanges: Check<Changes> = (changes) => {
-  if (changes.runKey !== formatRunKey(changes.source.runId, changes.source.attempt)) {
+  const { source, capabilities } = changes;
+  if (changes.runKey !== formatRunKey(source.runId, source.attempt)) {
     return issue("run-key-mismatch", "/runKey", "runKey must be <source.runId>-a<source.attempt>");
   }
-  const association = checkAssociation(changes.source.association, changes.source.prNumber, "/source");
+  const association = checkAssociation(source.association, source.prNumber, "/source");
   if (association) return association;
+  const provenance = checkProvenance({
+    event: source.event,
+    baseBranchPath: source.baseBranchSha === undefined ? undefined : "/source/baseBranchSha",
+    hasBaseline: source.baseSha !== undefined,
+    parts: changes.parts,
+    coverage: changes.coverage,
+    results: changes.results,
+  });
+  if (provenance) return provenance;
+  // A capability is true exactly when its fields are there (ADR 0013): never claimed without data,
+  // and never data without the claim.
+  if (capabilities.diff && !changes.results.some((r) => r.diff !== undefined)) {
+    return issue("capability-mismatch", "/capabilities/diff", "the diff capability needs at least one diff");
+  }
+  if (capabilities.regions && !capabilities.diff) {
+    return issue("capability-mismatch", "/capabilities/regions", "the regions capability needs the diff capability");
+  }
   for (const [i, r] of changes.results.entries()) {
     const at = `/results/${String(i)}`;
     for (const side of ["base", "head"] as const) {
@@ -286,7 +329,7 @@ const checkChanges: Check<Changes> = (changes) => {
         return issue("image-without-capture", `${at}/images/${side}`, "an image URL needs a captured side");
       }
     }
-    if (!changes.capabilities.diff && r.diff !== undefined) {
+    if (!capabilities.diff && r.diff !== undefined) {
       return issue("capability-mismatch", `${at}/diff`, "diff present without the diff capability");
     }
     if (r.images) {
@@ -297,7 +340,7 @@ const checkChanges: Check<Changes> = (changes) => {
       }
     }
   }
-  return checkResults(changes.results, changes.counts, changes.coverage, changes.capabilities.regions);
+  return checkResults(changes.results, changes.counts, changes.coverage, capabilities.regions);
 };
 
 const checkStream: Check<Stream> = (stream) => {
@@ -318,6 +361,16 @@ const checkSite: Check<Site> = (site) => {
   return undefined;
 };
 
+const checkApiIndex: Check<ApiIndex> = (index) => {
+  const ids = index.streams.map((s) => s.streamId);
+  for (let i = 1; i < ids.length; i++) {
+    const order = compareStreamIds(ids[i - 1] ?? "", ids[i] ?? "");
+    if (order === 0) return issue("duplicate-stream", `/streams/${String(i)}`, "stream listed twice");
+    if (order > 0) return issue("unsorted-streams", `/streams/${String(i)}`, "streams are main first, then pull requests by number");
+  }
+  return undefined;
+};
+
 export const SEMANTIC_CHECKS = {
   bundle: checkBundle,
   config: checkConfig,
@@ -326,4 +379,6 @@ export const SEMANTIC_CHECKS = {
   stream: checkStream,
   site: checkSite,
   changes: checkChanges,
+  "api-index": checkApiIndex,
+  "pr-pointer": () => undefined,
 } as const;

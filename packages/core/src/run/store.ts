@@ -12,6 +12,7 @@ import {
   type Stream,
   compareGitHubIds,
   compareRunOrder,
+  compareStreamIds,
   validateDocument,
 } from "@pixelwatch/schemas";
 
@@ -60,13 +61,6 @@ export function addRun(store: Store, run: Run): { store: Store; added: boolean }
   const runs = [...store.runs];
   runs.splice(at < 0 ? runs.length : at, 0, entry);
   return { store: checked({ ...store, txn: store.txn + 1, runs }), added: true };
-}
-
-function compareStreamIds(a: string, b: string): number {
-  if (a === b) return 0;
-  if (a === "main") return -1;
-  if (b === "main") return 1;
-  return compareGitHubIds(a.slice(3), b.slice(3));
 }
 
 /** stream@1 for every stream in the index: main first, then PRs by number; runs in history order. */

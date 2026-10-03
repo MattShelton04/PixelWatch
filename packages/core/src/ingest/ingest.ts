@@ -35,7 +35,7 @@ export async function ingestArtifacts(input: IngestInput): Promise<Ingestion> {
       valid.push(await validatePart(part, artifact, ctx));
     } catch (error) {
       if (!(error instanceof IngressError) || error.scope === "ingestion") throw error;
-      rejected.push({ ...part.key, artifacts: [artifact], diagnostic: { code: error.code, message: error.message } });
+      rejected.push({ ...part.key, artifacts: [artifact], diagnostic: { code: error.code, message: error.detail } });
     }
   }
   if (signal.aborted) throw new IngressError("ingest-aborted", "ingestion cancelled");

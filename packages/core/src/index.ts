@@ -36,7 +36,22 @@ export {
 } from "./housekeeping/budget.ts";
 export { HousekeepingError, type HousekeepingErrorCode } from "./housekeeping/errors.ts";
 export { type GcKeep, type GcPlan, planGc } from "./housekeeping/gc.ts";
-export { changesPath, derivedPath, permalinkPath, prPointerPath, runRecordPath, streamPath } from "./housekeeping/paths.ts";
+export {
+  API_INDEX,
+  API_SCHEMA_KINDS,
+  ENTRY_PAGE,
+  LLMS_TXT,
+  SITE_JSON,
+  type ApiSchemaKind,
+  apiSchemaPath,
+  appScriptPath,
+  changesPath,
+  derivedPath,
+  permalinkPath,
+  prPointerPath,
+  runRecordPath,
+  streamPath,
+} from "./housekeeping/paths.ts";
 export { type HousekeepingInput, type HousekeepingPlan, planHousekeeping } from "./housekeeping/plan.ts";
 export {
   type ExpiredRun,
@@ -52,3 +67,20 @@ export {
   selectRetention,
 } from "./housekeeping/retention.ts";
 export { type GraceNamespace, type References, type StoreFile, type StoreGraph, type StoreTree, readStoreTree } from "./housekeeping/tree.ts";
+export { projectChanges } from "./projection/changes.ts";
+export {
+  type GenerationInputs,
+  PRODUCT_NAME,
+  PROJECTION_VERSION,
+  type StreamSummary,
+  apiIndexDocument,
+  generationId,
+  llmsTxt,
+  prPointerDocument,
+  siteDocument,
+  streamDocument,
+  streamSummaries,
+} from "./projection/documents.ts";
+export { ProjectionError, type ProjectionErrorCode } from "./projection/errors.ts";
+export { type PagesSite, type ProjectedFile, type ProjectionInput, type SizeInput, projectSite, projectedSizes, siteLocation } from "./projection/project.ts";
+export { DEFAULT_PREFIX, type SiteLocation, SiteUrls, siteUrls } from "./projection/site.ts";

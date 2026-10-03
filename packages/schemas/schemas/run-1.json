@@ -44,19 +44,7 @@
       "description": "Every received part and what happened to it. Rejected parts also appear in coverage.missingParts.",
       "type": "array",
       "maxItems": 256,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["revision", "providerId", "shard", "status", "artifactId"],
-        "properties": {
-          "revision": { "$ref": "common.json#/$defs/Revision" },
-          "providerId": { "$ref": "common.json#/$defs/Id" },
-          "shard": { "$ref": "common.json#/$defs/Shard" },
-          "status": { "enum": ["valid", "rejected"] },
-          "artifactId": { "$ref": "common.json#/$defs/GitHubId" },
-          "diagnostic": { "$ref": "common.json#/$defs/Message" }
-        }
-      }
+      "items": { "$ref": "common.json#/$defs/ReceivedPart" }
     },
     "coverage": { "$ref": "common.json#/$defs/Coverage" },
     "counts": { "$ref": "common.json#/$defs/Counts" },

@@ -51,6 +51,7 @@ from the branch:
   api/v1/index.json
   api/v1/runs/<runKey>/changes.json
   api/v1/pr/<number>/latest.json
+  api/v1/schemas/<kind>-1.json      # the release's API schemas (ADR 0013)
   llms.txt
 ```
 
@@ -63,6 +64,9 @@ from the branch:
 - **Generation ID** = SHA-256 of canonical JSON
   `{storeTip, releaseCommit, configCommit, projectionVersion}`. These are all known before
   building, so there's no self-reference.
+- Projected JSON is canonical JSON (02 §3). `changes.json` depends only on its run record and the
+  site location, so it never changes under its URL. Paths and URLs are built only from generated
+  IDs under the validated Pages URL, host and prefix (ADR 0013).
 - Store metadata uses a transaction counter, never its own future commit SHA.
 - Streams aren't stored. Each `store.json` run entry names its stream, so the projector derives
   every stream's ordered run list and latest pointer; there's no second index to keep in sync.

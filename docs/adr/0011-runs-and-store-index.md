@@ -3,6 +3,8 @@
 - Status: accepted
 - Date: 2026-10-02
 - Task / spike: M1.5
+- Amended by: [ADR 0013](0013-changes-projection.md). `changes@1` exposes `baseBranch` as
+  `source.baseBranchSha`, for pull requests only.
 
 ## Context
 

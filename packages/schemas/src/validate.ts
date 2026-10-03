@@ -1,7 +1,7 @@
 // Validation entry points. Order: bounded strict parse → version dispatch → JSON Schema →
 // semantic invariants. The first problem is reported; nothing is repaired or defaulted.
 import { Ajv2020, type ErrorObject, type ValidateFunction } from "ajv/dist/2020.js";
-import type { Bundle, Changes, Config, Run, Site, Store, Stream } from "./generated/types.ts";
+import type { ApiIndex, Bundle, Changes, Config, PrPointer, Run, Site, Store, Stream } from "./generated/types.ts";
 import { DEFAULT_JSON_LIMITS, JsonError, type JsonErrorCode, type JsonLimits, parseJson } from "./json.ts";
 import { DOCUMENT_KINDS, type DocumentKind, SUPPORTED_VERSIONS, schemaFor } from "./schemas.ts";
 import { SEMANTIC_CHECKS, checkGeneric } from "./semantic.ts";
@@ -15,6 +15,8 @@ export interface DocumentTypes {
   stream: Stream;
   site: Site;
   changes: Changes;
+  "api-index": ApiIndex;
+  "pr-pointer": PrPointer;
 }
 
 export type IssueCode = JsonErrorCode | "unsupported-version" | "schema" | (string & {});

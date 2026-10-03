@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PrPointer",
+  "description": "pr-pointer@1 (02 §7, ADR 0004, ADR 0013): api/v1/pr/<number>/latest.json, a small mutable pointer to the latest run of a pull request's stream in history order. Readiness compares its bytes; the comment reconciler compares headSha with the pull request's current head.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "prNumber", "runKey", "generation"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "prNumber": { "$ref": "common.json#/$defs/GitHubId" },
+    "runKey": { "$ref": "common.json#/$defs/RunKey" },
+    "headSha": { "description": "The run's corroborated head commit (changes@1 source.headSha).", "$ref": "common.json#/$defs/GitOid" },
+    "generation": { "$ref": "common.json#/$defs/Sha256" }
+  }
+}

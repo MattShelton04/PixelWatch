@@ -37,6 +37,69 @@
     "diff": true,
     "regions": false
   },
+  "parts": [
+    {
+      "revision": "base",
+      "providerId": "fixture",
+      "shard": {
+        "index": 1,
+        "count": 1
+      },
+      "status": "valid",
+      "artifactId": "10962062704"
+    },
+    {
+      "revision": "base",
+      "providerId": "stack",
+      "shard": {
+        "index": 1,
+        "count": 2
+      },
+      "status": "valid",
+      "artifactId": "10962640673"
+    },
+    {
+      "revision": "base",
+      "providerId": "stack",
+      "shard": {
+        "index": 2,
+        "count": 2
+      },
+      "status": "valid",
+      "artifactId": "10962640674"
+    },
+    {
+      "revision": "head",
+      "providerId": "fixture",
+      "shard": {
+        "index": 1,
+        "count": 1
+      },
+      "status": "valid",
+      "artifactId": "10962785105"
+    },
+    {
+      "revision": "head",
+      "providerId": "stack",
+      "shard": {
+        "index": 1,
+        "count": 2
+      },
+      "status": "valid",
+      "artifactId": "10962835047"
+    },
+    {
+      "revision": "head",
+      "providerId": "stack",
+      "shard": {
+        "index": 2,
+        "count": 2
+      },
+      "status": "rejected",
+      "artifactId": "10962835048",
+      "diagnostic": "png-crc: stack/home.desktop.png has a bad IDAT CRC"
+    }
+  ],
   "coverage": {
     "status": "incomplete",
     "declaredUnits": 9,

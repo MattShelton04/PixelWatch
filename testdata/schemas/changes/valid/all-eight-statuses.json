@@ -11,7 +11,8 @@
     "association": "corroborated",
     "prNumber": "123",
     "headSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
-    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da"
+    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da",
+    "baseBranchSha": "c4b1f0e2d3a4958677a8b9c0d1e2f3a4b5c6d7e8"
   },
   "captureClaimsTrusted": false,
   "claims": {
@@ -37,6 +38,69 @@
     "diff": true,
     "regions": true
   },
+  "parts": [
+    {
+      "revision": "base",
+      "providerId": "fixture",
+      "shard": {
+        "index": 1,
+        "count": 1
+      },
+      "status": "valid",
+      "artifactId": "10962062704"
+    },
+    {
+      "revision": "base",
+      "providerId": "stack",
+      "shard": {
+        "index": 1,
+        "count": 2
+      },
+      "status": "valid",
+      "artifactId": "10962640673"
+    },
+    {
+      "revision": "base",
+      "providerId": "stack",
+      "shard": {
+        "index": 2,
+        "count": 2
+      },
+      "status": "valid",
+      "artifactId": "10962640674"
+    },
+    {
+      "revision": "head",
+      "providerId": "fixture",
+      "shard": {
+        "index": 1,
+        "count": 1
+      },
+      "status": "valid",
+      "artifactId": "10962785105"
+    },
+    {
+      "revision": "head",
+      "providerId": "stack",
+      "shard": {
+        "index": 1,
+        "count": 2
+      },
+      "status": "valid",
+      "artifactId": "10962835047"
+    },
+    {
+      "revision": "head",
+      "providerId": "stack",
+      "shard": {
+        "index": 2,
+        "count": 2
+      },
+      "status": "rejected",
+      "artifactId": "10962835048",
+      "diagnostic": "png-crc: stack/home.desktop.png has a bad IDAT CRC"
+    }
+  ],
   "coverage": {
     "status": "incomplete",
     "declaredUnits": 9,

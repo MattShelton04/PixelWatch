@@ -74,7 +74,7 @@ logic imagined from file names.
 | M1.4 | Bounded ZIP/JSON ingress + fixed-part merge (02 §§5–6) | Traversal, duplicates, links, ZIP64, bombs rejected; name/attempt/provider/revision consistency enforced; no mixed attempts; missing parts have unknown counts |
 | M1.5 | Runs and the store run index; envelope vs claims; idempotency by run key; streams derived from the index (02 §8, ADR 0010) | Permuted inputs build identical runs; an already-stored run key is a no-op, never an overwrite; ordering is numeric source order; same view name in two providers stays separate |
 | M1.6 | Retention + GC + budget planning (03 §§1, 5) | Fixed time/PR-state inputs reproduce selection; nothing referenced deleted; budget includes API/stubs/derived/grace; protected-root overflow refuses; GC idempotent |
-| M1.7 | `changes@1` projection and path generation (02 §7, 03 §3) | Schema-valid goldens for tiny + real bundles; counts sum; coverage/source/policy present |
+| M1.7 | `changes@1` projection and path generation (02 §7, 03 §3) | Schema-valid goldens for tiny + real bundles; counts sum; coverage/source/policy present (policy = `comparator` + `capabilities`, ADR 0013) |
 | M1.8 | Internal `pixelwatch-dev compare base/ head/` | Reproduces M1.3 locally; no network or credentials; stable non-zero exit codes and bounded errors |
 
 ## 5. M2 · Trusted publisher + minimal final viewer

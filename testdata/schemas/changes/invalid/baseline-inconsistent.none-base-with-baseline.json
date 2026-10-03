@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "runKey": "5-a1",
+  "source": {
+    "repositoryId": "987654321",
+    "workflowId": "123456",
+    "runId": "5",
+    "attempt": "1",
+    "event": "push",
+    "createdAt": "2026-09-28T09:48:30Z",
+    "association": "none",
+    "headSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5",
+    "baseSha": "a2c66ece818dc2eb43d258aaec8ea1fc569fb0da"
+  },
+  "captureClaimsTrusted": false,
+  "claims": {
+    "head": {
+      "revisionSha": "8fc85c2df34f454d8eac5aa525a3398f45ef6bd5"
+    }
+  },
+  "comparator": {
+    "version": 1
+  },
+  "capabilities": {
+    "diff": false,
+    "regions": false
+  },
+  "parts": [
+    {
+      "revision": "head",
+      "providerId": "fixture",
+      "shard": {
+        "index": 1,
+        "count": 1
+      },
+      "status": "valid",
+      "artifactId": "4000000001"
+    }
+  ],
+  "coverage": {
+    "status": "complete-declared",
+    "declaredUnits": 1,
+    "accountedUnits": 1,
+    "missingParts": []
+  },
+  "counts": {
+    "missing": 0,
+    "failed": 0,
+    "incomparable": 1,
+    "added": 0,
+    "removed": 0,
+    "unchanged": 0,
+    "subtle": 0,
+    "changed": 0
+  },
+  "results": [
+    {
+      "providerId": "fixture",
+      "viewId": "home",
+      "variantId": "desktop",
+      "status": "incomparable",
+      "reasons": [
+        "no-baseline"
+      ],
+      "base": {
+        "state": "none"
+      },
+      "head": {
+        "state": "captured",
+        "pixelHash": "1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065",
+        "width": 1440,
+        "height": 1000
+      },
+      "images": {
+        "head": "https://owner.github.io/repo/pixelwatch/blobs/1b/1b6c0da563c2e11600f378a39121331315a02c9b5418314908f93012c873c065.png"
+      }
+    }
+  ]
+}

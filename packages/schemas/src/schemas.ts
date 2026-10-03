@@ -1,15 +1,17 @@
 // Loads the JSON Schema files and inlines common.json into each one, so every schema is
 // self-contained: no remote `$ref`, nothing fetched, one `$defs` namespace per document kind.
+import apiIndex from "../schemas/api-index-1.json" with { type: "json" };
 import bundle from "../schemas/bundle-1.json" with { type: "json" };
 import changes from "../schemas/changes-1.json" with { type: "json" };
 import common from "../schemas/common.json" with { type: "json" };
 import config from "../schemas/config-1.json" with { type: "json" };
+import prPointer from "../schemas/pr-pointer-1.json" with { type: "json" };
 import run from "../schemas/run-1.json" with { type: "json" };
 import site from "../schemas/site-1.json" with { type: "json" };
 import store from "../schemas/store-1.json" with { type: "json" };
 import stream from "../schemas/stream-1.json" with { type: "json" };
 
-export const DOCUMENT_KINDS = ["bundle", "config", "store", "run", "stream", "site", "changes"] as const;
+export const DOCUMENT_KINDS = ["bundle", "config", "store", "run", "stream", "site", "changes", "api-index", "pr-pointer"] as const;
 export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
 
 /** Schema versions this release reads, per kind. Anything else is refused before use. */
@@ -21,6 +23,8 @@ export const SUPPORTED_VERSIONS: Readonly<Record<DocumentKind, readonly number[]
   stream: [1],
   site: [1],
   changes: [1],
+  "api-index": [1],
+  "pr-pointer": [1],
 };
 
 type SchemaObject = Record<string, unknown>;
@@ -33,6 +37,8 @@ const SOURCES: Readonly<Record<DocumentKind, unknown>> = {
   stream,
   site,
   changes,
+  "api-index": apiIndex,
+  "pr-pointer": prPointer,
 };
 
 const COMMON_PREFIX = "common.json#/$defs/";

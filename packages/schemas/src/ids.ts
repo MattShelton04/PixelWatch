@@ -62,6 +62,14 @@ export function compareRunOrder(a: RunOrderKey, b: RunOrderKey): number {
   return x.kind === "source" ? -1 : 1;
 }
 
+/** Stream order: `main` first, then `pr-<number>` by number. */
+export function compareStreamIds(a: string, b: string): number {
+  if (a === b) return 0;
+  if (a === "main") return -1;
+  if (b === "main") return 1;
+  return compareGitHubIds(a.slice(3), b.slice(3));
+}
+
 /** Identity of one uploaded part: attempt × revision × provider × shard. */
 export interface PartIdentity {
   readonly attempt: string;
