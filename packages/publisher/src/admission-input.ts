@@ -3,10 +3,18 @@ import { canonicalBytes, isGitHubId, parseDocument, parseRunKey, validateDocumen
 import { classifyStorePath, parsePngStructure, readStoreTree, runRecordPath } from "@pixelwatch/core";
 import { STORE_LIMITS, type StoreCandidate, type StoreSnapshot, type WriteRunInput } from "@pixelwatch/store";
 import { captureContext, copyBytes } from "./assembly-input.ts";
+import { isSignalAborted } from "./signal-input.ts";
 import { refuse, type AdmissionDependencies } from "./types.ts";
 
 export interface AdmissionCapture { readonly input: WriteRunInput; readonly dependencies: AdmissionDependencies }
 const OID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
+/** Trusted native controller state, with explicit refusal of Proxy and malformed DTOs. */
+function cancelled(signal: AbortSignal): boolean {
+  try {return isSignalAborted(signal);} catch {return refuse("admission-signal-invalid");}
+}
+export function preflightCancellation(signal: AbortSignal | undefined): void {
+  if (signal !== undefined && cancelled(signal)) refuse("admission-cancelled");
+}
 export function checkedTip(value: string | null): void { if (value !== null && (typeof value !== "string" || !OID.test(value))) refuse("admission-tip-invalid"); }
 function timestamp(value: string): void {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString() !== value.replace("Z", ".000Z")) refuse("admission-time-invalid");
@@ -25,9 +33,10 @@ export function captureAdmission(input: WriteRunInput, dependencies: AdmissionDe
   const metadata = {timestamp: dependencies.metadata.timestamp}; const now = dependencies.now;
   const prStates = new Map(dependencies.prStates); const pins = new Set(dependencies.pins ?? []);
   const delay = dependencies.delay; const jitter = dependencies.jitter; const checkpoint = dependencies.checkpoint;
+  const signal = dependencies.signal; if (signal !== undefined) cancelled(signal);
   if (typeof delay !== "function" || typeof jitter !== "function" || (checkpoint !== undefined && typeof checkpoint !== "function")) refuse("publisher-input-invalid");
   const copied: AdmissionDependencies = {context, metadata, now, prStates, pins, delay, jitter,
-    ...(checkpoint === undefined ? {} : {checkpoint})};
+    ...(checkpoint === undefined ? {} : {checkpoint}), ...(signal === undefined ? {} : {signal})};
   if (context.repository.repositoryId !== run.source.repositoryId) refuse("admission-repository-invalid");
   timestamp(now); timestamp(metadata.timestamp);
   for (const [pr, state] of prStates) if (!isGitHubId(pr) || !["open", "closed", "unknown"].includes(state)) refuse("admission-pr-state-invalid");

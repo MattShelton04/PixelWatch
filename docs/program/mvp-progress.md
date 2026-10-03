@@ -6,6 +6,168 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR22 opened at810b157; hosted unit1120/54 and browser24/24 pass on Linux/Windows. CodeQL
+  language/action jobs succeeded but aggregateHIGH alerts3/4 flag unanchored marker regexes;
+  merge HELD. Root replaces searches with bounded literal parsing;22/22 tests pass before/
+  after, preserving semantics. IndependentC exact94cea3f passes22/22 plus57variants twice,
+  identical normalizedd8163dcd… and6rawlogs clean. New local/hosted exact-head gates pending.
+- Hosted810b157 actual Linux1120/54,42.99s and Windows1120/54,220.42s; browsers24/24 each,
+  19.4/24.5s. Both fullcoverage jobs print2PASS/12NOTRUN/exit2 and all17hashes equal local.
+- Maintenance author8a95bf5 final44/44,152.18s/raw226clean; A independentlyAPPROVED exactsource
+  (review1caaab4),44/44,156.82s plus29repeatedownership/cleanup,9unchangedpathvariants and
+  2actualnativeconflict/lostreply/cancellationprobes. Integration remains nextslice gate.
+- Integrated source6547d469800593f23a74a8cc2bd503c03d1ff070 passes complete `pnpm -s check`:
+  1120tests/54files,exit0,359.25s; lint,typecheck,actionlint,zizmor0. Browser24/24 across all
+  three engines,exit0,26.0s. Exact source-job bytes match author3e315b1; public ingestJob exists.
+- Source author A-independent review closes all4SOURCEfindings and actual reused-blob/GC race:
+  83/83 at3e315b1,exit0,12.82s;16 unchanged hostile/interleaving probes pass. Second independent
+  C integrated review at6547d469 passes83/83,15.42s plus13 coupled actual-forge/core/LocalDir/
+  nativeGit rows twice; hash481de397… identical,74raw scans/run,6logs clean. No new blocker.
+  Scope ingestion through durable admission; projection/workflow/live safety remain gates.
+- Publishing identity P1 IDENTITY-1 independently CLOSED at02b80f4:34/34,exit0,1.04s;
+  unchanged original accepted-POST reproducer recovers;34 original and14 reuse variants each
+  repeat identically,15rawlogs clean. Root correction uses a private never-exposed HTTP carrier.
+  Fresh guarded fallback composition and actual workflow/live token ownership remain gates.
+- Readiness independent review45/45 plus9 repeated temporal traces,14boundaries/10cleanup
+  probes passes. Pure comment renderer independent20/20 plus71variants twice passes. Both are
+  integrated and covered by the1120-test check; full deploy/reconcile pipeline remains absent.
+- Final full simulation at documentation-onlyaa3dcb9 exited2:9harness PASS,2product PASS,
+  12product NOT RUN. All17ordered normalized hashes match0516268/priorlocal/PR21Linux/Windows.
+  Logroot-reviewed-source-simulation.log; no new driver is registered yet.
+  ADR0015 requires this incomplete coverage to remain visibly non-green.
+- Six reviewed PRs16–21 merged under owner authorization; verified mainba4831d. Next grouped
+  PR22 is not yet opened. It groups reviewed source/readiness/comment/prerequisites; maintenance
+  remains a separate following slice. Hosted exact-head checks/CodeQL remain merge gates.
+- W2-M author B works in isolated m2-maintenance from frozen1ceb27d;12required titles ×2backends
+  initially fail24/24 at stub. Additional hostile tests now38total; native red/fix/acceptance is
+  active, with independent reviewer A reserved. No maintenance approval or integration yet.
+- Read-only deployment discovery maps all14 historical S2 deployments uniquely to exact API
+  job URLs/status fields, including same-SHA distinct jobs. Original job-token access and early
+  current-deployment visibility were NOT proved; CLI auth cannot substitute. Fixed public
+  no-auth read policy is being checked without widening normative workflow permissions.
+- Independent action/workflow/release/live preparation completed; production contracts/build
+  and fixed authorized live infrastructure still need implementation. Simulation activation
+  audit is active. No external settings/repositories/tokens/tags/releases were changed.
+- Actual generated viewer entry http://127.0.0.1:4173/pixelwatch/runs/11-a1/ responds200,
+  4953bytes, with SHA256-pinned app SRI. Fixture pixels demonstrate generated final app only.
+  M2 exit requires real served same-repo/fork comment evidence. M3 has not started.
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Integrated sourcef546eb871705689c8ffd3ec6d2d071f02b8ca636 passes complete `pnpm -s check`:
+  1029tests/52files, exit0,252.76s;lint/types/actionlint/zizmor0. Root browser is running;
+  final fullsimulation and hosted evidence remain gates. Comment independent review pending;
+  production source job remains held rather than being counted in this check.
+- Source091 independent SOURCE-3 P1: native AbortSignal.any reads poisoned public aborted
+  getter and loses already-aborted native caller/deadline. Two actual forge→LocalDir probes
+  store99-a7/CAS1 with10public getter reads instead of refusal0reads. Author replaces this
+  with a private controller and captured intrinsic links. Source new strict70tests red12fail/
+  58pass,11.73s; product scanner385values/268254bytes clean but Vitest transcript contains
+  the known unhandled fake-canary rejection from SOURCE-1. That is security-red evidence,
+  never a clean-log claim. SOURCE-2 variants reach source/ZIP/list/pixel/encode/compare/
+  snapshot ownership gaps. Direct shared readFile await is verified safe, no root edit needed.
+- Actual generated viewer preview rechecked200/4953bytes/pinnedscript at127.0.0.1:4173/
+  pixelwatch/runs/11-a1/; Codex panel openqueued. Fixture pixels, not live publisher evidence.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Readiness independent final review PASS at fa613922, exactauthoraaf87cb+shared18:45/45
+  exit0,2.50s/linttypes0, originalC1/C2/C3 unchangedprobes closed,9sequences×2 normalized
+  ac91140a… unchanged,14input boundaries and10broadenedcleanupcases pass;7rawlogs clean.
+  Root integrates exactthreefiles, exposes waitForReadiness; wholecheck/browser/simulation
+  and actualprojection/deployment/comment integration remain gates.
+- Source review has two new P1 blockers at091: Proxy error prototype inspection leaks an
+  unhandled rejection and preventsdeadline/worker cleanup; DTOcapture afteranotherawait lets
+  actualverifiedsource head or downloadedZIP mutate beforeprivatecopy. Actual local CAS
+  storesforgedhead/rejectedgoodpart. A's three original probes fail with reachedcounts;
+  B authors testsfirst fixes. GC/reusedcanonicalbyte race is also underfix. Root holds source.
+- Comment renderer source3121157 is independently reviewed next byC; local20/20 pass only.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Independent root signal/admission review CLOSED original2P1 plus new native-state/listener
+  findings at ec7051e+18d5b89, reviewca030ceb:82/82 at ec,255.73s; new4/4,1.27s;
+  original16 plus own9interleavings/9hookvariants reached, fullraw115/58/27 scans clean,
+  ambient0. Source diff vs18 empty for covered files. Integrated check/simulation/browser
+  and source-job interaction review remain required; no self-approval.
+- Readiness immutableaaf87cb dependsrootec+18;45/45 exit0,3.17s/linttypes0/raw32logs clean.
+  Independent fa61392 reproduces45/45,2.50s, closes originalC1/C2/C3 sequences and repeats
+  original9traces identically (ac91140a…);14input boundaries pass. Broadened hook cleanup
+  and final scoped verdict are still pending, so readiness is not integrated/approved yet.
+- Root commentrenderer20/20 exit0,1.45s/linttypes0, strict initial11red plus5numeric/partial
+  stamp regressions red beforefix. ADR0026 minimal owner correction committed; renderer
+  independent review and serialized/live use remain gates.
+- Source author is fixing actual reused-blob/GC admission race: initialcanonicalB can vanish
+  before current CAS. Root corrected its own overstrict inferred contract: carry accepted-run
+  exact existing canonical bytes with bounds, never rehash/decode/overwrite (ADR0010/25).
+  Independent A inspects source; no final source approval yet. No full new product simulation.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Source ingestion immutable author091d3a96c11093001c1839a7b0442b68cc38c19b has54/54 local
+  tests,12.12s, raw290values/203875bytes clean andlint/types0. Actual same-repo/fork fixtures
+  remain local. Root signal followup adoption, independent source security/concurrency
+  review and integrated acceptance remain gates; no source job is on main yet.
+- Independent rootec review passes82/82,255.73s andoriginal16sequences/raw115 clean but
+  finds P2 native aborted-state coercion; actualnumber0 reads1/CAS1/stores3-a1 instead of
+  refusal. Readiness author finds native failed-registration listener leak. Root strict
+  red tests and shared corrections produce final4/4,1.18s; new independent closure pending.
+  Readiness author's35green then45strictred9fail/36pass includes8coercion cases and1shared
+  hook failure; own finish-on-remover-failure fix remains within three ownedfiles. No approval.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- New prerequisite integration is held for two independently reproduced P1 findings at5cc:
+  signal Proxy/plain-shape cancellation bypass; post-CAS checkpoint failure hiding confirmed
+  stored/expired truth. Twelve strict red tests allfailed (70filtered diagnostic),23.67s;
+  corrected complete admission82/82 exit0,227.41s. Wholetypes/focusedlint0. Root shared
+  signal helper and fixed proof warnings are frozen for dependent authors; independent
+  original-probe closure and final integrated acceptance remain gates, no self-approval.
+- Source job author has45/45 localtests exit0,7.18s; actual forge/core/native worker/local
+  and nativeGit paths. Cleanup tests first36pass/2fail, later44pass/1fail; source still
+  mutable pending lint/types/shared helper adoption and independent review. Local fixture
+  same-repo/fork authentication is not live M2 evidence.
+- Readiness author860cf0d passes26/26 exit0,4.14s after independent P2 final-clock finding.
+  Reviewer confirmed24existingtests and9deterministic sequences repeated identically,
+  plus14input/provenance/HTTPS/error sequences. Later review found native-signal Proxy
+  bypass and allocated-deadline leakage from scope construction outside cleanup. Those
+  findings remain open; author must use root helper and reviewer rerun original probes.
+- Owner approved fixed MVP PixelWatch comment title and bounded display limits, preserving
+  config@1. Correction/renderer remain pending; approval alone is not implementation.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Ingress prerequisite source `c2a53a1ab568b7bfe2fb23c0714983b0cbcfa61f` is rebased onto
+  merged mainba4831d; source diff from17c5f75 is empty. Complete `pnpm -s check` exited0,
+  948tests/49files,278.97s, all lint/types/workflow checks pass. Browser/full simulation and
+  independent root cancellation/codec review remain gates. Source-job cleanup DTO is now
+  frozen: a disposal failure cannot hide proven stored/expired status and is reported by a
+  fixed cleanup diagnostic. Source-envelope validation reuses the existing run validator
+  internally; its carrier is never stored/returned/logged.
+- Readiness author `ddb42e377b1dc1ff406d2b1e8b2da3778f27fc3a` owns only three files:
+  final24/24 exit0,2.59s, focusedlint/wholetypes0 and12retainedlogs scan0. First strict red
+  14failed/3passed, later resource-boundary red2failed/22passed; fixed signal/disposal and
+  selected-body budget issues without changing limits/assertions. Independent review is
+  required before integration. B implements actual source job in isolatedm2-ingress atc2.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- PR #21 merged `ba4831dd366463540dd556ccbe576d68400d1f19` at09:39:51Z, exact head
+  abd363c/sourcec319ded. Hosted37113159634 Linux/Windows each930/48 exit0
+  (37.42/190.98s), complete viewer24/24 each (18.4/26.2s), all required checks/aggregate
+  CodeQL pass, no open merge-ref CodeQL alerts. Both full simulations exit2 with2PASS/
+  12NOTRUN; all17normalized hashes match local and each other. Independent integrated
+  interaction review passed43/4 and18 reached cases,215rawvalues clean, zero ambient
+  timing/random calls; reviewer excludes own admission/store. No M2 exit is claimed.
+- Root source-job interfaces/ADR0025 are frozen on the next dependency branch. Native
+  cancellation tests first10failed/4passed/56filtered diagnostic cases,42.08s, exit1;
+  complete admission after correction70/70 exit0,232.69s. Codec diagnostics first4failed,
+  exit1,1.35s; final codec/ingestion/metadata20/3 exit0,2.58s, with raw fake-canary/cause/
+  accessor/proxy probes. Lint/types initial attempt found one getter annotation and one
+  test optional-type issue; corrected verification/independent/fullcheck remain gates.
+  These are local tests, not source-job implementation or integrated acceptance.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Exact publisher source `c319ded5bf8bd99315b286376cca142a2cbf04f4` passed unfiltered
   `pnpm -s check`:930 tests/48 files, exit0,320.42s, including lint/typecheck/workflow lint.
   Complete `pnpm -s test:viewer` passed24/24, exit0,34.8s, eight cases in each engine.
@@ -49,6 +211,22 @@ The entries below are historical checkpoints, superseded by the facts above.
   metadata/ingestion/merge28/3 passed2.76s with raw leakage assertions and lint/types0.
 
 The entries below are historical checkpoints, superseded by the facts above.
+Readiness freeze2 is on a separate dependency branch combining metadata1678d59 and
+admission author d1b685a (pick5ef5347). Actual shared Readiness DTOs and three fixed error
+codes are root-owned. The only dependency addition is existing internal forgeworkspace,
+justified in ADR0024; lockfile regenerated offline with no external version change.
+Source helper/test implementation is not yet claimed. Its independent security/temporal
+review, complete pipeline callers and product simulations remain gates.
+
+The owner approved bounding source verification/download/image analysis by ten minutes,
+checking cancellation before every new CAS, and recovering/reporting an already-sent
+push under the existing bounded store rules. This is approval of the clarification,
+not proof of the still-unimplemented source job or admission cancellation.
+
+Foundation rootbranch c319ded fullcheck is running; stable67 prior908/47 and viewer24/24
+pass. Current B d1 independent56/56 passes206.20s plus3original/15extra probes/rawclean;
+metadata1678d59 independent28/3 and28actualforge/core probes pass, final scopedverdictpending.
+No M2 exit or full14case simulation pass. The historical entries below are superseded.
 
 - Current verified main is `f60311c` (PR #20 merged; viewer/platform evidence below).
   Publisher branch rebased as `c4098ce` with publisher/store source byte-identical to the

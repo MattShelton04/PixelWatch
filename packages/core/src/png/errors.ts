@@ -40,6 +40,20 @@ export type PngErrorCode =
   | "aborted"
   | "worker-crash";
 
+const CODES: ReadonlySet<string> = new Set<PngErrorCode>([
+  "too-large", "signature", "truncated", "chunk-length", "chunk-type", "chunk-crc",
+  "ihdr-first", "ihdr-length", "ihdr-duplicate", "iend-length", "trailing-bytes",
+  "idat-missing", "chunk-disallowed", "dimensions", "too-many-pixels", "color-type",
+  "bit-depth", "compression-method", "filter-method", "interlace", "zlib",
+  "inflate-truncated", "inflate-short", "inflate-overflow", "zlib-trailing", "filter-type",
+  "pixels", "encoded-too-large", "timeout", "aborted", "worker-crash",
+]);
+const identities = new WeakMap<object, PngErrorCode>();
+/** Only constructor identity authenticates a code; never inspect injected error fields/prototypes. */
+export function pngErrorCode(error: unknown): PngErrorCode | undefined {
+  return typeof error === "object" && error !== null ? identities.get(error) : undefined;
+}
+
 export class PngError extends Error {
   readonly code: PngErrorCode;
   readonly detail: string;
@@ -50,5 +64,6 @@ export class PngError extends Error {
     this.name = "PngError";
     this.code = code;
     this.detail = bounded;
+    identities.set(this, CODES.has(code) ? code : "worker-crash");
   }
 }

@@ -8,6 +8,7 @@
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
     "@pixelwatch/core": "workspace:*",
+    "@pixelwatch/forge-github": "workspace:*",
     "@pixelwatch/schemas": "workspace:*",
     "@pixelwatch/store": "workspace:*",
     "@pixelwatch/viewer": "workspace:*"

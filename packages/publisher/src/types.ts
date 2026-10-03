@@ -1,6 +1,7 @@
-import type { Breakdown, ExpiryReason, PagesSite, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
-import type { Config } from "@pixelwatch/schemas";
-import type { CommitMetadata, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
+import type { Breakdown, ExpiryReason, IgnoredArtifact, PagesSite, PngWorker, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
+import type { Config, Run } from "@pixelwatch/schemas";
+import type { CommitMetadata, StoreAdapter, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
+import type { GitHubClient, HttpTransport, MissingArtifact, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
 
 /** Trusted default-branch policy, authenticated target and pinned release inputs. */
 export interface PublisherContext {
@@ -39,16 +40,117 @@ export interface AdmissionDependencies {
   readonly delay: (milliseconds: number) => Promise<void>;
   readonly jitter: (attempt: number) => number;
   readonly checkpoint?: (event: WriterCheckpoint) => Promise<void>;
+  /** Checked before each new CAS; an already-sent push still completes bounded recovery. */
+  readonly signal?: AbortSignal;
 }
-export type AdmissionResult = WriteRunResult | {
+export type AdmissionResult = (WriteRunResult | {
   readonly status: "expired";
   readonly runKey: string;
   readonly tip: string;
   readonly reason: ExpiryReason;
   readonly attempts: number;
-};
+}) & { readonly warnings?: readonly "checkpoint-failed"[] };
 /** Signature frozen separately from implementation for parallel consumers. */
 export type SiteMeasurement = (input: SizingInput) => ProjectedSizes;
+/** Authenticated workflow_run input; target/policy/release always come from trusted context. */
+export interface SourceJobInput extends PublisherContext { readonly event: Uint8Array }
+export type SourceJobCheckpoint = "verified" | "listed" | "downloaded" | "analysed" | "before-admission";
+export interface SourceJobDependencies {
+  readonly forge: Pick<GitHubClient, "verifySource" | "listArtifacts" | "downloadArtifacts">;
+  readonly store: StoreAdapter;
+  readonly admission: Omit<AdmissionDependencies, "context" | "signal">;
+  readonly timing: Pick<Timing, "deadline">;
+  /** Production defaults to the real PngWorker; deterministic simulations inject equivalent ports. */
+  readonly worker?: Pick<PngWorker, "decode" | "encode" | "compare" | "close">;
+  readonly signal?: AbortSignal;
+  readonly checkpoint?: (point: SourceJobCheckpoint) => Promise<void>;
+}
+export interface SourceJobDiagnostics {
+  readonly source: readonly SourceDiagnostic[];
+  /** Fixed categories and authenticated numeric IDs; no signed URLs or raw names in summaries. */
+  readonly missing: readonly Pick<MissingArtifact, "artifactId" | "reason">[];
+  readonly ignored: readonly Pick<IgnoredArtifact, "artifactId" | "reason">[];
+  readonly ignoredOverflow: number;
+  readonly excludedCount: number;
+  /** Cleanup failure cannot conceal a proven durable admission. */
+  readonly cleanup: readonly "timing-disposal-failed"[];
+}
+export interface SourceJobResult {
+  readonly admission: AdmissionResult;
+  readonly diagnostics: SourceJobDiagnostics;
+  /** This stage makes no deployment/readiness/comment claim. */
+  readonly projection: "pending" | "not-retained";
+}
+/** Internal workflow_dispatch GC, without a synthetic capture or caller deletion plan. */
+export interface MaintenanceDependencies extends AdmissionDependencies {
+  readonly timing: Pick<Timing, "deadline">;
+}
+export interface MaintenanceResult {
+  readonly status: "absent" | "unchanged" | "updated" | "recovered";
+  readonly tip: string | null;
+  readonly attempts: number;
+  /** Lost replies observed, including any superseded transaction whose acceptance is unproved. */
+  readonly unknownPushes: number;
+  /** Exact deletions of the confirmed transaction; empty for absent/unchanged observations. */
+  readonly deleted: readonly {readonly path: string; readonly bytes: number}[];
+  readonly removedRuns: readonly string[];
+  readonly warnings?: readonly ("checkpoint-failed" | "timing-disposal-failed")[];
+}
+export interface ReadinessTarget {
+  readonly prNumber: string;
+  readonly runKey: string;
+  readonly headSha: string;
+}
+export interface ReadinessInput {
+  readonly context: PublisherContext;
+  readonly site: AssembledSite;
+  readonly targets: readonly ReadinessTarget[];
+  readonly signal?: AbortSignal;
+}
+export type ReadinessPollCode = "matched" | "http-status" | "redirect-refused" | "json-invalid"
+  | "unsupported-version" | "identity-mismatch" | "generation-mismatch" | "pointer-mismatch"
+  | "digest-mismatch" | "body-limit" | "request-timeout" | "transport-failed";
+export interface ReadinessPoll {
+  readonly poll: number;
+  readonly startedMilliseconds: number;
+  readonly finishedMilliseconds: number;
+  readonly passed: boolean;
+  readonly code: ReadinessPollCode;
+}
+export interface ReadinessDependencies {
+  readonly transport: HttpTransport;
+  readonly timing: Timing;
+  /** Monotonic injected clock. Production caller supplies performance.now(). */
+  readonly now: () => number;
+  readonly checkpoint?: (poll: ReadinessPoll) => Promise<void>;
+}
+export interface ReadinessResult {
+  readonly status: "served" | "pending";
+  readonly reason: "ready" | "timeout" | "cancelled";
+  readonly generation: string;
+  readonly pollCount: number;
+  readonly consecutivePasses: number;
+  readonly elapsedMilliseconds: number;
+  readonly polls: readonly ReadinessPoll[];
+}
+export interface CommentStamp {
+  readonly runKey: string;
+  readonly headSha?: string;
+  readonly generation: string;
+}
+export interface CommentRenderInput {
+  readonly context: PublisherContext;
+  readonly run: Run;
+  readonly generation: string;
+}
+export type RenderedComment = { readonly status: "disabled" } | {
+  readonly status: "rendered";
+  readonly body: string;
+  readonly fallbackBody: string;
+  readonly bytes: number;
+  readonly degradation: "full" | "shortened" | "summary";
+  readonly stamp: CommentStamp;
+};
 const DIAGNOSTIC_CODES = new Set([
   "publisher-operation-failed", "publisher-input-invalid", "invalid-commit", "json-limit",
   "unsupported-document-version", "invalid-document", "repository-invalid", "app-invalid",
@@ -66,6 +168,16 @@ const DIAGNOSTIC_CODES = new Set([
   "admission-record-mismatch", "admission-png-invalid", "admission-derived-mismatch",
   "admission-immutable-file", "admission-budget-refused", "admission-plan-invalid",
   "admission-cas-invalid", "admission-jitter-invalid", "admission-lease-exhausted",
+  "admission-cancelled", "admission-signal-invalid",
+  "admission-checkpoint-failed",
+  "readiness-input-invalid", "readiness-timing-invalid", "readiness-operation-failed",
+  "source-job-input-invalid", "source-job-operation-failed", "source-job-cancelled",
+  "source-job-source-invalid", "source-job-download-invalid", "source-job-codec-failed",
+  "source-job-staging-invalid", "source-job-staging-limit", "source-job-timing-invalid",
+  "comment-input-invalid", "comment-budget-refused",
+  "maintenance-input-invalid", "maintenance-budget-refused", "maintenance-plan-invalid",
+  "maintenance-cas-invalid", "maintenance-checkpoint-failed", "maintenance-lease-exhausted",
+  "maintenance-cancelled", "maintenance-operation-failed", "maintenance-timing-invalid",
 ]);
 const diagnosticIdentity = new WeakMap<object, string | undefined>();
 export class PublisherError extends Error {

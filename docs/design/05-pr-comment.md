@@ -7,7 +7,8 @@ future (`future/comments-studio-and-skills.md`).
 
 The renderer takes a validated run / `changes@1` projection and builds Markdown with
 context-specific encoders. Capture data can't supply templates, raw HTML, links or a
-destination. Trusted config controls only: enabled, title, theme preset, display limits.
+destination. Trusted config@1 controls only enabled and the theme preset. The MVP uses a
+fixed PixelWatch title and bounded display limits (owner approved; ADR 0026).
 
 Order:
 

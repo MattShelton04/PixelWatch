@@ -8,7 +8,7 @@ export * from "./comparator/result.ts";
 export { type DecodeOptions, type PngHeader, decodePng } from "./png/decode.ts";
 export { type PngStructure, parsePngStructure } from "./png/chunks.ts";
 export { encodePng } from "./png/encode.ts";
-export { PngError, type PngErrorCode } from "./png/errors.ts";
+export { PngError, type PngErrorCode, pngErrorCode } from "./png/errors.ts";
 export { type JobOptions, PngWorker, type PngWorkerOptions } from "./png/isolated.ts";
 export { MAX_DIMENSION, MAX_PIXELS, MAX_PNG_BYTES } from "./png/limits.ts";
 export { IngressError, type IngressErrorCode, type IngestionErrorCode, type PartErrorCode, type ZipErrorCode } from "./ingest/errors.ts";
