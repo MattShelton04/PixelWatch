@@ -1,7 +1,23 @@
 import { describe, expect, it } from "vitest";
+import { inspect } from "node:util";
 import { FetchTransport, ForgeError, type FetchLike } from "../src/index.ts";
 
 describe("production fetch transport", () => {
+  it("fetch and stream failures reconstruct branded errors without invoking caller diagnostic accessors", async () => {
+    const canary = "FAKE_FETCH_CALLBACK_CANARY"; const signed = "https://invalid.example/file?sig=FAKE_FETCH_SIGNATURE";
+    for (const stage of ["fetch", "stream"]) {
+      const supplied = new ForgeError("api-refused"); let accesses = 0; let reached = 0;
+      for (const name of ["code", "name", "message", "stack", "cause"]) Object.defineProperty(supplied, name, {configurable: true, get() {accesses++; return canary + signed;}});
+      const fetch: FetchLike = () => {
+        if (stage === "fetch") {reached++; return Promise.reject(supplied);}
+        return Promise.resolve(new Response(new ReadableStream<Uint8Array>({start(controller) {reached++; controller.error(supplied);}})));
+      };
+      let error: unknown; try {await new FetchTransport(fetch).request({method: "GET", url: "https://invalid.example/", headers: {}, maxBytes: 4});} catch (value) {error = value;}
+      expect(reached).toBe(1); expect(accesses).toBe(0); expect(error === supplied).toBe(false);
+      const raw = inspect(error, {showHidden: true, depth: 8}); expect(raw.includes(canary) || raw.includes(signed)).toBe(false);
+      expect(error).toBeInstanceOf(ForgeError); expect((error as ForgeError).code).toBe("api-refused"); expect(Object.hasOwn(error as object, "cause")).toBe(false);
+    }
+  });
   it("uses manual redirect and cancels streaming overflow rather than buffering the body", async () => {
     let cancelled = false;
     let options: RequestInit | undefined;

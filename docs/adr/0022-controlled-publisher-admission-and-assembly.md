@@ -43,6 +43,8 @@ Fixed diagnostics use a runtime code allowlist and private constructor provenanc
 and publisher guards reconstruct fresh errors rather than trusting caller-visible fields or
 prototypes. Independent actual before-push callbacks demonstrated the store boundary too;
 unknown branded codes map to fixed boundary failure codes without causes or raw callback text.
+The same reconstruction covers GitHub transport/fetch/stream and timing setup/disposal
+callbacks before retry decisions; mutable public codes never select retry behavior.
 
 ## Consequences
 

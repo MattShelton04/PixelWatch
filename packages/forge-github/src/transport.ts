@@ -1,4 +1,4 @@
-import { ForgeError } from "./errors.ts";
+import { ForgeError, sanitizeForgeError } from "./errors.ts";
 
 export interface HttpRequest {
   readonly method: "GET" | "POST" | "PATCH";
@@ -87,8 +87,7 @@ export class FetchTransport implements HttpTransport {
       for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
       return { status: response.status, headers: Object.fromEntries(response.headers.entries()), body };
     } catch (error) {
-      if (error instanceof ForgeError) throw error;
-      throw new ForgeError(request.signal?.aborted === true ? "request-cancelled" : "request-failed");
+      throw sanitizeForgeError(error, request.signal?.aborted === true ? "request-cancelled" : "request-failed");
     }
   }
 }

@@ -6,6 +6,24 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Current verified main is `f60311c` (PR #20 merged; viewer/platform evidence below).
+  Publisher branch rebased as `c4098ce` with publisher/store source byte-identical to the
+  preserved pre-rebase branch. All three conflicts were progress prose; both histories remain.
+- Independent admission approval covers exact author `d332647`:42/42 plus six recovery and
+  thirteen hostile-input probes, reached injections and raw scans. Independent assembly
+  review found new CAP-1/-2/-3/-4 blockers: incoherent snapshot/tip, oversized listing bypass,
+  uncaptured reader and repeated asset parent reads. Author strict red/fix work is active;
+  assembly or combined acceptance is not approved yet.
+- Store ERR1 independently verified at immutable `f4ba5f3`:four original native/Proxy probes
+  pass, callbacks reach once and zero accessors/alias/cause/raw-secret, all73 current codes
+  match the runtime allowlist. A probe against the moving rebase failed and is explicitly
+  invalidated, retained without a verdict. Final stable probe logs are separate.
+- GitHub callback diagnostic correction: client/fetch/stream/timing tests first red, final
+  full forge55/4 exit0,1.26s, lint/types0. Private code identity prevents retry steering;
+  independent original-probe verification and full combined acceptance remain gates.
+
+The following entries are historical checkpoints, superseded by the facts above.
+
 - PR #20 is held for REVIEW-W2-V-PATH-1 (P2), a reproduced local preview substitution race;
   hosted CodeQL reported two path-injection alerts on the original preview. Root replaced
   request-derived filesystem resolution with a captured inventory and checked descriptor reads.
