@@ -6,6 +6,14 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR #20 is held for REVIEW-W2-V-PATH-1 (P2), a reproduced local preview substitution race;
+  hosted CodeQL reported two path-injection alerts on the original preview. Root replaced
+  request-derived filesystem resolution with a captured inventory and checked descriptor reads.
+  New inventory regression first failed (one failure / six tests); the forced native race
+  first failed (one test, actual 200 versus expected 404). Corrected focused suite passes
+  seven tests / two files; independent current-diff verification also passes. Stable-SHA
+  review, full check/browser/simulation and hosted CodeQL remain integration gates.
+
 - Combined viewer/store source `47e0626`: full check exit0, 42 files / 824 tests (199.51 s),
   all linters/types pass; full browser acceptance exit0, 24/24 (33.2 s), all three engines.
   Full simulation exit2, nine harness / two production PASS / twelve NOT RUN; every normalized

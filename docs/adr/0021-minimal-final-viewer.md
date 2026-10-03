@@ -30,6 +30,12 @@ Install pinned browser binaries separately in ignored .tools/playwright, and enf
 request guard allowing only the actual preview origin. Root owns build/fixture/preview tools,
 manifest/lockfile, DOM type libraries and workflow integration.
 
+The preview captures a bounded inventory of generated files before listening. Requests only
+select inventory keys. Opening a file binds a checked descriptor to its captured identity,
+size and single-link status; bounded reads use that descriptor rather than reopening a path.
+This closes a reproduced substitution race after canonical-path validation. Newly generated
+files require restarting the preview, which is not a live-reload development server.
+
 ## Consequences
 
 No schema/golden/changes@1 byte or trust-model changes. Test fixtures project actual canonical

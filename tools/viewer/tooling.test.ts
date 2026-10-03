@@ -79,3 +79,18 @@ it("preview CLI advertises existing generated entries for nested prefixes and ig
   mkdirSync(join(fixture.root, "unrelated")); writeFileSync(join(fixture.root, "unrelated", "index.html"), "untrusted active file");
   expect(previewEntries(fixture.root)).toEqual(["reports/visual/", `reports/visual/runs/${fixture.runKey}/`]);
 });
+
+it("preview request paths select only the captured generated inventory and cannot add active files", async () => {
+  const fixture = await buildViewerFixture(scratch()); const preview = await startPreview(fixture.root);
+  try {
+    const app = join(fixture.root, "pixelwatch", "app", "9.9.9"); mkdirSync(app, {recursive: true});
+    writeFileSync(join(app, "app.js"), "fake-canary-active-code");
+    const run = join(fixture.root, "pixelwatch", "runs", "999-a1"); mkdirSync(run, {recursive: true});
+    writeFileSync(join(run, "index.html"), "fake-canary-active-code");
+    for (const path of ["/pixelwatch/app/9.9.9/app.js", "/pixelwatch/runs/999-a1/index.html"]) {
+      const response = await request(preview.origin, path);
+      expect(response.status).toBe(404); expect(Buffer.from(response.body).toString("utf8")).not.toContain("fake-canary-active-code");
+    }
+    expect((await request(preview.origin, `/${fixture.entryPath}`)).status).toBe(200);
+  } finally { await preview.close(); }
+});
