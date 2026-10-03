@@ -6,6 +6,17 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Comment independent review PASS exact3121157:20/20 exit0,2.15s/linttypes0;71variants twice
+  same normalized0393ba43…,288rendered/20refused/924rawscans perrun,11logs clean. Actual
+  60000-byte multibyte body passes; plus1byte shortens to5301 withwarnings/report retained.
+  Scope pure renderer/stamp only. Root exposes those functions; no API/live ownership claim.
+- Full browser atf546eb8 passed24/24 exit0,27.4s, all3engines. Currentfullsimulation running
+  session90429 at documentation-only0516268; no new productcase registered yet. Source job
+  corrective70/70 local exit0,13.99s but extra native-remover regressions/immutablehandoff/
+  independentoriginalprobes remain gates. Author70security-red transcript is retained honestly.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Integrated sourcef546eb871705689c8ffd3ec6d2d071f02b8ca636 passes complete `pnpm -s check`:
   1029tests/52files, exit0,252.76s;lint/types/actionlint/zizmor0. Root browser is running;
   final fullsimulation and hosted evidence remain gates. Comment independent review pending;
