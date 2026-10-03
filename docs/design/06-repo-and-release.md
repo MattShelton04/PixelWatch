@@ -28,7 +28,7 @@ actions/publish/  # action.yml; dist/ exists only in release commits
 .github/workflows/
   report.yml      # the reusable workflow adopters call
   ci.yml          # this repo's checks
-tools/            # internal dev CLI (pixelwatch-dev), release tooling
+tools/            # internal dev CLI, local simulation harness/specifications (ADR 0015), releases
 testdata/         # small fixtures and goldens; no tokens or signed URLs
 docs/design/  docs/adr/  docs/security/
 ```

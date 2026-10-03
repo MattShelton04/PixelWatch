@@ -5,12 +5,14 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-03 (main @ `1b8b3fb` plus M1.8): `packages/schemas`, the pixel hash, the
+Status on 2026-10-03 (main @ `a331236` plus M2.4): `packages/schemas`, the pixel hash, the
 restricted PNG codec, the canonical blob pool, comparator-v1, bounded ZIP ingestion, the
 fixed-part merge, trusted config parsing, runs and the store run index, retention, GC and
 budget planning, the `changes@1` projection with its served paths and URLs, and the internal
 `pixelwatch-dev compare` (M1.8, ADR 0014) are implemented. Most checks below are therefore **planned**. A planned check is never counted as
-green. M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
+green. M2.4 adds tested local simulation infrastructure (ADR 0015), but no complete product
+scenario has run: `test:simulation` reports all 14 product cases NOT RUN and exits 2.
+M0.5 recorded live evidence for S2, S4 and same-repo S11 (ADRs 0005–0007). Fork identity
 stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 
 `tools/threat-model.test.ts` keeps this file honest. It runs in `pnpm check` and fails when:
@@ -25,7 +27,7 @@ stays `evidence-planned` with M2.6 (owner decision, 2026-09-30).
 | Status | Meaning |
 |---|---|
 | `passing` | The test exists and runs in `pnpm check`. It may cover only part of the rule; the invariant column says which part. |
-| `planned` | Not written yet. The owner task writes it at the path given, or moves it and updates this row in the same PR. |
+| `planned` | Not executable yet. A written simulation specification may exist, but absent product adapters are NOT RUN. The owner task supplies the implementation at this path, or moves it and updates this row in the same PR. |
 | `recorded` | Manual evidence exists at the path given. |
 | `evidence-planned` | Manual evidence the owner task or spike must record (usually under `docs/evidence/`, 07 §7). |
 
@@ -169,12 +171,12 @@ Planned paths are provisional (§1).
 | R4.2-03 | live | planned | `tools/release/self-reference.test.ts` | A foreign SHA-pinned caller, a nested call, and an older release after a newer one each run their own bundle; missing job fields fail | M2.5 |
 | R4.2-04 | unit | planned | `packages/forge-github/test/run-verification.test.ts` | The envelope's `configSha` is the default-branch commit the forge resolved; no artifact or claim field supplies it | M2.1 |
 | R4.2-04 | unit | planned | `packages/publisher/test/ingest-job.test.ts` | The ingest job validates config at that commit and records it in the run; a config file inside an artifact is ignored | M2.3 |
-| R4.2-04 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case D: the projector reads config at the default-branch head resolved after the lock, and the generation hash includes that commit | M2.3 |
+| R4.2-04 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | Sub-case D: the projector reads config at the default-branch head resolved after the lock, and the generation hash includes that commit | M2.3 |
 | R4.2-05 | unit | passing | `packages/schemas/test/schemas.test.ts` › "reports an unknown version before looking at anything else" | Every document kind reports `unsupported-version` before any other check | M0.3 |
 | R4.2-05 | unit | passing | `testdata/schemas/store/invalid/schema.data-version-2.json` | A store with `dataVersion` 2 is rejected | M0.3 |
 | R4.2-05 | unit | passing | `testdata/schemas/config/invalid/schema.comparator-version-2.json` | An unknown comparator version in config is rejected | M0.3 |
 | R4.2-05 | unit | passing | `packages/core/test/comparator.test.ts` › "refuses an unknown comparator version" | The core maps only comparator version 1 to a policy; any other version throws | M1.3 |
-| R4.2-05 | simulation | planned | `packages/publisher/test/simulation/sim-unknown-version.sim.test.ts` | Unknown config/bundle/store version → zero store pushes, zero deployments, zero comment writes | M2.3 |
+| R4.2-05 | simulation | planned | `tools/simulation/scenarios/sim-unknown-version.sim.test.ts` | Unknown config/bundle/store version → zero store pushes, zero deployments, zero comment writes | M2.3 |
 | R4.2-06 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Top-level `permissions: {}`; the ingest and project jobs have exactly the 01 §4.2 sets | M2.5 |
 | R4.2-06 | evidence | recorded | `docs/evidence/s4-self-reference.md` | Inside a foreign-called reusable workflow, each called job's logged `GITHUB_TOKEN` permissions were exactly its own 01 §4.2 set, not the caller's union | S4 |
 | R4.2-06 | evidence | evidence-planned | `docs/evidence/` (M2.6 live run) | Token permissions observed in a real report run match 01 §4.2 per job | M2.6 |
@@ -209,8 +211,8 @@ Planned paths are provisional (§1).
 | R4.3-05 | unit | passing | `packages/core/test/merge.test.ts` › "merges only expected names for the selected attempt and rejects duplicates and mixed attempts" | Only expected names for the selected attempt are merged; two artifacts under one name reject the part (none is picked); a bundle of another attempt under this attempt's name is rejected; other attempts, unexpected parts and other bundle versions are ignored with a reason | M1.4 |
 | R4.3-05 | unit | passing | `packages/core/test/ingest.test.ts` › "never opens artifacts of another attempt" | Artifacts of other attempts are never opened: hostile archives under their names change nothing | M1.4 |
 | R4.3-06 | unit | planned | `packages/forge-github/test/artifact-download.test.ts` | A cross-origin 302 is followed without `Authorization`; a same-origin one keeps it | M2.1 |
-| R4.3-06 | simulation | planned | `packages/publisher/test/simulation/sim-github-faults.sim.test.ts` | Expired artifact, rate limit, cross-origin 302 and 410/5xx: bounded retries, auth stripped, incompleteness visible | M2.4 |
-| R4.3-07 | simulation | planned | `packages/publisher/test/simulation/sim-github-faults.sim.test.ts` | Captured logs and job summaries of every scenario contain no token or signed-URL query string | M2.4 |
+| R4.3-06 | simulation | planned | `tools/simulation/scenarios/sim-github-faults.sim.test.ts` | Expired artifact, rate limit, cross-origin 302 and 410/5xx: bounded retries, auth stripped, incompleteness visible | M2.3 |
+| R4.3-07 | simulation | planned | `tools/simulation/scenarios/sim-github-faults.sim.test.ts` | Captured logs and job summaries of every scenario contain no token or signed-URL query string | M2.3 |
 | R4.3-07 | unit | passing | `tools/dev-compare.test.ts` › "reads no environment variable and imports no network, process or Git module" | The dev CLI's sources never mention `process.env`, a token variable or `fetch`, and import no network, child-process or Git module | M1.8 |
 | R4.3-07 | unit | passing | `tools/dev-compare.test.ts` › "gives identical bytes and exit code as a process behind the network guard, with or without GH_TOKEN" | As a process behind the network guard, the dev CLI's stdout, stderr and exit code are the same with and without `GH_TOKEN`/`GITHUB_TOKEN` set, and equal the in-process run | M1.8 |
 | R4.3-08 | unit | passing | `packages/schemas/test/json.test.ts` › "rejects duplicate keys, including nested and escaped spellings" | Duplicate JSON keys fail at any depth | M0.3 |
@@ -266,7 +268,7 @@ Planned paths are provisional (§1).
 | R4.4-05 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs and `llms.txt` state that the PR controls the harness for both sides | M3.8 |
 | R4.4-06 | unit | planned | `packages/forge-github/test/pr-association.test.ts` | A historical PR whose base can't be corroborated gets association `none` with a diagnostic, never today's base branch | M2.1 |
 | R4.4-06 | unit | planned | `packages/publisher/test/ingest-job.test.ts` | The ingest job stores that run unassociated (no stream, no comment) with the diagnostic | M2.3 |
-| R4.4-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case C: a stale run enters history but never replaces the current head's comment | M2.3 |
+| R4.4-06 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | Sub-case C: a stale run enters history but never replaces the current head's comment | M2.3 |
 | R4.4-07 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo opened, synchronize and "re-run all jobs" recorded with redacted payloads and REST responses | S11 |
 | R4.4-07 | evidence | evidence-planned | `docs/adr/` (fork identity) | Fork PR, first-time-contributor approval and partial rerun recorded before M2 exits (fork deferred from M0.5 by the owner, 2026-09-30) | M2.6 |
 | R4.5-01 | unit | passing | `testdata/schemas/store/invalid/schema.foreign-marker.json` | `store.json` with a foreign marker is rejected | M0.3 |
@@ -275,10 +277,10 @@ Planned paths are provisional (§1).
 | R4.5-01 | unit | planned | `packages/store/test/git-branch.test.ts` | The default branch, an unmarked existing branch, a foreign repository ID, or any ref other than the configured one is refused before any write; never "initialized" over content | M2.2 |
 | R4.5-01 | evidence | recorded | `docs/security/repo-settings.md` | Row 2: this repo's default branch is protected; adopter docs recommend the same | M0.2 |
 | R4.5-02 | unit | planned | `packages/store/test/git-branch.test.ts` | Hooks, filters, submodules, credential helpers, `core.sshCommand` and hostile tree modes (symlink, gitlink, exec) never execute or get followed | M2.2 |
-| R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-ingest-cas-race.sim.test.ts` | **CAS race.** Four ingestors fetch the same tip; all four runs are in the final store within 5 attempts each; every push uses an explicit lease; no rebase, no plain `--force` | M2.2 |
+| R4.5-03 | simulation | planned | `tools/simulation/scenarios/sim-ingest-cas-race.sim.test.ts` | **CAS race.** Four ingestors fetch the same tip; all four runs are in the final store within 5 attempts each; every push uses an explicit lease; no rebase, no plain `--force` | M2.2 |
 | R4.5-03 | unit | planned | `packages/store/test/git-branch.test.ts` | A stale lease fails; first creation uses an expected-absent lease | M2.2 |
-| R4.5-03 | simulation | planned | `packages/publisher/test/simulation/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.4 |
-| R4.5-04 | simulation | planned | `packages/publisher/test/simulation/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds the run key; no duplicate, no overwrite | M2.2 |
+| R4.5-03 | simulation | planned | `tools/simulation/scenarios/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.3 |
+| R4.5-04 | simulation | planned | `tools/simulation/scenarios/sim-push-outcome-unknown.sim.test.ts` | Push accepted but the client times out → refetch finds the run key; no duplicate, no overwrite | M2.2 |
 | R4.5-04 | unit | passing | `packages/core/test/envelope.test.ts` › "treats an already-stored run key as a no-op and never replaces the stored run" | A run key already in the store index → no-op (`added: false`, the same store, `txn` unchanged), even when the retry has different results and created time | M1.5 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | `site.json` can't carry an app URL | M0.3 |
 | R4.5-05 | unit | passing | `testdata/schemas/site/invalid/schema.app-hash-in-versions.json` | `site.json` can't carry an app hash | M0.3 |
@@ -286,12 +288,12 @@ Planned paths are provisional (§1).
 | R4.5-05 | unit | passing | `packages/core/test/housekeeping.test.ts` › "refuses store files outside the 03 §3 layout rather than serving or deleting them" | Housekeeping refuses a store tree holding a file outside the 03 §3 layout (`.html`, `.js`, `.svg`, a misfiled blob, a non-JSON file in a data namespace), and never deletes it. The planned site lists only generated paths, run records, pooled PNGs and grace JSON. The projector's own allowlist is M2.3. | M1.6 |
 | R4.5-05 | unit | passing | `packages/core/test/changes-projection.test.ts` › "projects only JSON and text at the 03 §3 paths, marking only changes.json immutable" | The projection emits only `.json` and `.txt` files at the 03 §3 paths built from IDs; no HTML, run-record or blob copy comes from it, and served schemas are the release's own | M1.7 |
 | R4.5-05 | unit | passing | `packages/core/test/changes-projection.test.ts` › "derives streams, PR pointers, the API index and site.json from the store index" | `site.json`, the API index and stream files carry no URL, script path or hash besides the generation | M1.7 |
-| R4.5-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | **Deploy/comment race**, sub-case A: projectors A and B reordered at barriers; each reads the store after the lock; the final deployed generation's store tip contains both runs; no deployment uses an older tip than the one before it | M2.3 |
-| R4.5-06 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case B: a coalesced pending projector deploys and comments for earlier runs too | M2.3 |
-| R4.5-07 | simulation | planned | `packages/publisher/test/simulation/sim-cdn-stale-generation.sim.test.ts` | HTTP 200 with an older `generation`, a stale `latest.json`, a body whose digest differs from the built bytes, a cached 404, or an edge that regresses after a pass is not ready until 3 consecutive full passes; no comment is written until ready or timeout | M2.3 |
+| R4.5-06 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | **Deploy/comment race**, sub-case A: projectors A and B reordered at barriers; each reads the store after the lock; the final deployed generation's store tip contains both runs; no deployment uses an older tip than the one before it | M2.3 |
+| R4.5-06 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | Sub-case B: a coalesced pending projector deploys and comments for earlier runs too | M2.3 |
+| R4.5-07 | simulation | planned | `tools/simulation/scenarios/sim-cdn-stale-generation.sim.test.ts` | HTTP 200 with an older `generation`, a stale `latest.json`, a body whose digest differs from the built bytes, a cached 404, or an edge that regresses after a pass is not ready until 3 consecutive full passes; no comment is written until ready or timeout | M2.3 |
 | R4.5-07 | unit | passing | `packages/core/test/changes-projection.test.ts` › "derives streams, PR pointers, the API index and site.json from the store index" | Partial: `api/v1/pr/<n>/latest.json` names the PR stream's latest run key, its head SHA and the generation, and `site.json` the generation, as canonical bytes the readiness check can compare (the check itself is M2.3) | M1.7 |
 | R4.5-07 | evidence | recorded | `docs/adr/0005-s2-actions-pages-bootstrap-and-readiness.md` | Fresh-repo Pages bootstrap, readiness polling, failed/cancelled deploy and same-generation repair recorded with environment deployment IDs; stale and regressing CDN generations observed | S2 |
-| R4.5-08 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case D: an older-release projector running after a newer one deploys a store tip no older than the previous one, doesn't roll back any comment, and its `site.json` names its own release | M2.3 |
+| R4.5-08 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | Sub-case D: an older-release projector running after a newer one deploys a store tip no older than the previous one, doesn't roll back any comment, and its `site.json` names its own release | M2.3 |
 | R4.6-01 | browser | planned | `packages/viewer/test/storage.spec.ts` | Poisoned `localStorage` values are validated and ignored; the app never writes tokens or approvals | M2.7 |
 | R4.6-02 | unit | passing | `testdata/schemas/site/invalid/schema.app-url-field.json` | Data can't select app code | M0.3 |
 | R4.6-02 | browser | planned | `packages/viewer/test/csp.spec.ts` | In Chromium, Firefox and WebKit the entry page's CSP meta is first, the app loads only with a matching SRI hash, a tampered app is blocked, and no service worker registers | M2.7 |
@@ -311,8 +313,8 @@ Planned paths are provisional (§1).
 | R4.6-07 | unit | planned | `packages/forge-github/test/comments.test.ts` | A comment with the marker but a human or look-alike bot author, or the right author with a different marker, is never edited | M2.1 |
 | R4.6-07 | unit | planned | `packages/publisher/test/comment-render.test.ts` | At the 60,000-byte boundary with multibyte text, and in every degradation step, identity, status, warnings and the report link survive | M2.3 |
 | R4.6-08 | unit | planned | `packages/forge-github/test/comments.test.ts` | Two comments matching marker + author → no edit, no create, a diagnostic in the summary | M2.1 |
-| R4.6-09 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-comment-race.sim.test.ts` | Sub-case C: old/new PR head interleaving; the head is re-fetched immediately before writing; an old head's projector never replaces the new head's comment, and no comment moves to an older run by source order | M2.3 |
-| R4.6-09 | simulation | planned | `packages/publisher/test/simulation/sim-comment-unknown-outcome.sim.test.ts` | Deploy OK, comment create times out → the marker is rediscovered before retrying; exactly one comment exists | M2.3 |
+| R4.6-09 | simulation | planned | `tools/simulation/scenarios/sim-deploy-comment-race.sim.test.ts` | Sub-case C: old/new PR head interleaving; the head is re-fetched immediately before writing; an old head's projector never replaces the new head's comment, and no comment moves to an older run by source order | M2.3 |
+| R4.6-09 | simulation | planned | `tools/simulation/scenarios/sim-comment-unknown-outcome.sim.test.ts` | Deploy OK, comment create times out → the marker is rediscovered before retrying; exactly one comment exists | M2.3 |
 | R4.6-10 | unit | passing | `testdata/schemas/changes/invalid/schema.instruction-field.json` | `changes@1` has no instruction field | M0.3 |
 | R4.6-10 | golden | passing | `packages/core/test/changes-projection.test.ts` › "keeps llms.txt free of commands and prompt-like labels as escaped data" | `llms.txt` has no code blocks, shell lines, command names or imperative instructions, links only this site, and depends only on the site location and release; prompt-like and JSON-breaking labels appear only as JSON string data in `changes.json`, never in `llms.txt` or the mutable documents | M1.7 |
 | R4.6-10 | unit | passing | `tools/dev-compare.test.ts` › "never echoes bad image names, labels or prompt-like text, and escapes control characters" | Prompt-like and control-character entry names and labels never reach the dev CLI's stderr; entries are named by position | M1.8 |
@@ -321,7 +323,15 @@ Planned paths are provisional (§1).
 | R4.7-02 | unit | planned | `packages/publisher/test/site-tree.test.ts` | No DOM, trace, HAR or log file reaches the served tree; errors appear only as bounded categories | M2.3 |
 | R4.7-02 | unit | passing | `tools/dev-compare.test.ts` › "exits 5 for an internal error with a bounded line and no stack trace unless --debug" | Dev CLI errors are bounded (at most 20 lines of at most 1024 printable-ASCII characters), carry a stable code, and have no stack trace unless `--debug` | M1.8 |
 | R4.7-03 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Uninstall and GC docs say deletion isn't erasure | M3.8 |
-| R4.7-04 | simulation | planned | `packages/publisher/test/simulation/sim-deploy-fails.sim.test.ts` | Store OK, deploy fails or is cancelled → the run stays stored; the summary says "stored; deployment pending" with a repair command; the next or manual projection completes it | M2.3 |
+| R4.7-04 | simulation | planned | `tools/simulation/scenarios/sim-deploy-fails.sim.test.ts` | Store OK, deploy fails or is cancelled → the run stays stored; the summary says "stored; deployment pending" with a repair command; the next or manual projection completes it | M2.3 |
+| R4.3-06 | simulation | passing | `tools/simulation/self.test.ts` › "a cross-origin 302 strips auth and a same-origin redirect retains it" | Partial: the harness transport strips auth on a cross-origin 302 and retains it on a same-origin one. Production forge/publisher behavior remains planned. | M2.4 |
+| R4.3-07 | simulation | passing | `tools/simulation/self.test.ts` › "fake tokens and signed URLs never reach logs summaries errors or stored files" | Partial: the harness capture redacts fake canaries in logs, summaries, errors and stored output; an independent scanner detects a deliberate leak. | M2.4 |
+| R4.3-07 | simulation | passing | `tools/simulation/self.test.ts` › "bounds fake GitHub faults and strips auth without leaking canaries" | Partial: executed transport faults use only fake canaries; exact retry counts, virtual delays, auth stripping and clean captures are asserted. Product coverage is NOT RUN. | M2.4 |
+| R4.3-07 | unit | passing | `tools/simulation/self.test.ts` › "simulation code never reads token variables or uses ambient time randomness or sleeps" | Harness source reads no token variable and uses no ambient time, random source or sleep. Git subprocesses receive only an allowlisted OS environment. | M2.4 |
+| R4.5-02 | simulation | passing | `tools/simulation/self.test.ts` › "hostile hooks and attributes never execute and commit IDs reproduce" | Partial: temporary bare Git ignores a planted hook and attributes, uses fixed commit metadata and parentless commits; scratch files contain no fake secret. Production store defenses remain planned. | M2.4 |
+| R4.5-03 | simulation | passing | `tools/simulation/self.test.ts` › "rejects five real stale leases per seed at the injected fetch-push interleaving" | Partial: for each fixed seed, barriers force B's real push between A's fetch and lease push, reaching five actual lease rejections. This is not production retries/site/repair acceptance. | M2.4 |
+| R4.5-04 | simulation | passing | `tools/simulation/self.test.ts` › "accepted Git pushes remain discoverable after their replies are discarded" | Partial: a real accepted push survives a discarded response and is found by fetch; no production run-key retry logic is claimed. | M2.4 |
+| R4.5-06, R4.6-09 | simulation | passing | `tools/simulation/self.test.ts` › "failure injection reaches every named racy interleaving under every seed" | Partial: both actors reach the scheduling window before every named fault point, and every injection is asserted reached. Product deploy/comment safety remains planned. | M2.4 |
 <!-- verification:end -->
 
 ### Named race tests (acceptance)

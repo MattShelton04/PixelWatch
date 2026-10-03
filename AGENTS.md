@@ -26,8 +26,9 @@ Node ≥ 22.18 (CI: `.node-version`), pnpm from `packageManager` (via Corepack).
   lists the input layout and exit codes). Local only: no network, Git or tokens.
 - `pnpm schemas:types`: regenerate `packages/schemas/src/generated/types.ts` after editing a
   schema. A test fails if it's stale.
-- `pnpm test:simulation` (M2.4) and `pnpm test:viewer` (M2.7) don't exist yet. They exit 1
-  with "Nothing ran". Report them as not run.
+- `pnpm test:simulation`: local harness plus the 07 §4 coverage report (ADR 0015). Exit 2
+  means product cases did not run; never call it green. Harness tests also run in `check`.
+- `pnpm test:viewer` (M2.7) doesn't exist yet: exit 1 with "Nothing ran".
 - `pnpm test:live`: needs `PIXELWATCH_LIVE=1`, `PIXELWATCH_E2E_OWNER`, `PIXELWATCH_E2E_REPO`,
   `GH_TOKEN`. It refuses on `pull_request*` events and has no scenarios until M2.6.
 
