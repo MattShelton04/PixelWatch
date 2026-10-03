@@ -6,6 +6,23 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Integrated sourcef546eb871705689c8ffd3ec6d2d071f02b8ca636 passes complete `pnpm -s check`:
+  1029tests/52files, exit0,252.76s;lint/types/actionlint/zizmor0. Root browser is running;
+  final fullsimulation and hosted evidence remain gates. Comment independent review pending;
+  production source job remains held rather than being counted in this check.
+- Source091 independent SOURCE-3 P1: native AbortSignal.any reads poisoned public aborted
+  getter and loses already-aborted native caller/deadline. Two actual forge→LocalDir probes
+  store99-a7/CAS1 with10public getter reads instead of refusal0reads. Author replaces this
+  with a private controller and captured intrinsic links. Source new strict70tests red12fail/
+  58pass,11.73s; product scanner385values/268254bytes clean but Vitest transcript contains
+  the known unhandled fake-canary rejection from SOURCE-1. That is security-red evidence,
+  never a clean-log claim. SOURCE-2 variants reach source/ZIP/list/pixel/encode/compare/
+  snapshot ownership gaps. Direct shared readFile await is verified safe, no root edit needed.
+- Actual generated viewer preview rechecked200/4953bytes/pinnedscript at127.0.0.1:4173/
+  pixelwatch/runs/11-a1/; Codex panel openqueued. Fixture pixels, not live publisher evidence.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Readiness independent final review PASS at fa613922, exactauthoraaf87cb+shared18:45/45
   exit0,2.50s/linttypes0, originalC1/C2/C3 unchangedprobes closed,9sequences×2 normalized
   ac91140a… unchanged,14input boundaries and10broadenedcleanupcases pass;7rawlogs clean.

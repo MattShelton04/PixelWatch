@@ -18,6 +18,11 @@ plain shapes before captured native operations; it does not promise unforgeable 
 Dependent authors consume this root implementation rather than repeating the weak native getter.
 Scope/listener construction and teardown must be inside deadline cleanup protection, including
 partial listener registration and throwing removers. Actual allocated deadlines always dispose.
+Combine caller/deadline via a private native controller and captured intrinsic links; native
+AbortSignal.any can consult poisoned public aborted getters. Already-aborted native state must
+refuse work without those getter reads. Capture every foreign resolved DTO/native buffer in
+the race's fulfillment handler before resolving it across another await. Rejection settlement
+must never inspect public error fields/prototypes or strand cleanup on a throwing remover.
 
 AdmissionResult optionally carries only `warnings: ["checkpoint-failed"]` after a post-CAS
 checkpoint exception when accepted/recovered stored/expired status is proven. Preserve that
