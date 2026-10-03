@@ -4,6 +4,25 @@ This is the durable orchestration record for M0–M3. Scope and acceptance remai
 `docs/design/08-implementation-plan.md`; security remains normative in 01 §4.
 Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitted.
 
+## Current checkpoint — 2026-10-03
+
+- Root: `codex/m2-source-auth`, source picks `9a7bfc8`/`318bbaa`; integrated check exit 0,
+  30 files / 722 tests. Independent integrated source/documentation/traceability review passed;
+  final check 722/30 (38.84 s). Full simulation exit 2, 9 harness / 14 NOT RUN.
+- PR #16 and #17 are draft and unmerged. PR #17 head `95ae11a5e5892c20d766778146197aa540b238d7`
+  hosted run `37097793164`: Linux and Windows checks passed (29 files / 707 tests each),
+  CodeQL/dependency review passed; both full simulation commands exited 2 with 9 harness
+  checks / 14 product cases NOT RUN, identical `81ffc411…` digest. Coverage jobs remain red.
+- W1-S author `b9fad30f18167e8527bc045d3afd996e6583ad9c`, base `3ef45da`:
+  full check exit 0, 31 files / 714 tests (35 store). Independent correctness/concurrency
+  review passed; security review found two blocking pack issues, fixes active. No store pick yet.
+- W1-G-C author is implementing fresh repository/default-ref config loading; eight tests first
+  failed on missing methods. No config slice acceptance claimed yet.
+- Three actual specialists plus root: store author, forge/config author, independent reviewer.
+  Viewer worktree exists but has no implementation; publisher is absent. M2 exit remains open.
+
+This checkpoint supersedes earlier in-flight statements in the chronological acceptance log.
+
 ## Baseline audit — 2026-10-03
 
 - Local and remote main: `59221ba4bfd3b8214440990e5c044503e9c53049`; PR #15 merged.
@@ -107,7 +126,16 @@ Existing schema/core exports and changes@1 bytes are preserved.
   PR targets come only from trusted caller inputs/envelope.
 - Pages metadata validates Actions source and Pages URL/host. Preflight never changes
   settings. Source verification consumes the frozen SourceEnvelope only after the
-  root workflow provenance gap below is resolved; no fabricated SHA/ref fills.
+  root workflow provenance gap resolved in ADR 0016; no fabricated SHA/ref fills.
+- `verifySource({event,config,configSha,releaseSha,signal?})` returns an authenticated envelope,
+  fixed diagnostic codes and optional currentHeadSha. Parsed source facts and validated policy/
+  provenance are privately owned before awaits. Original run time is authoritative; the selected
+  completed attempt must agree. PR association/base unavailability gives unassociated history;
+  malformed/auth/network responses refuse rather than masquerading as absence.
+- M2.1c prerequisite: fresh `getRepository(signal?)` returns checked repositoryId/owner/name/
+  defaultBranch. `readDefaultConfig(signal?)` returns `{repository,config,configSha}` after resolving
+  that default ref and fetching only `.pixelwatch/config.json` at the captured SHA as bounded raw
+  bytes. Strict config parsing precedes mutation; no adopter checkout, execution or defaults on error.
 
 ### Publisher / viewer (freeze before their assignments)
 
@@ -129,7 +157,8 @@ Simulation scans raw product outputs before any harness redaction.
   retain the production 10-minute limit. Do not use PngWorker real timers in simulations.
 - Owner approved optional unavailable workflowSha/workflowRef after authenticated read-only
   investigation (run/attempt/jobs/workflow/check-suite lack root provenance). ADR 0016;
-  no head_sha or claim substitutes. Root schema/types/tests corrected; forge path pending.
+  no head_sha or claim substitutes. Root schema/types/tests and forge path implemented;
+  real fork provenance evidence remains M2.6.
 - Documentation corrections: 00 stale status, nine schemas, converter/S11 template
   prose, actual M1.8 golden paths, strict presentation config (ADR 0010).
 - Benchmark overview/table discrepancies remain unresolved: original measurements
@@ -165,6 +194,9 @@ Evidence records command, dependency SHA, exit/count/output, platform and not-ru
   14 NOT RUN and identical digest `81ffc411…`. Coverage jobs remain red (Windows shell reports
   job exit 1 after pnpm exit 2). CodeQL/dependency review passed. No merge authorized.
 - Root continues on `codex/m2-integration` from PR #16 while it awaits human review.
+- PR [#17](https://github.com/MattShelton04/PixelWatch/pull/17), draft forge infrastructure,
+  base PR #16 branch, head `95ae11a`; pushed, hosted checks pending. Root now continues on
+  `codex/m2-source-auth` for the separately reviewed source-verification slice.
 - REVIEW-W1-G-1 (P1): internal comment retries bypassed fresh head/order checks and could
   overwrite newer comment content during backoff. Author fix `3506ce47f208a976564368108cfd41db51a6b514`,
   25 tests pass; independent verification passed. Mandatory beforeMutation guard is now
@@ -193,6 +225,19 @@ Evidence records command, dependency SHA, exit/count/output, platform and not-ru
 - REVIEW-W1-S-C-3 (P2): changing caller metadata during retry changed injected timestamp.
   Author copied/validated metadata; independent current-code probes verify all three candidate
   races fixed. Committed SHA, final pack review and store integration remain gates.
+- W1-S correctness/concurrency review at `b9fad30`: independent 4-suite / 35-test run
+  passed (54.12 s), isolated Git/local mutation probes passed. Run canonical bytes, path
+  confinement and retry timestamp remain unchanged; raw production outputs clean.
+- REVIEW-W1-S-PACK-2 (P2): actual GitBranchStore.read() refused an HTTP 302 but left its
+  open response body alive after clearing the transfer deadline. Cancellation before
+  deadline disposal is required; minimal transport fix and independent verification active.
+- REVIEW-W1-S-PACK-3 (P3 correctness, integration blocker): ASCII decoding masks high
+  bits, so malformed packet/PACK literals can pass pre-index validation. Exact byte checks
+  and regression required. Strict Git indexing still refuses; no ref-write bypass demonstrated.
+- Source integration at `318bbaa`: full check exit 0, 30 files / 722 tests. Independent
+  source and async ownership review passed; integrated documentation/traceability review
+  exit 0, 4 files / 50 tests. One unsupported runtime-schema claim corrected in ADR prose;
+  no assertion weakened. Final full check 722/30 passed; simulation incomplete exit 2.
 
 ## External gates (not blanket blockers)
 
