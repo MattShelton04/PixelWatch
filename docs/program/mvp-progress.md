@@ -6,6 +6,37 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- SESSION WRAP requested by owner. Agents stopped and preserved clean WIP branches; root
+  creates uncommitted HANDOVER.md and ignored paste-ready.tools/NEXT_SESSION_PROMPT.md.
+  No additional PR/tag/release/live setup or external mutation is made during wrap-up.
+- Final root `pnpm -s check` at83330d2 EXIT1:1164pass/2fail,55files (54pass/1fail),531.35s.
+  Git-branch tests "five lease conflicts exhaust bounded retries without mutating the existing
+  store" (line105) and "validates expired indexed records and missing blob references before
+  returning a snapshot" (line112) exceed unchanged30000ms. Teardown also reports EBUSY at
+  GitBranchStore.close line210. Cause is UNVERIFIED; concurrent native-suite load is context,
+  not a proven diagnosis. Lint/types passed before tests; workflow lint was not reached.
+  Maintenance44 passes in this run with raw226values128852bytes0failures. Root log is
+  root-maintenance-integrated-check.log. Integration is NOT ready for PR/merge. Diagnose
+  lifecycle/scheduling without loosening budgets/assertions, then require full green check.
+- GH source final051e0123cba65ab9333774939c8aafd6aba9af22 is preserved, not integrated or
+  registered. d4c7790 complete5/5 passes77.34s, but independent review finds child guard missing.
+  Final051 loads existing guard before compiler; focused1PASS/4NOTRUN,lint/types0. Independent
+  exact review18d91c7 unchanged compiler probe passes3.20s with0token/real-credential reads.
+  Final complete5 replay and whole-case environment probe remain PENDING; no final approval.
+  Earlier independent4/4 and all repeated hashes remain scoped historical evidence.
+- Projection WIP00d4b2df2bdeea0340189cf11aa4077a192d984d is a refusing skeleton plus12tests,
+  initial11fail/1pass,5.81s. Onlyprojection.ts/test changed; c0daf67 cleanup DTO not yet merged.
+  No implementation/types/lint/full acceptance. Public metadata assignment83330d2 is reserved
+  with nine titles/three owned files/cap60; no implementation began.
+- Build WIP7c1c1873c95666f137aa9815bd4e9d0e6e9867d4 preserves four assigned files atb382cb0.
+  Actual suite0cases/8NOTRUN because fixture beforeAll times out (exit1,28.35s); lint8errors,
+  types0. Initial sandboxEPERM ran0cases. Stubs are unimplemented; no strict eight-case red,
+  compiler/runtime/reproducibility or product acceptance. Fix fixture before implementation.
+
+## Merged baseline and preceding active-work checkpoint
+
+Agent assignments below are historical; all three agents have stopped for the session wrap.
+
 - PR22 is MERGED at1fe48214466d9c76e884791dea7a590ef71baee7 (12:51:06Z), exact reviewed
   head8d2de3981c8216fc0999d8f33384975dfaa1c767. All five enforced checks, aggregate CodeQL
   and both viewer jobs pass. No bypass, alert dismissal or settings change. Seven reviewed

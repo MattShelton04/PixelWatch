@@ -19,7 +19,11 @@ and24browser cases, with independent admission/assembly/metadata/fixed-diagnosti
 Hosted exact-head8d2de39 acceptance passes1122unit tests/54files and24browser cases on both
 Linux/Windows; aggregate CodeQL passes after the bounded literal stamp correction. The remaining
 production pipeline is a separate gate. Local maintenance source8a95bf5 has independent44/44
-and real Git recovery/ownership approval; root integrated wholecheck remains pending.
+and real Git recovery/ownership approval. Final root check83330d2 is NON-GREEN:1164pass/2fail,
+55files, with two existing Git-branch30000ms test timeouts and EBUSY teardown. Maintenance44
+cases pass in that run. Existing scoped passing evidence is retained; this is not whole-
+integration acceptance. Diagnosis/green check, final simulation/browser and hosted/live gates
+remain open (mvp-progress.md and maintenance evidence).
 Superseding local integration6547d469 passed1120unit tests/54files plus24browser cases
 across all three engines. Source ingestion has two independent scoped approvals, including
 13 coupled actual-adapter sequences repeated identically. Scoped passing rows name actual evidence;
