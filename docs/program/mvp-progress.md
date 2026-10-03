@@ -11,8 +11,14 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   request-derived filesystem resolution with a captured inventory and checked descriptor reads.
   New inventory regression first failed (one failure / six tests); the forced native race
   first failed (one test, actual 200 versus expected 404). Corrected focused suite passes
-  seven tests / two files; independent current-diff verification also passes. Stable-SHA
-  review, full check/browser/simulation and hosted CodeQL remain integration gates.
+  seven tests / two files; independent current-diff verification also passes. Stable source
+  `3bffa7e` full check exit0, 826/43 (254.75 s), browser exit0 24/24 all three engines (50.1 s),
+  full simulation exit2, 9 harness / 2 product PASS / 12 NOT RUN with unchanged normalized hashes.
+  Stable-SHA independent review and hosted exact-head CodeQL remain integration gates.
+- Independent review capacity rotated after three service-interrupted reviewer turns. Assembly
+  author now reviews root viewer tooling, admission author reviews assembly/shared diagnostics;
+  neither approves their own implementation. Prior concrete findings remain tracked until fix
+  verification; interrupted turns are not approvals.
 
 - Combined viewer/store source `47e0626`: full check exit0, 42 files / 824 tests (199.51 s),
   all linters/types pass; full browser acceptance exit0, 24/24 (33.2 s), all three engines.
