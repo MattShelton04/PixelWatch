@@ -1,7 +1,7 @@
 import { canonicalBytes } from "@pixelwatch/schemas";
 import { addRun, planHousekeeping, retentionPolicy, runRecordPath, sizeLimits } from "@pixelwatch/core";
 import type { StoreAdapter, StoreCandidate, StoreSnapshot, WriteRunInput } from "@pixelwatch/store";
-import { captureAdmission, captureSnapshot, checkedTip, checkImmutable, copyCandidate, existing, materialize, matchesCandidate, validateTree } from "./admission-input.ts";
+import { captureAdmission, captureSnapshot, checkedTip, checkImmutable, copyCandidate, existing, materialize, matchesCandidate, preflightCancellation, validateTree } from "./admission-input.ts";
 import { measureSite } from "./sizing.ts";
 import { guarded, refuse, type AdmissionDependencies, type AdmissionResult } from "./types.ts";
 
@@ -26,6 +26,7 @@ export function admitRun(adapter: StoreAdapter, input: WriteRunInput, dependenci
     };
     let prior: ReadView | undefined;
     for (let attempt = 1; attempt <= 5; attempt++) {
+      preflightCancellation(deps.signal);
       const current = prior ?? await readView(); prior = undefined; const snapshot = current.snapshot;
       await deps.checkpoint?.({point: "after-read", attempt, tip: snapshot.tip});
       const found = existing(snapshot, run.runKey, attempt); if (found !== undefined) return found;
@@ -48,6 +49,7 @@ export function admitRun(adapter: StoreAdapter, input: WriteRunInput, dependenci
         if (expiry === undefined || kept.has(run.runKey) || candidate.files.has(runRecordPath(run.runKey))) refuse("admission-plan-invalid");
       } else if (!kept.has(run.runKey) || !Buffer.from(candidate.files.get(runRecordPath(run.runKey)) ?? []).equals(Buffer.from(acceptedBytes))) refuse("admission-plan-invalid");
       await deps.checkpoint?.({point: "before-cas", attempt, tip: snapshot.tip});
+      preflightCancellation(deps.signal);
       // The private recovery proof never shares a mutable map/array with an adapter or callback.
       const reply = await cas(snapshot.tip, copyCandidate(candidate));
       const status = reply.status; const acceptedTip = status === "accepted" ? reply.tip : undefined;
@@ -66,6 +68,8 @@ export function admitRun(adapter: StoreAdapter, input: WriteRunInput, dependenci
         if (!plan.newRunExpired) {const recovered = existing(prior.snapshot, run.runKey, attempt); if (recovered !== undefined) return recovered;}
         else if (typeof attemptedTip === "string" && prior.snapshot.tip === attemptedTip && matchesCandidate(prior.snapshot, prior.bytes, candidate)) return complete(attemptedTip);
       }
+      // A reply already sent is recovered above even after cancellation. No new attempt starts.
+      preflightCancellation(deps.signal);
       if (attempt < 5) {const jitter = deps.jitter(attempt); if (!Number.isInteger(jitter) || jitter < 0 || jitter > 1000) refuse("admission-jitter-invalid"); await deps.delay(100 * 2 ** (attempt - 1) + jitter);}
     }
     return refuse("admission-lease-exhausted");

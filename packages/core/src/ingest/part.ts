@@ -10,7 +10,7 @@
 import { type Bundle, type BundleUnit, type Config, parseDocument, unitFileName } from "@pixelwatch/schemas";
 import { type BlobCodec, type BlobPool, storeBlob } from "../blob-pool.ts";
 import type { RawPixels } from "../pixel-hash.ts";
-import { PngError } from "../png/errors.ts";
+import { pngErrorCode } from "../png/errors.ts";
 import { IngressError } from "./errors.ts";
 import type { IngestBudget } from "./limits.ts";
 import type { SelectedPart } from "./select.ts";
@@ -79,17 +79,18 @@ async function admitImage(archive: ZipArchive, file: string, index: number, ctx:
   try {
     image = await ctx.codec.decode(bytes);
   } catch (error) {
-    if (!(error instanceof PngError)) throw error;
-    if (ISOLATION_CODES.has(error.code)) throw new IngressError("ingest-codec", `the PNG worker failed (${error.code})`, { cause: error });
-    throw new IngressError("part-image-invalid", `unit ${String(index)}'s image is outside the PNG profile (${error.code})`, { cause: error });
+    const code = pngErrorCode(error);
+    if (code === undefined) throw new IngressError("ingest-codec", "the PNG decoder failed");
+    if (ISOLATION_CODES.has(code)) throw new IngressError("ingest-codec", `the PNG worker failed (${code})`);
+    throw new IngressError("part-image-invalid", `unit ${String(index)}'s image is outside the PNG profile (${code})`);
   }
   if (ctx.signal?.aborted === true) throw new IngressError("ingest-aborted", "ingestion cancelled");
   try {
     const stored = await storeBlob(ctx.pool, image, ctx.codec);
     return { state: "captured", pixelHash: stored.pixelHash, width: image.width, height: image.height };
   } catch (error) {
-    if (error instanceof PngError) throw new IngressError("ingest-codec", `the PNG worker failed while encoding (${error.code})`, { cause: error });
-    throw error;
+    const code = pngErrorCode(error);
+    throw new IngressError("ingest-codec", code === undefined ? "the canonical blob operation failed" : `the PNG worker failed while encoding (${code})`);
   }
 }
 

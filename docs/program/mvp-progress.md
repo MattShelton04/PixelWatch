@@ -6,6 +6,23 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR #21 merged `ba4831dd366463540dd556ccbe576d68400d1f19` at09:39:51Z, exact head
+  abd363c/sourcec319ded. Hosted37113159634 Linux/Windows each930/48 exit0
+  (37.42/190.98s), complete viewer24/24 each (18.4/26.2s), all required checks/aggregate
+  CodeQL pass, no open merge-ref CodeQL alerts. Both full simulations exit2 with2PASS/
+  12NOTRUN; all17normalized hashes match local and each other. Independent integrated
+  interaction review passed43/4 and18 reached cases,215rawvalues clean, zero ambient
+  timing/random calls; reviewer excludes own admission/store. No M2 exit is claimed.
+- Root source-job interfaces/ADR0025 are frozen on the next dependency branch. Native
+  cancellation tests first10failed/4passed/56filtered diagnostic cases,42.08s, exit1;
+  complete admission after correction70/70 exit0,232.69s. Codec diagnostics first4failed,
+  exit1,1.35s; final codec/ingestion/metadata20/3 exit0,2.58s, with raw fake-canary/cause/
+  accessor/proxy probes. Lint/types initial attempt found one getter annotation and one
+  test optional-type issue; corrected verification/independent/fullcheck remain gates.
+  These are local tests, not source-job implementation or integrated acceptance.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Exact publisher source `c319ded5bf8bd99315b286376cca142a2cbf04f4` passed unfiltered
   `pnpm -s check`:930 tests/48 files, exit0,320.42s, including lint/typecheck/workflow lint.
   Complete `pnpm -s test:viewer` passed24/24, exit0,34.8s, eight cases in each engine.

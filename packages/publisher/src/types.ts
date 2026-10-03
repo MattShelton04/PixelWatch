@@ -1,7 +1,7 @@
-import type { Breakdown, ExpiryReason, PagesSite, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
+import type { Breakdown, ExpiryReason, IgnoredArtifact, PagesSite, PngWorker, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
 import type { Config } from "@pixelwatch/schemas";
-import type { CommitMetadata, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
-import type { HttpTransport, Timing } from "@pixelwatch/forge-github";
+import type { CommitMetadata, StoreAdapter, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
+import type { GitHubClient, HttpTransport, MissingArtifact, SourceDiagnostic, Timing } from "@pixelwatch/forge-github";
 
 /** Trusted default-branch policy, authenticated target and pinned release inputs. */
 export interface PublisherContext {
@@ -40,6 +40,8 @@ export interface AdmissionDependencies {
   readonly delay: (milliseconds: number) => Promise<void>;
   readonly jitter: (attempt: number) => number;
   readonly checkpoint?: (event: WriterCheckpoint) => Promise<void>;
+  /** Checked before each new CAS; an already-sent push still completes bounded recovery. */
+  readonly signal?: AbortSignal;
 }
 export type AdmissionResult = WriteRunResult | {
   readonly status: "expired";
@@ -50,6 +52,33 @@ export type AdmissionResult = WriteRunResult | {
 };
 /** Signature frozen separately from implementation for parallel consumers. */
 export type SiteMeasurement = (input: SizingInput) => ProjectedSizes;
+/** Authenticated workflow_run input; target/policy/release always come from trusted context. */
+export interface SourceJobInput extends PublisherContext { readonly event: Uint8Array }
+export type SourceJobCheckpoint = "verified" | "listed" | "downloaded" | "analysed" | "before-admission";
+export interface SourceJobDependencies {
+  readonly forge: Pick<GitHubClient, "verifySource" | "listArtifacts" | "downloadArtifacts">;
+  readonly store: StoreAdapter;
+  readonly admission: Omit<AdmissionDependencies, "context" | "signal">;
+  readonly timing: Pick<Timing, "deadline">;
+  /** Production defaults to the real PngWorker; deterministic simulations inject equivalent ports. */
+  readonly worker?: Pick<PngWorker, "decode" | "encode" | "compare" | "close">;
+  readonly signal?: AbortSignal;
+  readonly checkpoint?: (point: SourceJobCheckpoint) => Promise<void>;
+}
+export interface SourceJobDiagnostics {
+  readonly source: readonly SourceDiagnostic[];
+  /** Fixed categories and authenticated numeric IDs; no signed URLs or raw names in summaries. */
+  readonly missing: readonly Pick<MissingArtifact, "artifactId" | "reason">[];
+  readonly ignored: readonly Pick<IgnoredArtifact, "artifactId" | "reason">[];
+  readonly ignoredOverflow: number;
+  readonly excludedCount: number;
+}
+export interface SourceJobResult {
+  readonly admission: AdmissionResult;
+  readonly diagnostics: SourceJobDiagnostics;
+  /** This stage makes no deployment/readiness/comment claim. */
+  readonly projection: "pending" | "not-retained";
+}
 export interface ReadinessTarget {
   readonly prNumber: string;
   readonly runKey: string;
@@ -104,7 +133,11 @@ const DIAGNOSTIC_CODES = new Set([
   "admission-record-mismatch", "admission-png-invalid", "admission-derived-mismatch",
   "admission-immutable-file", "admission-budget-refused", "admission-plan-invalid",
   "admission-cas-invalid", "admission-jitter-invalid", "admission-lease-exhausted",
+  "admission-cancelled", "admission-signal-invalid",
   "readiness-input-invalid", "readiness-timing-invalid", "readiness-operation-failed",
+  "source-job-input-invalid", "source-job-operation-failed", "source-job-cancelled",
+  "source-job-source-invalid", "source-job-download-invalid", "source-job-codec-failed",
+  "source-job-staging-invalid", "source-job-staging-limit", "source-job-timing-invalid",
 ]);
 const diagnosticIdentity = new WeakMap<object, string | undefined>();
 export class PublisherError extends Error {

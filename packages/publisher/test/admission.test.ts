@@ -63,6 +63,65 @@ async function failure(operation: Promise<unknown>, code?: string): Promise<void
   if (code !== undefined) expect(value.code).toBe(code); expect(value.cause).toBeUndefined();
 }
 describe.each(["local", "git"] as const)("controlled admission with actual %s CAS", (kind) => {
+  it("cancellation before admission refuses without reading or starting a CAS", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read();
+    const controller = new AbortController(); controller.abort(); let reads = 0; let mutations = 0; let publicAborted = 0;
+    Object.defineProperty(controller.signal, "aborted", {get() {publicAborted++; throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);}});
+    const observed = {...dependencies(), signal: controller.signal};
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), observed), "admission-cancelled");
+    expect({reads, mutations, publicAborted}).toEqual({reads: 0, mutations: 0, publicAborted: 0});
+    expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("captures cancellation once and checks it after the final before CAS checkpoint", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read();
+    const controller = new AbortController(); let captures = 0; let reached = 0; let mutations = 0;
+    const observed = {...dependencies(), get signal() {captures++; return captures === 1 ? controller.signal : new AbortController().signal;}, checkpoint: (event: Parameters<NonNullable<AdmissionDependencies["checkpoint"]>>[0]) => {
+      if (event.point === "before-cas") {reached++; controller.abort();} return Promise.resolve();
+    }};
+    await failure(admission({read: () => f.adapter.read(), cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), observed), "admission-cancelled");
+    expect({captures, reached, mutations}).toEqual({captures: 1, reached: 1, mutations: 0}); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("cancellation after a real stale lease prevents delay recomputation and another CAS", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const controller = new AbortController(); const deps = dependencies();
+    let mutations = 0; let reached = 0; let laterTip: string | null = null;
+    const observed: StoreAdapter = {read: () => f.adapter.read(), cas: async (tip, tree) => {
+      mutations++; await writeRun(f.make(), input(4), {metadata: {timestamp: ORIGINAL_TIME}, delay: () => Promise.resolve(), jitter: () => 0});
+      laterTip = (await f.adapter.read()).tip; const reply = await f.adapter.cas(tip, tree); expect(reply.status).toBe("conflict"); reached++; controller.abort(); return reply;
+    }};
+    await failure(admission(observed, input(3), {...deps, signal: controller.signal}), "admission-cancelled");
+    expect({mutations, reached}).toEqual({mutations: 1, reached: 1}); expect(deps.delays).toEqual([]);
+    const after = await f.adapter.read(); expect(after.tip).toBe(laterTip); expect(after.runs.has("3-a1")).toBe(false); expect(after.runs.has("4-a1")).toBe(true); await files(after);
+  }, 0);
+  it("cancellation during retry delay prevents every later read and CAS", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); const controller = new AbortController(); let reads = 0; let mutations = 0; let reached = 0;
+    const deps = {...dependencies(), signal: controller.signal, delay: () => {reached++; controller.abort(); return Promise.resolve();}};
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: () => {mutations++; return Promise.resolve({status: "conflict"});}}, input(3), deps), "admission-cancelled");
+    expect({reads, mutations, reached}).toEqual({reads: 1, mutations: 1, reached: 1}); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("reports an accepted push truthfully when cancellation arrives after it was sent", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const controller = new AbortController(); let reached = 0;
+    const observed: StoreAdapter = {read: () => f.adapter.read(), cas: async (...args) => {const reply = await f.adapter.cas(...args); expect(reply.status).toBe("accepted"); reached++; controller.abort(); return reply;}};
+    const result = await admission(observed, input(3), {...dependencies(), signal: controller.signal});
+    expect(result).toMatchObject({status: "stored", attempts: 1, added: true}); expect(reached).toBe(1);
+    const after = await f.adapter.read(); expect(after.tip).toBe(result.tip); expect(await after.readFile(runRecordPath("3-a1"))).toEqual(canonicalBytes(input(3).run)); await files(after);
+  }, 0);
+  it("recovers the exact already sent expired push after cancellation and a lost reply", async () => {
+    const controller = new AbortController(); let enabled = false; let nativeLost = 0; let reached = 0;
+    const f = fixture(kind, (event) => {if (enabled && event.point === "after-push" && event.result === "accepted") {nativeLost++; controller.abort(); throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);} return Promise.resolve();});
+    await f.seed([input(2), input(3)]); enabled = true; let reads = 0; const deps = dependencies();
+    const observed: StoreAdapter = {read: () => {reads++; return f.adapter.read();}, cas: async (...args) => {
+      const reply = await f.adapter.cas(...args); reached++; controller.abort();
+      return kind === "local" && reply.status === "accepted" ? {status: "unknown", attemptedTip: reply.tip} : reply;
+    }};
+    const result = await admission(observed, input(1), {...deps, signal: controller.signal});
+    expect(result).toMatchObject({status: "expired", attempts: 1}); expect({reads, reached, nativeLost}).toEqual({reads: 2, reached: 1, nativeLost: kind === "git" ? 1 : 0}); expect(deps.delays).toEqual([]);
+    const after = await f.adapter.read(); expect(after.tip).toBe(result.tip); expect(after.runs.has("1-a1")).toBe(false); await files(after);
+  }, 0);
+  it("an unproven lost reply after cancellation cannot trigger a new write", async () => {
+    const f = fixture(kind); await f.seed([input(2), input(3)]); const before = await f.adapter.read(); const controller = new AbortController(); let reads = 0; let reached = 0; const deps = dependencies();
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: () => {reached++; controller.abort(); return Promise.resolve({status: "unknown"});}}, input(1), {...deps, signal: controller.signal}), "admission-cancelled");
+    expect({reads, reached}).toEqual({reads: 2, reached: 1}); expect(deps.delays).toEqual([]); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
   it("bounds snapshot listing count before invoking any caller map or indexed getter", async () => {
     const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let maps = 0; let indices = 0; let lengths = 0; let readers = 0; let mutations = 0;
     const listing = new Proxy(before.files, {get(target, key, receiver) {
