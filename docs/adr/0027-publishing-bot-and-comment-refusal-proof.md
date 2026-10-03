@@ -1,6 +1,6 @@
 # ADR 0027: Fixed publishing bot lookup and definitive comment refusal
 
-- Status: inferred implementation decision under ADR 0014; independent review pending
+- Status: inferred implementation decision under ADR 0014; scoped independent review passed
 - Date: 2026-10-03
 - Task: M2.3/M2.5 adapter prerequisites
 

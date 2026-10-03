@@ -6,39 +6,41 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
-- Source job independent APPROVAL at3e315b1:83/83 exit0,12.82s;16unchanged hostile/
-  interleaving probes across7commands pass, all4SOURCEfindings andGC closed. Raw470suite/
-  55probe/25transcripts clean, lint/types0. Root exactfourfileintegration is next; no deploy/
-  comment/live acceptance claimed. New internal maintenance writer assignment uses frozen
-  1ceb27d contract, disjoint threefiles; independent reviewer remains separate.
-- Root identity review found P1 false422 proof at43c61de despite31green. Three strictred
-  regressions precede private HTTP carrier correction; complete34/34 exits0,943ms with
-  reached recovery/guard/getter assertions. Independent fixverification still required.
-- Root publishing identity/refusal prerequisites: testsfirst5cases4failed/1passed; final
-  complete new+existingclient31/31 exit0,1.10s, lint/types0. Fixed bot endpoint and definitive
-  422 refusal proof only (ADR0027); independent review/fullintegration remain gates.
-- Source7386 original12 adversarial probes now pass unchanged, but new SOURCE-4 early
-  timing acquisition path strands captured close. Four strictred83cases4failed/79passed
-  precede corrective3e315b1; local83/83 exit0,14.43s/raw470clean. Independent exactsource
-  closure remains pending; previous79green does not override that blocker.
-- Comment independent review PASS exact3121157:20/20 exit0,2.15s/linttypes0;71variants twice
-  same normalized0393ba43…,288rendered/20refused/924rawscans perrun,11logs clean. Actual
-  60000-byte multibyte body passes; plus1byte shortens to5301 withwarnings/report retained.
-  Scope pure renderer/stamp only. Root exposes those functions; no API/live ownership claim.
-- Integrated check at f546eb8 passed1029tests/52files, exit0,252.76s, including lint,
-  typecheck and workflow lint. Browser passed24/24 exit0,27.4s across all three engines.
-- Full simulation at documentation-only0516268 completed exit2:9harness PASS,2product
-  PASS,12product NOT RUN. All17 ordered normalized trace hashes equal the previous local
-  run and the recorded PR21 Linux/Windows results. No new productcase is registered yet;
-  this is incomplete coverage, not a simulation pass. Logroot-reviewed-readiness-simulation.log.
-- Source corrective76/76 local exit0,11.76s, lint/types0,449rawvalues/314075bytes clean.
-  Three additional deadline-setup cleanup regressions then failed strictly (79cases,
-  3failed/76passed,11.63s): rejected setup can strand worker close and deadline disposal.
-  Author is fixing the private abort scope. Immutablehandoff and independent original/
-  variant-probe closure remain gates. Earlier70security-red transcript remains retained.
-- Independent action/workflow/release/live preparation is active in the third agent slot;
-  it changes no product files or external settings. Source ingestion remains held.
-
+- Integrated source6547d469800593f23a74a8cc2bd503c03d1ff070 passes complete `pnpm -s check`:
+  1120tests/54files,exit0,359.25s; lint,typecheck,actionlint,zizmor0. Browser24/24 across all
+  three engines,exit0,26.0s. Exact source-job bytes match author3e315b1; public ingestJob exists.
+- Source author A-independent review closes all4SOURCEfindings and actual reused-blob/GC race:
+  83/83 at3e315b1,exit0,12.82s;16 unchanged hostile/interleaving probes pass. Second independent
+  C integrated review at6547d469 passes83/83,15.42s plus13 coupled actual-forge/core/LocalDir/
+  nativeGit rows twice; hash481de397… identical,74raw scans/run,6logs clean. No new blocker.
+  Scope ingestion through durable admission; projection/workflow/live safety remain gates.
+- Publishing identity P1 IDENTITY-1 independently CLOSED at02b80f4:34/34,exit0,1.04s;
+  unchanged original accepted-POST reproducer recovers;34 original and14 reuse variants each
+  repeat identically,15rawlogs clean. Root correction uses a private never-exposed HTTP carrier.
+  Fresh guarded fallback composition and actual workflow/live token ownership remain gates.
+- Readiness independent review45/45 plus9 repeated temporal traces,14boundaries/10cleanup
+  probes passes. Pure comment renderer independent20/20 plus71variants twice passes. Both are
+  integrated and covered by the1120-test check; full deploy/reconcile pipeline remains absent.
+- Last complete simulation at documentation-only0516268 exited2:9harness PASS,2product PASS,
+  12product NOT RUN. All17ordered normalized hashes match prior local and PR21Linux/Windows.
+  Final current full simulation is pending native maintenance acceptance; no new driver yet.
+  ADR0015 requires this incomplete coverage to remain visibly non-green.
+- Six reviewed PRs16–21 merged under owner authorization; verified mainba4831d. Next grouped
+  PR22 is not yet opened. It groups reviewed source/readiness/comment/prerequisites; maintenance
+  remains a separate following slice. Hosted exact-head checks/CodeQL remain merge gates.
+- W2-M author B works in isolated m2-maintenance from frozen1ceb27d;12required titles ×2backends
+  initially fail24/24 at stub. Additional hostile tests now38total; native red/fix/acceptance is
+  active, with independent reviewer A reserved. No maintenance approval or integration yet.
+- Read-only deployment discovery maps all14 historical S2 deployments uniquely to exact API
+  job URLs/status fields, including same-SHA distinct jobs. Original job-token access and early
+  current-deployment visibility were NOT proved; CLI auth cannot substitute. Fixed public
+  no-auth read policy is being checked without widening normative workflow permissions.
+- Independent action/workflow/release/live preparation completed; production contracts/build
+  and fixed authorized live infrastructure still need implementation. Simulation activation
+  audit is active. No external settings/repositories/tokens/tags/releases were changed.
+- Actual generated viewer entry http://127.0.0.1:4173/pixelwatch/runs/11-a1/ responds200,
+  4953bytes, with SHA256-pinned app SRI. Fixture pixels demonstrate generated final app only.
+  M2 exit requires real served same-repo/fork comment evidence. M3 has not started.
 The entries below are historical checkpoints, superseded by the facts above.
 
 - Integrated sourcef546eb871705689c8ffd3ec6d2d071f02b8ca636 passes complete `pnpm -s check`:
