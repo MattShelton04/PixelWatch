@@ -91,6 +91,17 @@ describe("GitHub adapter boundaries", () => {
     expect(script.calls).toHaveLength(2);
   });
 
+  it("copies selected API-listed artifacts before asynchronous download callbacks can append forged IDs", async () => {
+    const { client, script } = setup();
+    script.add(json({ total_count: 1, artifacts: [artifact()] }));
+    const selection = [...await client.listArtifacts("99")];
+    script.add(() => { selection.push({ artifactId: "999", artifactName: "forged", sizeBytes: 1, expired: false }); return { status: 200, headers: {}, body: new Uint8Array([1]) }; });
+    script.add({ status: 200, headers: {}, body: new Uint8Array([2]) });
+    const downloaded = await client.downloadArtifacts(selection);
+    expect(downloaded.artifacts.map((item) => item.artifactId)).toEqual(["1"]);
+    expect(script.calls).toHaveLength(2);
+  });
+
   it("manual artifact redirects permanently strip authorization across origin and redirect-back", async () => {
     const { client, script, disposed } = setup();
     script.add(json({ total_count: 1, artifacts: [artifact()] }));
@@ -275,5 +286,33 @@ describe("GitHub adapter boundaries", () => {
       await failure(client.reconcileComment({ prNumber: "8", botId: "7", body: MARKER, beforeMutation: guard as unknown as (() => Promise<boolean>) }), "comment-guard-failed");
       expect(script.calls.filter((call) => call.method !== "GET")).toHaveLength(0);
     }
+  });
+
+  it("copies trusted comment targets before asynchronous ownership checks and guards", async () => {
+    const { client, script } = setup(); const body = `${MARKER}\noriginal`;
+    const mutationInput = { prNumber: "8", botId: "7", body, beforeMutation: () => {
+      mutationInput.prNumber = "999"; mutationInput.botId = "9"; mutationInput.body = `${MARKER}\nchanged`;
+      return Promise.resolve(true);
+    } };
+    script.add(json([])).add(json(comment(3, body), 201));
+    expect(await client.reconcileComment(mutationInput)).toEqual({ status: "created", commentId: "3" });
+    expect(script.calls[1]?.url).toBe(`${API}/issues/8/comments`);
+    expect(new TextDecoder().decode(script.calls[1]?.body)).toBe(JSON.stringify({ body }));
+  });
+
+  it("comment guard cannot redirect validated mutation targets or payloads", async () => {
+    const { client, script } = setup(); const body = `${MARKER}\nintended`;
+    script.add(json([comment(3)])).add(json(comment(3, body)));
+    const result = await client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: (existing) => {
+      if (existing === null) throw new Error("test fixture missing");
+      try {
+        const mutable = existing as { commentId: string; body: string };
+        mutable.commentId = "999"; mutable.body = `${MARKER}\nforged`;
+      } catch { /* The guard may handle a frozen snapshot; private targets still must stay owned. */ }
+      return Promise.resolve(true);
+    } });
+    expect(result).toEqual({ status: "updated", commentId: "3" });
+    expect(script.calls[1]?.url).toBe(`${API}/issues/comments/3`);
+    expect(new TextDecoder().decode(script.calls[1]?.body)).toBe(JSON.stringify({ body }));
   });
 });

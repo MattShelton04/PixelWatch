@@ -176,11 +176,12 @@ export class GitHubClient {
   }
 
   async downloadArtifacts(selected: readonly ArtifactDescriptor[], signal?: AbortSignal): Promise<DownloadResult> {
+    const selection = [...selected];
     const seen = new Set<string>();
     let declared = 0;
     let sourceRun: string | undefined;
-    if (selected.length > LIMITS.maxArtifacts) throw new ForgeError("artifact-budget");
-    for (const descriptor of selected) {
+    if (selection.length > LIMITS.maxArtifacts) throw new ForgeError("artifact-budget");
+    for (const descriptor of selection) {
       const runId = this.#listed.get(descriptor);
       if (runId === undefined || (sourceRun !== undefined && runId !== sourceRun) || seen.has(descriptor.artifactId)) throw new ForgeError("artifact-not-listed");
       sourceRun = runId;
@@ -190,7 +191,7 @@ export class GitHubClient {
     }
     const artifacts: DownloadedArtifact[] = [];
     const missing: MissingArtifact[] = [];
-    for (const descriptor of selected) {
+    for (const descriptor of selection) {
       const identity = { artifactId: descriptor.artifactId, artifactName: descriptor.artifactName };
       if (descriptor.expired) { missing.push({ ...identity, reason: "expired" }); continue; }
       const outcome = await this.#download(descriptor, signal);
@@ -274,7 +275,8 @@ export class GitHubClient {
   }
 
   /** Publisher must separately hold the projection lock and recheck head/order/readiness. */
-  async reconcileComment(input: CommentInput): Promise<CommentResult> {
+  async reconcileComment(callerInput: CommentInput): Promise<CommentResult> {
+    const input: CommentInput = { ...callerInput };
     trustedId(input.prNumber); trustedId(input.botId);
     if (typeof input.beforeMutation !== "function") throw new ForgeError("comment-guard-failed");
     if (!input.body.isWellFormed() || encoder.encode(input.body).byteLength > LIMITS.maxCommentBytes || !input.body.includes(this.#marker())) throw new ForgeError("comment-body");
@@ -286,7 +288,7 @@ export class GitHubClient {
       // This callback rechecks publisher-owned head/order/readiness immediately before each
       // mutation, including retries. It cannot be omitted or implicitly defaulted to true.
       let permitted: unknown;
-      try { permitted = await input.beforeMutation(existing); }
+      try { permitted = await input.beforeMutation(existing === null ? null : Object.freeze({ ...existing })); }
       catch { throw new ForgeError("comment-guard-failed"); }
       if (typeof permitted !== "boolean") throw new ForgeError("comment-guard-failed");
       if (!permitted) return { status: "deferred" };
