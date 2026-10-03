@@ -6,6 +6,16 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Final store/runner source `7b0743d`: Windows full check exit0, 785 tests / 37 files,
+  workflow linters pass (201.57 s). Full no-network reporter exit2: nine harness PASS,
+  two product cases PASS across all four seeds twice, twelve NOT RUN. Exact trace hashes
+  match independent recordings. P1 manifest ownership and P2 returned-DTO getter defects
+  have strict red/green regressions; final independent fix verification/hosted gates pending.
+- Root publisher dependency branch `.tools/worktrees/m2-publisher` at `373e8d0` combines
+  source main `44420ca`, reviewed store `7b0743d` and local viewer `a56e398`; root retained
+  both evidence/progress records and regenerated only the pinned lockfile offline. This is
+  preparation for M2.3, not a working publisher or M2 exit.
+
 - Latest verified main `44420ca45d2c4854d447369cf36f75b62d0afac2`: PRs #16, #17 and #18
   merged with owner authorization and every required hosted check green. PR #18 exact head
   `38a17f2` hosted Linux/Windows each passed 731/31; full simulation each exited 2 with
