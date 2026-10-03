@@ -6,6 +6,36 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Owner explicitly authorized merging completed reviewed slices as the program proceeds.
+  Existing squash-only policy and required checks are preserved; no settings were changed.
+- PR #16 merged `64b8c36c751da3902f79521f50bfe4f2b05c5648`; PR #17 merged
+  `f4a4499d8919b67414e6b1f8e35eb3dc8c6daf6f`, current verified remote main.
+  PR #17 rebased head `0022caf` had all five required hosted checks passing before merge;
+  full simulation remained correctly non-green. Dependency branches rebased with explicit
+  leases and empty old/new tree diffs. PR #18 now targets main.
+- Trusted config joins the closely related source slice in PR #18 instead of another PR:
+  author `0f88fcb`, root `0f96ba8`; independent 52-test/19-hostile-probe review passed,
+  final root check 731/31 passed (73.23 s); independent integrated review 59/5 passed.
+  New PR-head hosted checks follow.
+- Store security fixes `1ad15a571fd1fdcff20bb8e1819ce8264d6605d0` independently verified:
+  39 tests pass, actual malformed-response cleanup order and high-bit pre-index refusal proved.
+  No remaining blocking store finding. Author now activates two real Git product simulations.
+- Generated viewer entries `7ba1b3858d1de559c256247a29f665b857ab4933` implemented:
+  13 unit tests and author 692-test check passed; independent entry review 13 tests and 18
+  hostile probes passed with no blockers. Browser app,
+  supported local preview and actual three-engine evidence are not yet implemented.
+- Root static browser validation `788353b82b1bfdea667b98b7dd3a68bf483a1318`:
+  author check 685/29 and final selected 6/2 passed; independent 169-test and 2,000-mutation
+  probes pass, final SHA review pending. Browser app implementation/tests in progress;
+  no actual app/browsers/preview acceptance yet.
+- Publisher admission prerequisite: ADR 0012 permits an old late capture to expire in its
+  admission transaction. Foundation writeRun deliberately forbids arbitrary accepted-record
+  omission. M2.3 needs a separate controlled planHousekeeping.newRunExpired outcome and
+  exact candidate/tip recovery proof; an absent old run key cannot prove unknown push success.
+  Existing retention policy stays intact; no owner decision is reopened.
+
+Earlier checkpoint entries below are historical snapshots, superseded by the facts above.
+
 - Root: `codex/m2-source-auth`, source picks `9a7bfc8`/`318bbaa`; integrated check exit 0,
   30 files / 722 tests. Independent integrated source/documentation/traceability review passed;
   final check 722/30 (38.84 s). Full simulation exit 2, 9 harness / 14 NOT RUN.
@@ -247,6 +277,7 @@ Evidence records command, dependency SHA, exit/count/output, platform and not-ru
 - Live source fork/approval/partial-rerun/stale-head, Camo or text fallback, S7 GitHub
   growth/push sizes, actual served pages and comments remain unproved.
 - External TracePilot and PropertyScope fork canary changes need approval.
-- PR merges and RC/final tag/release publication need explicit owner approval; no tag moves.
+- PR merges now authorized by the owner; existing required checks still gate each merge.
+  RC/final tag/release publication still needs explicit owner approval; no tag moves.
 - Seven actual daily checks and fresh-adopter evidence require time/human participation.
 - No M4+ work or future designs. Completion cannot be claimed until every done-when is proved.
