@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import {inspect} from "node:util";
+import {getEventListeners} from "node:events";
+import {spawnSync} from "node:child_process";
+import {fileURLToPath} from "node:url";
 import {describe,it} from "vitest";
 import {GitHubClient,ForgeError,isOwnedCommentOperation,type CommentInput,type HttpResponse} from "../src/index.ts";
 import {assertNoSecrets,CANARY_TOKEN} from "../../../tools/simulation/capture.ts";
@@ -16,6 +19,7 @@ function setup(mode:"created"|"rejected"|"ignored-delay"|"ignored-get"|"accepted
 }
 async function turns(count=100):Promise<void>{for(let index=0;index<count;index++)await Promise.resolve();}
 function scan(error:unknown):void {assertNoSecrets([inspect(error,{showHidden:true,depth:8})]);}
+function nativeHook(name:string):symbol {let value:object|null=AbortSignal.prototype;while(value!==null){const key=Object.getOwnPropertySymbols(value).find(key=>key.description===name);if(key!==undefined)return key;value=Object.getPrototypeOf(value) as object|null;}throw new Error("native-hook-missing");}
 
 describe("genuine current comment operation provenance and bounded cancellation",()=>{
   it("only the same current genuine adapter promise and captured invocation receive completion authority",async()=>{
@@ -63,5 +67,50 @@ describe("genuine current comment operation provenance and bounded cancellation"
     assert.equal(isOwnedCommentOperation(operation,"42",world.input),true);
     assert.deepEqual(await operation,{status:"created",commentId:"9"});assert.equal(world.controller.signal.aborted,true);
     assert.deepEqual(world.counts(),{requests:2,mutations:1,delays:0,disposed:2});
+  });
+  it("a completion-authorized invocation must contain its actual bounded caller signal",async()=>{
+    const world=setup(),input=Object.freeze({prNumber:world.input.prNumber,botId:world.input.botId,body:world.input.body,beforeMutation:world.input.beforeMutation});
+    const operation=world.client.reconcileComment(input);assert.equal(isOwnedCommentOperation(operation,"42",input),false);await operation;
+  });
+  it("throwing native unlink cannot strand the current request or expose a raw abort exception",async()=>{
+    const deadline=new AbortController(),unlink=nativeHook("kRemoveListener");let disposed=0,settled=false,abortedSafely=true,requests=0;
+    Object.defineProperty(deadline.signal,unlink,{configurable:true,value(){throw new Error(CANARY_TOKEN);}});
+    const client=new GitHubClient({owner:"owner",repo:"project",repositoryId:"42",token:CANARY_TOKEN,
+      transport:{request(){requests++;return new Promise(()=>{});}},timing:{deadline:()=>({signal:deadline.signal,dispose(){disposed++;}}),delay:()=>Promise.resolve()}});
+    const operation=client.reconcileComment(Object.freeze({prNumber:"8",botId:"7",body,beforeMutation:()=>Promise.resolve(true)}));void operation.then(()=>{settled=true;},(error:unknown)=>{scan(error);settled=true;});
+    await turns();try{deadline.abort();}catch{abortedSafely=false;}await turns();Reflect.deleteProperty(deadline.signal,unlink);
+    assert.equal(requests,1);assert.equal(abortedSafely,true);assert.equal(settled,true);assert.equal(disposed,1);assert.equal(getEventListeners(deadline.signal,"abort").length,0);
+  });
+  it("a validated real201 preserves its accepted result and fixed warnings when both cleanup hooks throw",async()=>{
+    let mutations=0,disposed=0;const unlink=nativeHook("kRemoveListener");
+    const client=new GitHubClient({owner:"owner",repo:"project",repositoryId:"42",token:CANARY_TOKEN,
+      transport:{request(request){if(request.method==="POST"){mutations++;return Promise.resolve(json({id:9,body,user:{id:7}},201));}return Promise.resolve(json([]));}},
+      timing:{deadline(){const signal=new AbortController().signal;if(mutations===0&&disposed===1)Object.defineProperty(signal,unlink,{value(){throw new Error(CANARY_TOKEN);}});return{signal,dispose(){disposed++;if(mutations>0)throw new Error(CANARY_TOKEN);}};},delay:()=>Promise.resolve()}});
+    const result=await client.reconcileComment(Object.freeze({prNumber:"8",botId:"7",body,beforeMutation:()=>Promise.resolve(true)}));scan(result);
+    assert.deepEqual(result,{status:"created",commentId:"9",warnings:["listener-cleanup-failed","timing-disposal-failed"]});assert.equal(mutations,1);assert.equal(disposed,2);
+  });
+  it("failed native listener acquisition schedules no transport while disposing every acquired deadline",async()=>{
+    const acquire=nativeHook("kNewListener");let requests=0,disposed=0;
+    const client=new GitHubClient({owner:"owner",repo:"project",repositoryId:"42",token:CANARY_TOKEN,
+      transport:{request(){requests++;return new Promise(()=>{});}},timing:{deadline(){const signal=new AbortController().signal;Object.defineProperty(signal,acquire,{value(){throw new Error(CANARY_TOKEN);}});return{signal,dispose(){disposed++;}};},delay:()=>Promise.resolve()}});
+    await assert.rejects(client.getRepository(),(error:unknown)=>{scan(error);return error instanceof ForgeError;});
+    assert.equal(requests,0);assert.equal(disposed,3);
+  });
+  it("genuine transport and guard native promises are observed without touching their own then getter",async()=>{
+    let reads=0,mutations=0;
+    function owned<T>(value:T):Promise<T>{const pending=Promise.resolve(value);void Object.defineProperty(pending,"then",{get(){reads++;throw new Error(CANARY_TOKEN);}});return pending;}
+    const client=new GitHubClient({owner:"owner",repo:"project",repositoryId:"42",token:CANARY_TOKEN,
+      transport:{request(request){if(request.method==="POST"){mutations++;return owned(json({id:9,body,user:{id:7}},201));}return owned(json([]));}},
+      timing:{deadline:()=>({signal:new AbortController().signal,dispose(){}}),delay:()=>Promise.resolve()}});
+    const input=Object.freeze({...setup().input,beforeMutation:()=>owned(true)}),result=await client.reconcileComment(input);scan(result);
+    assert.deepEqual(result,{status:"created",commentId:"9"});assert.equal(reads,0);assert.equal(mutations,1);
+  });
+  it("rejected guard and transport native promises have no orphaned canary reason or own then read",()=>{
+    const environment:NodeJS.ProcessEnv={};for(const key of ["PATH","SystemRoot","TEMP","TMP"]){const value=process.env[key];if(value!==undefined)environment[key]=value;}
+    const child=spawnSync(process.execPath,[fileURLToPath(new URL("./comment-operation-rejection-fixture.ts",import.meta.url))],{env:environment,windowsHide:true,encoding:"utf8",timeout:10_000,maxBuffer:16_384});
+    assertNoSecrets([child.stdout,child.stderr]);assert.equal(child.error,undefined);assert.equal(child.status,0);
+    const report=JSON.parse(child.stdout) as {noNetworkGuard:boolean;results:{kind:string;reads:number;unhandled:number;rawCanary:boolean;settled:boolean;publicSafe:boolean}[]};
+    assert.equal(report.noNetworkGuard,true);assert.deepEqual(report.results.map(value=>value.kind),["guard","transport"]);
+    for(const value of report.results){assert.equal(value.reads,0);assert.equal(value.unhandled,0);assert.equal(value.rawCanary,false);assert.equal(value.settled,true);assert.equal(value.publicSafe,true);}
   });
 });

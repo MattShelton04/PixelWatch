@@ -2,10 +2,30 @@ import { parseDocument, parseJson, type Config, type JsonObject, type JsonValue 
 import { ForgeError, LIMITS, sanitizeForgeError } from "./errors.ts";
 import { FetchTransport, RealTiming, type HttpRequest, type HttpResponse, type HttpTransport, type Timing } from "./transport.ts";
 import { verifySource, type VerifiedSource, type VerifySourceInput } from "./source.ts";
+import {types} from "node:util";
 
 const API_ORIGIN = "https://api.github.com";
 const encoder = new TextEncoder();
 const REDIRECTS = new Set([301, 302, 303, 307, 308]);
+// eslint-disable-next-line @typescript-eslint/unbound-method -- Captured native methods are invoked only with their original native receiver through Reflect.apply.
+const nativeThen=Promise.prototype.then,nativeAdd=EventTarget.prototype.addEventListener,nativeRemove=EventTarget.prototype.removeEventListener;
+// eslint-disable-next-line @typescript-eslint/unbound-method -- The native getter is applied to the exact captured AbortSignal receiver.
+const nativeAborted=Object.getOwnPropertyDescriptor(AbortSignal.prototype,"aborted")?.get;
+function signalAborted(signal:AbortSignal):boolean {
+  if(nativeAborted===undefined)throw new ForgeError("request-failed");
+  return Reflect.apply(nativeAborted,signal,[]) as boolean;
+}
+/** Observe ordinary native port promises without assimilating their own then property. */
+function port<T>(operation:()=>Promise<T>,capture:(value:T)=>T):Promise<T>{
+  return new Promise<T>((resolve,reject)=>{
+    void Promise.resolve().then(()=>{try{
+      const pending=operation();
+      if(!types.isPromise(pending)||Object.getPrototypeOf(pending)!==Promise.prototype)throw new ForgeError("request-failed");
+      void Reflect.apply(nativeThen,pending,[(value:T)=>{try{resolve(capture(value));}catch(error){reject(withoutRejectionProof(error,"request-failed"));}},
+        (error:unknown)=>{reject(withoutRejectionProof(error,"request-failed"));}]);
+    }catch(error){reject(withoutRejectionProof(error,"request-failed"));}});
+  });
+}
 // Never exposed to callbacks or callers. Only the actual HTTP422 branch can throw this
 // carrier; public constructor diagnostic identity does not prove a mutation's outcome.
 const definitiveCommentRejection = new Error("private definitive comment rejection");
@@ -59,9 +79,12 @@ export interface CommentInput {
   readonly beforeMutation: (existing: BotComment | null) => Promise<boolean>;
   readonly signal?: AbortSignal;
 }
-export type CommentResult =
+export type CommentCleanupWarning="listener-cleanup-failed"|"timing-disposal-failed";
+const responseCleanupWarnings=new WeakMap<HttpResponse,readonly CommentCleanupWarning[]>();
+type CommentOutcome =
   | { readonly status: "unchanged" | "created" | "updated" | "recovered"; readonly commentId: string }
   | { readonly status: "deferred" };
+export type CommentResult=CommentOutcome&{readonly warnings?:readonly CommentCleanupWarning[]};
 export interface PullRequestMetadata { readonly prNumber: string; readonly state: "open" | "closed"; readonly headSha: string; readonly headRepositoryId: string | null }
 export interface PagesMetadata { readonly url: string; readonly customDomain: string | null }
 interface OwnedCommentOperation { readonly repositoryId: string; readonly input: CommentInput }
@@ -73,6 +96,8 @@ export function isOwnedCommentOperation(pending: unknown, repositoryId: string, 
   return owned !== undefined && owned.repositoryId === repositoryId && owned.input === input;
 }
 function immutableInvocation(caller: CommentInput, captured: CommentInput): boolean {
+  if(captured.signal===undefined)return false;
+  signalAborted(captured.signal);
   if (!Object.isFrozen(caller)) return false;
   const descriptors = Object.getOwnPropertyDescriptors(caller);
   return ["prNumber", "botId", "body", "beforeMutation", "signal"].every(key => {
@@ -123,29 +148,44 @@ export class GitHubClient {
 
   async #timedRequest(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
     const deadline = this.#timing.deadline(LIMITS.requestMs);
-    const combined = signal === undefined ? deadline.signal : AbortSignal.any([signal, deadline.signal]);
-    let aborted: (() => void) | undefined;
+    let combined:AbortSignal|undefined,aborted: (() => void) | undefined,accepted:HttpResponse|undefined,response:HttpResponse|undefined,failure:ForgeError|undefined,cleanupFailure:ForgeError|undefined;
+    const warnings:CommentCleanupWarning[]=[];
+    // Capture owned cleanup before any subsequent getter or listener can fail.
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- The captured disposer retains the acquired deadline receiver via Reflect.apply.
+    const dispose=deadline.dispose;
     try {
-      if (combined.aborted) throw new ForgeError("request-cancelled");
-      const response = await Promise.race([
-        Promise.resolve().then(() => {
-          if (combined.aborted) throw new ForgeError("request-cancelled");
-          return this.#transport.request({ ...request, signal: combined });
-        }),
-        new Promise<never>((_resolve, reject) => {
-          aborted = () => { reject(new ForgeError("request-cancelled")); };
-          combined.addEventListener("abort", aborted, { once: true });
-        }),
-      ]);
-      if (!Number.isInteger(response.status) || response.status < 100 || response.status > 599 || !(response.body instanceof Uint8Array)) throw new ForgeError("invalid-response");
-      if (response.body.byteLength > request.maxBytes) throw new ForgeError("response-too-large");
-      return response;
+      const owned=signal===undefined?deadline.signal:AbortSignal.any([signal,deadline.signal]);combined=owned;
+      if(signalAborted(owned))throw new ForgeError("request-cancelled");
+      let cancel:(error:ForgeError)=>void=()=>{};
+      const cancellation=new Promise<never>((_resolve,reject)=>{cancel=reject;});void cancellation.catch(()=>undefined);
+      aborted=()=>{cancel(new ForgeError("request-cancelled"));};
+      // Arm synchronously before creating a dispatch reaction. Manual unlink lets the abort
+      // callback settle first even when Node's native removal hook throws.
+      Reflect.apply(nativeAdd,owned,["abort",aborted]);
+      if(signalAborted(owned))aborted();
+      response=await Promise.race([port(()=>{
+        if(signalAborted(owned))throw new ForgeError("request-cancelled");
+        return this.#transport.request({...request,signal:owned});
+      },value=>{
+        const status=value.status,body=value.body;
+        if(!Number.isInteger(status)||status<100||status>599||!(body instanceof Uint8Array))throw new ForgeError("invalid-response");
+        if(body.byteLength>request.maxBytes)throw new ForgeError("response-too-large");
+        // Header access remains at its original protocol-validation boundary. The owned
+        // wrapper has no foreign then property and never grants a returned URL authority.
+        return {status,body,get headers(){return value.headers;}};
+      }),cancellation]);
+      if((request.method==="POST"||request.method==="PATCH")&&(response.status===200||response.status===201))accepted=response;
     } catch (error) {
-      throw sanitizeForgeError(error, combined.aborted ? "request-cancelled" : "request-failed");
+      failure=sanitizeForgeError(error, combined!==undefined&&signalAborted(combined) ? "request-cancelled" : "request-failed");
     } finally {
-      if (aborted !== undefined) combined.removeEventListener("abort", aborted);
-      deadline.dispose();
+      if(aborted!==undefined&&combined!==undefined){try{Reflect.apply(nativeRemove,combined,["abort",aborted]);}catch(error){warnings.push("listener-cleanup-failed");cleanupFailure=withoutRejectionProof(error,"request-failed");}}
+      try{Reflect.apply(dispose,deadline,[]);}catch(error){warnings.push("timing-disposal-failed");cleanupFailure=withoutRejectionProof(error,"request-failed");}
     }
+    if(failure!==undefined)throw failure;
+    if(accepted!==undefined&&warnings.length>0)responseCleanupWarnings.set(accepted,warnings);
+    else if(cleanupFailure!==undefined)throw cleanupFailure;
+    if(response===undefined)throw new ForgeError("request-failed");
+    return response;
   }
 
   #headers(authorized = true): Record<string, string> {
@@ -162,27 +202,24 @@ export class GitHubClient {
   }
 
   async #delay(ms: number, signal?: AbortSignal): Promise<void> {
-    try { await this.#untilCancelled(() => this.#timing.delay(ms, signal), signal); }
+    try { await this.#untilCancelled(() => this.#timing.delay(ms, signal), signal,value=>{if(value!==undefined)throw new ForgeError("request-failed");return value;}); }
     catch { throw new ForgeError("request-cancelled"); }
   }
 
   /** Existing caller cancellation also bounds injected guards and delays that ignore it. */
-  async #untilCancelled<T>(operation: () => Promise<T>, signal?: AbortSignal): Promise<T> {
-    if (signal === undefined) return operation();
-    let aborted: (() => void) | undefined;
+  async #untilCancelled<T>(operation: () => Promise<T>, signal:AbortSignal|undefined,capture:(value:T)=>T): Promise<T> {
+    if (signal === undefined) return port(operation,capture);
+    let aborted: (() => void) | undefined,failure:ForgeError|undefined,cleanupFailure:ForgeError|undefined,fulfilled=false,result:T|undefined;
     try {
-      if (signal.aborted) throw new ForgeError("request-cancelled");
-      return await Promise.race([
-        Promise.resolve().then(() => {
-          if (signal.aborted) throw new ForgeError("request-cancelled");
-          return operation();
-        }),
-        new Promise<never>((_resolve, reject) => {
-          aborted = () => { reject(new ForgeError("request-cancelled")); };
-          signal.addEventListener("abort", aborted);
-        }),
-      ]);
-    } finally { if (aborted !== undefined) signal.removeEventListener("abort", aborted); }
+      if (signalAborted(signal)) throw new ForgeError("request-cancelled");
+      let cancel:(error:ForgeError)=>void=()=>{};
+      const cancellation=new Promise<never>((_resolve,reject)=>{cancel=reject;});void cancellation.catch(()=>undefined);
+      aborted=()=>{cancel(new ForgeError("request-cancelled"));};Reflect.apply(nativeAdd,signal,["abort",aborted]);
+      result=await Promise.race([port(()=>{if(signalAborted(signal))throw new ForgeError("request-cancelled");return operation();},capture),cancellation]);fulfilled=true;
+    }catch(error){failure=withoutRejectionProof(error,"request-failed");}
+    finally {if(aborted!==undefined){try{Reflect.apply(nativeRemove,signal,["abort",aborted]);}catch(error){cleanupFailure=withoutRejectionProof(error,"request-failed");}}}
+    if(failure!==undefined)throw failure;if(cleanupFailure!==undefined)throw cleanupFailure;
+    if(!fulfilled)throw new ForgeError("request-failed");return result as T;
   }
 
   async #get(path: string, signal?: AbortSignal, accept = "application/vnd.github+json"): Promise<HttpResponse> {
@@ -425,7 +462,7 @@ export class GitHubClient {
       // This callback rechecks publisher-owned head/order/readiness immediately before each
       // mutation, including retries. It cannot be omitted or implicitly defaulted to true.
       let permitted: unknown;
-      try { permitted = await this.#untilCancelled(() => input.beforeMutation(existing === null ? null : Object.freeze({ ...existing })), input.signal); }
+      try { permitted = await this.#untilCancelled(() => input.beforeMutation(existing === null ? null : Object.freeze({ ...existing })), input.signal,value=>{if(typeof value!=="boolean")throw new ForgeError("comment-guard-failed");return value;}); }
       catch { throw new ForgeError("comment-guard-failed"); }
       if (typeof permitted !== "boolean") throw new ForgeError("comment-guard-failed");
       if (!permitted) return { status: "deferred" };
@@ -443,7 +480,8 @@ export class GitHubClient {
       if (response !== undefined && (response.status === 200 || response.status === 201)) {
         const written = this.#comment(parse(response));
         if (written.author !== input.botId || written.body !== input.body || (existing !== null && written.id !== existing.commentId)) throw new ForgeError("comment-outcome");
-        return { status: existing === null ? "created" : "updated", commentId: written.id };
+        const warnings=responseCleanupWarnings.get(response);
+        return { status: existing === null ? "created" : "updated", commentId: written.id,...(warnings===undefined?{}:{warnings}) };
       }
       let delay = 1000 * (attempt + 1);
       if (response !== undefined) {
