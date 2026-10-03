@@ -4,7 +4,7 @@ export type ForgeErrorCode =
   | "response-too-large" | "retry-exhausted" | "api-refused" | "pagination-limit"
   | "artifact-not-listed" | "artifact-budget" | "invalid-redirect" | "redirect-limit"
   | "comment-ambiguous" | "comment-body" | "comment-outcome" | "comment-guard-failed" | "pages-metadata"
-  | "invalid-config" | "source-policy" | "source-mismatch";
+  | "invalid-config" | "unsupported-config-version" | "source-policy" | "source-mismatch";
 
 export class ForgeError extends Error {
   readonly code: ForgeErrorCode;

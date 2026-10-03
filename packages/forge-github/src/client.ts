@@ -1,4 +1,4 @@
-import { parseJson, type JsonObject, type JsonValue } from "@pixelwatch/schemas";
+import { parseDocument, parseJson, type Config, type JsonObject, type JsonValue } from "@pixelwatch/schemas";
 import { ForgeError, LIMITS } from "./errors.ts";
 import { FetchTransport, RealTiming, type HttpRequest, type HttpResponse, type HttpTransport, type Timing } from "./transport.ts";
 import { verifySource, type VerifiedSource, type VerifySourceInput } from "./source.ts";
@@ -55,6 +55,8 @@ export type CommentResult =
   | { readonly status: "deferred" };
 export interface PullRequestMetadata { readonly prNumber: string; readonly state: "open" | "closed"; readonly headSha: string; readonly headRepositoryId: string | null }
 export interface PagesMetadata { readonly url: string; readonly customDomain: string | null }
+export interface RepositoryMetadata { readonly repositoryId: string; readonly owner: string; readonly name: string; readonly defaultBranch: string }
+export interface DefaultConfig { readonly repository: RepositoryMetadata; readonly config: Config; readonly configSha: string }
 export interface GitHubClientOptions {
   readonly owner: string;
   readonly repo: string;
@@ -131,10 +133,10 @@ export class GitHubClient {
     catch { throw new ForgeError("request-cancelled"); }
   }
 
-  async #get(path: string, signal?: AbortSignal): Promise<HttpResponse> {
+  async #get(path: string, signal?: AbortSignal, accept = "application/vnd.github+json"): Promise<HttpResponse> {
     for (let attempt = 0; attempt < LIMITS.maxAttempts; attempt++) {
       let response: HttpResponse;
-      try { response = await this.#request({ method: "GET", url: `${this.#prefix}${path}`, headers: this.#headers(), maxBytes: LIMITS.maxJsonBytes }, signal); }
+      try { response = await this.#request({ method: "GET", url: `${this.#prefix}${path}`, headers: { ...this.#headers(), accept }, maxBytes: LIMITS.maxJsonBytes }, signal); }
       catch (error) {
         if (!(error instanceof ForgeError) || error.code !== "request-failed") throw error;
         if (attempt + 1 === LIMITS.maxAttempts) break;
@@ -145,6 +147,42 @@ export class GitHubClient {
       if (attempt + 1 < LIMITS.maxAttempts) await this.#delay(delay, signal);
     }
     throw new ForgeError("retry-exhausted");
+  }
+
+  /** Metadata is always fetched fresh and cannot change this client's trusted API namespace. */
+  async getRepository(signal?: AbortSignal): Promise<RepositoryMetadata> {
+    const response = await this.#get("", signal);
+    if (response.status !== 200) throw new ForgeError("api-refused");
+    const value = object(parse(response));
+    const owner = text(object(value["owner"])["login"]);
+    const name = text(value["name"]);
+    const fullName = text(value["full_name"]);
+    const branch = text(value["default_branch"]);
+    // GitHub owner/repository names are case insensitive. Return only constructor-owned
+    // namespace values; API strings and URLs never become destinations.
+    if (id(value["id"]) !== this.#repositoryId || owner.toLowerCase() !== this.#owner.toLowerCase()
+      || name.toLowerCase() !== this.#repo.toLowerCase() || fullName.toLowerCase() !== `${this.#owner}/${this.#repo}`.toLowerCase()
+      || !/^[A-Za-z0-9_-][A-Za-z0-9._/-]{0,127}$/.test(branch) || branch.startsWith("refs/") || branch.includes("..")
+      || branch.split("/").some((part) => part === "" || part.startsWith(".") || part.endsWith(".") || part.endsWith(".lock"))) throw new ForgeError("invalid-response");
+    return { repositoryId: this.#repositoryId, owner: this.#owner, name: this.#repo, defaultBranch: branch };
+  }
+
+  /** Read policy bytes at one authenticated default-branch commit, without a checkout. */
+  async readDefaultConfig(signal?: AbortSignal): Promise<DefaultConfig> {
+    const repository = await this.getRepository(signal);
+    const reference = await this.#get(`/git/ref/heads/${repository.defaultBranch.split("/").map(encodeURIComponent).join("/")}`, signal);
+    if (reference.status !== 200) throw new ForgeError("api-refused");
+    const value = object(parse(reference));
+    const target = object(value["object"]);
+    const configSha = text(target["sha"]);
+    if (value["ref"] !== `refs/heads/${repository.defaultBranch}` || target["type"] !== "commit" || !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(configSha)) throw new ForgeError("invalid-response");
+    // Contents raw media avoids base64/JSON overhead and never follows download_url or
+    // ref.object.url. This captured OID stays fixed even if the default branch moves.
+    const response = await this.#get(`/contents/.pixelwatch/config.json?ref=${configSha}`, signal, "application/vnd.github.raw+json");
+    if (response.status !== 200) throw new ForgeError("invalid-config");
+    const parsed = parseDocument("config", response.body, { maxBytes: LIMITS.maxJsonBytes, maxDepth: 32 });
+    if (!parsed.ok) throw new ForgeError(parsed.issue.code === "unsupported-version" ? "unsupported-config-version" : "invalid-config");
+    return { repository, config: parsed.value, configSha };
   }
 
   async verifySource(input: VerifySourceInput): Promise<VerifiedSource> {
