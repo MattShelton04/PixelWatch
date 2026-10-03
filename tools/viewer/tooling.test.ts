@@ -8,6 +8,7 @@ import { parseDocument } from "../../packages/schemas/src/index.ts";
 import { decodePng, pixelHash } from "../../packages/core/src/index.ts";
 import { buildViewerFixture } from "./fixture.ts";
 import { startPreview } from "./serve.ts";
+import { previewEntries } from "./serve-cli.ts";
 
 const scratch = () => mkdtempSync(join(tmpdir(), "pixelwatch-viewer-tooling-"));
 const request = (origin: string, path: string) => new Promise<{status: number; body: Uint8Array}>((resolve, reject) => {
@@ -71,4 +72,10 @@ it("loopback preview refuses foreign ambiguous or missing Host before serving ge
     expect(await hostRequest([], false)).toBe(400);
     expect(await hostRequest(["Host", new URL(preview.origin).host])).toBe(200);
   } finally { await preview.close(); }
+});
+
+it("preview CLI advertises existing generated entries for nested prefixes and ignores unrelated directories", async () => {
+  const fixture = await buildViewerFixture(scratch(), {prefix: "reports/visual"});
+  mkdirSync(join(fixture.root, "unrelated")); writeFileSync(join(fixture.root, "unrelated", "index.html"), "untrusted active file");
+  expect(previewEntries(fixture.root)).toEqual(["reports/visual/", `reports/visual/runs/${fixture.runKey}/`]);
 });
