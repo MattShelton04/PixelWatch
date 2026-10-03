@@ -6,6 +6,20 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Readiness independent final review PASS at fa613922, exactauthoraaf87cb+shared18:45/45
+  exit0,2.50s/linttypes0, originalC1/C2/C3 unchangedprobes closed,9sequences×2 normalized
+  ac91140a… unchanged,14input boundaries and10broadenedcleanupcases pass;7rawlogs clean.
+  Root integrates exactthreefiles, exposes waitForReadiness; wholecheck/browser/simulation
+  and actualprojection/deployment/comment integration remain gates.
+- Source review has two new P1 blockers at091: Proxy error prototype inspection leaks an
+  unhandled rejection and preventsdeadline/worker cleanup; DTOcapture afteranotherawait lets
+  actualverifiedsource head or downloadedZIP mutate beforeprivatecopy. Actual local CAS
+  storesforgedhead/rejectedgoodpart. A's three original probes fail with reachedcounts;
+  B authors testsfirst fixes. GC/reusedcanonicalbyte race is also underfix. Root holds source.
+- Comment renderer source3121157 is independently reviewed next byC; local20/20 pass only.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Independent root signal/admission review CLOSED original2P1 plus new native-state/listener
   findings at ec7051e+18d5b89, reviewca030ceb:82/82 at ec,255.73s; new4/4,1.27s;
   original16 plus own9interleavings/9hookvariants reached, fullraw115/58/27 scans clean,
