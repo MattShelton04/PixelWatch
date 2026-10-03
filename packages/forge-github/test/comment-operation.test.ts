@@ -22,6 +22,26 @@ function scan(error:unknown):void {assertNoSecrets([inspect(error,{showHidden:tr
 function nativeHook(name:string):symbol {let value:object|null=AbortSignal.prototype;while(value!==null){const key=Object.getOwnPropertySymbols(value).find(key=>key.description===name);if(key!==undefined)return key;value=Object.getPrototypeOf(value) as object|null;}throw new Error("native-hook-missing");}
 
 describe("genuine current comment operation provenance and bounded cancellation",()=>{
+  it("an earlier reaction cannot promote a genuine deferred operation into an accepted write",async()=>{
+    const world=setup(),input=Object.freeze({...world.input,beforeMutation:()=>Promise.resolve(false)}),operation=world.client.reconcileComment(input);let changed=false;
+    assert.equal(isOwnedCommentOperation(operation,"42",input),true);
+    void operation.then(reply=>{try{Object.assign(reply,{status:"created",commentId:"9"});changed=true;}catch{/* The privately owned readonly result refuses mutation. */}},scan);
+    const result=await operation;assert.deepEqual(result,{status:"deferred"});assert.equal(changed,false);assert.equal(Object.isFrozen(result),true);assert.equal(world.counts().mutations,0);
+  });
+  it("an earlier reaction cannot conceal a genuine accepted HTTP201 operation",async()=>{
+    const world=setup(),operation=world.client.reconcileComment(world.input);let changed=false;
+    void operation.then(reply=>{try{Object.assign(reply,{status:"deferred"});Reflect.deleteProperty(reply,"commentId");changed=true;}catch{/* The privately owned readonly result refuses mutation. */}},scan);
+    const result=await operation;assert.deepEqual(result,{status:"created",commentId:"9"});assert.equal(changed,false);assert.equal(Object.isFrozen(result),true);assert.equal(world.counts().mutations,1);
+  });
+  it("accepted cleanup warning arrays are owned before the public operation fulfills",async()=>{
+    const unlink=nativeHook("kRemoveListener");let mutations=0,deadlines=0;
+    const client=new GitHubClient({owner:"owner",repo:"project",repositoryId:"42",token:CANARY_TOKEN,
+      transport:{request(request){if(request.method==="POST"){mutations++;return Promise.resolve(json({id:9,body,user:{id:7}},201));}return Promise.resolve(json([]));}},
+      timing:{deadline(){const signal=new AbortController().signal;deadlines++;if(deadlines>1)Object.defineProperty(signal,unlink,{value(){throw new Error(CANARY_TOKEN);}});return {signal,dispose(){if(mutations===1)throw new Error(CANARY_TOKEN);}};},delay:()=>Promise.resolve()}});
+    const operation=client.reconcileComment(Object.freeze({prNumber:"8",botId:"7",body,beforeMutation:()=>Promise.resolve(true),signal:new AbortController().signal}));let changed=false;
+    void operation.then(reply=>{if(reply.warnings!==undefined)try{(reply.warnings as string[]).push("foreign-warning");changed=true;}catch{/* The owned finite warning array refuses mutation. */}},scan);
+    const result=await operation;assert.deepEqual(result,{status:"created",commentId:"9",warnings:["listener-cleanup-failed","timing-disposal-failed"]});assert.equal(Object.isFrozen(result.warnings),true);assert.equal(changed,false);assert.equal(mutations,1);
+  });
   it("only the same current genuine adapter promise and captured invocation receive completion authority",async()=>{
     const world=setup(),operation=world.client.reconcileComment(world.input);
     assert.equal(isOwnedCommentOperation(operation,"42",world.input),true);

@@ -463,7 +463,7 @@ export class GitHubClient {
     if (!input.body.isWellFormed() || encoder.encode(input.body).byteLength > LIMITS.maxCommentBytes || !input.body.includes(this.#marker())) throw new ForgeError("comment-body");
     let existing = await this.#discoverComment(input.prNumber, input.botId, input.signal);
     const originalId = existing?.commentId;
-    if (existing?.body === input.body) return { status: "unchanged", commentId: existing.commentId };
+    if (existing?.body === input.body) return Object.freeze({ status: "unchanged", commentId: existing.commentId });
     const body = encoder.encode(JSON.stringify({ body: input.body }));
     for (let attempt = 0; attempt < LIMITS.maxAttempts; attempt++) {
       // This callback rechecks publisher-owned head/order/readiness immediately before each
@@ -472,7 +472,7 @@ export class GitHubClient {
       try { permitted = await this.#untilCancelled(() => input.beforeMutation(existing === null ? null : Object.freeze({ ...existing })), input.signal,value=>{if(typeof value!=="boolean")throw new ForgeError("comment-guard-failed");return value;}); }
       catch { throw new ForgeError("comment-guard-failed"); }
       if (typeof permitted !== "boolean") throw new ForgeError("comment-guard-failed");
-      if (!permitted) return { status: "deferred" };
+      if (!permitted) return Object.freeze({ status: "deferred" });
       let response: HttpResponse | undefined;
       try {
         response = await this.#request({
@@ -488,7 +488,7 @@ export class GitHubClient {
         const written = this.#comment(parse(response));
         if (written.author !== input.botId || written.body !== input.body || (existing !== null && written.id !== existing.commentId)) throw new ForgeError("comment-outcome");
         const warnings=responseCleanupWarnings.get(response);
-        return { status: existing === null ? "created" : "updated", commentId: written.id,...(warnings===undefined?{}:{warnings}) };
+        return Object.freeze({ status: existing === null ? "created" : "updated", commentId: written.id,...(warnings===undefined?{}:{warnings:Object.freeze([...warnings])}) });
       }
       let delay = 1000 * (attempt + 1);
       if (response !== undefined) {
@@ -503,7 +503,7 @@ export class GitHubClient {
       // or PR can change during the delay; a read before sleeping is not a retry authorization.
       if (attempt + 1 < LIMITS.maxAttempts) await this.#delay(delay, input.signal);
       const rediscovered = await this.#discoverComment(input.prNumber, input.botId, input.signal);
-      if (rediscovered?.body === input.body && (originalId === undefined || rediscovered.commentId === originalId)) return { status: "recovered", commentId: rediscovered.commentId };
+      if (rediscovered?.body === input.body && (originalId === undefined || rediscovered.commentId === originalId)) return Object.freeze({ status: "recovered", commentId: rediscovered.commentId });
       if ((originalId !== undefined && (rediscovered?.commentId !== originalId || rediscovered.body !== existing?.body)) || (originalId === undefined && rediscovered !== null)) throw new ForgeError("comment-outcome");
       existing = rediscovered;
     }

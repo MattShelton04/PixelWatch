@@ -33,6 +33,14 @@ these warnings in its accepted result. Cleanup before acceptance still fails saf
 existing fixed diagnostic and retry behavior. Only a genuine current operation's actual
 HTTP422 can authorize one newly guarded fallback; a public error constructor cannot.
 
+The exact operation promise alone does not authenticate a mutable public result. Independent
+review reproduced an earlier reaction changing a real deferred reply into created, and changing
+a validated HTTP201 reply into deferred before projection captured it. The adapter freezes each
+privately constructed comment result and a copied finite warning array before its promise
+fulfills. This preserves actual unchanged, deferred, created, updated and recovered outcomes
+without adding a reaction, request, retry or deadline. Original consumer reproducers and complete
+integrated review remain required after the producer correction.
+
 Mutation authorization is monotonic within each genuine invocation. A later retry guard cannot
 erase the fact that an earlier POST or PATCH was sent. When cancellation rejects that operation
 without a validated reply after authorization, projection reports comment-operation-failed;

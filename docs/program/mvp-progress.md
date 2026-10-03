@@ -31,10 +31,14 @@ input-mutation probe retains owned bytes, and retained PR records/targets plus a
 HTML are validated against real site reassembly. URL functions and credentials are not
 serialized. Scope is data-only IO; physical process handoff, shared publisher restoration and
 the production host remain gates.
-The codec remains local WIP: a later independent cost probe found that metadata extraction
+The later independent cost probe found that metadata extraction
 copies repeated file buffers before aggregate or duplicate-path refusal (eight real 2 MiB
-copies under a 1 MiB configured hard limit). This blocker has an unchanged strict red probe;
-the passing 13-case result is retained and does not close the cost finding.
+copies under a 1 MiB configured hard limit). The fourteenth regression executed that strict red
+before the native-length and configured aggregate checks were moved before allocation. Local
+and independent complete 14/14 both pass (1.57s); unchanged cost/input/descriptor/snapshot
+probes pass with zero over-budget copies. An independent exact counter seam also checks 18
+valid and seven invalid cases, including exactly 64 MiB and one byte over. Scope remains IO;
+physical handoff and real host acceptance are separate.
 
 Projection now uses the genuine adapter's exact privately recorded operation promise to join
 bounded completion and retain finite cleanup warnings. Its complete 31-case file currently
@@ -52,6 +56,23 @@ cleanup and shadow-getter findings with unchanged reproducers. The nonconfigurab
 Promise constructor boundary remains an open owner decision shared with public metadata.
 Historical uncaught red logs containing a fake canary remain visible as failed scans; later
 corrected logs have zero unexpected leaks. Public metadata is not integrated or approved overall.
+
+A later projection review found that an earlier reaction could mutate a genuine comment result
+to falsely claim a write or conceal an actual HTTP201. Three producer regressions executed
+before correction: 14 PASS / 3 FAIL in the 17-case operation file. A first new cleanup fixture
+faulted before POST and also produced an unhandled fixed diagnostic; that run is retained.
+Correcting only fault timing reached all three intended failures with no unhandled error.
+The adapter now freezes actual privately constructed results and copied finite warnings before
+fulfillment. Its complete six-file suite passes 80/80 (1.63s), lint and types pass. Original
+independent consumer closure and the integrated review remain pending; this is not full M2
+acceptance. Projection's owner-gated expectation and constructor decision remain open.
+
+Physical payload staging first executed 16 original passes and seven new failures, then the
+complete 23-case author file passed (17.37s). Root review reproduced a changed payload inode
+after the bounded reader's close being accepted as the retained identity despite identical
+bytes. Only byte-identical replacement of the state inventory was an explicitly accepted
+restart boundary. The payload finding is open with an unchanged probe; its correction and
+independent physical handoff review are required before host composition acceptance.
 
 The fixed live setup proposal is prepared locally with finite refs, scoped credentials, Pages
 policy, nine actual scenarios and exact-ID cleanup. Numeric IDs, account choices, release pins
