@@ -40,6 +40,8 @@ export default defineConfig(
     "dist/",
     ".tools/",
     ".reference/",
+    // Generated static validators are checked by reproducibility and fixture-equivalence tests.
+    "packages/schemas/src/generated/viewer-validators.js",
     // Deliberately bad lint fixtures; tools/eslint-smoke.test.ts lints them with `ignore: false`.
     "testdata/",
   ]),
