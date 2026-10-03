@@ -17,13 +17,15 @@ function generatedCategory(path: string): SiteCategory {
 export function assembleSite(input: AssemblyInput): Promise<AssembledSite> {
   return guarded(async () => {
     const context = safely(() => captureContext(input));
-    const tip = input.snapshot.tip; if (tip === null) refuse("store-absent"); const storeTip = checkedOid(tip);
     const source = input.snapshot;
+    const tip = source.tip; if (tip === null) refuse("store-absent"); const storeTip = checkedOid(tip);
     // StoreSnapshot has no derived-reference authority; every derived file is a root.
     const { tree, graph } = safely(() => captureTree({store:source.store,runs:source.runs,files:source.files}, context.repository.repositoryId));
-    if (typeof source.readFile !== "function") refuse("store-reader-invalid");
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply binds the captured method to this same snapshot.
+    const reader = source.readFile;
+    if (typeof reader !== "function") refuse("store-reader-invalid");
     // The validated adapter's own bounded function is captured once, never reread after await.
-    const readFile = source.readFile.bind(source);
+    const readFile = (path: string): Promise<Uint8Array> => Reflect.apply<typeof source,[string],Promise<Uint8Array>>(reader,source,[path]);
     const generation = generationId({ storeTip, releaseCommit: context.assets.releaseCommit, configCommit: context.configCommit, projectionVersion: PROJECTION_VERSION });
     const urls = siteUrls(siteLocation(context.config, context.pages)); const limits = sizeLimits(context.config);
     const generated: AssembledFile[] = []; const measured = breakdown(); const occupied = new Set<string>(); let totalBytes = 0;

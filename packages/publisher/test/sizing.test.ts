@@ -7,6 +7,7 @@ import { renderEntry } from "../../viewer/src/entry.ts";
 import { assembleSite } from "../src/assemble.ts";
 import { measureSite } from "../src/sizing.ts";
 import { PublisherError, type PublisherContext } from "../src/types.ts";
+import { STORE_LIMITS } from "@pixelwatch/store";
 const oid = (value: string) => value.repeat(40);
 function required<T>(value:T|undefined|null):T {if(value===undefined||value===null)throw new Error("missing fixture value");return value;}
 let script: Uint8Array;
@@ -50,5 +51,11 @@ describe("real final site size planning",()=>{
     const w=fixture();const forged=Object.create(PublisherError.prototype) as PublisherError;let accessors=0;for(const field of ["code","message","stack","cause"])Object.defineProperty(forged,field,{get:()=>{accessors++;return "FAKE_SIZING_TOKEN_532af";}});
     const input={...w.context,tree:w.tree};Object.defineProperty(input,"configCommit",{get:()=>{throw forged;}});let error:unknown;try{measureSite(input);}catch(value){error=value;}
     expect(accessors).toBe(0);expect(error===forged).toBe(false);expect(error).toBeInstanceOf(PublisherError);expect((error as PublisherError).code).toBe("publisher-input-invalid");expect(String(error)+JSON.stringify(error)+((error as Error).stack??"")).not.toContain("FAKE_SIZING_TOKEN_532af");expect(accessors).toBe(0);
+  });
+  it("captures one coherent file listing before the file-count limit and size projection",()=>{
+    const w=fixture();const original=w.tree.files;const expected=measureSite({...w.context,tree:w.tree});let gets=0;
+    const oversized=[...original,...Array.from({length:STORE_LIMITS.maxFiles+1},(_,index)=>{const hash=index.toString(16).padStart(64,"0");return{path:`blobs/${hash.slice(0,2)}/${hash}.png`,bytes:0};})];expect(oversized.length).toBeGreaterThan(STORE_LIMITS.maxFiles);
+    Object.defineProperty(w.tree,"files",{get:()=>{gets++;return gets===1?original:oversized;}});const actual=measureSite({...w.context,tree:w.tree});expect(gets).toBe(1);expect(actual.fixed).toEqual(expected.fixed);expect(actual.permalink("5-a1")).toBe(expected.permalink("5-a1"));
+    const other=fixture();const otherFiles=other.tree.files;let otherGets=0;Object.defineProperty(other.tree,"files",{get:()=>{otherGets++;return otherGets===1?oversized:otherFiles;}});let error:unknown;try{measureSite({...other.context,tree:other.tree});}catch(caught){error=caught;}expect((error as PublisherError).code).toBe("store-files-limit");expect(otherGets).toBe(1);
   });
 });

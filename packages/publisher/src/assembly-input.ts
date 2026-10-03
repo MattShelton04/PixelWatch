@@ -49,14 +49,15 @@ export function checkedDocument<K extends DocumentKind>(kind: K, value: Document
 export function captureContext(input: PublisherContext): PublisherContext {
   const config = checkedDocument("config", structuredClone(input.config));
   const configCommit = checkedOid(input.configCommit);
-  const pages = { url: input.pages.url, host: input.pages.host };
-  const repository = { repositoryId: input.repository.repositoryId, owner: input.repository.owner, name: input.repository.name };
-  const release = input.assets.release; const releaseCommit = checkedOid(input.assets.releaseCommit);
+  const sourcePages=input.pages;const sourceRepository=input.repository;const sourceAssets=input.assets;
+  const pages = { url: sourcePages.url, host: sourcePages.host };
+  const repository = { repositoryId: sourceRepository.repositoryId, owner: sourceRepository.owner, name: sourceRepository.name };
+  const release = sourceAssets.release; const releaseCommit = checkedOid(sourceAssets.releaseCommit);
   if (!isGitHubId(repository.repositoryId) || typeof repository.owner !== "string" || typeof repository.name !== "string"
     || !/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/.test(repository.owner)
     || !/^[A-Za-z0-9_.-]{1,100}$/.test(repository.name) || repository.name === "." || repository.name === "..") refuse("repository-invalid");
   appScriptPath(release); siteUrls(siteLocation(config, pages));
-  const limits = sizeLimits(config); const supplied = input.assets.script;
+  const limits = sizeLimits(config); const supplied = sourceAssets.script;
   let script: Uint8Array;
   try { script=copyBytes(supplied,limits.hardBytes); } catch(error) {
     const safe=sanitizePublisherError(error,"app-invalid");
@@ -73,8 +74,11 @@ export function captureTree(input: StoreTree, repositoryId: string): { tree: Cap
   if (store.repositoryId !== repositoryId) refuse("repository-mismatch");
   const runs = new Map([...input.runs].map(([key, run]) => [key, checkedDocument("run", structuredClone(run))]));
   if (runs.size !== store.runs.length || store.runs.some((entry) => !runs.has(entry.runKey))) refuse("store-graph-invalid");
-  if (input.files.length > STORE_LIMITS.maxFiles) refuse("store-files-limit");
-  const files = input.files.map((file) => ({ path: file.path, bytes: file.bytes }));
+  const sourceFiles=input.files;const count=sourceFiles.length;
+  if(!Number.isSafeInteger(count)||count<0)refuse("store-listing-invalid");
+  if (count > STORE_LIMITS.maxFiles) refuse("store-files-limit");
+  const files:{path:string;bytes:number}[]=[];
+  for(let index=0;index<count;index++){const file=sourceFiles[index];if(file===undefined)refuse("store-listing-invalid");files.push({path:file.path,bytes:file.bytes});}
   let total = 0;
   for (const file of files) {
     const kind = typeof file.path === "string" ? classifyStorePath(file.path) : undefined;
@@ -85,8 +89,9 @@ export function captureTree(input: StoreTree, repositoryId: string): { tree: Cap
   }
   if (!files.some((file) => file.path === "store.json")) refuse("store-graph-invalid");
   // M2 emits only current data/v1. Grace namespaces and migrations belong to M3.
-  if ((input.grace?.length ?? 0) !== 0) refuse("store-path-refused");
-  const derived = input.derived === undefined ? undefined : new Map([...input.derived].map(([key, hashes]) => [key, [...hashes]]));
+  const sourceGrace=input.grace;const sourceDerived=input.derived;
+  if ((sourceGrace?.length ?? 0) !== 0) refuse("store-path-refused");
+  const derived = sourceDerived === undefined ? undefined : new Map([...sourceDerived].map(([key, hashes]) => [key, [...hashes]]));
   const tree: CapturedTree = { store, runs, files, ...(derived === undefined ? {} : { derived }) };
   let graph: StoreGraph;
   try { graph = readStoreTree(tree); } catch { return refuse("store-graph-invalid"); }

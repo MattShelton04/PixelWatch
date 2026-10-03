@@ -1,9 +1,11 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { addRun, appScriptPath, blobPath, changesPath, encodePng, generationId, newStore, permalinkPath, pixelHash, projectChanges, projectSite, PROJECTION_VERSION, runRecordPath, siteLocation, siteUrls } from "@pixelwatch/core";
 import { canonicalBytes, parseDocument, type Config, type Run } from "@pixelwatch/schemas";
-import type { StoreSnapshot } from "@pixelwatch/store";
+import { LocalDirStore, type StoreSnapshot } from "@pixelwatch/store";
+import { Scratch } from "../../store/test/helpers.ts";
 import { buildViewerAssets } from "../../../tools/viewer/build.ts";
 import { GOLDEN_RUNS, goldenInput } from "../../../tools/projection-goldens/generate.ts";
 import { renderEntry } from "../../viewer/src/entry.ts";
@@ -234,5 +236,36 @@ describe("complete final site assembly", () => {
     Object.defineProperty(supplied,"byteLength",{get:()=>{accessors++;throw new Error(CANARY);}});Object.defineProperty(supplied,Symbol.iterator,{value:()=>{accessors++;throw new Error(CANARY);}});
     const before=hash(supplied);await refusal({...w.input,assets:{...w.input.assets,script:supplied}},"site-budget-refused");expect(w.reads).toEqual([]);expect(accessors).toBe(0);expect(hash(supplied)).toBe(before);
     const foreign=Object.create(null) as Uint8Array;Object.defineProperty(foreign,"byteLength",{get:()=>{accessors++;throw new Error(CANARY);}});await refusal({...w.input,assets:{...w.input.assets,script:foreign}},"app-invalid");expect(accessors).toBe(0);expect(w.reads).toEqual([]);
+  });
+  it("captures one actual store snapshot before using its tip graph or reader", async () => {
+    const w=fixture();const scratch=new Scratch();const adapter=new LocalDirStore({directory:join(scratch.root,"local"),repositoryId:w.input.repository.repositoryId,defaultBranch:"main"});
+    try {
+      expect((await adapter.cas(null,{store:w.input.snapshot.store,runs:w.input.snapshot.runs,files:w.files,metadata:{timestamp:"2000-01-01T00:00:00Z"}})).status).toBe("accepted");
+      const first=await adapter.read();const extra=structuredClone(w.run);extra.runKey="6-a1";extra.source.runId="6";extra.source.createdAt="2026-10-03T00:00:00Z";
+      const store=addRun(first.store,extra).store;const files=new Map([...w.files,["store.json",canonicalBytes(store)],[runRecordPath(extra.runKey),canonicalBytes(extra)]]);
+      expect((await adapter.cas(first.tip,{store,runs:new Map([...first.runs,[extra.runKey,extra]]),files,metadata:{timestamp:"2000-01-01T00:00:00Z"}})).status).toBe("accepted");
+      const later=await adapter.read();expect(later.tip).not.toBe(first.tip);expect(later.runs.has(extra.runKey)).toBe(true);let gets=0;
+      Object.defineProperty(w.input,"snapshot",{get:()=>{gets++;return gets===1?first:later;}});const site=await assembleSite(w.input);
+      expect(gets).toBe(1);expect(site.storeTip).toBe(first.tip);expect(site.files.some(file=>file.path===permalinkPath(extra.runKey))).toBe(false);
+      expect(Buffer.from(required(site.files.find(file=>file.path===runRecordPath(w.run.runKey))).bytes)).toEqual(Buffer.from(await first.readFile(runRecordPath(w.run.runKey))));
+    }finally{scratch.close();}
+  });
+  it("captures the validated bounded reader once before checking or binding it", async () => {
+    const w=fixture();
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Production binds the captured reader to the same snapshot with Reflect.apply.
+    const reader=w.input.snapshot.readFile;let gets=0;let substitutions=0;
+    Object.defineProperty(w.input.snapshot,"readFile",{get:()=>{gets++;return gets===1?reader:()=>{substitutions++;throw new Error(`${CANARY} ${SIGNED}`);};}});
+    const site=await assembleSite(w.input);expect(gets).toBe(1);expect(substitutions).toBe(0);expect(site.files.some(file=>file.path===runRecordPath(w.run.runKey))).toBe(true);
+  });
+  it("captures coherent Pages repository and release asset parent objects exactly once", async () => {
+    for(const parent of ["pages","repository","assets"] as const){const w=fixture();const original=w.input[parent];const expected=await assembleSite(w.input);let gets=0;
+      Object.defineProperty(w.input,parent,{get:()=>{gets++;if(gets===1)return original;if(parent==="pages")return{url:SIGNED,host:"foreign.invalid"};if(parent==="repository")return{repositoryId:"1",owner:"../bad",name:CANARY};return{release:"../bad",releaseCommit:CANARY,script:new TextEncoder().encode(SIGNED)};}});
+      expect(await assembleSite(w.input)).toEqual(expected);expect(gets).toBe(1);
+    }
+  });
+  it("refuses the first captured asset tuple over budget instead of substituting later smaller bytes", async () => {
+    const w=fixture();w.input.config.limits={softBytes:1024*1024,hardBytes:1024*1024};const original=w.input.assets;const oversized=new Uint8Array(1024*1024+1).fill(32);oversized.set(script);let gets=0;
+    Object.defineProperty(w.input,"assets",{get:()=>{gets++;return gets===1?{...original,script:oversized}:original;}});
+    await refusal(w.input,"site-budget-refused");expect(gets).toBe(1);expect(w.reads).toEqual([]);
   });
 });
