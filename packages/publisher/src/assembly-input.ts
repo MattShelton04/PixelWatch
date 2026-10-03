@@ -1,0 +1,72 @@
+import { appScriptPath, classifyStorePath, projectChanges, readStoreTree, siteLocation, siteUrls, sizeLimits, type ProjectionInput, type StoreGraph, type StoreTree } from "@pixelwatch/core";
+import { canonicalBytes, isGitHubId, parseDocument, type DocumentKind, type DocumentTypes, type Run, type Store } from "@pixelwatch/schemas";
+import { STORE_LIMITS } from "@pixelwatch/store";
+import { renderEntry } from "@pixelwatch/viewer";
+import { PublisherError, refuse, type PublisherContext } from "./types.ts";
+
+export const JSON_BYTES = 1024 * 1024;
+const OID = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
+export function checkedOid(value: string): string {
+  if (typeof value !== "string" || !OID.test(value)) refuse("invalid-commit");
+  return value;
+}
+export function safely<T>(operation: () => T): T {
+  try { return operation(); } catch (error) { if (error instanceof PublisherError) throw error; return refuse("publisher-input-invalid"); }
+}
+export function checkedDocument<K extends DocumentKind>(kind: K, value: DocumentTypes[K]): DocumentTypes[K] {
+  const bytes = canonicalBytes(value);
+  if (bytes.byteLength > JSON_BYTES) refuse("json-limit");
+  const result = parseDocument(kind, bytes);
+  if (!result.ok) refuse(result.issue.code === "unsupported-version" ? "unsupported-document-version" : "invalid-document");
+  return result.value;
+}
+/** Own all trusted policy, namespace and executable bytes synchronously. */
+export function captureContext(input: PublisherContext): PublisherContext {
+  const config = checkedDocument("config", structuredClone(input.config));
+  const configCommit = checkedOid(input.configCommit);
+  const pages = { url: input.pages.url, host: input.pages.host };
+  const repository = { repositoryId: input.repository.repositoryId, owner: input.repository.owner, name: input.repository.name };
+  const release = input.assets.release; const releaseCommit = checkedOid(input.assets.releaseCommit);
+  if (!isGitHubId(repository.repositoryId) || typeof repository.owner !== "string" || typeof repository.name !== "string"
+    || !/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/.test(repository.owner)
+    || !/^[A-Za-z0-9_.-]{1,100}$/.test(repository.name) || repository.name === "." || repository.name === "..") refuse("repository-invalid");
+  appScriptPath(release); siteUrls(siteLocation(config, pages));
+  const limits = sizeLimits(config); const supplied = input.assets.script;
+  if (!(supplied instanceof Uint8Array) || supplied.byteLength === 0) refuse("app-invalid");
+  if (supplied.byteLength > limits.hardBytes) refuse("site-budget-refused");
+  const script = Uint8Array.from(supplied);
+  return { config, configCommit, pages, repository, assets: { release, releaseCommit, script } };
+}
+export interface CapturedTree extends StoreTree { readonly store: Store; readonly runs: ReadonlyMap<string, Run> }
+/** Complete eager graph validation precedes selection or returned-byte reads. */
+export function captureTree(input: StoreTree, repositoryId: string): { tree: CapturedTree; graph: StoreGraph } {
+  const store = checkedDocument("store", structuredClone(input.store));
+  if (store.repositoryId !== repositoryId) refuse("repository-mismatch");
+  const runs = new Map([...input.runs].map(([key, run]) => [key, checkedDocument("run", structuredClone(run))]));
+  if (runs.size !== store.runs.length || store.runs.some((entry) => !runs.has(entry.runKey))) refuse("store-graph-invalid");
+  if (input.files.length > STORE_LIMITS.maxFiles) refuse("store-files-limit");
+  const files = input.files.map((file) => ({ path: file.path, bytes: file.bytes }));
+  let total = 0;
+  for (const file of files) {
+    const kind = typeof file.path === "string" ? classifyStorePath(file.path) : undefined;
+    if (kind === undefined || kind.kind === "grace") refuse("store-path-refused");
+    if (!Number.isSafeInteger(file.bytes) || file.bytes < 0) refuse("store-listing-invalid");
+    if (file.bytes > (kind.kind === "blob" || kind.kind === "derived" ? STORE_LIMITS.maxPngBytes : JSON_BYTES)) refuse("store-file-limit");
+    total += file.bytes; if (total > STORE_LIMITS.maxTreeBytes) refuse("store-tree-limit");
+  }
+  if (!files.some((file) => file.path === "store.json")) refuse("store-graph-invalid");
+  // M2 emits only current data/v1. Grace namespaces and migrations belong to M3.
+  if ((input.grace?.length ?? 0) !== 0) refuse("store-path-refused");
+  const derived = input.derived === undefined ? undefined : new Map([...input.derived].map(([key, hashes]) => [key, [...hashes]]));
+  const tree: CapturedTree = { store, runs, files, ...(derived === undefined ? {} : { derived }) };
+  let graph: StoreGraph;
+  try { graph = readStoreTree(tree); } catch { return refuse("store-graph-invalid"); }
+  return { tree, graph };
+}
+export function projection(context: PublisherContext, tree: StoreTree, generation: string): ProjectionInput {
+  return { config: context.config, pages: context.pages, store: tree.store, runs: tree.runs, generation, release: context.assets.release };
+}
+export function entryBytes(context: PublisherContext, run?: Run): Uint8Array {
+  const urls = siteUrls(siteLocation(context.config, context.pages));
+  return renderEntry({ urls, repository: context.repository, assets: context.assets, ...(run === undefined ? {} : { changes: projectChanges(run, urls) }) });
+}
