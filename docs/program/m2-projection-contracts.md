@@ -51,6 +51,11 @@ and complete acquisition/cleanup accounting. Finish also uses the actual readine
 its outer scope expires after a served observation, it records that observation but starts no
 new sticky mutation. Already-sent comment recovery remains bounded and truthful through the
 adapter; teardown cannot invent successful mutations or conceal a received accepted operation.
+PreparedProjection and ProjectionResult carry optional finite warnings: timing-disposal-failed,
+store-close-failed and listener-cleanup-failed. The absent preparation outcome can also report
+warnings. Private persistence validates these values; finish carries preparation warnings and
+appends cleanup warnings after privately capturing actual served/accepted outcomes. Unknown or
+refused operations remain fixed errors. This inferred accounting changes no success criterion.
 Summary derives trusted workflow basename/default ref for a fixed gh workflow repair command.
 
 `finishProjection` consumes only this prepared generation and an actual official step outcome.

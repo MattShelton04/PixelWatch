@@ -53,6 +53,10 @@ operation separate. A failed/cancelled step may have landed; readiness remains a
 about the runner's observations. An accepted store transaction survives later failures. Summary
 repair instructions are fixed trusted commands. Unknown-version ingestion refusal does not
 authorize an unconditional always-project path. Valid manual maintenance/repair is separate.
+Finite cleanup warnings preserve a received served/accepted result when deadline disposal,
+store closure or listener cleanup fails. Prepared state carries its warnings into finish;
+warnings never certify an unknown operation or turn a refusal into success. This is inferred
+implementation accounting under ADR0014, not an owner change to the security model.
 
 Public metadata uses no token, cookie, redirect following or caller/API-returned destinations.
 Authenticate the trusted report run/selected attempt/ref/SHA, identify the unique API-listed

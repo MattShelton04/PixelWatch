@@ -6,6 +6,41 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR22 is MERGED at1fe48214466d9c76e884791dea7a590ef71baee7 (12:51:06Z), exact reviewed
+  head8d2de3981c8216fc0999d8f33384975dfaa1c767. All five enforced checks, aggregate CodeQL
+  and both viewer jobs pass. No bypass, alert dismissal or settings change. Seven reviewed
+  PRs16–22 are merged under the owner's standing authorization.
+- Hosted corrected head: pnpm check1122/54 on Linux (29.39s) and Windows (212.80s), exit0;
+  browser24/24 across Chromium/Firefox/WebKit on each OS (15.8s/22.2s), exit0. Both full
+  coverage jobs remain2PASS/12NOTRUN/exit2; all17 normalized hashes match local evidence.
+  CI37123807928, CodeQL37123807926, dependency review37123807991.
+- Root integration0bcdc37 aligns next slice with verified main1fe4821, resolving only import/
+  export/type conflicts; whole typecheck and diffcheck exit0. Byte-identical reviewed maintenance
+  source8a95bf5 is integrated at2a04580; its root fullcheck/browser/simulation remain gates.
+  IndependentA approval1caaab4 includes44/44 plus original hostile and real Git recovery probes.
+- GH simulation author278748e passes4/4,31.80s; independentA review661ca7f repeats4/4,37.70s,
+  with identical four seeded hashes. Blocking P2 GH-ENV-1 independently proves esbuild's default
+  subprocess environment reads fake GH_TOKEN/GITHUB_TOKEN once each. No real credentials or
+  observed leak; zero-token-read invariant still fails. AuthorC is correcting the fixture's
+  actual compiler port using a fixed trusted child with explicit allowlisted environment.
+  Case is not registered; unchanged reviewer probe and complete corrected suite are gates.
+- Active writable specialists: B implements reproducible release tooling from b382cb0 in
+  m2-release-build; C owns isolated GH correction and serialized projector from2a04580 in
+  m2-project-caller. A independently reviews GH before the public metadata adapter assignment.
+  Root owns shared DTOs/manifests/workflows/docs/integration. Four agents total; no extra agents.
+- Projection/public-metadata DTOs frozen201e2a; ADR0029, projection and build contracts are
+  committed. Finite truthful cleanup warnings are root-owned; whole typecheck and the complete
+  threat-model suite7/7 pass (exit0,1.90s) after the contract and five maintenance rows change.
+  No production projector/public preflight/action workflow or RC build is claimed yet.
+- Actual generated final viewer entry remains http://127.0.0.1:4173/pixelwatch/runs/11-a1/.
+  Its fixture pixels are local viewer evidence. M2 exit still needs authorized same-repo/fork
+  comments linking actual served run pages, pinned release/workflow checks and live evidence.
+  M3, canaries, seven daily checks, final release and fresh-adopter gates have not started.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+## Earlier checkpoint — 2026-10-03
+
 - PR22 opened at810b157; hosted unit1120/54 and browser24/24 pass on Linux/Windows. CodeQL
   language/action jobs succeeded but aggregateHIGH alerts3/4 flag unanchored marker regexes;
   merge HELD. Root replaces searches with bounded literal parsing;22/22 tests pass before/

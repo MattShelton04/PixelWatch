@@ -146,6 +146,7 @@ export interface ProjectionPrepareInput {
 export type ProjectionDeferredReason = "comment-disabled" | "pr-closed" | "pr-unavailable"
   | "no-eligible-run" | "pointer-mismatch" | "head-changed" | "comment-order-unproved";
 export interface ProjectionDeferred {readonly prNumber: string; readonly reason: ProjectionDeferredReason}
+export type ProjectionWarning = "timing-disposal-failed" | "store-close-failed" | "listener-cleanup-failed";
 /** Exact prepared generation. Persisted capsules omit and reconstruct derived URL methods. */
 export interface PreparedProjection {
   readonly schemaVersion: 1;
@@ -158,8 +159,9 @@ export interface PreparedProjection {
   readonly site: AssembledSite;
   readonly targets: readonly ReadinessTarget[];
   readonly deferred: readonly ProjectionDeferred[];
+  readonly warnings?: readonly ProjectionWarning[];
 }
-export type ProjectionPreparation = {readonly status: "absent"; readonly repositoryId: string}
+export type ProjectionPreparation = {readonly status: "absent"; readonly repositoryId: string; readonly warnings?: readonly ProjectionWarning[]}
   | {readonly status: "prepared"; readonly projection: PreparedProjection};
 export interface ProjectionPrepareDependencies {
   readonly forge: Pick<GitHubClient, "readDefaultConfig" | "getPages" | "getPullRequest">;
@@ -197,6 +199,7 @@ export interface ProjectionResult {
   readonly readiness: ReadinessResult;
   readonly comments: readonly ProjectionCommentResult[];
   readonly deferred: readonly ProjectionDeferred[];
+  readonly warnings?: readonly ProjectionWarning[];
 }
 export interface CommentRenderInput {
   readonly context: PublisherContext;
