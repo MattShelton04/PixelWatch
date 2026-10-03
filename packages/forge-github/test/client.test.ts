@@ -103,6 +103,13 @@ describe("GitHub adapter boundaries", () => {
     expect(script.calls[2]?.headers["authorization"]).toBeUndefined();
     expect(script.calls[3]?.headers["authorization"]).toBeUndefined();
     expect(disposed).toEqual([60_000, 60_000, 60_000, 60_000]);
+    const same = setup();
+    same.script.add(json({ total_count: 1, artifacts: [artifact()] }));
+    same.script.add({ status: 302, headers: { location: `${API}/actions/artifacts/1/zip?download=1` }, body: new Uint8Array() });
+    same.script.add({ status: 200, headers: {}, body: new Uint8Array([1, 2, 3, 4]) });
+    expect((await same.client.downloadArtifacts(await same.client.listArtifacts("99"))).artifacts).toHaveLength(1);
+    expect(same.script.calls[1]?.headers["authorization"]).toBe(`Bearer ${TOKEN}`);
+    expect(same.script.calls[2]?.headers["authorization"]).toBe(`Bearer ${TOKEN}`);
   });
 
   it("expired and gone artifacts remain explicit missing parts, and unavailable downloads retry only finitely", async () => {
