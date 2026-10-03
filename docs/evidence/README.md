@@ -10,6 +10,8 @@ signed URLs, emails or real screenshots.
 
 | Record | Spike / task | Result | ADR |
 |---|---|---|---|
+| [m2.1c-trusted-configuration.md](m2.1c-trusted-configuration.md) | M2.1c immutable default-branch policy | independent 52-test and hostile review pass; integrated local check 731; no publisher/live claim | [0019](../adr/0019-authenticated-source-envelope.md) |
+| [m2.1b-source-authentication.md](m2.1b-source-authentication.md) | M2.1b source identity and historical association | local 722-test check passes; independent hostile review passed; no live fork claim | [0019](../adr/0019-authenticated-source-envelope.md) |
 | [s2-pages-bootstrap.md](s2-pages-bootstrap.md) | M0.5 / S2 Actions Pages bootstrap, readiness, repair | pass, readiness wording corrected | [0005](../adr/0005-s2-actions-pages-bootstrap-and-readiness.md) |
 | [s4-self-reference.md](s4-self-reference.md) | M0.5 / S4 reusable-workflow self-checkout | pass | [0006](../adr/0006-s4-reusable-workflow-self-checkout.md) |
 | [s11-same-repo-identity.md](s11-same-repo-identity.md) | M0.5 / S11 same-repo PR identity (fork → M2.6) | pass (same-repo only) | [0007](../adr/0007-s11-same-repo-identity.md) |
