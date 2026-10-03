@@ -81,6 +81,21 @@ export interface SourceJobResult {
   /** This stage makes no deployment/readiness/comment claim. */
   readonly projection: "pending" | "not-retained";
 }
+/** Internal workflow_dispatch GC, without a synthetic capture or caller deletion plan. */
+export interface MaintenanceDependencies extends AdmissionDependencies {
+  readonly timing: Pick<Timing, "deadline">;
+}
+export interface MaintenanceResult {
+  readonly status: "absent" | "unchanged" | "updated" | "recovered";
+  readonly tip: string | null;
+  readonly attempts: number;
+  /** Lost replies observed, including any superseded transaction whose acceptance is unproved. */
+  readonly unknownPushes: number;
+  /** Exact deletions of the confirmed transaction; empty for absent/unchanged observations. */
+  readonly deleted: readonly {readonly path: string; readonly bytes: number}[];
+  readonly removedRuns: readonly string[];
+  readonly warnings?: readonly ("checkpoint-failed" | "timing-disposal-failed")[];
+}
 export interface ReadinessTarget {
   readonly prNumber: string;
   readonly runKey: string;
@@ -160,6 +175,9 @@ const DIAGNOSTIC_CODES = new Set([
   "source-job-source-invalid", "source-job-download-invalid", "source-job-codec-failed",
   "source-job-staging-invalid", "source-job-staging-limit", "source-job-timing-invalid",
   "comment-input-invalid", "comment-budget-refused",
+  "maintenance-input-invalid", "maintenance-budget-refused", "maintenance-plan-invalid",
+  "maintenance-cas-invalid", "maintenance-checkpoint-failed", "maintenance-lease-exhausted",
+  "maintenance-cancelled", "maintenance-operation-failed", "maintenance-timing-invalid",
 ]);
 const diagnosticIdentity = new WeakMap<object, string | undefined>();
 export class PublisherError extends Error {
