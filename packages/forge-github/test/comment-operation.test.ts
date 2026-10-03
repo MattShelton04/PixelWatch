@@ -113,4 +113,14 @@ describe("genuine current comment operation provenance and bounded cancellation"
     assert.equal(report.noNetworkGuard,true);assert.deepEqual(report.results.map(value=>value.kind),["guard","transport"]);
     for(const value of report.results){assert.equal(value.reads,0);assert.equal(value.unhandled,0);assert.equal(value.rawCanary,false);assert.equal(value.settled,true);assert.equal(value.publicSafe,true);}
   });
+  it("a genuine caller signal shadow getter cannot leak a reason or replace native cancellation state",async()=>{
+    const signal=new AbortController().signal;let reads=0,requests=0,disposed=0;
+    Object.defineProperty(signal,"aborted",{get(){reads++;throw new Error(CANARY_TOKEN);}});
+    const client=new GitHubClient({owner:"owner",repo:"project",repositoryId:"42",token:CANARY_TOKEN,
+      transport:{request(){requests++;return Promise.resolve(json({id:42,owner:{login:"owner"},name:"project",full_name:"owner/project",default_branch:"main"}));}},
+      timing:{deadline:()=>({signal:new AbortController().signal,dispose(){disposed++;}}),delay:()=>Promise.resolve()}});
+    let result:unknown,safe=true;try{result=await client.getRepository(signal);}catch(error){try{scan(error);}catch{safe=false;}}
+    assert.equal(safe,true);assert.deepEqual(result,{repositoryId:"42",owner:"owner",name:"project",defaultBranch:"main"});
+    assert.deepEqual({reads,requests,disposed},{reads:0,requests:1,disposed:1});
+  });
 });

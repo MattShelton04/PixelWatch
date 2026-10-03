@@ -21,6 +21,9 @@ promises through the captured intrinsic then, bounds guards and retry delays by 
 caller signal, and arms request cancellation before scheduling transport. The scheduled
 reaction checks cancellation again. Request, retry, comment and ten-minute publisher bounds
 remain unchanged; there is no extra grace period or permitted mutation after cancellation.
+Signals are composed with captured native getters and listener operations rather than
+AbortSignal.any, which can read an overridden aborted getter. Public catch decisions also use
+native state and never echo the caller's reason or a shadow getter exception.
 
 Manual native listener removal allows the abort callback to settle before a throwing native
 unlink hook. Every acquired request deadline is disposed even if listener cleanup fails.

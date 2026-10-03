@@ -15,6 +15,7 @@ function signalAborted(signal:AbortSignal):boolean {
   if(nativeAborted===undefined)throw new ForgeError("request-failed");
   return Reflect.apply(nativeAborted,signal,[]) as boolean;
 }
+function cancelled(signal:AbortSignal|undefined):boolean {try{return signal!==undefined&&signalAborted(signal);}catch{return false;}}
 /** Observe ordinary native port promises without assimilating their own then property. */
 function port<T>(operation:()=>Promise<T>,capture:(value:T)=>T):Promise<T>{
   return new Promise<T>((resolve,reject)=>{
@@ -143,18 +144,23 @@ export class GitHubClient {
 
   async #request(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
     try { return await this.#timedRequest(request, signal); }
-    catch (error) { throw withoutRejectionProof(error, signal?.aborted === true ? "request-cancelled" : "request-failed"); }
+    catch (error) { throw withoutRejectionProof(error, cancelled(signal) ? "request-cancelled" : "request-failed"); }
   }
 
   async #timedRequest(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
     const deadline = this.#timing.deadline(LIMITS.requestMs);
     let combined:AbortSignal|undefined,aborted: (() => void) | undefined,accepted:HttpResponse|undefined,response:HttpResponse|undefined,failure:ForgeError|undefined,cleanupFailure:ForgeError|undefined;
     const warnings:CommentCleanupWarning[]=[];
+    const sources:{signal:AbortSignal;forward:()=>void}[]=[];
     // Capture owned cleanup before any subsequent getter or listener can fail.
     // eslint-disable-next-line @typescript-eslint/unbound-method -- The captured disposer retains the acquired deadline receiver via Reflect.apply.
     const dispose=deadline.dispose;
     try {
-      const owned=signal===undefined?deadline.signal:AbortSignal.any([signal,deadline.signal]);combined=owned;
+      const controller=new AbortController(),owned=controller.signal;combined=owned;
+      for(const source of signal===undefined?[deadline.signal]:[deadline.signal,signal]){
+        signalAborted(source);const forward=()=>{controller.abort();};sources.push({signal:source,forward});
+        Reflect.apply(nativeAdd,source,["abort",forward]);if(signalAborted(source))forward();
+      }
       if(signalAborted(owned))throw new ForgeError("request-cancelled");
       let cancel:(error:ForgeError)=>void=()=>{};
       const cancellation=new Promise<never>((_resolve,reject)=>{cancel=reject;});void cancellation.catch(()=>undefined);
@@ -179,6 +185,7 @@ export class GitHubClient {
       failure=sanitizeForgeError(error, combined!==undefined&&signalAborted(combined) ? "request-cancelled" : "request-failed");
     } finally {
       if(aborted!==undefined&&combined!==undefined){try{Reflect.apply(nativeRemove,combined,["abort",aborted]);}catch(error){warnings.push("listener-cleanup-failed");cleanupFailure=withoutRejectionProof(error,"request-failed");}}
+      for(const source of sources){try{Reflect.apply(nativeRemove,source.signal,["abort",source.forward]);}catch(error){if(!warnings.includes("listener-cleanup-failed"))warnings.push("listener-cleanup-failed");cleanupFailure=withoutRejectionProof(error,"request-failed");}}
       try{Reflect.apply(dispose,deadline,[]);}catch(error){warnings.push("timing-disposal-failed");cleanupFailure=withoutRejectionProof(error,"request-failed");}
     }
     if(failure!==undefined)throw failure;
@@ -475,7 +482,7 @@ export class GitHubClient {
         }, input.signal);
       } catch (error) {
         if (!(error instanceof ForgeError) || (error.code !== "request-failed" && error.code !== "request-cancelled")) throw error;
-        if (input.signal?.aborted === true) throw new ForgeError("request-cancelled");
+        if (cancelled(input.signal)) throw new ForgeError("request-cancelled");
       }
       if (response !== undefined && (response.status === 200 || response.status === 201)) {
         const written = this.#comment(parse(response));
