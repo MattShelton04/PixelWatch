@@ -6,7 +6,8 @@ GitHub Pages limits: 1 GB published site, 1 GB recommended source repo, 10-minut
 timeout, soft 100 GB/month bandwidth. The soft 10 builds/hour limit doesn't apply to custom
 Actions deployments. Don't rely on an exact CDN cache TTL, Camo size limit or GitHub GC schedule.
 
-Product budget for the **assembled site** (data, images, app, HTML, API, migration grace copies):
+Default product budget for the **assembled site** (data, images, app, HTML, API, migration grace
+copies; trusted config@1 may override these within its existing 1 GiB schema maximum, ADR 0022):
 
 - **soft 400 MiB:** warn with a size breakdown;
 - **hard 500 MiB:** prune eligible history deterministically (§5). If the protected roots plus
