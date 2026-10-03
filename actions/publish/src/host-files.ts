@@ -2,7 +2,7 @@ import {createHash} from "node:crypto";
 import {closeSync,constants,fstatSync,lstatSync,mkdirSync,mkdtempSync,openSync,readSync,readdirSync,realpathSync,rmdirSync,unlinkSync,writeSync,type BigIntStats} from "node:fs";
 import {basename,dirname,isAbsolute,join,relative,resolve,sep} from "node:path";
 import {classifyStorePath} from "../../../packages/core/src/index.ts";
-import {canonicalBytes,isGitHubId,parseRunKey} from "../../../packages/schemas/src/index.ts";
+import {canonicalBytes,isGitHubId,parseJson,parseRunKey} from "../../../packages/schemas/src/index.ts";
 import {STORE_LIMITS} from "../../../packages/store/src/index.ts";
 import {copyBytes} from "../../../packages/publisher/src/assembly-input.ts";
 
@@ -11,6 +11,7 @@ export interface FileIdentity {readonly path:string;readonly dev:string;readonly
 export interface StagedSite {
   readonly taskRoot:string;readonly uploadRoot:string;readonly capsulePath:string;readonly capsuleSha256:string;readonly prefix:string;
   readonly directories:readonly FileIdentity[];readonly identities:readonly FileIdentity[];readonly files:readonly SiteFile[];
+  readonly preparedPayload?:{readonly bytes:number;readonly sha256:string};
 }
 // Generated HTML/API/schema inventories exceed the store listing; keep the existing projection-state formula.
 const MAX_SITE_FILES=3*STORE_LIMITS.maxFiles+2*1001+16;
@@ -115,25 +116,37 @@ function captureIdentities(source:readonly FileIdentity[],bound:number):FileIden
 }
 function inside(root:string,path:string):boolean {const rel=relative(root,path);return rel!==""&&!isAbsolute(rel)&&rel!==".."&&!rel.startsWith(`..${sep}`);}
 function prefix(value:string):string {if(typeof value!=="string"||!/^[a-z0-9][a-z0-9_-]{0,63}(?:\/[a-z0-9][a-z0-9_-]{0,63}){0,3}$/.test(value))fail("prefix-refused");return value;}
-function task(value:StagedSite,runnerTemp:string):StagedSite {
-  const anchor=absolute(runnerTemp),taskRoot=absolute(value.taskRoot),uploadRoot=absolute(value.uploadRoot),capsulePath=absolute(value.capsulePath),capsuleSha256=value.capsuleSha256,sitePrefix=prefix(value.prefix);
-  if(typeof capsuleSha256!=="string"||!/^[0-9a-f]{64}$/.test(capsuleSha256))fail("inventory-refused");
-  const expectedAncestors=chain(anchor);directory(anchor);
+function payloadDescriptor(value:unknown):StagedSite["preparedPayload"] {
+  if(value===undefined)return undefined;if(typeof value!=="object"||value===null)fail("inventory-refused");
+  const source=value as {bytes:unknown;sha256:unknown},bytes=source.bytes,sha256=source.sha256;
+  if(typeof bytes!=="number"||!Number.isSafeInteger(bytes)||bytes<0||bytes>MAX_CAPSULE_BYTES||typeof sha256!=="string"||!/^[0-9a-f]{64}$/.test(sha256))fail("inventory-refused");return Object.freeze({bytes,sha256});
+}
+function location(anchor:string,taskRoot:string,uploadRoot:string,capsulePath:string):void {
   if(dirname(taskRoot)!==anchor||!/^pixelwatch-stage-[A-Za-z0-9_-]{6,64}$/.test(basename(taskRoot))||uploadRoot!==join(taskRoot,"upload")||capsulePath!==join(taskRoot,"state.json"))fail("path-refused");
-  const directories=captureIdentities(value.directories,MAX_DIRECTORIES),identities=captureIdentities(value.identities,MAX_SITE_FILES+1),files=captureFiles(value.files);
+}
+/** Serialized paths are checked against fixed names and fresh runner authority before reads. */
+function layout(anchor:string,taskRoot:string,uploadRoot:string,capsulePath:string,sitePrefix:string,directories:readonly FileIdentity[],identities:readonly FileIdentity[],filePaths:readonly string[],prepared:StagedSite["preparedPayload"]):void {
+  location(anchor,taskRoot,uploadRoot,capsulePath);
+  const expectedAncestors=chain(anchor);directory(anchor);
   const directoryMap=new Map(directories.map(item=>[item.path,item]));
   for(const item of [...expectedAncestors,identity(anchor,directory(anchor))]){const prior=directoryMap.get(item.path);if(prior===undefined||prior.dev!==item.dev||prior.ino!==item.ino)fail("directory-changed");}
   for(const item of directories)if(!expectedAncestors.some(parent=>parent.path===item.path)&&item.path!==anchor&&!inside(taskRoot,item.path)&&item.path!==taskRoot)fail("path-refused");
   if(!directoryMap.has(taskRoot)||!directoryMap.has(uploadRoot))fail("inventory-refused");checkDirectories(directories);
-  const expectedFiles=new Set([capsulePath,...files.map(file=>join(uploadRoot,...sitePrefix.split("/"),...file.path.split("/")))]);
+  const expectedFiles=new Set([capsulePath,...filePaths.map(path=>join(uploadRoot,...sitePrefix.split("/"),...path.split("/"))),...(prepared===undefined?[]:[join(taskRoot,"prepared.json")])]);
   if(identities.length!==expectedFiles.size||identities.some(item=>!expectedFiles.has(item.path)))fail("inventory-refused");
-  for(const item of identities){if(!same(regular(item.path),item))fail("file-changed");const cap=item.path===capsulePath?MAX_CAPSULE_BYTES:maximum(relative(join(uploadRoot,...sitePrefix.split("/")),item.path).split(sep).join("/"));if(regular(item.path).size>BigInt(cap))fail("file-limit");}
-  return Object.freeze({taskRoot,uploadRoot,capsulePath,capsuleSha256,prefix:sitePrefix,directories,identities,files});
+  for(const item of identities){const stat=regular(item.path);if(!same(stat,item))fail("file-changed");const cap=item.path===capsulePath||item.path===join(taskRoot,"prepared.json")?MAX_CAPSULE_BYTES:maximum(relative(join(uploadRoot,...sitePrefix.split("/")),item.path).split(sep).join("/"));if(stat.size>BigInt(cap))fail("file-limit");}
+}
+function task(value:StagedSite,runnerTemp:string):StagedSite {
+  const anchor=absolute(runnerTemp),taskRoot=absolute(value.taskRoot),uploadRoot=absolute(value.uploadRoot),capsulePath=absolute(value.capsulePath),capsuleSha256=value.capsuleSha256,sitePrefix=prefix(value.prefix),preparedPayload=payloadDescriptor(value.preparedPayload);
+  if(typeof capsuleSha256!=="string"||!/^[0-9a-f]{64}$/.test(capsuleSha256))fail("inventory-refused");
+  const directories=captureIdentities(value.directories,MAX_DIRECTORIES),identities=captureIdentities(value.identities,MAX_SITE_FILES+2),files=captureFiles(value.files);
+  layout(anchor,taskRoot,uploadRoot,capsulePath,sitePrefix,directories,identities,files.map(file=>file.path),preparedPayload);
+  return Object.freeze({taskRoot,uploadRoot,capsulePath,capsuleSha256,prefix:sitePrefix,directories,identities,files,...(preparedPayload===undefined?{}:{preparedPayload})});
 }
 function inventory(value:Omit<StagedSite,"capsuleSha256">):Uint8Array {
   const identities=value.identities.filter(item=>item.path!==value.capsulePath),files=value.files.map(file=>({path:file.path,bytes:file.bytes.byteLength,sha256:file.sha256}));
-  const document={schemaVersion:1,taskRoot:value.taskRoot,uploadRoot:value.uploadRoot,capsulePath:value.capsulePath,prefix:value.prefix,directories:value.directories,identities,files};
-  const expected=canonicalSize(document),body=canonicalBytes(document);
+  const preparedPayload=payloadDescriptor(value.preparedPayload),document={schemaVersion:1,taskRoot:value.taskRoot,uploadRoot:value.uploadRoot,capsulePath:value.capsulePath,prefix:value.prefix,directories:value.directories,identities,files,...(preparedPayload===undefined?{}:{preparedPayload})};
+  const expected=canonicalSize(document);if(expected+(preparedPayload?.bytes??0)>MAX_CAPSULE_BYTES)fail("inventory-refused");const body=canonicalBytes(document);
   if(body.byteLength!==expected)fail("inventory-refused");return body;
 }
 function writeNew(path:string,bytes:Uint8Array):FileIdentity {
@@ -149,7 +162,7 @@ function collect(root:string,known:readonly FileIdentity[]):{files:FileIdentity[
     const path=queue[index];if(path===undefined)fail("inventory-refused");checkDirectories(known);directories.push(identity(path,directory(path)));
     for(const name of readdirSync(path)){if(name==="."||name===".."||name.includes(sep))fail("path-refused");const child=join(path,name),stat=lstatSync(child,{bigint:true});
       if(stat.isDirectory()&&!stat.isSymbolicLink()){directory(child);queue.push(child);if(queue.length>MAX_DIRECTORIES)fail("inventory-refused");}
-      else {const own=regular(child);files.push(identity(child,own));total+=Number(own.size);if(files.length>MAX_SITE_FILES+1||total>STORE_LIMITS.maxTreeBytes+MAX_CAPSULE_BYTES)fail("file-limit");}
+      else {const own=regular(child);files.push(identity(child,own));total+=Number(own.size);if(files.length>MAX_SITE_FILES+2||total>STORE_LIMITS.maxTreeBytes+MAX_CAPSULE_BYTES)fail("file-limit");}
     }
   }return {files,directories};
 }
@@ -160,8 +173,9 @@ function removeOwned(root:string,known:readonly FileIdentity[]):void {
   for(const item of entries.directories.reverse()){checkDirectories(known.filter(parent=>parent.path!==item.path&&!inside(item.path,parent.path)));if(!same(directory(item.path),item))fail("directory-changed");rmdirSync(item.path);}
 }
 /** Only trusted generated relative paths become files below a new private runner directory. */
-export function stageSite(runnerTemp:string,sitePrefix:string,source:readonly SiteFile[]):StagedSite {
+export function stageSite(runnerTemp:string,sitePrefix:string,source:readonly SiteFile[],preparedPayload?:Uint8Array):StagedSite {
   return safe(()=>{
+    const payload=preparedPayload===undefined?undefined:copyBytes(preparedPayload,MAX_CAPSULE_BYTES),descriptor=payload===undefined?undefined:Object.freeze({bytes:payload.byteLength,sha256:hash(payload)});
     const anchor=absolute(runnerTemp),parents=[...chain(anchor),identity(anchor,directory(anchor))],selectedPrefix=prefix(sitePrefix),files=captureFiles(source);
     let taskRoot:string|undefined;const directories=new Map(parents.map(item=>[item.path,item]));
     try {
@@ -170,11 +184,65 @@ export function stageSite(runnerTemp:string,sitePrefix:string,source:readonly Si
       const makeDirectory=(path:string)=>{for(const item of [...ancestors(path),path]){if(directories.has(item))continue;if(!inside(ownedRoot,item))fail("path-refused");checkDirectories([...directories.values()]);mkdirSync(item,{mode:0o700});directories.set(item,identity(item,directory(item)));}};
       makeDirectory(uploadRoot);
       for(const file of files){const target=join(uploadRoot,...selectedPrefix.split("/"),...file.path.split("/"));makeDirectory(dirname(target));identities.push(writeNew(target,file.bytes));}
-      const body=inventory({taskRoot,uploadRoot,capsulePath,prefix:selectedPrefix,directories:[...directories.values()],identities,files});identities.push(writeNew(capsulePath,body));
-      const staged=Object.freeze({taskRoot,uploadRoot,capsulePath,capsuleSha256:hash(body),prefix:selectedPrefix,directories:Object.freeze([...directories.values()]),identities:Object.freeze(identities),files:Object.freeze(files)});
+      if(payload!==undefined)identities.push(writeNew(join(taskRoot,"prepared.json"),payload));
+      const body=inventory({taskRoot,uploadRoot,capsulePath,prefix:selectedPrefix,directories:[...directories.values()],identities,files,...(descriptor===undefined?{}:{preparedPayload:descriptor})});identities.push(writeNew(capsulePath,body));
+      const staged=Object.freeze({taskRoot,uploadRoot,capsulePath,capsuleSha256:hash(body),prefix:selectedPrefix,directories:Object.freeze([...directories.values()]),identities:Object.freeze(identities),files:Object.freeze(files),...(descriptor===undefined?{}:{preparedPayload:descriptor})});
       verifyStagedSite(staged,anchor);issuedOutputs.set(uploadRoot,{kind:"upload_root",staged,runnerTemp:anchor});issuedOutputs.set(capsulePath,{kind:"capsule",staged,runnerTemp:anchor});return staged;
     }catch(error){if(taskRoot!==undefined){try {removeOwned(taskRoot,[...directories.values()]);}catch{/* Changed ownership refuses deletion; retain the fixed original failure. */}}throw error;}
   });
+}
+function record(value:unknown,required:readonly string[],optional:readonly string[]=[]):Record<string,unknown> {
+  if(typeof value!=="object"||value===null||array(value)||Object.getPrototypeOf(value)!==Object.prototype)fail("inventory-refused");
+  const source=value as Record<string,unknown>,keys=Object.keys(source),allowed=new Set([...required,...optional]);if(required.some(key=>!Object.hasOwn(source,key))||keys.some(key=>!allowed.has(key)))fail("inventory-refused");return source;
+}
+function persistedIdentities(value:unknown,bound:number):FileIdentity[] {
+  if(!array(value))fail("inventory-refused");const source=value as readonly unknown[];
+  if(source.length<1||source.length>bound)fail("inventory-refused");const result:FileIdentity[]=[];
+  for(const item of source){const captured=record(item,["path","dev","ino"]);result.push(captureIdentity(captured as unknown as FileIdentity));}return captureIdentities(result,bound);
+}
+interface ManifestFile {readonly path:string;readonly bytes:number;readonly sha256:string}
+function persistedFiles(value:unknown):ManifestFile[] {
+  if(!array(value))fail("inventory-refused");const source=value as readonly unknown[];
+  if(source.length<2||source.length>MAX_SITE_FILES)fail("inventory-refused");const result:ManifestFile[]=[],seen=new Set<string>();let total=0;
+  for(const item of source){const source=record(item,["path","bytes","sha256"]),path=source["path"],bytes=source["bytes"],sha256=source["sha256"];
+    if(typeof path!=="string"||!allowed(path)||seen.has(path)||typeof bytes!=="number"||!Number.isSafeInteger(bytes)||bytes<0||bytes>maximum(path)||typeof sha256!=="string"||!/^[0-9a-f]{64}$/.test(sha256))fail("inventory-refused");seen.add(path);total+=bytes;if(total>STORE_LIMITS.maxTreeBytes)fail("inventory-refused");result.push({path,bytes,sha256});}
+  if(!seen.has("index.html")||!seen.has("site.json"))fail("inventory-refused");return result;
+}
+function preparedBytes(captured:StagedSite):Uint8Array|undefined {
+  const descriptor=captured.preparedPayload;if(descriptor===undefined)return undefined;
+  const capsuleBytes=inventory(captured).byteLength;if(capsuleBytes+descriptor.bytes>MAX_CAPSULE_BYTES)fail("inventory-refused");
+  const path=join(captured.taskRoot,"prepared.json"),expected=captured.identities.find(item=>item.path===path);if(expected===undefined)fail("inventory-refused");
+  const bytes=readBoundedFile(path,descriptor.bytes);if(bytes.byteLength!==descriptor.bytes||hash(bytes)!==descriptor.sha256)fail("payload-changed");
+  checkDirectories(captured.directories);if(!same(regular(path),expected))fail("file-changed");return bytes;
+}
+/** A bounded reader's close is an acquisition boundary; retain the original file authority. */
+function checkRetainedFiles(captured:StagedSite):void {
+  checkDirectories(captured.directories);for(const expected of captured.identities)if(!same(regular(expected.path),expected))fail("file-changed");
+}
+/** The trusted step digest pins content; a replaced byte-identical state inode is equivalent.
+ * Its fresh inode is retained during this read. Header identities still pin every directory,
+ * upload file and payload. An in-process stage proof continues to pin its original state inode.
+ */
+export function readStagedSite(capsulePath:string,capsuleSha256:string,expectedRunnerTemp:string):StagedSite {
+  return safe(()=>{
+    const anchor=absolute(expectedRunnerTemp),capsule=absolute(capsulePath),taskRoot=dirname(capsule),uploadRoot=join(taskRoot,"upload");location(anchor,taskRoot,uploadRoot,capsule);
+    if(typeof capsuleSha256!=="string"||!/^[0-9a-f]{64}$/.test(capsuleSha256))fail("inventory-refused");
+    const parents=chain(capsule),before=identity(capsule,regular(capsule)),bytes=readBoundedFile(capsule,MAX_CAPSULE_BYTES);
+    checkDirectories(parents);if(!same(regular(capsule),before)||hash(bytes)!==capsuleSha256)fail("capsule-changed");
+    const document=record(parseJson(bytes,{maxBytes:MAX_CAPSULE_BYTES,maxDepth:8}),["schemaVersion","taskRoot","uploadRoot","capsulePath","prefix","directories","identities","files"],["preparedPayload"]);
+    if(document["schemaVersion"]!==1||document["taskRoot"]!==taskRoot||document["uploadRoot"]!==uploadRoot||document["capsulePath"]!==capsule||typeof document["prefix"]!=="string")fail("inventory-refused");
+    const sitePrefix=prefix(document["prefix"]),metadata=Object.hasOwn(document,"preparedPayload")?record(document["preparedPayload"],["bytes","sha256"]):undefined,preparedPayload=payloadDescriptor(metadata);
+    if(bytes.byteLength+(preparedPayload?.bytes??0)>MAX_CAPSULE_BYTES)fail("inventory-refused");
+    const directories=persistedIdentities(document["directories"],MAX_DIRECTORIES),manifest=persistedFiles(document["files"]),persisted=persistedIdentities(document["identities"],MAX_SITE_FILES+1);
+    if(persisted.some(item=>item.path===capsule))fail("inventory-refused");const identities=[...persisted,before];
+    layout(anchor,taskRoot,uploadRoot,capsule,sitePrefix,directories,identities,manifest.map(file=>file.path),preparedPayload);
+    const files:SiteFile[]=manifest.map(file=>{const bytes=readBoundedFile(join(uploadRoot,...sitePrefix.split("/"),...file.path.split("/")),file.bytes);if(bytes.byteLength!==file.bytes||hash(bytes)!==file.sha256)fail("file-changed");return Object.freeze({path:file.path,bytes,sha256:file.sha256});});
+    const staged=Object.freeze({taskRoot,uploadRoot,capsulePath:capsule,capsuleSha256,prefix:sitePrefix,directories:Object.freeze(directories),identities:Object.freeze(identities),files:Object.freeze(files),...(preparedPayload===undefined?{}:{preparedPayload})});
+    verifyStagedSite(staged,anchor);checkRetainedFiles(staged);checkDirectories(parents);if(!same(regular(capsule),before))fail("file-changed");return staged;
+  });
+}
+export function readPreparedPayload(staged:StagedSite,anchor:string):Uint8Array|undefined {
+  return safe(()=>{const captured=task(staged,anchor);verifyStagedSite(captured,anchor);const result=preparedBytes(captured);checkRetainedFiles(captured);return result;});
 }
 export function verifyStagedSite(value:StagedSite,expectedRunnerTemp:string):void {
   safe(()=>{const captured=task(value,expectedRunnerTemp),entries=collect(captured.taskRoot,captured.directories),expected=new Set(captured.identities.map(item=>item.path));
@@ -183,8 +251,9 @@ export function verifyStagedSite(value:StagedSite,expectedRunnerTemp:string):voi
     if(entries.directories.length!==expectedDirectories.size||entries.directories.some(item=>!expectedDirectories.has(item.path)))fail("inventory-refused");
     const expectedCapsule=inventory(captured),actualCapsule=readBoundedFile(captured.capsulePath,expectedCapsule.byteLength);
     if(actualCapsule.byteLength!==expectedCapsule.byteLength||hash(expectedCapsule)!==captured.capsuleSha256||hash(actualCapsule)!==captured.capsuleSha256)fail("capsule-changed");
+    preparedBytes(captured);
     for(const file of captured.files){const bytes=readBoundedFile(join(captured.uploadRoot,...captured.prefix.split("/"),...file.path.split("/")),Math.min(maximum(file.path),file.bytes.byteLength));if(bytes.byteLength!==file.bytes.byteLength||hash(bytes)!==file.sha256)fail("file-changed");}
-    checkDirectories(captured.directories);
+    checkRetainedFiles(captured);
   });
 }
 export function cleanupStagedSite(value:StagedSite,expectedRunnerTemp:string):void {
@@ -193,16 +262,18 @@ export function cleanupStagedSite(value:StagedSite,expectedRunnerTemp:string):vo
 /** A complete bounded key/value block is captured before opening the runner output file. */
 export function appendOutputs(path:string,values:Readonly<Record<string,string>>):void {
   safe(()=>{
-    const keys=Object.keys(values),allowedKeys=new Set(["project","stored","projection","prepared","upload_root","capsule"]);if(keys.length===0||keys.length>6||keys.some(key=>!allowedKeys.has(key)))fail("output-refused");
-    const parents=chain(path),originalOutput=identity(path,regular(path)),lines:string[]=[],proofs:IssuedOutput[]=[];
+    const keys=Object.keys(values),allowedKeys=new Set(["project","stored","projection","prepared","upload_root","capsule","capsule_sha256"]);if(keys.length===0||keys.length>7||keys.some(key=>!allowedKeys.has(key)))fail("output-refused");
+    const parents=chain(path),originalOutput=identity(path,regular(path)),lines:string[]=[],proofs:IssuedOutput[]=[],capturedValues=new Map<string,string>();
     for(const key of keys){const value=values[key];if(typeof value!=="string"||value.length>4096||!value.isWellFormed()||encoder.encode(value).byteLength>4096||controls(value))fail("output-refused");
       if((key==="project"||key==="stored"||key==="prepared")&&value!=="true"&&value!=="false")fail("output-refused");if(key==="projection"&&!["pending","not-retained","not-attempted"].includes(value))fail("output-refused");
-      if(key==="upload_root"||key==="capsule"){const issued=issuedOutputs.get(value);if(issued===undefined||issued.kind!==key)fail("output-refused");proofs.push(issued);}lines.push(`${key}=${value}\n`);}
+      if(key==="upload_root"||key==="capsule"){const issued=issuedOutputs.get(value);if(issued===undefined||issued.kind!==key)fail("output-refused");proofs.push(issued);}capturedValues.set(key,value);lines.push(`${key}=${value}\n`);}
+    const digest=capturedValues.get("capsule_sha256");if(digest!==undefined){const capsule=capturedValues.get("capsule"),issued=capsule===undefined?undefined:issuedOutputs.get(capsule);if(!/^[0-9a-f]{64}$/.test(digest)||issued?.kind!=="capsule"||issued.staged.capsuleSha256!==digest||proofs.some(proof=>proof.staged!==issued.staged))fail("output-refused");}
     // Recognized value getters may replace an earlier path. Nothing foreign is reread after this proof.
     const verified=new Set<StagedSite>();for(const issued of proofs){if(!verified.has(issued.staged)){verifyStagedSite(issued.staged,issued.runnerTemp);verified.add(issued.staged);}}
     checkDirectories(parents);if(!same(regular(path),originalOutput))fail("file-changed");
     const body=encoder.encode(lines.join("")),handle=opened(path,constants.O_WRONLY|constants.O_APPEND,parents);
     try {if(!same(handle.stat,originalOutput)||handle.stat.size+BigInt(body.byteLength)>BigInt(MAX_OUTPUT_BYTES))fail("output-refused");for(let offset=0;offset<body.byteLength;){const count=writeSync(handle.fd,body,offset,body.byteLength-offset);if(count===0)fail("output-refused");offset+=count;}checkDirectories(parents);if(!same(regular(path),identity(path,handle.stat)))fail("file-changed");}
     finally{closeSync(handle.fd);}
+    checkDirectories(parents);if(!same(regular(path),originalOutput))fail("file-changed");for(const staged of verified)checkRetainedFiles(staged);
   });
 }

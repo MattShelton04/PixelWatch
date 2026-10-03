@@ -48,8 +48,10 @@ it cannot manufacture a readiness deferral for an unknown sent write. An actual 
 validated deferred result retains its existing meaning, including a changed head after a 503.
 A fresh invocation that has never authorized a mutation can defer after readiness cancellation,
 and an already validated acceptance retains its created, updated or recovered result. The
-independent reviewer agreed to this distinction before the new cancellation regression was
-corrected; original accepted-result, head-change and no-write readiness assertions remain intact.
+independent reviewer agrees with this distinction. The precise new retry-cancellation
+expectation change still needs direct owner approval after automatic approval review rejected
+it twice; it has not been edited. Original accepted-result, head-change and no-write readiness
+assertions remain intact.
 
 The independent nonconfigurable native Promise.constructor reproducer remains an OPEN review
 gate shared with public metadata. ECMAScript intrinsic then performs SpeciesConstructor before

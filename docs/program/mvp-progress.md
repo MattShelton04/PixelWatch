@@ -64,15 +64,24 @@ faulted before POST and also produced an unhandled fixed diagnostic; that run is
 Correcting only fault timing reached all three intended failures with no unhandled error.
 The adapter now freezes actual privately constructed results and copied finite warnings before
 fulfillment. Its complete six-file suite passes 80/80 (1.63s), lint and types pass. Original
-independent consumer closure and the integrated review remain pending; this is not full M2
-acceptance. Projection's owner-gated expectation and constructor decision remain open.
+independent consumer reproducer now closes unchanged: a real deferral stays deferred with zero
+writes, and a validated HTTP201 stays created with one write. The original four projection
+reproducers also pass unchanged after normal dependency merge `d53cd89`; independent complete
+forge tests pass 80/80 across six files (1.65s), focused lint and whole types pass. This closes
+PROJ-REV-1–5 within their scope. Complete projection and integrated review remain gates;
+projection's owner-gated expectation and constructor decision remain open.
 
 Physical payload staging first executed 16 original passes and seven new failures, then the
 complete 23-case author file passed (17.37s). Root review reproduced a changed payload inode
 after the bounded reader's close being accepted as the retained identity despite identical
 bytes. Only byte-identical replacement of the state inventory was an explicitly accepted
-restart boundary. The payload finding is open with an unchanged probe; its correction and
-independent physical handoff review are required before host composition acceptance.
+restart boundary. The twenty-fourth regression exercised five failing terminal modes before
+the retained-inode correction. The actual complete corrected file passes 24/24 for the author
+(18.84s) and root independent review (19.40s), including all five terminal modes. The unchanged
+root reproducer now refuses the replacement. Source `45bc9cc1` and test `5b3b3054` are scoped
+approved; focused lint and whole types pass. The root scans 25 physical codec/staging/producer
+logs (42,095 bytes), zero failures. The default Vite EPERM startup ran zero cases and is retained
+beside the authorized complete run. This proves the handoff helpers, not host composition.
 
 The fixed live setup proposal is prepared locally with finite refs, scoped credentials, Pages
 policy, nine actual scenarios and exact-ID cleanup. Numeric IDs, account choices, release pins
