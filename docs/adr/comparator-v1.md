@@ -230,6 +230,12 @@ generated from the files above, and a test fails if they're stale.
   `node tools/check-reference-compare.ts` reproduced all 207 compared views (42 + 64 + 101) from
   `.reference/`. `region-window` was recorded with the harness above in the same environment, and
   only the three `tiny/` files changed.
+
+  **Through `pixelwatch-dev compare` (M1.8, ADR 0014).** `tools/dev-compare.test.ts` reproduces
+  `crops/expected.json` and 46 of the 48 `tiny/expected.json` results from bundle inputs; the
+  other two list the unit on neither side, so no ingestion declares them.
+  `node tools/check-reference-compare.ts --dev-compare` reproduced all 207 compared views from
+  converted `.reference/` captures (`docs/evidence/m1.8-dev-compare.md`).
 - M1.1/M1.2 should decode the real PNGs and crops and match the recorded `pixelHash` values.
   Those come from Pillow plus an independent Python hash.
 - `packages/core` now exists with the pixel hash only (M1.2 adds blob reuse). The fixed vectors

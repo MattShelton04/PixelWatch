@@ -9,16 +9,17 @@
 // - A capability is true exactly when its fields are present: `diff` when some result has a diff,
 //   `regions` when every analysis has regions. A run that has regions on only some analyses can't
 //   be stated truthfully and is refused.
-import { type ChangeResult, type Changes, type Run, type Side, validateDocument } from "@pixelwatch/schemas";
+import { type ChangeResult, type Changes, type Run, type RunResult, type Side, validateDocument } from "@pixelwatch/schemas";
 import { refuse } from "./errors.ts";
 import type { SiteUrls } from "./site.ts";
 
-function capabilities(run: Run): Changes["capabilities"] {
-  const analyses = run.results.flatMap((r) => r.diff?.analyses ?? []);
-  const diff = run.results.some((r) => r.diff !== undefined);
+/** The features that ran on these results (ADR 0013 §2). Also used by `pixelwatch-dev compare` (ADR 0014). */
+export function capabilitiesOf(results: readonly RunResult[], what: string): Changes["capabilities"] {
+  const analyses = results.flatMap((r) => r.diff?.analyses ?? []);
+  const diff = results.some((r) => r.diff !== undefined);
   const grouped = analyses.filter((a) => a.regions !== undefined).length;
   if (grouped !== 0 && grouped !== analyses.length) {
-    refuse("invalid-input", `${run.runKey} has regions on some analyses but not others`);
+    refuse("invalid-input", `${what} has regions on some analyses but not others`);
   }
   return { diff, regions: diff && grouped === analyses.length };
 }
@@ -73,7 +74,7 @@ export function projectChanges(run: Run, urls: SiteUrls): Changes {
     captureClaimsTrusted: false,
     claims: structuredClone(run.claims),
     comparator: { version: run.versions.comparator },
-    capabilities: capabilities(run),
+    capabilities: capabilitiesOf(run.results, run.runKey),
     parts: structuredClone(run.parts),
     coverage: structuredClone(run.coverage),
     counts: { ...run.counts },

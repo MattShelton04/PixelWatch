@@ -17,7 +17,7 @@ export { MAX_PARTS, type MergeInput, type MergeResult, mergeParts } from "./inge
 export { MAX_IGNORED, type Selection, comparePartKeys, expectedParts, partKeyString, selectArtifacts } from "./ingest/select.ts";
 export type * from "./ingest/types.ts";
 export { type ZipArchive, type ZipEntry, openZip, readEntry } from "./ingest/zip.ts";
-export { baselineFor, buildRun, unitKeyString } from "./run/build.ts";
+export { type Analysis, baselineFor, buildAnalysis, buildRun, unitKeyString } from "./run/build.ts";
 export { MAX_STREAM_RUNS, addRun, deriveStreams, newStore, streamFor } from "./run/store.ts";
 export {
   type Breakdown,
@@ -67,7 +67,7 @@ export {
   selectRetention,
 } from "./housekeeping/retention.ts";
 export { type GraceNamespace, type References, type StoreFile, type StoreGraph, type StoreTree, readStoreTree } from "./housekeeping/tree.ts";
-export { projectChanges } from "./projection/changes.ts";
+export { capabilitiesOf, projectChanges } from "./projection/changes.ts";
 export {
   type GenerationInputs,
   PRODUCT_NAME,

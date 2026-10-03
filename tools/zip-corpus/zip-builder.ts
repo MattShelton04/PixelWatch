@@ -1,5 +1,6 @@
 // Test-side ZIP building blocks for the hostile corpus, the ingress tests, the reference check
-// and the bench (M1.4). Deliberately naive and written separately from
+// and the bench (M1.4), and the stored ZIPs `pixelwatch-dev compare` packs part directories into
+// before they enter the ingress (M1.8, ADR 0014). Deliberately naive and written separately from
 // packages/core/src/ingest/zip.ts: a test that shares its writer with the reader under test can
 // hide shared bugs (07 §2). Never import this from packages/*/src.
 //
