@@ -58,16 +58,20 @@ export function admitRun(adapter: StoreAdapter, input: WriteRunInput, dependenci
       if (status === "accepted" && typeof acceptedTip !== "string") refuse("admission-cas-invalid");
       if (acceptedTip !== undefined) checkedTip(acceptedTip);
       if (attemptedTip !== undefined) {if (typeof attemptedTip !== "string") refuse("admission-cas-invalid"); checkedTip(attemptedTip);}
-      await deps.checkpoint?.({point: "after-cas", attempt, tip: snapshot.tip, result: status});
+      let checkpointFailed = false;
+      try {await deps.checkpoint?.({point: "after-cas", attempt, tip: snapshot.tip, result: status});} catch {checkpointFailed = true;}
+      const withWarning = (result: AdmissionResult): AdmissionResult => checkpointFailed ? {...result, warnings: ["checkpoint-failed"]} : result;
       const complete = (tip: string): AdmissionResult => plan.newRunExpired && expiry !== undefined
-        ? {status: "expired", runKey: run.runKey, tip, reason: expiry.reason, attempts: attempt}
-        : {status: "stored", run: structuredClone(run), tip, added: true, attempts: attempt};
+        ? withWarning({status: "expired", runKey: run.runKey, tip, reason: expiry.reason, attempts: attempt})
+        : withWarning({status: "stored", run: structuredClone(run), tip, added: true, attempts: attempt});
       if (status === "accepted" && acceptedTip !== undefined) return complete(acceptedTip);
       if (status === "unknown") {
-        prior = await readView(); await deps.checkpoint?.({point: "after-unknown-read", attempt, tip: prior.snapshot.tip});
-        if (!plan.newRunExpired) {const recovered = existing(prior.snapshot, run.runKey, attempt); if (recovered !== undefined) return recovered;}
+        prior = await readView();
+        try {await deps.checkpoint?.({point: "after-unknown-read", attempt, tip: prior.snapshot.tip});} catch {checkpointFailed = true;}
+        if (!plan.newRunExpired) {const recovered = existing(prior.snapshot, run.runKey, attempt); if (recovered !== undefined) return withWarning(recovered);}
         else if (typeof attemptedTip === "string" && prior.snapshot.tip === attemptedTip && matchesCandidate(prior.snapshot, prior.bytes, candidate)) return complete(attemptedTip);
       }
+      if (checkpointFailed) refuse("admission-checkpoint-failed");
       // A reply already sent is recovered above even after cancellation. No new attempt starts.
       preflightCancellation(deps.signal);
       if (attempt < 5) {const jitter = deps.jitter(attempt); if (!Number.isInteger(jitter) || jitter < 0 || jitter > 1000) refuse("admission-jitter-invalid"); await deps.delay(100 * 2 ** (attempt - 1) + jitter);}

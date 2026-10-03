@@ -3,18 +3,14 @@ import { canonicalBytes, isGitHubId, parseDocument, parseRunKey, validateDocumen
 import { classifyStorePath, parsePngStructure, readStoreTree, runRecordPath } from "@pixelwatch/core";
 import { STORE_LIMITS, type StoreCandidate, type StoreSnapshot, type WriteRunInput } from "@pixelwatch/store";
 import { captureContext, copyBytes } from "./assembly-input.ts";
+import { isSignalAborted } from "./signal-input.ts";
 import { refuse, type AdmissionDependencies } from "./types.ts";
 
 export interface AdmissionCapture { readonly input: WriteRunInput; readonly dependencies: AdmissionDependencies }
 const OID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
-// eslint-disable-next-line @typescript-eslint/unbound-method -- Reflect.apply explicitly binds this native getter to the captured signal.
-const nativeAborted = Object.getOwnPropertyDescriptor(AbortSignal.prototype, "aborted")?.get;
-/** Native state, not caller-owned aborted accessors, authenticates cancellation. */
+/** Trusted native controller state, with explicit refusal of Proxy and malformed DTOs. */
 function cancelled(signal: AbortSignal): boolean {
-  try {
-    if (nativeAborted === undefined) return refuse("admission-signal-invalid");
-    return Reflect.apply<AbortSignal,[],boolean>(nativeAborted, signal, []);
-  } catch {return refuse("admission-signal-invalid");}
+  try {return isSignalAborted(signal);} catch {return refuse("admission-signal-invalid");}
 }
 export function preflightCancellation(signal: AbortSignal | undefined): void {
   if (signal !== undefined && cancelled(signal)) refuse("admission-cancelled");

@@ -63,6 +63,49 @@ async function failure(operation: Promise<unknown>, code?: string): Promise<void
   if (code !== undefined) expect(value.code).toBe(code); expect(value.cause).toBeUndefined();
 }
 describe.each(["local", "git"] as const)("controlled admission with actual %s CAS", (kind) => {
+  it("an aborted signal proxy cannot forge native cancellation state and start a CAS", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); const controller = new AbortController(); controller.abort(); let traps = 0; let reads = 0; let mutations = 0;
+    const proxy = new Proxy(controller.signal, {get(target, key, receiver) {traps++; return typeof key === "symbol" ? false : Reflect.get(target, key, receiver) as unknown;}});
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), {...dependencies(), signal: proxy}), "admission-signal-invalid");
+    expect({traps, reads, mutations}).toEqual({traps: 0, reads: 0, mutations: 0}); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("a plain copied signal shape is refused before reads or writes", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let reads = 0; let mutations = 0;
+    const forged = Object.defineProperties({}, Object.getOwnPropertyDescriptors(new AbortController().signal)) as AbortSignal;
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: (...args) => {mutations++; return f.adapter.cas(...args);}}, input(3), {...dependencies(), signal: forged}), "admission-signal-invalid");
+    expect({reads, mutations}).toEqual({reads: 0, mutations: 0}); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
+  it("post CAS checkpoint failure preserves a proven accepted write with a fixed warning", async () => {
+    const f = fixture(kind); await f.seed([input(2)]); const controller = new AbortController(); let reached = 0;
+    const result = await admission(f.adapter, input(3), {...dependencies(), signal: controller.signal, checkpoint: event => {
+      if (event.point === "after-cas") {reached++; controller.abort(); throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);} return Promise.resolve();
+    }});
+    expect(result).toMatchObject({status: "stored", attempts: 1, warnings: ["checkpoint-failed"]}); expect(reached).toBe(1);
+    const after = await f.adapter.read(); expect(after.tip).toBe(result.tip); expect(await after.readFile(runRecordPath("3-a1"))).toEqual(canonicalBytes(input(3).run)); await files(after);
+  }, 0);
+  it.each(["after-cas", "after-unknown-read"] as const)("proven retained and expired unknown pushes survive %s checkpoint failure", async point => {
+    for (const incoming of [1, 4]) {
+      let enabled = false; let nativeLost = 0; let reached = 0; let reads = 0; let mutations = 0; const controller = new AbortController(); const deps = dependencies();
+      const f = fixture(kind, event => {if (enabled && event.point === "after-push" && event.result === "accepted") {nativeLost++; throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);} return Promise.resolve();});
+      await f.seed([input(2), input(3)]); enabled = true;
+      const observed: StoreAdapter = {read: () => {reads++; return f.adapter.read();}, cas: async (...args) => {
+        mutations++; const reply = await f.adapter.cas(...args); return kind === "local" && reply.status === "accepted" ? {status: "unknown", attemptedTip: reply.tip} : reply;
+      }};
+      const result = await admission(observed, input(incoming), {...deps, signal: controller.signal, checkpoint: event => {
+        if (event.point === point) {reached++; controller.abort(); throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);} return Promise.resolve();
+      }});
+      expect(result).toMatchObject({status: incoming === 1 ? "expired" : "stored", attempts: 1, warnings: ["checkpoint-failed"]});
+      expect({reads, mutations, reached, nativeLost}).toEqual({reads: 2, mutations: 1, reached: 1, nativeLost: kind === "git" ? 1 : 0}); expect(deps.delays).toEqual([]);
+      const after = await f.adapter.read(); expect(after.tip).toBe(result.tip); expect(after.runs.has(`${String(incoming)}-a1`)).toBe(incoming === 4); await files(after);
+    }
+  }, 0);
+  it("unproven unknown checkpoint failure performs recovery but never retries a write", async () => {
+    const f = fixture(kind); await f.seed([input(2), input(3)]); const before = await f.adapter.read(); let reads = 0; let mutations = 0; let reached = 0; const deps = dependencies();
+    await failure(admission({read: () => {reads++; return f.adapter.read();}, cas: () => {mutations++; return Promise.resolve({status: "unknown"});}}, input(1), {...deps, checkpoint: event => {
+      if (event.point === "after-cas") {reached++; throw new Error(`${CANARY_TOKEN} ${SIGNED_URL}`);} return Promise.resolve();
+    }}), "admission-checkpoint-failed");
+    expect({reads, mutations, reached}).toEqual({reads: 2, mutations: 1, reached: 1}); expect(deps.delays).toEqual([]); expect((await f.adapter.read()).tip).toBe(before.tip); await files(before);
+  }, 0);
   it("cancellation before admission refuses without reading or starting a CAS", async () => {
     const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read();
     const controller = new AbortController(); controller.abort(); let reads = 0; let mutations = 0; let publicAborted = 0;
@@ -281,7 +324,11 @@ describe.each(["local", "git"] as const)("controlled admission with actual %s CA
     const f = fixture(kind); await f.seed([input(2)]); const before = await f.adapter.read(); let reached = 0;
     const poison = () => {reached++; const error = new PublisherError("admission-budget-refused"); Object.assign(error, {code: CANARY_TOKEN, message: `${CANARY_TOKEN} ${SIGNED_URL}`, stack: SIGNED_URL, cause: new Error(CANARY_TOKEN)}); return error;};
     await failure(admission({read: () => Promise.reject(poison()), cas: (...args) => f.adapter.cas(...args)}, input(3), dependencies()), "admission-budget-refused");
-    for (const point of ["after-read", "after-cas"] as const) {const deps = dependencies(); const observed: AdmissionDependencies = {...deps, checkpoint: (event) => {if (event.point === point) return Promise.reject(poison()); return Promise.resolve();}}; await failure(admission(f.adapter, input(3), observed), "admission-budget-refused");}
+    for (const point of ["after-read", "after-cas"] as const) {
+      const deps = dependencies(); const observed: AdmissionDependencies = {...deps, checkpoint: (event) => {if (event.point === point) return Promise.reject(poison()); return Promise.resolve();}};
+      if (point === "after-read") await failure(admission(f.adapter, input(3), observed), "admission-budget-refused");
+      else expect(await admission(f.adapter, input(3), observed)).toMatchObject({status: "stored", warnings: ["checkpoint-failed"]});
+    }
     expect(reached).toBe(3); const stored = await f.adapter.read(); expect(stored.tip).not.toBe(before.tip); expect(stored.runs.has("3-a1")).toBe(true); expect(await stored.readFile(runRecordPath("3-a1"))).toEqual(canonicalBytes(input(3).run)); await files(stored);
   }, 0);
   it("recovers an accepted expired admission from its exact native commit receipt", async () => {

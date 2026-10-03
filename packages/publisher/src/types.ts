@@ -43,13 +43,13 @@ export interface AdmissionDependencies {
   /** Checked before each new CAS; an already-sent push still completes bounded recovery. */
   readonly signal?: AbortSignal;
 }
-export type AdmissionResult = WriteRunResult | {
+export type AdmissionResult = (WriteRunResult | {
   readonly status: "expired";
   readonly runKey: string;
   readonly tip: string;
   readonly reason: ExpiryReason;
   readonly attempts: number;
-};
+}) & { readonly warnings?: readonly "checkpoint-failed"[] };
 /** Signature frozen separately from implementation for parallel consumers. */
 export type SiteMeasurement = (input: SizingInput) => ProjectedSizes;
 /** Authenticated workflow_run input; target/policy/release always come from trusted context. */
@@ -136,6 +136,7 @@ const DIAGNOSTIC_CODES = new Set([
   "admission-immutable-file", "admission-budget-refused", "admission-plan-invalid",
   "admission-cas-invalid", "admission-jitter-invalid", "admission-lease-exhausted",
   "admission-cancelled", "admission-signal-invalid",
+  "admission-checkpoint-failed",
   "readiness-input-invalid", "readiness-timing-invalid", "readiness-operation-failed",
   "source-job-input-invalid", "source-job-operation-failed", "source-job-cancelled",
   "source-job-source-invalid", "source-job-download-invalid", "source-job-codec-failed",

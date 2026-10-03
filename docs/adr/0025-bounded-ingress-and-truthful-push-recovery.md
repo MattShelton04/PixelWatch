@@ -20,15 +20,25 @@ push using the existing bounded store rules. Do not undo a successful push or be
 CAS after expiry. Accepted and exactly recovered replies retain truthful stored/expired
 status. Unproven unknown replies after cancellation refuse without retry writes.
 
-Implementation inferences: capture the supplied native AbortSignal once; inspect native
-state without caller-owned accessors. Check before each attempt and immediately after the
+Implementation inferences: capture the supplied in-process AbortController signal once;
+reject Proxy signals before any traps, copied plain shapes, non-boolean native state and
+accessor-backed own symbol state. Use captured native getters/EventTarget operations and
+require the exact local AbortSignal prototype. Node's getter alone is not a sufficient
+boundary: it accepts proxies and shapes. This policy assumes a trusted adapter constructs
+the controller; it is not an unforgeable JavaScript identity claim. Check before each attempt and immediately after the
 last pre-CAS checkpoint. Preserve existing five-attempt/receipt/tree recovery limits. Freeze
 SourceJob types and `m2-ingress-contracts.md` before dependent authors consume them. Use the
 existing forge Timing deadline port and private staged canonical blobs; no external dependency.
 Always invoke captured deadline disposal. A disposal failure before proven admission refuses
 with a fixed category; after proof, preserve stored/expired truth and report a fixed cleanup
 diagnostic. Reuse run@1 validation as an internal carrier for its existing SourceEnvelope
-component checks; never store/return/log the carrier or invent an envelope. These are inferred
+component checks; never store/return/log the carrier or invent an envelope. A post-CAS
+checkpoint exception must not hide an accepted write. Unknown outcomes still undergo bounded
+recovery; a proven result retains stored/expired status with the fixed optional admission
+warning `checkpoint-failed`. Without proof, checkpoint failure refuses before any retry.
+No raw exception survives. The previous sanitization test's after-CAS expected refusal was
+corrected to assert stored truth plus this warning and actual persisted bytes, following the
+owner's recovery decision; its pre-CAS failure assertions remain unchanged. These are inferred
 implementation details, not additional owner approvals or schema changes.
 
 Authenticate codec diagnostic codes with a private constructor identity and finite existing

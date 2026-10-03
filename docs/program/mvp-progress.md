@@ -6,6 +6,26 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- New prerequisite integration is held for two independently reproduced P1 findings at5cc:
+  signal Proxy/plain-shape cancellation bypass; post-CAS checkpoint failure hiding confirmed
+  stored/expired truth. Twelve strict red tests allfailed (70filtered diagnostic),23.67s;
+  corrected complete admission82/82 exit0,227.41s. Wholetypes/focusedlint0. Root shared
+  signal helper and fixed proof warnings are frozen for dependent authors; independent
+  original-probe closure and final integrated acceptance remain gates, no self-approval.
+- Source job author has45/45 localtests exit0,7.18s; actual forge/core/native worker/local
+  and nativeGit paths. Cleanup tests first36pass/2fail, later44pass/1fail; source still
+  mutable pending lint/types/shared helper adoption and independent review. Local fixture
+  same-repo/fork authentication is not live M2 evidence.
+- Readiness author860cf0d passes26/26 exit0,4.14s after independent P2 final-clock finding.
+  Reviewer confirmed24existingtests and9deterministic sequences repeated identically,
+  plus14input/provenance/HTTPS/error sequences. Later review found native-signal Proxy
+  bypass and allocated-deadline leakage from scope construction outside cleanup. Those
+  findings remain open; author must use root helper and reviewer rerun original probes.
+- Owner approved fixed MVP PixelWatch comment title and bounded display limits, preserving
+  config@1. Correction/renderer remain pending; approval alone is not implementation.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - Ingress prerequisite source `c2a53a1ab568b7bfe2fb23c0714983b0cbcfa61f` is rebased onto
   merged mainba4831d; source diff from17c5f75 is empty. Complete `pnpm -s check` exited0,
   948tests/49files,278.97s, all lint/types/workflow checks pass. Browser/full simulation and

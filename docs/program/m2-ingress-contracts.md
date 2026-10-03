@@ -11,6 +11,19 @@ workflow/action, release or root/shared edits. Export integration is root-owned.
 
 ## Required behavior
 
+Shared signal boundary: `signal-input.ts` exports `isSignalAborted(signal: unknown): boolean`
+and `onSignalAbort(signal: AbortSignal, listener: () => void): () => void`. Trusted adapters
+construct in-process AbortController signals. The helper rejects proxies without traps and
+plain shapes before captured native operations; it does not promise unforgeable JS identity.
+Dependent authors consume this root implementation rather than repeating the weak native getter.
+Scope/listener construction and teardown must be inside deadline cleanup protection, including
+partial listener registration and throwing removers. Actual allocated deadlines always dispose.
+
+AdmissionResult optionally carries only `warnings: ["checkpoint-failed"]` after a post-CAS
+checkpoint exception when accepted/recovered stored/expired status is proven. Preserve that
+actual result through the source job. Unknown unproven outcomes still recover before refusing
+with a fixed category and cannot retry after checkpoint failure or cancellation.
+
 - Capture trusted context, event bytes (<=1MiB), all port parent objects/methods and optional
   checkpoint/signal once before any await. Use native byte copies and Reflect.apply with
   original this; never supplied map/bind/iterator/URL destinations. Fixed safe errors only.
