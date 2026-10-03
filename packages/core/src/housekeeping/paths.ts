@@ -41,6 +41,34 @@ export function prPointerPath(prNumber: string): string {
   return `api/v1/pr/${prNumber}/latest.json`;
 }
 
+// Files emitted once per site (03 §3, ADR 0013).
+export const ENTRY_PAGE = "index.html";
+export const SITE_JSON = "site.json";
+export const LLMS_TXT = "llms.txt";
+export const API_INDEX = "api/v1/index.json";
+
+/** The JSON Schemas served for the agent API, so llms.txt can link them (ADR 0013). */
+export const API_SCHEMA_KINDS = ["api-index", "changes", "pr-pointer", "stream"] as const;
+export type ApiSchemaKind = (typeof API_SCHEMA_KINDS)[number];
+
+export function apiSchemaPath(kind: ApiSchemaKind): string {
+  if (!(API_SCHEMA_KINDS as readonly string[]).includes(kind)) throw new RangeError("not a served schema");
+  return `api/v1/schemas/${kind}-1.json`;
+}
+
+const RELEASE = /^(?:0|[1-9][0-9]{0,5})\.(?:0|[1-9][0-9]{0,5})\.(?:0|[1-9][0-9]{0,5})(?:-[0-9A-Za-z.]{1,32})?$/;
+
+/** A common.json ReleaseVersion, e.g. `0.1.0` or `0.1.0-rc.1`. */
+export function isReleaseVersion(value: string): boolean {
+  return RELEASE.test(value);
+}
+
+/** The pinned release's app script (04 §1). Its bytes come from the release, never the store. */
+export function appScriptPath(release: string): string {
+  if (!isReleaseVersion(release)) throw new RangeError("not a release version");
+  return `app/${release}/app.js`;
+}
+
 export type StorePath =
   | { readonly kind: "index" }
   | { readonly kind: "run"; readonly runKey: string }

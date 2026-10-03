@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApiIndex",
+  "description": "api-index@1 (02 §7, ADR 0013): api/v1/index.json, the agent API's mutable entry point. API and schema versions, repository, generation and the streams with their latest runs. No URLs: paths are fixed by the API version.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "repositoryId", "versions", "generation", "streams"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "repositoryId": { "$ref": "common.json#/$defs/GitHubId" },
+    "versions": {
+      "description": "Separate version numbers: the PixelWatch release that built the site, the API, and each served document's schema.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release", "api", "changes", "prPointer", "stream"],
+      "properties": {
+        "release": { "$ref": "common.json#/$defs/ReleaseVersion" },
+        "api": { "const": 1 },
+        "changes": { "const": 1 },
+        "prPointer": { "const": 1 },
+        "stream": { "const": 1 }
+      }
+    },
+    "generation": { "$ref": "common.json#/$defs/Sha256" },
+    "streams": {
+      "description": "main first, then pull requests by number: main plus at most 1000 PR streams (config@1 retention.prStreams). Empty streams aren't listed.",
+      "type": "array",
+      "maxItems": 1001,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["streamId", "latest", "runCount"],
+        "properties": {
+          "streamId": { "$ref": "common.json#/$defs/StreamId" },
+          "latest": { "$ref": "common.json#/$defs/RunKey" },
+          "runCount": { "type": "integer", "minimum": 1, "maximum": 1000 }
+        }
+      }
+    }
+  }
+}

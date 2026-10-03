@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repositoryId": "987654321",
+  "versions": {
+    "release": "0.1.0",
+    "api": 1,
+    "changes": 1,
+    "prPointer": 1,
+    "stream": 1
+  },
+  "generation": "b7f8249bae464a955b6fe4b0c4570ca8c05c6c05f454beb852f16d67ef70bdfc",
+  "streams": [
+    {
+      "streamId": "main",
+      "latest": "99-a1",
+      "runCount": 1
+    },
+    {
+      "streamId": "pr-7",
+      "latest": "101-a1",
+      "runCount": 1
+    },
+    {
+      "streamId": "pr-123",
+      "latest": "100-a2",
+      "runCount": 2
+    }
+  ],
+  "changesUrl": "https://evil.example/changes.json"
+}

@@ -37,8 +37,9 @@
       "items": { "enum": ["v1"] }
     },
     "streams": {
+      "description": "main plus at most 1000 PR streams (config@1 retention.prStreams).",
       "type": "array",
-      "maxItems": 1000,
+      "maxItems": 1001,
       "items": {
         "type": "object",
         "additionalProperties": false,

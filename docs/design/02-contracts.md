@@ -19,6 +19,8 @@ keys are rejected.
 | `stream@1` | Ordered bounded run-key list plus latest pointer, **projected** from `store.json`'s run index, never stored. Only `main` and `pr-<number>` in the MVP. |
 | `site@1` | Base path, release/data/API versions, data references, generation, theme preset. No code URLs. |
 | `changes@1` | Public agent projection (§7), not internal store objects |
+| `api-index@1` | `api/v1/index.json`: API and schema versions, repository, generation, streams with their latest runs (§7, ADR 0013) |
+| `pr-pointer@1` | `api/v1/pr/<number>/latest.json`: run key, head SHA, generation (§7, ADR 0004, ADR 0013) |
 
 Product version, each schema version, the store `dataVersion`, the API version and the
 comparator version are different things. Version them separately.
@@ -175,7 +177,8 @@ Paths under the site prefix:
 api/v1/index.json                    # API/schema version, repository, streams
 api/v1/runs/<runKey>/changes.json    # immutable per run analysis
 api/v1/pr/<number>/latest.json       # small mutable pointer: run key, head SHA, generation
-llms.txt                             # explains versions, trust, coverage; links the schema
+api/v1/schemas/<kind>-1.json         # the release's JSON Schemas for the API documents
+llms.txt                             # explains versions, trust, coverage; links the schemas
 ```
 
 Each result carries the unit identity, one status, reasons, base/head image URLs (when present),
@@ -183,6 +186,11 @@ dimensions, diff measurements and optional region bounds. The document also carr
 (corroborated) vs claims (untrusted), comparator version, coverage and counts. Features not run
 are absent with a capability flag, never empty arrays implying a pass. URLs are built from the
 configured origin/prefix and IDs only.
+
+ADR 0013 fixes the details: `changes.json` is a pure, canonical projection of one run and the
+site location; "policy" is `comparator` (the version names the whole policy) plus
+`capabilities`; `parts` carries the part diagnostics (§6 step 6); `source.baseBranchSha` is
+exposed for pull requests; `latest.json` names the PR stream's latest run in history order.
 
 Illustrative abridged example (not schema-complete):
 
