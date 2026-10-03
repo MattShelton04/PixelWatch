@@ -34,6 +34,16 @@ force recomputation under a fresh lease; missing receipts/absent keys never prov
 Bounded five attempts, original injected time, immutable retained records and protected budgets
 remain unchanged. No new runtime dependency, schema version or production v2 is introduced.
 
+Review found that typed-array iterators/own byte-length claims could change copied bytes or
+understate budgets. Use captured native typed-array getters and native copying with bounds
+checked before allocation; no caller iterator/species executes. StoreSnapshot does not expose
+derived-reference authority, so read-only assembly keeps every validated derived pool root.
+
+Fixed diagnostics use a runtime code allowlist and private constructor provenance. Both store
+and publisher guards reconstruct fresh errors rather than trusting caller-visible fields or
+prototypes. Independent actual before-push callbacks demonstrated the store boundary too;
+unknown branded codes map to fixed boundary failure codes without causes or raw callback text.
+
 ## Consequences
 
 Assembly is neither deployment nor readiness/comment evidence. Exact totals can be smaller

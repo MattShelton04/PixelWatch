@@ -1,8 +1,9 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { inspect } from "node:util";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { canonicalBytes } from "@pixelwatch/schemas";
-import { GitBranchStore, writeRun, type StoreAdapter, type WriterCheckpoint, type GitCheckpoint } from "../src/index.ts";
+import { GitBranchStore, StoreError, writeRun, type StoreAdapter, type WriterCheckpoint, type GitCheckpoint } from "../src/index.ts";
 import { candidate, METADATA, REPOSITORY_ID, run, Scratch } from "./helpers.ts";
 
 const scratches: Scratch[] = [];
@@ -15,6 +16,27 @@ function fixture() {
 }
 const dependencies = { metadata: METADATA, delay: () => Promise.resolve(), jitter: () => 0 };
 describe("marked Git store (M2.2)", () => {
+  it("native before-push refusals reconstruct fixed errors without callback-owned diagnostic aliases", async () => {
+    const canary = "FAKE_STORE_CALLBACK_CANARY"; const signed = "https://invalid.example/object?sig=FAKE_STORE_CALLBACK_SIGNATURE";
+    for (const kind of ["unknown", "mutated", "prototype"] as const) {
+      const { scratch, make } = fixture(); let reached = 0; let accesses = 0;
+      const supplied = kind === "prototype" ? Object.create(StoreError.prototype) as StoreError
+        : new StoreError(kind === "unknown" ? canary + signed : "metadata-invalid");
+      if (kind !== "unknown") for (const name of ["code", "name", "message", "stack", "cause"]) {
+        Object.defineProperty(supplied, name, {configurable: true, get() { accesses++; return canary + signed; }});
+      }
+      const adapter = make({checkpoint: (event: GitCheckpoint) => {
+        if (event.point === "before-push") { reached++; return Promise.reject(supplied); } return Promise.resolve();
+      }});
+      let error: unknown; try { await adapter.cas(null, candidate()); } catch (caught) { error = caught; }
+      expect(reached).toBe(1); expect(accesses).toBe(0); expect(error === supplied).toBe(false);
+      const raw = inspect(error, {showHidden: true, depth: 8});
+      expect(raw.includes(canary) || raw.includes(signed)).toBe(false);
+      expect(error).toBeInstanceOf(StoreError); expect(Object.hasOwn(error as object, "cause")).toBe(false);
+      expect((error as StoreError).code).toBe(kind === "mutated" ? "metadata-invalid" : "store-operation-failed");
+      expect(scratch.git(["for-each-ref", "--format=%(refname)"])).toBe("");
+    }
+  }, 0); // Three fixed native before-push callbacks; bounded processes, no simulation wall clock.
   it("uses expected-absent and explicit stale leases and creates parentless commits", async () => {
     const { scratch, make } = fixture(); const a = make(); const b = make();
     expect((await a.read()).tip).toBeNull();

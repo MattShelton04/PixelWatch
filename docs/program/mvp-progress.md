@@ -26,6 +26,23 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   hash matches final merged-store proof. Independent integrated-source/lock/threat/workflow
   review passed 14 focused tests and workflow lint. One viewer PR will now run hosted acceptance;
   real Pages/live fork, M2 exit and all M3 gates remain open.
+- PR #20 merged at `f60311c8d2ea8130206eb412b3a672da338cde25`, exact head `1d0b939`.
+  Hosted run `37107686143`: Linux/Windows each passed826/43 and unfiltered viewer24/24
+  (16.0/39.0 s). Both full simulations exited2 with2PASS/12NOTRUN and all sixteen
+  normalized hashes matching local proof. Aggregate CodeQL now passes; API returns no open
+  PR merge-ref alerts, with no dismissal/suppression. Independent preview review at source
+  `3bffa7e` passed7/2 plus17 native/request probes; all seven named injections reached once.
+  Supported actual preview is restarted on corrected source, session22938, same run entrypoint.
+- Actual admission author `d332647` integrated as `8dbefff`, only three owned files. Final
+  unfiltered42/42 passed153.71 s with actual local/native Git, focused lint/types pass.
+  Assembly own final source `5b87651` integrated as `8a03314`:26/26 plus lint/types pass.
+  Independent authors now cross-review code they did not write; shared diagnostic/store fixes
+  require independent closure. The local slices do not implement deployment/comments/M2 exit.
+- REVIEW-W2-P-STORE-ERR-1 (P2) reproduced caller-owned diagnostic aliases through actual native
+  before-push checkpoint. Root strict red regression then full native15/15 passed88.96 s;
+  fresh errors preserve privately known fixed codes without caller fields/causes. Independent
+  original-probe fix verification and full combined acceptance remain gates.
+
 - Controlled publisher admission/assembly interfaces are frozen at `6cf4836`; actual assembly
   source `4abf6d4` and workspace manifest `a7f638c` are integrated on the dependency branch.
   Independent review holds integration for byte-copy accounting, undocumented snapshot-derived
