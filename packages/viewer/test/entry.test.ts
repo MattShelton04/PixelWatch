@@ -18,6 +18,11 @@ const input = () => ({ urls: urls(), repository, assets: { release, script }, ch
 const hash = (bytes: string | Uint8Array) => createHash("sha256").update(bytes).digest("base64");
 
 describe("generated final viewer entry pages", () => {
+  it("makes generated source and recovery links explicit keyboard tab stops across browser defaults", () => {
+    const anchors = [...html(input()).matchAll(/<a\b[^>]*>/g)];
+    expect(anchors.length).toBeGreaterThanOrEqual(3);
+    for (const anchor of anchors) expect(anchor[0]).toContain('tabindex="0"');
+  });
   it("puts the hash-only CSP first and pins exactly one classic defer script with matching SRI", () => {
     const page = html(input());
     expect(page).toMatch(/<head><meta http-equiv="Content-Security-Policy"/);

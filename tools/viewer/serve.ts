@@ -21,9 +21,12 @@ export async function startPreview(directory: string, options: {port?: number} =
   const root = resolve(directory); const stat = lstatSync(root);
   if (!stat.isDirectory() || stat.isSymbolicLink() || realpathSync(root) !== root) throw new Error("invalid preview directory");
   const port = options.port ?? 0; if (!Number.isSafeInteger(port) || port < 0 || port > 65535) throw new Error("invalid preview port");
+  let authority = "";
   const server = createServer((request, response) => {
     const missing = () => { response.writeHead(404, {"content-type": "text/plain", "x-content-type-options": "nosniff"}); response.end("Unavailable"); };
     try {
+      const hosts = request.rawHeaders.filter((_value, index) => index % 2 === 0 && request.rawHeaders[index]?.toLowerCase() === "host");
+      if (authority === "" || hosts.length !== 1 || request.headers.host !== authority) { missing(); return; }
       if (request.method !== "GET" && request.method !== "HEAD") { missing(); return; }
       const raw = request.url ?? "";
       if (!raw.startsWith("/") || raw.length > 2048 || /[%\\?#]|[^\x21-\x7e]/.test(raw)) { missing(); return; }
@@ -50,5 +53,6 @@ export async function startPreview(directory: string, options: {port?: number} =
   });
   await new Promise<void>((done, fail) => { server.once("error", fail); server.listen(port, "127.0.0.1", () => {server.off("error", fail); done();}); });
   const address = server.address(); if (address === null || typeof address === "string") throw new Error("preview listener unavailable");
+  authority = `127.0.0.1:${String(address.port)}`;
   return { origin: `http://127.0.0.1:${String(address.port)}`, close: () => new Promise<void>((done, fail) => {server.close((error) => { if (error === undefined) done(); else fail(error); }); server.closeAllConnections();}) };
 }

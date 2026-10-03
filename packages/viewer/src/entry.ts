@@ -16,7 +16,7 @@ const display = (value: string, maxCodePoints = 256): string => {
   for (const char of cleaned) { if (count++ >= maxCodePoints) return `${out}…`; out += char; }
   return out;
 };
-const link = (url: string, label: string): string => `<a href="${escape(url)}" rel="noopener">${escape(label)}</a>`;
+const link = (url: string, label: string): string => `<a href="${escape(url)}" rel="noopener" tabindex="0">${escape(label)}</a>`;
 
 /** Generate a pinned final entry using data only. The app bundle is trusted release input. */
 export function renderEntry(input: EntryInput): Uint8Array {
