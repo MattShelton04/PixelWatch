@@ -1,6 +1,7 @@
 import { parseJson, type JsonObject, type JsonValue } from "@pixelwatch/schemas";
 import { ForgeError, LIMITS } from "./errors.ts";
 import { FetchTransport, RealTiming, type HttpRequest, type HttpResponse, type HttpTransport, type Timing } from "./transport.ts";
+import { verifySource, type VerifiedSource, type VerifySourceInput } from "./source.ts";
 
 const API_ORIGIN = "https://api.github.com";
 const encoder = new TextEncoder();
@@ -144,6 +145,14 @@ export class GitHubClient {
       if (attempt + 1 < LIMITS.maxAttempts) await this.#delay(delay, signal);
     }
     throw new ForgeError("retry-exhausted");
+  }
+
+  async verifySource(input: VerifySourceInput): Promise<VerifiedSource> {
+    return verifySource({ repositoryId: this.#repositoryId, namespace: `${this.#owner}/${this.#repo}`, read: async (path, signal) => {
+      const response = await this.#get(path, signal);
+      if (response.status !== 200) throw new ForgeError("api-refused");
+      return parse(response);
+    } }, input);
   }
 
   async listArtifacts(runId: string, signal?: AbortSignal): Promise<readonly ArtifactDescriptor[]> {
