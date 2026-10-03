@@ -1,6 +1,7 @@
 import type { Breakdown, ExpiryReason, PagesSite, PrState, ProjectedSizes, SiteCategory, SiteUrls, StoreTree } from "@pixelwatch/core";
 import type { Config } from "@pixelwatch/schemas";
 import type { CommitMetadata, StoreSnapshot, WriteRunResult, WriterCheckpoint } from "@pixelwatch/store";
+import type { HttpTransport, Timing } from "@pixelwatch/forge-github";
 
 /** Trusted default-branch policy, authenticated target and pinned release inputs. */
 export interface PublisherContext {
@@ -49,6 +50,43 @@ export type AdmissionResult = WriteRunResult | {
 };
 /** Signature frozen separately from implementation for parallel consumers. */
 export type SiteMeasurement = (input: SizingInput) => ProjectedSizes;
+export interface ReadinessTarget {
+  readonly prNumber: string;
+  readonly runKey: string;
+  readonly headSha: string;
+}
+export interface ReadinessInput {
+  readonly context: PublisherContext;
+  readonly site: AssembledSite;
+  readonly targets: readonly ReadinessTarget[];
+  readonly signal?: AbortSignal;
+}
+export type ReadinessPollCode = "matched" | "http-status" | "redirect-refused" | "json-invalid"
+  | "unsupported-version" | "identity-mismatch" | "generation-mismatch" | "pointer-mismatch"
+  | "digest-mismatch" | "body-limit" | "request-timeout" | "transport-failed";
+export interface ReadinessPoll {
+  readonly poll: number;
+  readonly startedMilliseconds: number;
+  readonly finishedMilliseconds: number;
+  readonly passed: boolean;
+  readonly code: ReadinessPollCode;
+}
+export interface ReadinessDependencies {
+  readonly transport: HttpTransport;
+  readonly timing: Timing;
+  /** Monotonic injected clock. Production caller supplies performance.now(). */
+  readonly now: () => number;
+  readonly checkpoint?: (poll: ReadinessPoll) => Promise<void>;
+}
+export interface ReadinessResult {
+  readonly status: "served" | "pending";
+  readonly reason: "ready" | "timeout" | "cancelled";
+  readonly generation: string;
+  readonly pollCount: number;
+  readonly consecutivePasses: number;
+  readonly elapsedMilliseconds: number;
+  readonly polls: readonly ReadinessPoll[];
+}
 const DIAGNOSTIC_CODES = new Set([
   "publisher-operation-failed", "publisher-input-invalid", "invalid-commit", "json-limit",
   "unsupported-document-version", "invalid-document", "repository-invalid", "app-invalid",
@@ -66,6 +104,7 @@ const DIAGNOSTIC_CODES = new Set([
   "admission-record-mismatch", "admission-png-invalid", "admission-derived-mismatch",
   "admission-immutable-file", "admission-budget-refused", "admission-plan-invalid",
   "admission-cas-invalid", "admission-jitter-invalid", "admission-lease-exhausted",
+  "readiness-input-invalid", "readiness-timing-invalid", "readiness-operation-failed",
 ]);
 const diagnosticIdentity = new WeakMap<object, string | undefined>();
 export class PublisherError extends Error {

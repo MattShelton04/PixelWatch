@@ -49,6 +49,22 @@ The entries below are historical checkpoints, superseded by the facts above.
   metadata/ingestion/merge28/3 passed2.76s with raw leakage assertions and lint/types0.
 
 The entries below are historical checkpoints, superseded by the facts above.
+Readiness freeze2 is on a separate dependency branch combining metadata1678d59 and
+admission author d1b685a (pick5ef5347). Actual shared Readiness DTOs and three fixed error
+codes are root-owned. The only dependency addition is existing internal forgeworkspace,
+justified in ADR0024; lockfile regenerated offline with no external version change.
+Source helper/test implementation is not yet claimed. Its independent security/temporal
+review, complete pipeline callers and product simulations remain gates.
+
+The owner approved bounding source verification/download/image analysis by ten minutes,
+checking cancellation before every new CAS, and recovering/reporting an already-sent
+push under the existing bounded store rules. This is approval of the clarification,
+not proof of the still-unimplemented source job or admission cancellation.
+
+Foundation rootbranch c319ded fullcheck is running; stable67 prior908/47 and viewer24/24
+pass. Current B d1 independent56/56 passes206.20s plus3original/15extra probes/rawclean;
+metadata1678d59 independent28/3 and28actualforge/core probes pass, final scopedverdictpending.
+No M2 exit or full14case simulation pass. The historical entries below are superseded.
 
 - Current verified main is `f60311c` (PR #20 merged; viewer/platform evidence below).
   Publisher branch rebased as `c4098ce` with publisher/store source byte-identical to the
