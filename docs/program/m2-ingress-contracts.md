@@ -37,9 +37,13 @@ with a fixed category and cannot retry after checkpoint failure or cancellation.
   pass combined native signal through forge/core/worker. Dispose the deadline and close the
   worker on all paths, including refusal. Simulations inject codec/timing; no ambient timer,
   Date.now, Math.random, real sleeps, credentials, network or .reference.
-  Always invoke captured deadline disposal. Before proven admission, disposal failure refuses
-  with a fixed timing category; after a proven stored/expired result, preserve that truth and
-  add the fixed `timing-disposal-failed` cleanup diagnostic. No raw cause/message survives.
+  Always attempt every acquired signal-link remover and captured deadline disposal, even
+  when an earlier cleanup operation throws. Abort the private scope if deadline setup refuses,
+  so ignored worker-close signals cannot strand that cleanup. Before proven admission, link
+  removal or disposal failure refuses with a fixed timing category; after a proven stored/
+  expired result, preserve that truth and add the fixed `timing-disposal-failed` cleanup
+  diagnostic. The existing category covers scope teardown as well as deadline disposal;
+  this additive detail introduces no DTO or timer. No raw cause/message survives.
 - Call actual verifySource with captured config/configCommit/releaseCommit/event, verify
   returned envelope schema and repository/config/release provenance against captured context.
   PR association/target/commits come only from the authenticated envelope, never bundle claims.

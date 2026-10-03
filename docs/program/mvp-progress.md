@@ -10,10 +10,19 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   same normalized0393ba43…,288rendered/20refused/924rawscans perrun,11logs clean. Actual
   60000-byte multibyte body passes; plus1byte shortens to5301 withwarnings/report retained.
   Scope pure renderer/stamp only. Root exposes those functions; no API/live ownership claim.
-- Full browser atf546eb8 passed24/24 exit0,27.4s, all3engines. Currentfullsimulation running
-  session90429 at documentation-only0516268; no new productcase registered yet. Source job
-  corrective70/70 local exit0,13.99s but extra native-remover regressions/immutablehandoff/
-  independentoriginalprobes remain gates. Author70security-red transcript is retained honestly.
+- Integrated check at f546eb8 passed1029tests/52files, exit0,252.76s, including lint,
+  typecheck and workflow lint. Browser passed24/24 exit0,27.4s across all three engines.
+- Full simulation at documentation-only0516268 completed exit2:9harness PASS,2product
+  PASS,12product NOT RUN. All17 ordered normalized trace hashes equal the previous local
+  run and the recorded PR21 Linux/Windows results. No new productcase is registered yet;
+  this is incomplete coverage, not a simulation pass. Logroot-reviewed-readiness-simulation.log.
+- Source corrective76/76 local exit0,11.76s, lint/types0,449rawvalues/314075bytes clean.
+  Three additional deadline-setup cleanup regressions then failed strictly (79cases,
+  3failed/76passed,11.63s): rejected setup can strand worker close and deadline disposal.
+  Author is fixing the private abort scope. Immutablehandoff and independent original/
+  variant-probe closure remain gates. Earlier70security-red transcript remains retained.
+- Independent action/workflow/release/live preparation is active in the third agent slot;
+  it changes no product files or external settings. Source ingestion remains held.
 
 The entries below are historical checkpoints, superseded by the facts above.
 

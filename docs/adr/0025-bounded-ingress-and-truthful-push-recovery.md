@@ -31,9 +31,12 @@ the controller; it is not an unforgeable JavaScript identity claim. Check before
 last pre-CAS checkpoint. Preserve existing five-attempt/receipt/tree recovery limits. Freeze
 SourceJob types and `m2-ingress-contracts.md` before dependent authors consume them. Use the
 existing forge Timing deadline port and private staged canonical blobs; no external dependency.
-Always invoke captured deadline disposal. A disposal failure before proven admission refuses
-with a fixed category; after proof, preserve stored/expired truth and report a fixed cleanup
-diagnostic. Reuse run@1 validation as an internal carrier for its existing SourceEnvelope
+Always attempt all acquired signal-link removers and captured deadline disposal, even if an
+earlier teardown throws. If deadline setup refuses, abort the already-created private scope
+before racing worker close; ignored signals must not strand cleanup. Link-removal or disposal
+failure before proven admission refuses with a fixed timing category; after proof, preserve
+stored/expired truth and report the existing `timing-disposal-failed` cleanup diagnostic. That
+category includes scope teardown; it adds no DTO, timer or policy. Reuse run@1 validation as an internal carrier for its existing SourceEnvelope
 component checks; never store/return/log the carrier or invent an envelope. A post-CAS
 checkpoint exception must not hide an accepted write. Unknown outcomes still undergo bounded
 recovery; a proven result retains stored/expired status with the fixed optional admission
