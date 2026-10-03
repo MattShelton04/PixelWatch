@@ -3,7 +3,7 @@ export type ForgeErrorCode =
   | "invalid-identity" | "invalid-response" | "request-failed" | "request-cancelled"
   | "response-too-large" | "retry-exhausted" | "api-refused" | "pagination-limit"
   | "artifact-not-listed" | "artifact-budget" | "invalid-redirect" | "redirect-limit"
-  | "comment-ambiguous" | "comment-body" | "comment-outcome" | "pages-metadata";
+  | "comment-ambiguous" | "comment-body" | "comment-outcome" | "comment-guard-failed" | "pages-metadata";
 
 export class ForgeError extends Error {
   readonly code: ForgeErrorCode;

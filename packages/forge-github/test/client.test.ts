@@ -5,6 +5,7 @@ const API = "https://api.github.com/repos/owner/project";
 const TOKEN = "ghs_FAKE_CANARY_DO_NOT_LEAK_012345";
 const SIGNED = "https://blob.invalid/archive?sig=FAKE_SIGNED_CANARY_67890";
 const MARKER = "<!-- pixelwatch:repo:42 -->";
+const allowMutation = () => Promise.resolve(true);
 const json = (value: unknown, status = 200, headers: Record<string, string> = {}): HttpResponse => ({ status, headers, body: new TextEncoder().encode(JSON.stringify(value)) });
 const artifact = (id = 1, extra = {}): unknown => ({ id, name: `part-${String(id)}`, size_in_bytes: 4, expired: false, ...extra });
 const comment = (id = 1, body = `${MARKER}\nreport`, author = 7): unknown => ({ id, body, user: { id: author, login: "untrusted-login" } });
@@ -154,7 +155,7 @@ describe("GitHub adapter boundaries", () => {
     script.add(json([comment(1, MARKER, 9), comment(2, "<!-- pixelwatch:repo:420 -->", 7), comment(3)]));
     expect((await client.discoverComment("8", "7"))?.commentId).toBe("3");
     script.add(json([comment(3), comment(4)]));
-    await failure(client.reconcileComment({ prNumber: "8", botId: "7", body: `${MARKER}\nnew` }), "comment-ambiguous");
+    await failure(client.reconcileComment({ prNumber: "8", botId: "7", body: `${MARKER}\nnew`, beforeMutation: allowMutation }), "comment-ambiguous");
     expect(script.calls.every((call) => call.method === "GET")).toBe(true);
   });
 
@@ -169,14 +170,14 @@ describe("GitHub adapter boundaries", () => {
   it("accepted comment create with lost reply is rediscovered without duplicate create", async () => {
     const { client, script } = setup(); const body = `${MARKER}\nnew`;
     script.add(json([])).add(() => { throw new Error(`${TOKEN} ${SIGNED}`); }).add(json([comment(3, body)]));
-    expect(await client.reconcileComment({ prNumber: "8", botId: "7", body })).toEqual({ status: "recovered", commentId: "3" });
+    expect(await client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: allowMutation })).toEqual({ status: "recovered", commentId: "3" });
     expect(script.calls.map((call) => call.method)).toEqual(["GET", "POST", "GET"]);
   });
 
   it("unknown create is never retried until successful rediscovery proves absence", async () => {
     const { client, script } = setup(); const body = `${MARKER}\nnew`;
     script.add(json([])).add(json({}, 503)).add(json([])).add(json(comment(3, body), 201));
-    expect(await client.reconcileComment({ prNumber: "8", botId: "7", body })).toEqual({ status: "created", commentId: "3" });
+    expect(await client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: allowMutation })).toEqual({ status: "created", commentId: "3" });
     expect(script.calls.map((call) => call.method)).toEqual(["GET", "POST", "GET", "POST"]);
   });
 
@@ -185,12 +186,12 @@ describe("GitHub adapter boundaries", () => {
     for (const discovered of [[comment(3, `${MARKER}\nnewer`)], []]) {
       const { client, script } = setup();
       script.add(json([comment(3)])).add(json({}, 503)).add(json(discovered));
-      await failure(client.reconcileComment({ prNumber: "8", botId: "7", body }), "comment-outcome");
+      await failure(client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: allowMutation }), "comment-outcome");
       expect(script.calls.map((call) => call.method)).toEqual(["GET", "PATCH", "GET"]);
     }
     const { client, script } = setup();
     script.add(json([])).add(json({}, 503)).add(json({}, 503)).add(json({}, 503)).add(json({}, 503));
-    await failure(client.reconcileComment({ prNumber: "8", botId: "7", body }), "retry-exhausted");
+    await failure(client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: allowMutation }), "retry-exhausted");
     expect(script.calls.filter((call) => call.method === "POST")).toHaveLength(1);
   });
 
@@ -217,10 +218,10 @@ describe("GitHub adapter boundaries", () => {
   it("comment patch targets only discovered bot-owned ID and bounds body bytes before any mutation", async () => {
     const { client, script } = setup(); const body = `${MARKER}\nnew`;
     script.add(json([comment(3)])).add(json(comment(3, body)));
-    expect(await client.reconcileComment({ prNumber: "8", botId: "7", body })).toEqual({ status: "updated", commentId: "3" });
+    expect(await client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: allowMutation })).toEqual({ status: "updated", commentId: "3" });
     expect(script.calls[1]?.url).toBe(`${API}/issues/comments/3`);
     const fresh = setup();
-    await failure(fresh.client.reconcileComment({ prNumber: "8", botId: "7", body: `${MARKER}${"é".repeat(30_000)}` }), "comment-body");
+    await failure(fresh.client.reconcileComment({ prNumber: "8", botId: "7", body: `${MARKER}${"é".repeat(30_000)}`, beforeMutation: allowMutation }), "comment-body");
     expect(fresh.script.calls).toHaveLength(0);
   });
 
@@ -241,5 +242,31 @@ describe("GitHub adapter boundaries", () => {
     expect(await good.client.getPullRequest("8")).toEqual({ prNumber: "8", state: "open", headSha: "a".repeat(40), headRepositoryId: "43" });
     const bad = setup(); bad.script.add(json({ number: 8, state: "open", head: { sha: TOKEN, repo: { id: 43 } }, base: { repo: { id: 99 } } }));
     await failure(bad.client.getPullRequest("8"), "invalid-response");
+  });
+
+  it("rechecks publisher eligibility and owned comment after backoff before every mutation", async () => {
+    let head = "H1"; let guards = 0; const body = `${MARKER}\nH1`;
+    const timing: Timing = { deadline: () => ({ signal: new AbortController().signal, dispose: () => undefined }), delay: () => { head = "H2"; return Promise.resolve(); } };
+    const create = setup(new Script(), timing);
+    create.script.add(json([])).add(json({}, 503)).add(json([]));
+    expect(await create.client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: () => { guards++; return Promise.resolve(head === "H1"); } })).toEqual({ status: "deferred" });
+    expect(guards).toBe(2);
+    expect(create.script.calls.filter((call) => call.method === "POST")).toHaveLength(1);
+
+    let commentBody = `${MARKER}\nold`; let reads = 0;
+    const patchTiming: Timing = { deadline: () => ({ signal: new AbortController().signal, dispose: () => undefined }), delay: () => { commentBody = `${MARKER}\nnewer`; return Promise.resolve(); } };
+    const patch = setup(new Script(), patchTiming);
+    patch.script.add(() => { reads++; return json([comment(3, commentBody)]); }).add(json({}, 503)).add(() => { reads++; return json([comment(3, commentBody)]); });
+    await failure(patch.client.reconcileComment({ prNumber: "8", botId: "7", body, beforeMutation: allowMutation }), "comment-outcome");
+    expect(reads).toBe(2);
+    expect(patch.script.calls.filter((call) => call.method === "PATCH")).toHaveLength(1);
+  });
+
+  it("mandatory publisher mutation guard refuses absent, malformed or throwing guards without leaking errors", async () => {
+    for (const guard of [undefined, () => Promise.resolve("yes"), () => { throw new Error(`${TOKEN} ${SIGNED}`); }]) {
+      const { client, script } = setup(); script.add(json([]));
+      await failure(client.reconcileComment({ prNumber: "8", botId: "7", body: MARKER, beforeMutation: guard as (() => Promise<boolean>) }), "comment-guard-failed");
+      expect(script.calls.filter((call) => call.method !== "GET")).toHaveLength(0);
+    }
   });
 });

@@ -42,8 +42,16 @@ export interface DownloadedArtifact { readonly artifactId: string; readonly arti
 export interface MissingArtifact { readonly artifactId: string; readonly artifactName: string; readonly reason: "expired" | "unavailable" | "retry-exhausted" }
 export interface DownloadResult { readonly artifacts: readonly DownloadedArtifact[]; readonly missing: readonly MissingArtifact[] }
 export interface BotComment { readonly commentId: string; readonly body: string }
-export interface CommentInput { readonly prNumber: string; readonly botId: string; readonly body: string; readonly signal?: AbortSignal }
-export interface CommentResult { readonly status: "unchanged" | "created" | "updated" | "recovered"; readonly commentId: string }
+export interface CommentInput {
+  readonly prNumber: string;
+  readonly botId: string;
+  readonly body: string;
+  readonly beforeMutation: (existing: BotComment | null) => Promise<boolean>;
+  readonly signal?: AbortSignal;
+}
+export type CommentResult =
+  | { readonly status: "unchanged" | "created" | "updated" | "recovered"; readonly commentId: string }
+  | { readonly status: "deferred" };
 export interface PullRequestMetadata { readonly prNumber: string; readonly state: "open" | "closed"; readonly headSha: string; readonly headRepositoryId: string | null }
 export interface PagesMetadata { readonly url: string; readonly customDomain: string | null }
 export interface GitHubClientOptions {
@@ -268,12 +276,20 @@ export class GitHubClient {
   /** Publisher must separately hold the projection lock and recheck head/order/readiness. */
   async reconcileComment(input: CommentInput): Promise<CommentResult> {
     trustedId(input.prNumber); trustedId(input.botId);
+    if (typeof input.beforeMutation !== "function") throw new ForgeError("comment-guard-failed");
     if (!input.body.isWellFormed() || encoder.encode(input.body).byteLength > LIMITS.maxCommentBytes || !input.body.includes(this.#marker())) throw new ForgeError("comment-body");
     let existing = await this.discoverComment(input.prNumber, input.botId, input.signal);
     const originalId = existing?.commentId;
     if (existing?.body === input.body) return { status: "unchanged", commentId: existing.commentId };
     const body = encoder.encode(JSON.stringify({ body: input.body }));
     for (let attempt = 0; attempt < LIMITS.maxAttempts; attempt++) {
+      // This callback rechecks publisher-owned head/order/readiness immediately before each
+      // mutation, including retries. It cannot be omitted or implicitly defaulted to true.
+      let permitted: unknown;
+      try { permitted = await input.beforeMutation(existing); }
+      catch { throw new ForgeError("comment-guard-failed"); }
+      if (typeof permitted !== "boolean") throw new ForgeError("comment-guard-failed");
+      if (!permitted) return { status: "deferred" };
       let response: HttpResponse | undefined;
       try {
         response = await this.#request({
@@ -296,13 +312,13 @@ export class GitHubClient {
         if (retry === null) throw new ForgeError("api-refused");
         delay = retry;
       }
-      // A successful absence read is mandatory before another create. Unknown writes never
-      // flow through the generic GET retry helper. Rediscovery also refuses duplicate markers.
+      // Backoff happens before the final owned-comment read and eligibility guard. A comment
+      // or PR can change during the delay; a read before sleeping is not a retry authorization.
+      if (attempt + 1 < LIMITS.maxAttempts) await this.#delay(delay, input.signal);
       const rediscovered = await this.discoverComment(input.prNumber, input.botId, input.signal);
       if (rediscovered?.body === input.body && (originalId === undefined || rediscovered.commentId === originalId)) return { status: "recovered", commentId: rediscovered.commentId };
       if ((originalId !== undefined && (rediscovered?.commentId !== originalId || rediscovered.body !== existing?.body)) || (originalId === undefined && rediscovered !== null)) throw new ForgeError("comment-outcome");
       existing = rediscovered;
-      if (attempt + 1 < LIMITS.maxAttempts) await this.#delay(delay, input.signal);
     }
     throw new ForgeError("comment-outcome");
   }
