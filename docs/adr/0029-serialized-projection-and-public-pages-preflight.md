@@ -63,6 +63,10 @@ Authenticate the trusted report run/selected attempt/ref/SHA, identify the uniqu
 project job by exact trusted runner name and fixed project label, and compare only constructed
 job URLs with bounded statuses. SHA/time/newest/first alone never select or exclude a deployment.
 The environment must have an exact default-branch-only custom branch policy before upload.
+As an inferred bounded adapter policy, one instance permits at most60 actual public GET
+attempts, including retries, and uses existing1024-item collection/JSON/request limits.
+The next request refuses rather than guessing a wall-clock quota reset. This can block large
+or previously rate-limited histories; it never treats a partial inventory as complete.
 
 Existing site@1 must match repository/prefix and a validated marked store. Initial site absence
 also needs complete bounded deployment history with no prior deployment, excluding at most the

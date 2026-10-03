@@ -31,6 +31,11 @@ Actions, exact default-branch-only github-pages environment policy and whole-sit
 the complete initial unused-site proof in ADR0029. Current deployment correlation is exact
 authenticated attempt/job URL, never timestamp or SHA alone. Public API reads are unauthenticated
 and bounded. Unavailable/ambiguous/over-bound history refuses before upload.
+The public adapter class is PublicGitHubPagesMetadata, constructed from PublicMetadataOptions.
+No credential input exists. Count every actual GET attempt/retry against a60-request per-instance
+bound; retain existing1024-item and JSON/request limits. Refuse the next request without any
+wall-clock quota assumption. Complete environment/deployment inventories are never inferred
+from a truncated response. This bound is an inferred implementation decision in ADR0029.
 
 Use real assembleSite/deriveStreams/compareRunOrder. For every retained PR stream, fetch actual
 current PR metadata, select newest corroborated current-head run, and require built latest.json
