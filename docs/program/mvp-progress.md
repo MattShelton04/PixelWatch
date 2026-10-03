@@ -6,6 +6,13 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Combined viewer/store source `47e0626`: full check exit0, 42 files / 824 tests (199.51 s),
+  all linters/types pass; full browser acceptance exit0, 24/24 (33.2 s), all three engines.
+  Full simulation exit2, nine harness / two production PASS / twelve NOT RUN; every normalized
+  hash matches final merged-store proof. Independent integrated-source/lock/threat/workflow
+  review passed 14 focused tests and workflow lint. One viewer PR will now run hosted acceptance;
+  real Pages/live fork, M2 exit and all M3 gates remain open.
+
 - PR #19 merged `ce226ca011cca71882a0f102ef8f33de42783d2f` after final independent review
   and every required check passed. Exact head `fe1ff57` hosted run `37103496303`: Linux and
   Windows each passed 785/37; both full simulation commands exited2, 9 harness / 2 product
