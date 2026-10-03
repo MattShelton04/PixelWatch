@@ -5,31 +5,31 @@
 import { type Config, boundLabel, compareGitHubIds, isGitHubId, parseArtifactName } from "@pixelwatch/schemas";
 import { IngressError } from "./errors.ts";
 import { INGEST_LIMITS } from "./limits.ts";
-import type { ArtifactInput, Baseline, IgnoredArtifact, IgnoredReason, PartKey } from "./types.ts";
+import type { ArtifactInput, ArtifactMetadata, Baseline, IgnoredArtifact, IgnoredReason, PartKey } from "./types.ts";
 
 export const MAX_IGNORED = 256;
 
-export interface SelectedPart {
+export interface SelectedPart<T extends ArtifactMetadata = ArtifactInput> {
   readonly key: PartKey;
-  readonly artifact: ArtifactInput;
+  readonly artifact: T;
 }
 
-export interface DuplicatePart {
+export interface DuplicatePart<T extends ArtifactMetadata = ArtifactInput> {
   readonly key: PartKey;
   /** Sorted by numeric artifact ID. */
-  readonly artifacts: readonly ArtifactInput[];
+  readonly artifacts: readonly T[];
 }
 
-export interface Selection {
+export interface Selection<T extends ArtifactMetadata = ArtifactInput> {
   /** One artifact per part key, sorted by part key. */
-  readonly selected: readonly SelectedPart[];
-  readonly duplicates: readonly DuplicatePart[];
+  readonly selected: readonly SelectedPart<T>[];
+  readonly duplicates: readonly DuplicatePart<T>[];
   readonly ignored: readonly IgnoredArtifact[];
   readonly ignoredOverflow: number;
 }
 
-export interface SelectionInput {
-  readonly artifacts: readonly ArtifactInput[];
+export interface SelectionInput<T extends ArtifactMetadata = ArtifactInput> {
+  readonly artifacts: readonly T[];
   readonly config: Config;
   readonly attempt: string;
   readonly baseline: Baseline;
@@ -60,7 +60,7 @@ export function expectedParts(config: Config, baseline: Baseline): PartKey[] {
   return parts.sort(comparePartKeys);
 }
 
-function classify(name: string, input: SelectionInput, shards: ReadonlyMap<string, number>): PartKey | IgnoredReason {
+function classify(name: string, input: Pick<SelectionInput,"config"|"attempt"|"baseline">, shards: ReadonlyMap<string, number>): PartKey | IgnoredReason {
   if (!name.startsWith("pixelwatch-")) return "not-pixelwatch";
   const version = /^pixelwatch-b([0-9]+)-/.exec(name);
   if (version === null) return "malformed-name";
@@ -73,7 +73,7 @@ function classify(name: string, input: SelectionInput, shards: ReadonlyMap<strin
   return { revision: part.revision, providerId: part.providerId, shard: part.shard };
 }
 
-export function selectArtifacts(input: SelectionInput): Selection {
+export function selectArtifacts<T extends ArtifactMetadata = ArtifactInput>(input: SelectionInput<T>): Selection<T> {
   if (!isGitHubId(input.attempt)) throw new TypeError("attempt must be a GitHub numeric ID");
   if (input.artifacts.length > INGEST_LIMITS.maxArtifacts) {
     throw new IngressError("ingest-too-many-artifacts", `more than ${String(INGEST_LIMITS.maxArtifacts)} artifacts for one source attempt`);
@@ -86,7 +86,7 @@ export function selectArtifacts(input: SelectionInput): Selection {
     ids.add(artifact.artifactId);
   }
   const shards = new Map(input.config.providers.map((p) => [p.id, p.shards]));
-  const byKey = new Map<string, { key: PartKey; artifacts: ArtifactInput[] }>();
+  const byKey = new Map<string, { key: PartKey; artifacts: T[] }>();
   const ignored: IgnoredArtifact[] = [];
   for (const artifact of input.artifacts) {
     const verdict = classify(artifact.artifactName, input, shards);

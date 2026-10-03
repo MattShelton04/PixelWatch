@@ -403,6 +403,24 @@ Evidence records command, dependency SHA, exit/count/output, platform and not-ru
 
 ## External gates (not blanket blockers)
 
+### Next-source preparation at dependency `67f1ddc`
+
+Root implemented the metadata-only selection seam (ADR0023) in an isolated dependency branch.
+Actual eight tests first had six failures/two passes; final metadata/ingestion/merge28/3
+passed2.76s, focused lint/typecheck0. One startup sandbox failure collected no tests.
+The full API listing now survives duplicate/ignored/missing downloads; invalid supplied
+downloads refuse before any ZIP access. No dummy archive or schema/golden/dependency change.
+Independent review and full integration remain gates. Current foundation67 fullcheck908/47
+and viewer24/24 passed; a later admission self-finding holds that foundation for one-time
+bounded listing/reader/checkpoint/adapter-port captures. It has strict actual red probes,
+not a passing verdict. Full simulation remains2PASS/12NOTRUN/exit2; sixteen product replay
+hashes plus one harness hash match the merged-viewer source exactly.
+
+Readiness and source-ingestion specialists prepared real adapter-based DTOs/tests without
+edits. Their final root-owned interface freeze follows the admission correction. Readiness
+alone cannot activate the full CDN scenario through a vacuous empty comment list. Deployment,
+comment orchestration, real live M2 exit and all M3 gates remain absent/unproved.
+
 - Fixed separate e2e organisation/upstream/bot fork identities and scoped credentials;
   owner approval before creating repos/tokens/settings or external repository writes.
 - Read-only discovery permitted. Prepare concrete driver/setup changes before approval.
