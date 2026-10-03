@@ -4,6 +4,7 @@ import { runSimulation, type ProductDriver } from "./runner.ts";
 import { CANARY_TOKEN } from "./capture.ts";
 import { SEEDS } from "./schedule.ts";
 import { scenarios } from "./scenarios/index.ts";
+import { createHash } from "node:crypto";
 
 const checks = [{name: "runner-probe", run() {}}];
 const key = "sim-push-outcome-unknown/accepted-push";
@@ -80,4 +81,18 @@ it("awaited callbacks cannot replace the original verifier or alter later harnes
     expect(result.code).toBe(1); expect(result.output).toContain("HARNESS FAIL mandatory-failing-check");
     expect(result.output).not.toContain(`PRODUCT PASS ${key}`); expect(result.output).toContain(`PRODUCT FAIL ${key}`);
   } finally { selected.verify = verify; }
+});
+
+it("returned evidence and normalized bytes are privately captured once before validation and hashing", async () => {
+  let reads = 0; let first = "";
+  const driver: ProductDriver = async (seed) => {
+    const original = await valid(seed); if (seed === 1) first = original.normalized;
+    let dtoReads = 0;
+    return {evidence: original.evidence, get normalized() { reads++; dtoReads++; return dtoReads <= 2 ? original.normalized : CANARY_TOKEN; }};
+  };
+  const result = await runSimulation(checks, new Map([[key, driver]]));
+  // Every returned DTO accessor may run once only; hostile later values cannot replace the scanned bytes.
+  expect(reads).toBe(8); expect(result.output).not.toContain(createHash("sha256").update(CANARY_TOKEN).digest("hex"));
+  expect(result.code).toBe(2); expect(result.output).toContain(`PRODUCT PASS ${key}`);
+  expect(result.output).toContain(`seed=1 repeat=1 trace-sha256=${createHash("sha256").update(first).digest("hex")}`);
 });

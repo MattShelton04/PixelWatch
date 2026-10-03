@@ -55,8 +55,8 @@ export async function runSimulation(checks: readonly HarnessCheck[] = harnessChe
       let first: string | undefined;
       for (const repeat of [1, 2]) {
         try {
-          const result = await driver(seed);
-          assertNoSecrets([JSON.stringify(result.evidence), result.normalized]); // Before Capture redaction.
+          const result = structuredClone(await driver(seed));
+          assertNoSecrets([JSON.stringify(result), result.normalized]); // Private exact DTO, before Capture redaction.
           test.verify(result.evidence);
           const normalized: unknown = JSON.parse(result.normalized);
           if (typeof normalized !== "object" || normalized === null || Array.isArray(normalized)) throw new Error("invalid-normalized-evidence");

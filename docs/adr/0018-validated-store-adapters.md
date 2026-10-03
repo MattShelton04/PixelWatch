@@ -40,6 +40,8 @@ all registered cases passed. All eleven IDs and fourteen cases remain visible.
 Before any injected callback or await it privately snapshots the complete flattened manifest,
 original verifiers, prerequisites, fixed seeds and harness checks. Callbacks cannot shrink the
 coverage denominator, replace an acceptance assertion or turn a later harness failure into a pass.
+Each returned driver DTO is privately cloned once before scanning, verification, replay comparison
+and hashing; a getter or later mutation cannot substitute unscanned bytes for the validated trace.
 
 ## Consequences
 
