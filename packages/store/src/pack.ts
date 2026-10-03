@@ -4,6 +4,11 @@ import { inflateSync, type Inflate } from "node:zlib";
 import { refuse, STORE_LIMITS } from "./types.ts";
 
 export const MAX_PACK_OBJECTS = 2 * STORE_LIMITS.maxFiles + 1024;
+const PACK_MAGIC = Buffer.from([0x50, 0x41, 0x43, 0x4b]);
+function packetAscii(bytes: Buffer, start: number, end: number): string {
+  for (let at = start; at < end; at++) if ((bytes[at] ?? 128) > 127) refuse("git-pack-negotiation-invalid");
+  return bytes.toString("utf8", start, end);
+}
 export function indexReservation(objects: number): number { return 36 * objects + 1064; }
 function packet(text: string): string { return `${(text.length + 4).toString(16).padStart(4, "0")}${text}`; }
 export function uploadRequest(want: string): Buffer {
@@ -26,17 +31,17 @@ export class PackReceiver {
       if (this.#filled !== this.#needed) continue;
       if (this.#state === "header") {
         const version = this.#pending.readUInt32BE(4); this.#count = this.#pending.readUInt32BE(8);
-        if (this.#pending.toString("ascii", 0, 4) !== "PACK" || (version !== 2 && version !== 3)) refuse("git-pack-header-invalid");
+        if (!this.#pending.subarray(0, 4).equals(PACK_MAGIC) || (version !== 2 && version !== 3)) refuse("git-pack-header-invalid");
         if (this.#count < 1 || this.#count > this.#objects) refuse("git-pack-objects-limit");
         this.#state = "pack"; this.#append(this.#pending.subarray(0, 12)); continue;
       }
       if (this.#needed === 4) {
-        const header = this.#pending.toString("ascii", 0, 4); if (!/^[a-f0-9]{4}$/.test(header)) refuse("git-pack-negotiation-invalid");
+        const header = packetAscii(this.#pending, 0, 4); if (!/^[a-f0-9]{4}$/.test(header)) refuse("git-pack-negotiation-invalid");
         const length = Number.parseInt(header, 16);
         if (length === 0 && this.#state === "shallow") { this.#state = "nak"; this.#filled = 0; continue; }
         if (length < 5 || length > 64) refuse("git-pack-negotiation-invalid"); this.#needed = length; continue;
       }
-      const line = this.#pending.toString("ascii", 4, this.#needed);
+      const line = packetAscii(this.#pending, 4, this.#needed);
       if (this.#state === "shallow") { if (this.#shallow || (line !== `shallow ${this.#want}` && line !== `shallow ${this.#want}\n`)) refuse("git-pack-negotiation-invalid"); this.#shallow = true; this.#filled = 0; this.#needed = 4; }
       else { if (line !== "NAK\n") refuse("git-pack-negotiation-invalid"); this.#state = "header"; this.#filled = 0; this.#needed = 12; }
     }
@@ -58,7 +63,7 @@ export function validatePack(fd: number, options: { maxExpandedBytes?: number } 
   const length = fstatSync(fd).size; if (length < 32 || length > STORE_LIMITS.maxTreeBytes) refuse("git-pack-limit");
   const read = (position: number, bytes: number): Buffer => { if (position < 0 || position + bytes > length) refuse("git-pack-truncated"); const out = Buffer.alloc(bytes); if (readSync(fd, out, 0, bytes, position) !== bytes) refuse("git-pack-truncated"); return out; };
   const header = read(0, 12); const count = header.readUInt32BE(8);
-  if (header.toString("ascii", 0, 4) !== "PACK" || ![2, 3].includes(header.readUInt32BE(4)) || count < 1 || count > MAX_PACK_OBJECTS) refuse("git-pack-header-invalid");
+  if (!header.subarray(0, 4).equals(PACK_MAGIC) || ![2, 3].includes(header.readUInt32BE(4)) || count < 1 || count > MAX_PACK_OBJECTS) refuse("git-pack-header-invalid");
   const checksum = createHash("sha1"); for (let at = 0; at < length - 20;) { const chunk = read(at, Math.min(64 * 1024, length - 20 - at)); checksum.update(chunk); at += chunk.byteLength; }
   if (!checksum.digest().equals(read(length - 20, 20))) refuse("git-pack-checksum-invalid");
   let position = 12; let expandedBytes = 0; let inflatedBytes = 0;

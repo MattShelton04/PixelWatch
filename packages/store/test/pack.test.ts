@@ -70,4 +70,16 @@ describe("bounded Git pack reception (M2.2)", () => {
     const base = object(3, Uint8Array.of(1)); const delta = object(6, Uint8Array.of(1, 1, 1, 7)); const instruction = fixture();
     try { writeSync(instruction.fd, complete([base, Buffer.concat([delta.subarray(0, 1), Uint8Array.of(base.byteLength), delta.subarray(1)])])); expect(() => validatePack(instruction.fd, { maxExpandedBytes: 4 })).toThrow("git-pack-expanded-limit"); } finally { instruction.close(); }
   });
+  it("refuses high-bit aliases of Git packet and PACK headers before indexing", () => {
+    const clean = Buffer.concat([Buffer.from("0000"), packet("NAK\n"), pack(), Buffer.alloc(20)]);
+    for (const offset of [0, 8, 12]) {
+      const bytes = Buffer.from(clean); const original = bytes[offset]; if (original === undefined) throw new Error("fixture byte"); bytes[offset] = original | 128;
+      const f = fixture(); try { expect(() => { f.receiver.write(bytes); }).toThrow(offset === 12 ? "git-pack-header-invalid" : "git-pack-negotiation-invalid"); expect(fstatSync(f.fd).size).toBe(0); } finally { f.close(); }
+    }
+    const shallow = Buffer.concat([packet(`shallow ${WANT}`), Buffer.from("0000"), packet("NAK\n"), pack(), Buffer.alloc(20)]); shallow[4] = "s".charCodeAt(0) | 128;
+    const f = fixture(); try { expect(() => { f.receiver.write(shallow); }).toThrow("git-pack-negotiation-invalid"); expect(fstatSync(f.fd).size).toBe(0); } finally { f.close(); }
+    const body = Buffer.concat([pack(), object(3, Uint8Array.of(1))]); for (let n = 0; n < 4; n++) body[n] = (body[n] ?? 0) | 128;
+    const encoded = Buffer.concat([body, createHash("sha1").update(body).digest()]); const alias = fixture();
+    try { writeSync(alias.fd, encoded); expect(() => validatePack(alias.fd)).toThrow("git-pack-header-invalid"); } finally { alias.close(); }
+  });
 });
