@@ -51,6 +51,21 @@ importers:
         specifier: workspace:*
         version: link:../schemas
 
+  packages/publisher:
+    dependencies:
+      '@pixelwatch/core':
+        specifier: workspace:*
+        version: link:../core
+      '@pixelwatch/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      '@pixelwatch/store':
+        specifier: workspace:*
+        version: link:../store
+      '@pixelwatch/viewer':
+        specifier: workspace:*
+        version: link:../viewer
+
   packages/schemas:
     dependencies:
       ajv:

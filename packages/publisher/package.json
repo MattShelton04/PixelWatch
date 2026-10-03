@@ -1,0 +1,15 @@
+{
+  "name": "@pixelwatch/publisher",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PixelWatch's trusted durable admission and served-site publisher.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@pixelwatch/core": "workspace:*",
+    "@pixelwatch/schemas": "workspace:*",
+    "@pixelwatch/store": "workspace:*",
+    "@pixelwatch/viewer": "workspace:*"
+  }
+}
