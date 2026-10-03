@@ -24,7 +24,9 @@ Implementation inferences: capture the supplied in-process AbortController signa
 reject Proxy signals before any traps, copied plain shapes, non-boolean native state and
 accessor-backed own symbol state. Use captured native getters/EventTarget operations and
 require the exact local AbortSignal prototype. Node's getter alone is not a sufficient
-boundary: it accepts proxies and shapes. This policy assumes a trusted adapter constructs
+boundary: it accepts proxies and shapes and coerces malformed native boolean storage. Inspect
+the captured own Node kAborted symbol's data value before that coercion; absence refuses.
+This policy assumes a trusted adapter constructs
 the controller; it is not an unforgeable JavaScript identity claim. Check before each attempt and immediately after the
 last pre-CAS checkpoint. Preserve existing five-attempt/receipt/tree recovery limits. Freeze
 SourceJob types and `m2-ingress-contracts.md` before dependent authors consume them. Use the
@@ -36,10 +38,19 @@ component checks; never store/return/log the carrier or invent an envelope. A po
 checkpoint exception must not hide an accepted write. Unknown outcomes still undergo bounded
 recovery; a proven result retains stored/expired status with the fixed optional admission
 warning `checkpoint-failed`. Without proof, checkpoint failure refuses before any retry.
+Native EventTarget registration can insert before its listener hook throws. On registration
+failure, remove that exact callback with the captured native remover before refusing. A
+throwing removal hook is contained; native unlink precedes that hook in the pinned runtime.
 No raw exception survives. The previous sanitization test's after-CAS expected refusal was
 corrected to assert stored truth plus this warning and actual persisted bytes, following the
 owner's recovery decision; its pre-CAS failure assertions remain unchanged. These are inferred
 implementation details, not additional owner approvals or schema changes.
+
+Carry exact initially validated canonical bytes for reused blobs referenced by the accepted
+run into the bounded private admission input. A concurrent writer can GC them before the
+admission read; omitting those bytes can lose an otherwise valid ingestion. This corrects an
+overstrict inferred ingress contract, preserving ADR0010/03 §4: no hash verification, decode,
+reencoding or overwrite solely for reuse. Only accepted-run references are carried.
 
 Authenticate codec diagnostic codes with a private constructor identity and finite existing
 code set. Ingress creates fresh fixed diagnostics without raw callback causes or public

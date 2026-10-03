@@ -51,7 +51,10 @@ with a fixed category and cannot retry after checkpoint failure or cancellation.
   archives for unavailable parts. Authenticate downloaded ID/name uniqueness before ZIP reads.
 - Stage only canonical new blobs in a private bounded map. Existing canonical paths use the
   validated listing for has; never overwrite, rehash or decode solely for reuse (ADR0010).
-  Read/decode reused blobs only when actual comparison requires their pixels. Use exact
+  Decode reused blobs only when actual comparison requires their pixels. Before admission,
+  carry the exact initial validated snapshot bytes for reused canonical blobs referenced by
+  the accepted run; another writer's GC must not make the private admission input incomplete.
+  This is bounded byte copying, never rehash/redecode/reencode or overwrite. Use exact
   native staged bytes/private reads and enforce existing STORE_LIMITS. No durable mutation
   occurs until actual admitRun. Unknown selected bundle preflight precedes every sibling's
   pixel decode/staged add. No weakened profile/budget/golden/partial-pass rule.

@@ -6,6 +6,19 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Source ingestion immutable author091d3a96c11093001c1839a7b0442b68cc38c19b has54/54 local
+  tests,12.12s, raw290values/203875bytes clean andlint/types0. Actual same-repo/fork fixtures
+  remain local. Root signal followup adoption, independent source security/concurrency
+  review and integrated acceptance remain gates; no source job is on main yet.
+- Independent rootec review passes82/82,255.73s andoriginal16sequences/raw115 clean but
+  finds P2 native aborted-state coercion; actualnumber0 reads1/CAS1/stores3-a1 instead of
+  refusal. Readiness author finds native failed-registration listener leak. Root strict
+  red tests and shared corrections produce final4/4,1.18s; new independent closure pending.
+  Readiness author's35green then45strictred9fail/36pass includes8coercion cases and1shared
+  hook failure; own finish-on-remover-failure fix remains within three ownedfiles. No approval.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - New prerequisite integration is held for two independently reproduced P1 findings at5cc:
   signal Proxy/plain-shape cancellation bypass; post-CAS checkpoint failure hiding confirmed
   stored/expired truth. Twelve strict red tests allfailed (70filtered diagnostic),23.67s;
