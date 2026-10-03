@@ -43,6 +43,8 @@ export interface DownloadedArtifact { readonly artifactId: string; readonly arti
 export interface MissingArtifact { readonly artifactId: string; readonly artifactName: string; readonly reason: "expired" | "unavailable" | "retry-exhausted" }
 export interface DownloadResult { readonly artifacts: readonly DownloadedArtifact[]; readonly missing: readonly MissingArtifact[] }
 export interface BotComment { readonly commentId: string; readonly body: string }
+/** Fixed GitHub.com Actions bot record; arbitrary credentials are not authenticated by this lookup. */
+export interface PublishingBot { readonly botId: string }
 export interface CommentInput {
   readonly prNumber: string;
   readonly botId: string;
@@ -138,9 +140,14 @@ export class GitHubClient {
   }
 
   async #get(path: string, signal?: AbortSignal, accept = "application/vnd.github+json"): Promise<HttpResponse> {
+    return this.#read(`${this.#prefix}${path}`, signal, accept);
+  }
+
+  /** Destinations are constructed only by this adapter's fixed public operations. */
+  async #read(url: string, signal?: AbortSignal, accept = "application/vnd.github+json"): Promise<HttpResponse> {
     for (let attempt = 0; attempt < LIMITS.maxAttempts; attempt++) {
       let response: HttpResponse;
-      try { response = await this.#request({ method: "GET", url: `${this.#prefix}${path}`, headers: { ...this.#headers(), accept }, maxBytes: LIMITS.maxJsonBytes }, signal); }
+      try { response = await this.#request({ method: "GET", url, headers: { ...this.#headers(), accept }, maxBytes: LIMITS.maxJsonBytes }, signal); }
       catch (error) {
         if (!(error instanceof ForgeError) || error.code !== "request-failed") throw error;
         if (attempt + 1 === LIMITS.maxAttempts) break;
@@ -300,6 +307,15 @@ export class GitHubClient {
 
   #marker(): string { return `<!-- pixelwatch:repo:${this.#repositoryId} -->`; }
 
+  /** The production workflow uses github.token, whose comments must have this bot's ID. */
+  async getPublishingBot(signal?: AbortSignal): Promise<PublishingBot> {
+    const response = await this.#read(`${API_ORIGIN}/users/github-actions%5Bbot%5D`, signal);
+    if (response.status !== 200) throw new ForgeError("api-refused");
+    const value = object(parse(response));
+    if (value["login"] !== "github-actions[bot]" || value["type"] !== "Bot") throw new ForgeError("invalid-response");
+    return {botId: id(value["id"])};
+  }
+
   #comment(value: JsonValue): { readonly id: string; readonly body: string; readonly author: string } {
     const entry = object(value);
     return { id: id(entry["id"]), body: text(entry["body"], LIMITS.maxJsonBytes), author: id(object(entry["user"])["id"]) };
@@ -366,6 +382,9 @@ export class GitHubClient {
       }
       let delay = 1000 * (attempt + 1);
       if (response !== undefined) {
+        // A definitive rejection may authorize one publisher-owned text fallback. Network,
+        // authorization and uncertain outcomes cannot supply that proof; no raw body survives.
+        if (response.status === 422) throw new ForgeError("comment-body-rejected");
         const retry = this.#retryDelay(response, attempt);
         if (retry === null) throw new ForgeError("api-refused");
         delay = retry;

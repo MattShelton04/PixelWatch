@@ -6,6 +6,13 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Root publishing identity/refusal prerequisites: testsfirst5cases4failed/1passed; final
+  complete new+existingclient31/31 exit0,1.10s, lint/types0. Fixed bot endpoint and definitive
+  422 refusal proof only (ADR0027); independent review/fullintegration remain gates.
+- Source7386 original12 adversarial probes now pass unchanged, but new SOURCE-4 early
+  timing acquisition path strands captured close. Four strictred83cases4failed/79passed
+  precede corrective3e315b1; local83/83 exit0,14.43s/raw470clean. Independent exactsource
+  closure remains pending; previous79green does not override that blocker.
 - Comment independent review PASS exact3121157:20/20 exit0,2.15s/linttypes0;71variants twice
   same normalized0393ba43…,288rendered/20refused/924rawscans perrun,11logs clean. Actual
   60000-byte multibyte body passes; plus1byte shortens to5301 withwarnings/report retained.

@@ -3,13 +3,13 @@ export type ForgeErrorCode =
   | "invalid-identity" | "invalid-response" | "request-failed" | "request-cancelled"
   | "response-too-large" | "retry-exhausted" | "api-refused" | "pagination-limit"
   | "artifact-not-listed" | "artifact-budget" | "invalid-redirect" | "redirect-limit"
-  | "comment-ambiguous" | "comment-body" | "comment-outcome" | "comment-guard-failed" | "pages-metadata"
+  | "comment-ambiguous" | "comment-body" | "comment-body-rejected" | "comment-outcome" | "comment-guard-failed" | "pages-metadata"
   | "invalid-config" | "unsupported-config-version" | "source-policy" | "source-mismatch";
 
 const DIAGNOSTIC_CODES = new Set<ForgeErrorCode>([
   "invalid-identity", "invalid-response", "request-failed", "request-cancelled", "response-too-large",
   "retry-exhausted", "api-refused", "pagination-limit", "artifact-not-listed", "artifact-budget",
-  "invalid-redirect", "redirect-limit", "comment-ambiguous", "comment-body", "comment-outcome",
+  "invalid-redirect", "redirect-limit", "comment-ambiguous", "comment-body", "comment-body-rejected", "comment-outcome",
   "comment-guard-failed", "pages-metadata", "invalid-config", "unsupported-config-version", "source-policy", "source-mismatch",
 ]);
 const diagnosticIdentity = new WeakMap<object, ForgeErrorCode | undefined>();
