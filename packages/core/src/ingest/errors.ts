@@ -73,7 +73,8 @@ export type IngestionErrorCode =
   | "ingest-too-many-units"
   | "ingest-aborted"
   | "ingest-unsupported-version"
-  | "ingest-codec";
+  | "ingest-codec"
+  | "ingest-selection-invalid";
 
 export type IngressErrorCode = ZipErrorCode | PartErrorCode | IngestionErrorCode;
 
@@ -86,6 +87,7 @@ const INGESTION_CODES: ReadonlySet<IngressErrorCode> = new Set<IngestionErrorCod
   "ingest-aborted",
   "ingest-unsupported-version",
   "ingest-codec",
+  "ingest-selection-invalid",
 ]);
 
 export class IngressError extends Error {

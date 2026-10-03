@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { inspect } from "node:util";
 import { ForgeError, GitHubClient, LIMITS, type HttpRequest, type HttpResponse, type HttpTransport, type Timing } from "../src/index.ts";
 
 const API = "https://api.github.com/repos/owner/project";
@@ -6,6 +7,48 @@ const TOKEN = "ghs_FAKE_CANARY_DO_NOT_LEAK_012345";
 const SIGNED = "https://blob.invalid/archive?sig=FAKE_SIGNED_CANARY_67890";
 const MARKER = "<!-- pixelwatch:repo:42 -->";
 const allowMutation = () => Promise.resolve(true);
+
+it("transport diagnostic aliases cannot expose callback fields or steer trusted request retries", async () => {
+  for (const kind of ["fields", "accessors", "prototype", "unknown"] as const) {
+    const supplied = kind === "prototype" ? Object.create(ForgeError.prototype) as ForgeError
+      : new ForgeError(kind === "unknown" ? TOKEN as "api-refused" : "api-refused");
+    let accesses = 0;
+    if (kind === "fields") Object.assign(supplied, {message: TOKEN + SIGNED, stack: TOKEN + SIGNED, cause: TOKEN + SIGNED, code: "request-failed"});
+    else if (kind !== "unknown") for (const name of ["name", "code", "message", "stack", "cause"]) {
+      Object.defineProperty(supplied, name, {configurable: true, get() { accesses++; return TOKEN + SIGNED; }});
+    }
+    let requests = 0; let deadlines = 0; let disposed = 0; let delays = 0;
+    const client = new GitHubClient({owner: "owner", repo: "project", repositoryId: "42", token: TOKEN,
+      transport: {request: () => { requests++; return Promise.reject(supplied); }},
+      timing: {deadline: () => {deadlines++; return {signal: new AbortController().signal, dispose: () => {disposed++;}};}, delay: () => {delays++; return Promise.resolve();}},
+    });
+    let error: unknown; try {await client.getRepository();} catch (value) {error = value;}
+    expect(accesses).toBe(0); expect(error === supplied).toBe(false);
+    const raw = inspect(error, {showHidden: true, depth: 8}); expect(raw.includes(TOKEN) || raw.includes(SIGNED)).toBe(false);
+    expect(error).toBeInstanceOf(ForgeError); expect(Object.hasOwn(error as object, "cause")).toBe(false);
+    if (kind === "fields" || kind === "accessors") {expect((error as ForgeError).code).toBe("api-refused"); expect(requests).toBe(1); expect(delays).toBe(0);}
+    else {expect((error as ForgeError).code).toBe("retry-exhausted"); expect(requests).toBe(3); expect(delays).toBe(2);}
+    expect(deadlines).toBe(requests); expect(disposed).toBe(requests);
+  }
+});
+
+it("deadline setup and disposal failures cannot bypass fixed diagnostics or steer request retries", async () => {
+  for (const stage of ["deadline", "dispose"]) {
+    const supplied = new ForgeError("api-refused"); let accesses = 0; let requests = 0; let reached = 0; let delays = 0;
+    for (const name of ["name", "code", "message", "stack", "cause"]) Object.defineProperty(supplied, name, {configurable: true, get() {accesses++; return TOKEN + SIGNED;}});
+    const client = new GitHubClient({owner: "owner", repo: "project", repositoryId: "42", token: TOKEN,
+      transport: {request: () => {requests++; return Promise.resolve(json({id: 42, full_name: "owner/project", default_branch: "main"}));}},
+      timing: {deadline: () => {
+        if (stage === "deadline") {reached++; throw supplied;}
+        return {signal: new AbortController().signal, dispose: () => {reached++; throw supplied;}};
+      }, delay: () => {delays++; return Promise.resolve();}},
+    });
+    let error: unknown; try {await client.getRepository();} catch (value) {error = value;}
+    expect(reached).toBe(1); expect(accesses).toBe(0); expect(error === supplied).toBe(false); expect(requests).toBe(stage === "deadline" ? 0 : 1); expect(delays).toBe(0);
+    const raw = inspect(error, {showHidden: true, depth: 8}); expect(raw.includes(TOKEN) || raw.includes(SIGNED)).toBe(false);
+    expect(error).toBeInstanceOf(ForgeError); expect((error as ForgeError).code).toBe("api-refused"); expect(Object.hasOwn(error as object, "cause")).toBe(false);
+  }
+});
 const json = (value: unknown, status = 200, headers: Record<string, string> = {}): HttpResponse => ({ status, headers, body: new TextEncoder().encode(JSON.stringify(value)) });
 const artifact = (id = 1, extra = {}): unknown => ({ id, name: `part-${String(id)}`, size_in_bytes: 4, expired: false, ...extra });
 const comment = (id = 1, body = `${MARKER}\nreport`, author = 7): unknown => ({ id, body, user: { id: author, login: "untrusted-login" } });

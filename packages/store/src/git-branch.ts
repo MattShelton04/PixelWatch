@@ -198,9 +198,9 @@ export class GitBranchStore implements StoreAdapter {
     await this.#checkpoint?.({ point: "before-push", expectedTip, newTip: next });
     let result: GitResult;
     try { result = this.#exec(["push", "--porcelain", `--force-with-lease=${this.#ref}:${expectedTip ?? ""}`, this.#remote, `${next}:${this.#ref}`], undefined, undefined, 64 * 1024); }
-    catch { return { status: "unknown" }; } // Even a local post-push diagnostic cannot establish refusal at the remote.
-    const outcome: CasResult = result.ok ? { status: "accepted", tip: next } : !result.interrupted && result.stdout.toString("utf8").includes("[rejected]") ? { status: "conflict" } : { status: "unknown" };
-    try { await this.#checkpoint?.({ point: "after-push", expectedTip, newTip: next, result: outcome.status }); } catch { return { status: "unknown" }; }
+    catch { return { status: "unknown", attemptedTip: next }; } // Even a local post-push diagnostic cannot establish refusal at the remote.
+    const outcome: CasResult = result.ok ? { status: "accepted", tip: next } : !result.interrupted && result.stdout.toString("utf8").includes("[rejected]") ? { status: "conflict" } : { status: "unknown", attemptedTip: next };
+    try { await this.#checkpoint?.({ point: "after-push", expectedTip, newTip: next, result: outcome.status }); } catch { return { status: "unknown", attemptedTip: next }; }
     return outcome;
   }
   close(): void {

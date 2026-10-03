@@ -1,8 +1,9 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { inspect } from "node:util";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { canonicalBytes } from "@pixelwatch/schemas";
-import { GitBranchStore, writeRun, type StoreAdapter, type WriterCheckpoint, type GitCheckpoint } from "../src/index.ts";
+import { GitBranchStore, StoreError, writeRun, type StoreAdapter, type WriterCheckpoint, type GitCheckpoint } from "../src/index.ts";
 import { candidate, METADATA, REPOSITORY_ID, run, Scratch } from "./helpers.ts";
 
 const scratches: Scratch[] = [];
@@ -15,6 +16,27 @@ function fixture() {
 }
 const dependencies = { metadata: METADATA, delay: () => Promise.resolve(), jitter: () => 0 };
 describe("marked Git store (M2.2)", () => {
+  it("native before-push refusals reconstruct fixed errors without callback-owned diagnostic aliases", async () => {
+    const canary = "FAKE_STORE_CALLBACK_CANARY"; const signed = "https://invalid.example/object?sig=FAKE_STORE_CALLBACK_SIGNATURE";
+    for (const kind of ["unknown", "mutated", "prototype"] as const) {
+      const { scratch, make } = fixture(); let reached = 0; let accesses = 0;
+      const supplied = kind === "prototype" ? Object.create(StoreError.prototype) as StoreError
+        : new StoreError(kind === "unknown" ? canary + signed : "metadata-invalid");
+      if (kind !== "unknown") for (const name of ["code", "name", "message", "stack", "cause"]) {
+        Object.defineProperty(supplied, name, {configurable: true, get() { accesses++; return canary + signed; }});
+      }
+      const adapter = make({checkpoint: (event: GitCheckpoint) => {
+        if (event.point === "before-push") { reached++; return Promise.reject(supplied); } return Promise.resolve();
+      }});
+      let error: unknown; try { await adapter.cas(null, candidate()); } catch (caught) { error = caught; }
+      expect(reached).toBe(1); expect(accesses).toBe(0); expect(error === supplied).toBe(false);
+      const raw = inspect(error, {showHidden: true, depth: 8});
+      expect(raw.includes(canary) || raw.includes(signed)).toBe(false);
+      expect(error).toBeInstanceOf(StoreError); expect(Object.hasOwn(error as object, "cause")).toBe(false);
+      expect((error as StoreError).code).toBe(kind === "mutated" ? "metadata-invalid" : "store-operation-failed");
+      expect(scratch.git(["for-each-ref", "--format=%(refname)"])).toBe("");
+    }
+  }, 0); // Three fixed native before-push callbacks; bounded processes, no simulation wall clock.
   it("uses expected-absent and explicit stale leases and creates parentless commits", async () => {
     const { scratch, make } = fixture(); const a = make(); const b = make();
     expect((await a.read()).tip).toBeNull();
@@ -108,6 +130,19 @@ describe("marked Git store (M2.2)", () => {
     const adapter = make({ checkpoint }); const result = await writeRun(adapter, { run: run(), blobs: new Map() }, dependencies);
     expect(pushes).toBe(1); const raw = JSON.stringify(result); expect(raw).not.toContain(canary); expect(raw).not.toContain(signed);
     const snapshot = await adapter.read(); for (const file of snapshot.files) { const text = Buffer.from(await snapshot.readFile(file.path)).toString("utf8"); expect(text).not.toContain(canary); expect(text).not.toContain(signed); }
+  });
+  it("unknown native pushes return their privately computed attempted commit without leaking checkpoint errors", async () => {
+    const { make } = fixture(); let reached = 0;
+    const canary = "fake-canary-token"; const signed = "https://signed.invalid/a?token=fake-canary-token";
+    const adapter = make({ checkpoint: (event: GitCheckpoint) => {
+      if (event.point !== "after-push" || event.result !== "accepted") return Promise.resolve();
+      reached++; Object.assign(event, { newTip: "f".repeat(40) });
+      return Promise.reject(new Error(`${canary} ${signed}`));
+    } });
+    const outcome = await adapter.cas(null, candidate()); const current = await adapter.read();
+    expect(reached).toBe(1); expect(current.tip).not.toBeNull(); expect(current.tip).not.toBe("f".repeat(40));
+    expect(outcome).toEqual({ status: "unknown", attemptedTip: current.tip });
+    const raw = JSON.stringify(outcome); expect(raw).not.toContain(canary); expect(raw).not.toContain(signed);
   });
   it("freezes CAS candidate bytes and paths before asynchronous validation", async () => {
     const { make } = fixture(); const adapter = make(); const value = candidate(); const expected = Buffer.from(value.files.get("store.json") ?? []);

@@ -6,6 +6,68 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Exact publisher source `c319ded5bf8bd99315b286376cca142a2cbf04f4` passed unfiltered
+  `pnpm -s check`:930 tests/48 files, exit0,320.42s, including lint/typecheck/workflow lint.
+  Complete `pnpm -s test:viewer` passed24/24, exit0,34.8s, eight cases in each engine.
+  Independent admission approval at d1b685a covers56/56,206.20s, original3 probes and
+  fifteen additional hostile variants. Independent metadata approval at1678d59 covers28/3
+  existing tests and28 reached production forge/core probes;102 raw values scan clean,
+  deadlines/disposals10/10, delays2 and zero ambient timing/random calls. These reviews
+  exclude each reviewer's own implementation. Full `pnpm -s test:simulation` exited2:
+  nine harness PASS, two production PASS, twelve NOT RUN; all17 normalized trace hashes
+  match the previous integrated proof. Final documentation traceability passed7/7, exit0,
+  2.82s. Hosted exact-head Linux/Windows acceptance remains a gate before this PR merges.
+- Readiness contract/types are frozen on dependency branch0179b2e (ADR0024); its isolated
+  implementation author is writing tests first. Source ingestion, admission cancellation,
+  serialized deploy/comment reconciliation and M2 live exit remain unimplemented. The owner
+  approved bounding source work by ten minutes, checking cancellation before every new CAS,
+  and truthful recovery of already-sent pushes. That approval is not implementation evidence.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Publisher foundation source `c319ded` combines reviewed assembly/diagnostics at67, admission
+  correction author`d1b685a` (pick0916123), and root metadata seam author1678d59 (pickc319ded).
+  Current verified main remainsf60311c; no PR is open yet. Independent admission original3
+  and extra15 probes pass; independent unfiltered56 suite is active. Metadata independent
+  review is active. Neither active review is recorded as approval.
+- Stable67 `pnpm check` passed908/47, exit0,229.47s, including workflow lint; viewer24/24
+  passed26.5s in all3engines using the existing pinned browser installation. Initial concurrent
+  fullcheck failedPNG5s rejection andGit30s timeout/cleanup (906pass/2fail); unchanged fullcheck
+  alone passed without changing assertions/limits. Initial browser setup had no installed
+  engines and ran0cases; its failed report is retained separately from actual24passing.
+- Independent assembly/sharedguard final approval at67: all4originalCAP probes and11
+  additional variants passed; unfiltered35/3 passed12.09s. Forge55/4 passed2.49s plus31
+  hostile observations/56rawerrors, zero diagnostic getters; original callback leaks closed.
+  Store fixed diagnostics independently closed with4native/Proxy probes/all73codes. These
+  approvals exclude their respective implementation authors' own files.
+- Admission self-check exposed caller-map/bind/count/checkpoint captures. RootactualLocalDir
+  original3 failed; independent original3 plus15variants reproduced the same class of defect.
+  Author14newtests first12failed/2passed with42filtered; fullfinal56 passed209.28s and
+  lint/types0, all9rawlogs clean. Exact final independent/fullcombined/hosted gates remain.
+- Full reporter at67 exited2:9harnessPASS/2productPASS/12NOTRUN. All16product hashes plus
+  one harness hash match merged-viewer proof. Metadata8tests first6failed/2passed, final
+  metadata/ingestion/merge28/3 passed2.76s with raw leakage assertions and lint/types0.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
+- Current verified main is `f60311c` (PR #20 merged; viewer/platform evidence below).
+  Publisher branch rebased as `c4098ce` with publisher/store source byte-identical to the
+  preserved pre-rebase branch. All three conflicts were progress prose; both histories remain.
+- Independent admission approval covers exact author `d332647`:42/42 plus six recovery and
+  thirteen hostile-input probes, reached injections and raw scans. Independent assembly
+  review found new CAP-1/-2/-3/-4 blockers: incoherent snapshot/tip, oversized listing bypass,
+  uncaptured reader and repeated asset parent reads. Author strict red/fix work is active;
+  assembly or combined acceptance is not approved yet.
+- Store ERR1 independently verified at immutable `f4ba5f3`:four original native/Proxy probes
+  pass, callbacks reach once and zero accessors/alias/cause/raw-secret, all73 current codes
+  match the runtime allowlist. A probe against the moving rebase failed and is explicitly
+  invalidated, retained without a verdict. Final stable probe logs are separate.
+- GitHub callback diagnostic correction: client/fetch/stream/timing tests first red, final
+  full forge55/4 exit0,1.26s, lint/types0. Private code identity prevents retry steering;
+  independent original-probe verification and full combined acceptance remain gates.
+
+The following entries are historical checkpoints, superseded by the facts above.
+
 - PR #20 is held for REVIEW-W2-V-PATH-1 (P2), a reproduced local preview substitution race;
   hosted CodeQL reported two path-injection alerts on the original preview. Root replaced
   request-derived filesystem resolution with a captured inventory and checked descriptor reads.
@@ -26,6 +88,40 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   hash matches final merged-store proof. Independent integrated-source/lock/threat/workflow
   review passed 14 focused tests and workflow lint. One viewer PR will now run hosted acceptance;
   real Pages/live fork, M2 exit and all M3 gates remain open.
+- PR #20 merged at `f60311c8d2ea8130206eb412b3a672da338cde25`, exact head `1d0b939`.
+  Hosted run `37107686143`: Linux/Windows each passed826/43 and unfiltered viewer24/24
+  (16.0/39.0 s). Both full simulations exited2 with2PASS/12NOTRUN and all sixteen
+  normalized hashes matching local proof. Aggregate CodeQL now passes; API returns no open
+  PR merge-ref alerts, with no dismissal/suppression. Independent preview review at source
+  `3bffa7e` passed7/2 plus17 native/request probes; all seven named injections reached once.
+  Supported actual preview is restarted on corrected source, session22938, same run entrypoint.
+- Actual admission author `d332647` integrated as `8dbefff`, only three owned files. Final
+  unfiltered42/42 passed153.71 s with actual local/native Git, focused lint/types pass.
+  Assembly own final source `5b87651` integrated as `8a03314`:26/26 plus lint/types pass.
+  Independent authors now cross-review code they did not write; shared diagnostic/store fixes
+  require independent closure. The local slices do not implement deployment/comments/M2 exit.
+- REVIEW-W2-P-STORE-ERR-1 (P2) reproduced caller-owned diagnostic aliases through actual native
+  before-push checkpoint. Root strict red regression then full native15/15 passed88.96 s;
+  fresh errors preserve privately known fixed codes without caller fields/causes. Independent
+  original-probe fix verification and full combined acceptance remain gates.
+
+- Controlled publisher admission/assembly interfaces are frozen at `6cf4836`; actual assembly
+  source `4abf6d4` and workspace manifest `a7f638c` are integrated on the dependency branch.
+  Independent review holds integration for byte-copy accounting, undocumented snapshot-derived
+  metadata and caller-owned diagnostics (REVIEW-W2-P-A-1/-2, REVIEW-W2-P-ERR-1). Authors
+  reproduced strict regressions before fixes; historical assembly 20/20/full 844 and admission
+  30/30 do not close these findings. Root fixed asynchronous diagnostics with private provenance
+  and fresh errors; shared input wrapper/admission tests and final independent review are pending.
+- Native attempted-tip receipt `eb098c3` independently passed the full 14-test Git branch suite
+  (62.09 s). Every unknown receipt derives only from the private completed candidate commit;
+  admission still requires exact refetch tip plus complete candidate-tree equality. Full
+  integrated acceptance remains a gate.
+
+- M2.3 root contract freeze 1: `m2-publisher-contracts.md`, ADR 0022. Owner approved
+  configurable 400/500 MiB defaults, preserving existing config@1/core limits. Independent
+  reviewer examined assembly DTO/ownership/budget/generation boundaries; implementation remains
+  unproved. Isolated assembly/admission authors get disjoint modules after this commit.
+  `writeRun` remains strict; controlled expiry needs exact candidate/tip recovery proof.
 
 - PR #19 merged `ce226ca011cca71882a0f102ef8f33de42783d2f` after final independent review
   and every required check passed. Exact head `fe1ff57` hosted run `37103496303`: Linux and
@@ -350,6 +446,24 @@ Evidence records command, dependency SHA, exit/count/output, platform and not-ru
   no assertion weakened. Final full check 722/30 passed; simulation incomplete exit 2.
 
 ## External gates (not blanket blockers)
+
+### Next-source preparation at dependency `67f1ddc`
+
+Root implemented the metadata-only selection seam (ADR0023) in an isolated dependency branch.
+Actual eight tests first had six failures/two passes; final metadata/ingestion/merge28/3
+passed2.76s, focused lint/typecheck0. One startup sandbox failure collected no tests.
+The full API listing now survives duplicate/ignored/missing downloads; invalid supplied
+downloads refuse before any ZIP access. No dummy archive or schema/golden/dependency change.
+Independent review and full integration remain gates. Current foundation67 fullcheck908/47
+and viewer24/24 passed; a later admission self-finding holds that foundation for one-time
+bounded listing/reader/checkpoint/adapter-port captures. It has strict actual red probes,
+not a passing verdict. Full simulation remains2PASS/12NOTRUN/exit2; sixteen product replay
+hashes plus one harness hash match the merged-viewer source exactly.
+
+Readiness and source-ingestion specialists prepared real adapter-based DTOs/tests without
+edits. Their final root-owned interface freeze follows the admission correction. Readiness
+alone cannot activate the full CDN scenario through a vacuous empty comment list. Deployment,
+comment orchestration, real live M2 exit and all M3 gates remain absent/unproved.
 
 - Fixed separate e2e organisation/upstream/bot fork identities and scoped credentials;
   owner approval before creating repos/tokens/settings or external repository writes.

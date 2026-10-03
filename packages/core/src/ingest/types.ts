@@ -4,11 +4,14 @@ import type { Claims, Config, Coverage, Geometry, Labels, Revision, Shard, Side 
 import type { BlobCodec, BlobPool } from "../blob-pool.ts";
 import type { IngressErrorCode } from "./errors.ts";
 
-export interface ArtifactInput {
+export interface ArtifactMetadata {
   /** The artifact name the GitHub API listed. Untrusted text. */
   readonly artifactName: string;
   /** API-returned artifact ID (GitHub numeric ID string). */
   readonly artifactId: string;
+}
+
+export interface ArtifactInput extends ArtifactMetadata {
   /** The downloaded archive. Not modified; keep it unchanged until ingestion finishes. */
   readonly zip: Uint8Array;
 }
@@ -23,6 +26,8 @@ export interface IngestInput {
   readonly attempt: string;
   readonly baseline: Baseline;
   readonly artifacts: readonly ArtifactInput[];
+  /** Full API listing, when only uniquely selected successful downloads are supplied above. */
+  readonly listedArtifacts?: readonly ArtifactMetadata[];
   /** Canonical blobs are written here (03 §§3–4); existing ones are reused, never overwritten. */
   readonly pool: BlobPool;
   /** Defaults to the in-process codec; the publisher passes a PngWorker. */

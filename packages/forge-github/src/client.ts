@@ -1,5 +1,5 @@
 import { parseDocument, parseJson, type Config, type JsonObject, type JsonValue } from "@pixelwatch/schemas";
-import { ForgeError, LIMITS } from "./errors.ts";
+import { ForgeError, LIMITS, sanitizeForgeError } from "./errors.ts";
 import { FetchTransport, RealTiming, type HttpRequest, type HttpResponse, type HttpTransport, type Timing } from "./transport.ts";
 import { verifySource, type VerifiedSource, type VerifySourceInput } from "./source.ts";
 
@@ -91,6 +91,11 @@ export class GitHubClient {
   }
 
   async #request(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
+    try { return await this.#timedRequest(request, signal); }
+    catch (error) { throw sanitizeForgeError(error, signal?.aborted === true ? "request-cancelled" : "request-failed"); }
+  }
+
+  async #timedRequest(request: Omit<HttpRequest, "signal">, signal?: AbortSignal): Promise<HttpResponse> {
     const deadline = this.#timing.deadline(LIMITS.requestMs);
     const combined = signal === undefined ? deadline.signal : AbortSignal.any([signal, deadline.signal]);
     let aborted: (() => void) | undefined;
@@ -107,8 +112,7 @@ export class GitHubClient {
       if (response.body.byteLength > request.maxBytes) throw new ForgeError("response-too-large");
       return response;
     } catch (error) {
-      if (error instanceof ForgeError) throw error;
-      throw new ForgeError(combined.aborted ? "request-cancelled" : "request-failed");
+      throw sanitizeForgeError(error, combined.aborted ? "request-cancelled" : "request-failed");
     } finally {
       if (aborted !== undefined) combined.removeEventListener("abort", aborted);
       deadline.dispose();
