@@ -26,6 +26,18 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
   hash matches final merged-store proof. Independent integrated-source/lock/threat/workflow
   review passed 14 focused tests and workflow lint. One viewer PR will now run hosted acceptance;
   real Pages/live fork, M2 exit and all M3 gates remain open.
+- Controlled publisher admission/assembly interfaces are frozen at `6cf4836`; actual assembly
+  source `4abf6d4` and workspace manifest `a7f638c` are integrated on the dependency branch.
+  Independent review holds integration for byte-copy accounting, undocumented snapshot-derived
+  metadata and caller-owned diagnostics (REVIEW-W2-P-A-1/-2, REVIEW-W2-P-ERR-1). Authors
+  reproduced strict regressions before fixes; historical assembly 20/20/full 844 and admission
+  30/30 do not close these findings. Root fixed asynchronous diagnostics with private provenance
+  and fresh errors; shared input wrapper/admission tests and final independent review are pending.
+- Native attempted-tip receipt `eb098c3` independently passed the full 14-test Git branch suite
+  (62.09 s). Every unknown receipt derives only from the private completed candidate commit;
+  admission still requires exact refetch tip plus complete candidate-tree equality. Full
+  integrated acceptance remains a gate.
+
 - M2.3 root contract freeze 1: `m2-publisher-contracts.md`, ADR 0022. Owner approved
   configurable 400/500 MiB defaults, preserving existing config@1/core limits. Independent
   reviewer examined assembly DTO/ownership/budget/generation boundaries; implementation remains
