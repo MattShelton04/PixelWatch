@@ -109,6 +109,19 @@ describe("marked Git store (M2.2)", () => {
     expect(pushes).toBe(1); const raw = JSON.stringify(result); expect(raw).not.toContain(canary); expect(raw).not.toContain(signed);
     const snapshot = await adapter.read(); for (const file of snapshot.files) { const text = Buffer.from(await snapshot.readFile(file.path)).toString("utf8"); expect(text).not.toContain(canary); expect(text).not.toContain(signed); }
   });
+  it("unknown native pushes return their privately computed attempted commit without leaking checkpoint errors", async () => {
+    const { make } = fixture(); let reached = 0;
+    const canary = "fake-canary-token"; const signed = "https://signed.invalid/a?token=fake-canary-token";
+    const adapter = make({ checkpoint: (event: GitCheckpoint) => {
+      if (event.point !== "after-push" || event.result !== "accepted") return Promise.resolve();
+      reached++; Object.assign(event, { newTip: "f".repeat(40) });
+      return Promise.reject(new Error(`${canary} ${signed}`));
+    } });
+    const outcome = await adapter.cas(null, candidate()); const current = await adapter.read();
+    expect(reached).toBe(1); expect(current.tip).not.toBeNull(); expect(current.tip).not.toBe("f".repeat(40));
+    expect(outcome).toEqual({ status: "unknown", attemptedTip: current.tip });
+    const raw = JSON.stringify(outcome); expect(raw).not.toContain(canary); expect(raw).not.toContain(signed);
+  });
   it("freezes CAS candidate bytes and paths before asynchronous validation", async () => {
     const { make } = fixture(); const adapter = make(); const value = candidate(); const expected = Buffer.from(value.files.get("store.json") ?? []);
     const pending = adapter.cas(null, value); queueMicrotask(() => { value.files.set("../../../escaped.txt", new TextEncoder().encode("fake-canary-token")); });

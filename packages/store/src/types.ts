@@ -17,7 +17,11 @@ export interface StoreSnapshot {
   readonly files: readonly StoreFile[];
   readFile(path: string): Promise<Uint8Array>;
 }
-export type CasResult = { readonly status: "accepted"; readonly tip: string } | { readonly status: "conflict" } | { readonly status: "unknown" };
+export type CasResult = { readonly status: "accepted"; readonly tip: string } | { readonly status: "conflict" } | {
+  readonly status: "unknown";
+  /** Adapter-computed candidate commit, never proof of acceptance without an exact refetch. */
+  readonly attemptedTip?: string;
+};
 export interface StoreAdapter {
   read(): Promise<StoreSnapshot>;
   cas(expectedTip: string | null, candidate: StoreCandidate): Promise<CasResult>;
