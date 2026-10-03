@@ -6,6 +6,21 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- Ingress prerequisite source `c2a53a1ab568b7bfe2fb23c0714983b0cbcfa61f` is rebased onto
+  merged mainba4831d; source diff from17c5f75 is empty. Complete `pnpm -s check` exited0,
+  948tests/49files,278.97s, all lint/types/workflow checks pass. Browser/full simulation and
+  independent root cancellation/codec review remain gates. Source-job cleanup DTO is now
+  frozen: a disposal failure cannot hide proven stored/expired status and is reported by a
+  fixed cleanup diagnostic. Source-envelope validation reuses the existing run validator
+  internally; its carrier is never stored/returned/logged.
+- Readiness author `ddb42e377b1dc1ff406d2b1e8b2da3778f27fc3a` owns only three files:
+  final24/24 exit0,2.59s, focusedlint/wholetypes0 and12retainedlogs scan0. First strict red
+  14failed/3passed, later resource-boundary red2failed/22passed; fixed signal/disposal and
+  selected-body budget issues without changing limits/assertions. Independent review is
+  required before integration. B implements actual source job in isolatedm2-ingress atc2.
+
+The entries below are historical checkpoints, superseded by the facts above.
+
 - PR #21 merged `ba4831dd366463540dd556ccbe576d68400d1f19` at09:39:51Z, exact head
   abd363c/sourcec319ded. Hosted37113159634 Linux/Windows each930/48 exit0
   (37.42/190.98s), complete viewer24/24 each (18.4/26.2s), all required checks/aggregate

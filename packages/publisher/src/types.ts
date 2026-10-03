@@ -72,6 +72,8 @@ export interface SourceJobDiagnostics {
   readonly ignored: readonly Pick<IgnoredArtifact, "artifactId" | "reason">[];
   readonly ignoredOverflow: number;
   readonly excludedCount: number;
+  /** Cleanup failure cannot conceal a proven durable admission. */
+  readonly cleanup: readonly "timing-disposal-failed"[];
 }
 export interface SourceJobResult {
   readonly admission: AdmissionResult;

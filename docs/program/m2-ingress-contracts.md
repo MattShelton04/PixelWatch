@@ -19,9 +19,16 @@ workflow/action, release or root/shared edits. Export integration is root-owned.
   pass combined native signal through forge/core/worker. Dispose the deadline and close the
   worker on all paths, including refusal. Simulations inject codec/timing; no ambient timer,
   Date.now, Math.random, real sleeps, credentials, network or .reference.
+  Always invoke captured deadline disposal. Before proven admission, disposal failure refuses
+  with a fixed timing category; after a proven stored/expired result, preserve that truth and
+  add the fixed `timing-disposal-failed` cleanup diagnostic. No raw cause/message survives.
 - Call actual verifySource with captured config/configCommit/releaseCommit/event, verify
   returned envelope schema and repository/config/release provenance against captured context.
   PR association/target/commits come only from the authenticated envelope, never bundle claims.
+  SourceEnvelope is a component of run@1. An internal zero-result validation carrier may
+  reuse the existing run validator's component/semantic checks; it uses only the copied real
+  envelope and internally fixed versions/key/unknown expected-part coverage, and is never
+  stored, returned or logged. Actual buildRun still validates the final produced run.
   Unknown policy/source/store versions refuse before mutation. Read an actual validated
   snapshot for canonical reuse; bound/capture its graph/listing/reader, using existing helper.
 - Call actual listArtifacts once for the verified run. Feed the full listing into generic

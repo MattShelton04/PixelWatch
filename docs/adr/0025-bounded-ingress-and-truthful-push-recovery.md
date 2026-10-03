@@ -25,6 +25,11 @@ state without caller-owned accessors. Check before each attempt and immediately 
 last pre-CAS checkpoint. Preserve existing five-attempt/receipt/tree recovery limits. Freeze
 SourceJob types and `m2-ingress-contracts.md` before dependent authors consume them. Use the
 existing forge Timing deadline port and private staged canonical blobs; no external dependency.
+Always invoke captured deadline disposal. A disposal failure before proven admission refuses
+with a fixed category; after proof, preserve stored/expired truth and report a fixed cleanup
+diagnostic. Reuse run@1 validation as an internal carrier for its existing SourceEnvelope
+component checks; never store/return/log the carrier or invent an envelope. These are inferred
+implementation details, not additional owner approvals or schema changes.
 
 Authenticate codec diagnostic codes with a private constructor identity and finite existing
 code set. Ingress creates fresh fixed diagnostics without raw callback causes or public
