@@ -46,4 +46,9 @@ describe("real final site size planning",()=>{
   it("validates complete unknown and missing pre retention graph before producing sizes",()=>{
     for(const change of ["version","missing","active"]){const w=fixture();if(change==="version")(required(w.tree.runs.get("5-a1")).versions as {data:number}).data=2;if(change==="missing")(w.tree as {files:StoreTree["files"]}).files=w.tree.files.filter(file=>!file.path.startsWith("blobs/"));if(change==="active")(w.tree as {files:StoreTree["files"]}).files=[...w.tree.files,{path:"app/0.0.1/app.js",bytes:1}];expect(()=>measureSite({...w.context,tree:w.tree})).toThrow(PublisherError);}
   });
+  it("sanitizes synchronous sizing metadata errors without invoking poisoned diagnostic accessors",()=>{
+    const w=fixture();const forged=Object.create(PublisherError.prototype) as PublisherError;let accessors=0;for(const field of ["code","message","stack","cause"])Object.defineProperty(forged,field,{get:()=>{accessors++;return "FAKE_SIZING_TOKEN_532af";}});
+    const input={...w.context,tree:w.tree};Object.defineProperty(input,"configCommit",{get:()=>{throw forged;}});let error:unknown;try{measureSite(input);}catch(value){error=value;}
+    expect(accessors).toBe(0);expect(error===forged).toBe(false);expect(error).toBeInstanceOf(PublisherError);expect((error as PublisherError).code).toBe("publisher-input-invalid");expect(String(error)+JSON.stringify(error)+((error as Error).stack??"")).not.toContain("FAKE_SIZING_TOKEN_532af");expect(accessors).toBe(0);
+  });
 });

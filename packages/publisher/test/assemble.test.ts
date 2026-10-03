@@ -220,4 +220,19 @@ describe("complete final site assembly", () => {
     Object.defineProperty(assets.script,"byteLength",{get:()=>{touched++;throw new Error(CANARY);}});
     const site=await assembleSite({...w.input,assets});expect(touched).toBe(0);expect(Buffer.from(required(site.files.find(file=>file.path===appScriptPath(assets.release))).bytes)).toEqual(Buffer.from(script));
   });
+  it("sanitizes synchronous metadata getter errors without invoking poisoned diagnostic accessors", async () => {
+    for (const [poisoned,code] of [[Object.create(PublisherError.prototype) as PublisherError,"publisher-input-invalid"],[new PublisherError("invalid-commit"),"invalid-commit"],[new PublisherError(CANARY),"publisher-input-invalid"]] as const) {
+      let accessors=0;for(const field of ["code","message","stack","cause"])Object.defineProperty(poisoned,field,{configurable:true,get:()=>{accessors++;return `${CANARY} ${SIGNED}`;}});
+      const w=fixture();Object.defineProperty(w.input,"configCommit",{get:()=>{throw poisoned;}});
+      let error:unknown;try{await assembleSite(w.input);}catch(value){error=value;}
+      expect(accessors).toBe(0);expect(error===poisoned).toBe(false);expect(error).toBeInstanceOf(PublisherError);expect((error as PublisherError).code).toBe(code);
+      const raw=String(error)+JSON.stringify(error)+((error as Error).stack??"");expect(raw).not.toContain(CANARY);expect(raw).not.toContain(SIGNED);expect((error as Error).cause).toBeUndefined();expect(accessors).toBe(0);expect(w.reads).toEqual([]);
+    }
+  });
+  it("classifies trusted app bytes over the configured hard budget before copying or reading store data", async () => {
+    const w=fixture();w.input.config.limits={softBytes:1024*1024,hardBytes:1024*1024};const supplied=new Uint8Array(1024*1024+1);supplied.set(script);let accessors=0;
+    Object.defineProperty(supplied,"byteLength",{get:()=>{accessors++;throw new Error(CANARY);}});Object.defineProperty(supplied,Symbol.iterator,{value:()=>{accessors++;throw new Error(CANARY);}});
+    const before=hash(supplied);await refusal({...w.input,assets:{...w.input.assets,script:supplied}},"site-budget-refused");expect(w.reads).toEqual([]);expect(accessors).toBe(0);expect(hash(supplied)).toBe(before);
+    const foreign=Object.create(null) as Uint8Array;Object.defineProperty(foreign,"byteLength",{get:()=>{accessors++;throw new Error(CANARY);}});await refusal({...w.input,assets:{...w.input.assets,script:foreign}},"app-invalid");expect(accessors).toBe(0);expect(w.reads).toEqual([]);
+  });
 });

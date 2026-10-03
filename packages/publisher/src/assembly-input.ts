@@ -2,7 +2,7 @@ import { appScriptPath, classifyStorePath, projectChanges, readStoreTree, siteLo
 import { canonicalBytes, isGitHubId, parseDocument, type DocumentKind, type DocumentTypes, type Run, type Store } from "@pixelwatch/schemas";
 import { STORE_LIMITS } from "@pixelwatch/store";
 import { renderEntry } from "@pixelwatch/viewer";
-import { PublisherError, refuse, type PublisherContext } from "./types.ts";
+import { refuse, sanitizePublisherError, type PublisherContext } from "./types.ts";
 
 export const JSON_BYTES = 1024 * 1024;
 const OID = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
@@ -36,7 +36,7 @@ export function checkedOid(value: string): string {
   return value;
 }
 export function safely<T>(operation: () => T): T {
-  try { return operation(); } catch (error) { if (error instanceof PublisherError) throw error; return refuse("publisher-input-invalid"); }
+  try { return operation(); } catch (error) { throw sanitizePublisherError(error,"publisher-input-invalid"); }
 }
 export function checkedDocument<K extends DocumentKind>(kind: K, value: DocumentTypes[K]): DocumentTypes[K] {
   const bytes = canonicalBytes(value);
@@ -57,7 +57,12 @@ export function captureContext(input: PublisherContext): PublisherContext {
     || !/^[A-Za-z0-9_.-]{1,100}$/.test(repository.name) || repository.name === "." || repository.name === "..") refuse("repository-invalid");
   appScriptPath(release); siteUrls(siteLocation(config, pages));
   const limits = sizeLimits(config); const supplied = input.assets.script;
-  const script = copyBytes(supplied,limits.hardBytes);
+  let script: Uint8Array;
+  try { script=copyBytes(supplied,limits.hardBytes); } catch(error) {
+    const safe=sanitizePublisherError(error,"app-invalid");
+    if(safe.code==="byte-array-limit")refuse("site-budget-refused");
+    refuse("app-invalid");
+  }
   if (script.byteLength === 0) refuse("app-invalid");
   return { config, configCommit, pages, repository, assets: { release, releaseCommit, script } };
 }
