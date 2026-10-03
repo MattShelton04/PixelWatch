@@ -36,4 +36,7 @@ node tools/prototype-goldens/expected.ts
 `packages/core/test/comparator-goldens.test.ts` fails if `cases.json` or either `expected.json`
 is stale, if a required edge or state loses its fixture, or if any recording stops fitting run@1.
 It also requires the core comparator to reproduce both `expected.json` files exactly. Full-size
-parity is local only: `node tools/check-reference-compare.ts` (needs `.reference/`).
+parity is local only: `node tools/check-reference-compare.ts` (needs `.reference/`). With
+`--dev-compare` it runs the same recordings through `pixelwatch-dev compare` (ADR 0014), and
+`tools/dev-compare.test.ts` reproduces both `expected.json` files through it (46 of the 48 tiny
+cases; the other two can't come out of an ingestion).

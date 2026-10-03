@@ -22,6 +22,8 @@ Node ≥ 22.18 (CI: `.node-version`), pnpm from `packageManager` (via Corepack).
   handoff.
 - `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm lint:workflows`: the individual parts.
   `pnpm test <path>` runs one file.
+- `pnpm -s dev:compare <base> <head>`: the internal `pixelwatch-dev compare` (ADR 0014; `--help`
+  lists the input layout and exit codes). Local only: no network, Git or tokens.
 - `pnpm schemas:types`: regenerate `packages/schemas/src/generated/types.ts` after editing a
   schema. A test fails if it's stale.
 - `pnpm test:simulation` (M2.4) and `pnpm test:viewer` (M2.7) don't exist yet. They exit 1

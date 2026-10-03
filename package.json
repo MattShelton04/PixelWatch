@@ -17,6 +17,7 @@
     "lint:workflows": "node tools/lint-workflows.ts",
     "tools:install": "node tools/install-lint-tools.ts",
     "schemas:types": "node packages/schemas/scripts/generate-types.ts",
+    "dev:compare": "node tools/pixelwatch-dev.ts compare",
     "test:simulation": "node tools/not-yet.ts simulation",
     "test:viewer": "node tools/not-yet.ts viewer",
     "test:live": "node tools/live.ts"

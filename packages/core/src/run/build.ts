@@ -70,28 +70,16 @@ function runParts(reports: readonly PartReport[]): Run["parts"] {
   return parts;
 }
 
-/**
- * Builds the run for one authenticated source attempt. `comparisons` holds compareImages output
- * for exactly the units with two captured sides, keyed by `unitKeyString`. Throws if the inputs
- * don't belong together or the run fails run@1 validation; nothing is repaired.
- */
-export function buildRun(
-  envelope: SourceEnvelope,
-  ingestion: Ingestion,
-  comparisons: ReadonlyMap<string, Comparison>,
-  versions: Run["versions"],
-): Run {
-  if (ingestion.attempt !== envelope.attempt) throw new Error("the ingestion is of another attempt than the envelope");
-  const hasBaseline = baselineFor(envelope) === "expected";
-  // ingestion.parts lists every expected part: head parts always, base parts exactly with a baseline.
-  const expects = (revision: "base" | "head") => ingestion.parts.some((p) => p.revision === revision);
-  if (expects("base") ? !hasBaseline : expects("head") && hasBaseline) {
-    throw new Error("the ingestion's baseline doesn't match the envelope's baseline commit");
-  }
-  if (ingestion.units.some((u) => (u.base.state === "none") === hasBaseline)) {
-    throw new Error("a base side doesn't match the envelope's baseline commit");
-  }
+/** Everything a run records about the comparison itself: no envelope, run key or versions. */
+export type Analysis = Pick<Run, "claims" | "parts" | "coverage" | "counts" | "results">;
 
+/**
+ * The envelope-free part of a run: results, counts, claims, parts and coverage from one ingestion
+ * and its pixel comparisons. `comparisons` holds compareImages output for exactly the units with
+ * two captured sides, keyed by `unitKeyString`. buildRun adds the envelope; the internal
+ * `pixelwatch-dev compare` (M1.8, ADR 0014) has none and uses this directly.
+ */
+export function buildAnalysis(ingestion: Ingestion, comparisons: ReadonlyMap<string, Comparison>): Analysis {
   const units = [...ingestion.units].sort(compareUnitKeys);
   const used = new Set<string>();
   const results: RunResult[] = units.map((unit) => {
@@ -110,16 +98,46 @@ export function buildRun(
   const valid = (revision: "base" | "head") => ingestion.parts.filter((p) => p.status === "valid" && p.revision === revision);
   const base = sideClaims(valid("base"));
   const head = sideClaims(valid("head"));
-  const run: Run = {
-    schemaVersion: 1,
-    runKey: formatRunKey(envelope.runId, envelope.attempt),
-    source: structuredClone(envelope),
+  return {
     claims: { ...(base === undefined ? {} : { base }), ...(head === undefined ? {} : { head }) },
-    versions: { ...versions },
     parts: runParts(ingestion.parts),
     coverage: structuredClone(ingestion.coverage),
     counts,
     results,
+  };
+}
+
+/**
+ * Builds the run for one authenticated source attempt from buildAnalysis's inputs. Throws if the
+ * inputs don't belong together or the run fails run@1 validation; nothing is repaired.
+ */
+export function buildRun(
+  envelope: SourceEnvelope,
+  ingestion: Ingestion,
+  comparisons: ReadonlyMap<string, Comparison>,
+  versions: Run["versions"],
+): Run {
+  if (ingestion.attempt !== envelope.attempt) throw new Error("the ingestion is of another attempt than the envelope");
+  const hasBaseline = baselineFor(envelope) === "expected";
+  // ingestion.parts lists every expected part: head parts always, base parts exactly with a baseline.
+  const expects = (revision: "base" | "head") => ingestion.parts.some((p) => p.revision === revision);
+  if (expects("base") ? !hasBaseline : expects("head") && hasBaseline) {
+    throw new Error("the ingestion's baseline doesn't match the envelope's baseline commit");
+  }
+  if (ingestion.units.some((u) => (u.base.state === "none") === hasBaseline)) {
+    throw new Error("a base side doesn't match the envelope's baseline commit");
+  }
+  const analysis = buildAnalysis(ingestion, comparisons);
+  const run: Run = {
+    schemaVersion: 1,
+    runKey: formatRunKey(envelope.runId, envelope.attempt),
+    source: structuredClone(envelope),
+    claims: analysis.claims,
+    versions: { ...versions },
+    parts: analysis.parts,
+    coverage: analysis.coverage,
+    counts: analysis.counts,
+    results: analysis.results,
   };
   const checked = validateDocument("run", run);
   if (!checked.ok) throw new Error(`the built run is invalid: ${checked.issue.message}`);
