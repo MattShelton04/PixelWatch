@@ -6,6 +6,16 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 
 ## Current checkpoint — 2026-10-03
 
+- PR22 opened at810b157; hosted unit1120/54 and browser24/24 pass on Linux/Windows. CodeQL
+  language/action jobs succeeded but aggregateHIGH alerts3/4 flag unanchored marker regexes;
+  merge HELD. Root replaces searches with bounded literal parsing;22/22 tests pass before/
+  after, preserving semantics. IndependentC exact94cea3f passes22/22 plus57variants twice,
+  identical normalizedd8163dcd… and6rawlogs clean. New local/hosted exact-head gates pending.
+- Hosted810b157 actual Linux1120/54,42.99s and Windows1120/54,220.42s; browsers24/24 each,
+  19.4/24.5s. Both fullcoverage jobs print2PASS/12NOTRUN/exit2 and all17hashes equal local.
+- Maintenance author8a95bf5 final44/44,152.18s/raw226clean; A independentlyAPPROVED exactsource
+  (review1caaab4),44/44,156.82s plus29repeatedownership/cleanup,9unchangedpathvariants and
+  2actualnativeconflict/lostreply/cancellationprobes. Integration remains nextslice gate.
 - Integrated source6547d469800593f23a74a8cc2bd503c03d1ff070 passes complete `pnpm -s check`:
   1120tests/54files,exit0,359.25s; lint,typecheck,actionlint,zizmor0. Browser24/24 across all
   three engines,exit0,26.0s. Exact source-job bytes match author3e315b1; public ingestJob exists.
@@ -21,9 +31,9 @@ Status is evidence, not an estimate of completeness. HANDOVER.md stays uncommitt
 - Readiness independent review45/45 plus9 repeated temporal traces,14boundaries/10cleanup
   probes passes. Pure comment renderer independent20/20 plus71variants twice passes. Both are
   integrated and covered by the1120-test check; full deploy/reconcile pipeline remains absent.
-- Last complete simulation at documentation-only0516268 exited2:9harness PASS,2product PASS,
-  12product NOT RUN. All17ordered normalized hashes match prior local and PR21Linux/Windows.
-  Final current full simulation is pending native maintenance acceptance; no new driver yet.
+- Final full simulation at documentation-onlyaa3dcb9 exited2:9harness PASS,2product PASS,
+  12product NOT RUN. All17ordered normalized hashes match0516268/priorlocal/PR21Linux/Windows.
+  Logroot-reviewed-source-simulation.log; no new driver is registered yet.
   ADR0015 requires this incomplete coverage to remain visibly non-green.
 - Six reviewed PRs16–21 merged under owner authorization; verified mainba4831d. Next grouped
   PR22 is not yet opened. It groups reviewed source/readiness/comment/prerequisites; maintenance

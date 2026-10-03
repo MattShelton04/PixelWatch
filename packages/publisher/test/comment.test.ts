@@ -108,4 +108,24 @@ describe("fixed trusted PR comment rendering", () => {
     const w = fixture(); const r = output(w);
     for (const prefix of ["<!-- pixelwatch:report:","<!-- pixelwatch:repo:"]) expect(readCommentStamp(r.body + prefix,w.run.source.repositoryId)).toBeUndefined();
   });
+  it("hostile repeated partial markers and long unterminated markers provide no ordering proof", () => {
+    const w = fixture(); const r = output(w); const repo = w.run.source.repositoryId;
+    for (const prefix of ["<!-- pixelwatch:repo:","<!-- pixelwatch:report:"]) {
+      const flood = prefix.repeat(2000);
+      expect(Buffer.byteLength(flood)).toBeLessThan(60_000);
+      for (const body of [flood, flood + " -->", r.body + flood, prefix + "x".repeat(50_000)]) {
+        expect(readCommentStamp(body,repo)).toBeUndefined(); assertNoSecrets([body]);
+      }
+    }
+    const broken = r.body.replace("report:v1:","report:\r\nv1:");
+    expect(readCommentStamp(broken,repo)).toBeUndefined();
+  });
+  it("a long valid comment still preserves the exact isolated ownership and report stamps", () => {
+    const w = fixture(); const r = output(w); const text = "ordinary safe text ".repeat(2500);
+    for (const body of [text + r.body, r.body + text]) {
+      expect(Buffer.byteLength(body)).toBeLessThanOrEqual(60_000);
+      expect(readCommentStamp(body,w.run.source.repositoryId)).toEqual(r.stamp);
+      assertNoSecrets([body]);
+    }
+  });
 });
