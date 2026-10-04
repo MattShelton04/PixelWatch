@@ -2,7 +2,7 @@
 import { spawnSync } from "node:child_process";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { tmpdir } from "node:os";
-import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { parseDocument, type Run } from "../../../packages/schemas/src/index.ts";
 import { assertNoSecrets } from "../capture.ts";
 
@@ -13,7 +13,8 @@ export function fixtureRun(id: string): Run {
   return { ...parsed.value, runKey: `${id}-a1`, source: { ...parsed.value.source, runId: id } };
 }
 export class StoreRemote {
-  readonly root = mkdtempSync(join(tmpdir(), "pixelwatch-store-sim-"));
+  readonly #temporaryParent = realpathSync.native(tmpdir());
+  readonly root = mkdtempSync(join(this.#temporaryParent, "pixelwatch-store-sim-"));
   readonly remote = join(this.root, "remote.git");
   readonly raw: string[] = [];
   readonly #environment: NodeJS.ProcessEnv;
@@ -43,8 +44,8 @@ export class StoreRemote {
     } } }; visit(this.root); assertNoSecrets(this.raw);
   }
   close(): void {
-    const root = resolve(this.root); const location = relative(resolve(tmpdir()), root);
-    if (isAbsolute(location) || !/^pixelwatch-store-sim-[A-Za-z0-9_-]+$/.test(location) || lstatSync(root).isSymbolicLink()) throw new Error("store-simulation-cleanup-refused"); rmSync(root, { recursive: true, force: true });
+    const root = resolve(this.root); const location = relative(this.#temporaryParent, root);
+    if (isAbsolute(location) || !/^pixelwatch-store-sim-[A-Za-z0-9_-]+$/.test(location) || lstatSync(root).isSymbolicLink() || realpathSync.native(root) !== root) throw new Error("store-simulation-cleanup-refused"); rmSync(root, { recursive: true, force: true });
   }
 }
 export interface Gate { readonly promise: Promise<void>; release(): void }
