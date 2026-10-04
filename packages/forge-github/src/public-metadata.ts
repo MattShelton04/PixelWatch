@@ -299,4 +299,3 @@ export class PublicGitHubPagesMetadata implements PublicPagesMetadata {
     } catch (error) {throw sanitizeForgeError(error, "pages-metadata");}
   }
 }
-
