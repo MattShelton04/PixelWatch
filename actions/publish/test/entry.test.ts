@@ -172,7 +172,7 @@ describe("actual released publisher entry (ingest and capture-free maintenance)"
       const result=await bundle.run(world.environment,ports);entryRecord(JSON.stringify(result));
       expect(result).toMatchObject({exitCode:0,source:{admission:{status:"stored"}},outcome:{stored:true,project:true}});
       const before=await world.snapshot();expect(before.runs.has("99-a7")).toBe(true);if(before.tip===null)throw new Error("entry-fixture-missing-tip");
-      expect(world.scratch.git(["show","-s","--format=%aI",before.tip],undefined,world.scratch.remote)).toBe("2026-10-04T00:00:00+00:00");
+      const author=world.scratch.git(["cat-file","commit",before.tip],undefined,world.scratch.remote).split("\n").find(line=>line.startsWith("author "));expect(author).toMatch(/^author [^\n]+ 1791072000 \+0000$/);
       world.environment["INPUT_STAGE"]="maintenance";world.environment["GITHUB_EVENT_NAME"]="workflow_dispatch";
       const maintenance=await bundle.run(world.environment,ports);entryRecord(JSON.stringify(maintenance));
       expect(maintenance.exitCode).toBe(0);expect(maintenance.maintenance?.status).toBe("unchanged");expect((await world.snapshot()).tip).toBe(before.tip);

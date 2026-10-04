@@ -87,7 +87,7 @@ describe("fixed sibling runtime release I/O (tooling fixtures, production host p
   });});
   it("noncanonical duplicate-key malformed UTF-8 and unknown JSON shapes refuse",()=>{fixture((root,metadata)=>{
     const original=Buffer.from(canonicalBytes(metadata));
-    for(const bytes of [Buffer.concat([original,Buffer.from("\n")]),Buffer.from(original.toString("utf8").replace("{",'{"schemaVersion":1,')),Buffer.from(JSON.stringify(metadata,null,2)),Buffer.from([0xff]),Buffer.from("[]"),Buffer.from("null"),Buffer.from('{"schemaVersion":1.0}')]){writeFileSync(join(root,"release.json"),bytes);refused(()=>load(root));}
+    assert.equal(original[0],0x7b);for(const bytes of [Buffer.concat([original,Buffer.from("\n")]),Buffer.concat([Buffer.from('{"schemaVersion":1,'),original.subarray(1)]),Buffer.from(JSON.stringify(metadata,null,2)),Buffer.from([0xff]),Buffer.from("[]"),Buffer.from("null"),Buffer.from('{"schemaVersion":1.0}')]){writeFileSync(join(root,"release.json"),bytes);refused(()=>load(root));}
   });});
   it("absent metadata or any bundle refuses even when source TypeScript exists",()=>{fixture(root=>{
     mkdirSync(join(root,"src"));writeFileSync(join(root,"src","main.ts"),"throw new Error('source is forbidden')");writeFileSync(join(root,"src","worker.ts"),"throw new Error('source is forbidden')");

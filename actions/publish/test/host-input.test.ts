@@ -188,7 +188,7 @@ describe("trusted action invocation and private filesystem boundary (composition
     for(const invalid of [{...value,schemaVersion:2},{...value,extra:CANARY_TOKEN},{...value,taskRoot:root},{...value,capsulePath:join(root,"foreign.json")},{...value,files:[...files,files[0]]},{...value,identities:[...identities,identities[0]]},{...value,preparedPayload:{bytes:2,sha256:"0".repeat(64)}},{...value,files:files.map((item,index)=>index===0?{...item,path:"../external"}:item)}]){
       const bytes=canonicalBytes(invalid);writeFileSync(staged.capsulePath,bytes);refused(()=>readStagedSite(staged.capsulePath,createHash("sha256").update(bytes).digest("hex"),root));
     }
-    writeFileSync(staged.capsulePath,original);const duplicate=encoded.encode(original.toString("utf8").replace("{","{\"schemaVersion\":1,"));writeFileSync(staged.capsulePath,duplicate);refused(()=>readStagedSite(staged.capsulePath,createHash("sha256").update(duplicate).digest("hex"),root));
+    writeFileSync(staged.capsulePath,original);assert.equal(original[0],0x7b);const duplicate=Buffer.concat([Buffer.from('{"schemaVersion":1,'),original.subarray(1)]);writeFileSync(staged.capsulePath,duplicate);refused(()=>readStagedSite(staged.capsulePath,createHash("sha256").update(duplicate).digest("hex"),root));
     writeFileSync(staged.capsulePath,original);refused(()=>readStagedSite(staged.capsulePath,"0".repeat(64),root));refused(()=>readStagedSite(staged.capsulePath,staged.capsuleSha256,dirname(root)));cleanupStagedSite(staged,root);
   });});
   it("restart digest outputs belong to the same issued capsule and capture getters once",()=>{fixture(root=>{
