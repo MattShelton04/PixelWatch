@@ -1,6 +1,31 @@
 # M2 action, workflow, release and live preparation
 
+Current PR scope, 2026-10-04: projection and public Pages metadata are implemented
+with independent component approval. The bundled entry ships reviewed ingestion and
+capture-free maintenance; prepare and finish still refuse explicitly. A separate
+four-stage host candidate failed six of32 cases and remains preserved outside this
+PR. The workflow, fixed setup and preflight code are preparation for a future approved
+release. No production release or live milestone acceptance is claimed.
+
 Prepared by independent reviewer C, recorded by the orchestrator. This is a proposal and dependency map, not implementation approval or acceptance evidence. Source/deadline/identity review has now closed at root6547d469; their precise results are in mvp-progress.md. Root owns final shared contracts, manifests and workflows.
+
+Continuation status, 2026-10-04: verified main is `f3b998b` after PR23, with exact-head
+foundation check/browser evidence recorded in `mvp-progress.md`. The local action branch
+contains reviewed release tools, host helpers, report metadata and development lint policy.
+Its genuine bundled ingest/maintenance entry has independent scoped approval on E458/A7/EFA:
+complete20/118.06s and lint/types pass. Original lifecycle assertions close; retained fixture
+faults and separate additive proofs are recorded in `mvp-progress.md`. Prepare/finish still
+refuse their unapproved dependencies. Generated two-shard capture setup
+and fixed public live preflight have independent scoped reviews. These replace the earlier
+capture-template preparation gap, but do not implement the live mutation driver or close
+product permissions, bootstrap/current-job visibility, production bundles, self-reference,
+simulation, hosted action or live acceptance. During resumed orchestration the owner approved
+the exact NEW24 correction, ordinary native Promise constructor/species boundary for trusted
+ports, and distinct RC releases sharing an approved source. The precise corrections and retained
+failing hostile-boundary evidence are recorded in `mvp-progress.md` and ADR 0031; corrected
+execution and independent final review remain gates. No external setup or publication is
+authorized by this plan. Detailed command counts and retained failed evidence belong in
+the program record rather than this dependency map.
 
 ## Dependency order
 
@@ -68,6 +93,13 @@ Node24 action host and PNG worker are separate esbuild entries. PngWorker defaul
 
 Release preparation is offline-capable from clean approved source with frozen lockfile/toolchain. Two clean isolated builds must yield byte-identical host, worker, viewer, metadata and inventories on required OSes. Deterministic metadata excludes absolute roots/times/random IDs; source commit and release commit remain distinct. Bundle cannot embed the unknown future self-release SHA: runtime job.workflow_sha supplies actual releaseCommit and HEAD corroboration. Metadata embeds source SHA + exact version. RC is rebuilt at RC version; final later rebuilt at0.1.0 with new commit and final checks, never retag RC. Main never commits dist; tool explicitly force-adds only allowed release artifacts in isolated release branch. Do not publish tag/release until explicit approval; never move an existing tag.
 
+The local `pnpm build:action --source-root <absolute-clean-source-root> --version <exact-RC-or-final> --source-commit <approved-full-SHA>`
+script invokes the reviewed bounded build CLI. It writes a fresh internal `.tools/release-build/`
+directory and refuses an existing destination. The builder validates the supplied SHA format;
+the following root release-preparation slice must independently verify that the actual clean
+Git source tree matches the approved commit before creating a release branch or adding dist.
+Adding this command is not production bundle or release acceptance.
+
 Name/licenses/advisories inventories include bundled runtime dependencies; do not introduce a trusted-path runtime dependency without ADR. Existing esbuild is dev-only approved ADR0020. Prefer builtin Node ports for bounded action file/output handling; a new @actions/core dependency would need its own explicit ADR justification, not incidental adoption.
 
 actionlint1.7.12 rejects documented job.workflow_* and zizmor1.30.1 flags guarded local actions (ADR0006 evidence). Root must bump pinned tool with digest/ADR or narrowly handle precisely documented fields/proven guarded self-checkout. No global audit disable, unknown-context ignore, or removal of insecure-fixture detection. Templates must join workflowTargets and threat traceability.
@@ -82,7 +114,7 @@ Planned named regressions (not yet executed):
 - Release: "two clean builds have identical complete artifact hashes"; "release metadata reports exact RC or final version and source SHA"; "release workflow and action belong to the same commit"; "foreign nested and older pins execute their own bundle"; "blank short moving or foreign workflow identity refuses before checkout"; "caller impostor action is detected by the negative control"; "existing version tags cannot be overwritten".
 - Live driver: "all pull_request events and unconfigured targets refuse before external mutation"; "configured repository and fork numeric IDs must match fresh metadata"; "approval-required capture is pending and not a passing no-run"; "full rerun uses its selected attempt while partial rerun stays incomplete"; "cleanup is a dry-run exact-ID allowlist without repository creation or deletion".
 
-Per local slice run its entire named test file(s), focused ESLint and pnpm typecheck with immutable SHA/exit/count/raw log. Root integration runs pnpm check; unfiltered pnpm test:simulation; pnpm test:viewer all Chromium/Firefox/WebKit; bundle tests/build reproduction/self-reference. Existing full simulation at051 is root-recorded exit2,9harness+2product/12NOTRUN; no preparation claim changes that. Activated product cases retain all11IDs/14cases/raceA–D, every deterministic seed twice, raw fake-secret scans and exact Linux/Windows normalized equality. Harness probes are not pipeline acceptance.
+Per local slice run its entire named test file(s), focused ESLint and pnpm typecheck with immutable SHA/exit/count/raw log. Root integration runs pnpm check; unfiltered pnpm test:simulation; pnpm test:viewer all Chromium/Firefox/WebKit; bundle tests/build reproduction/self-reference. Current full simulation is root-recorded exit2,9harness+3product/11NOTRUN with25normalized hashes; no preparation claim changes that. Activated product cases retain all11IDs/14cases/raceA–D, every deterministic seed twice, raw fake-secret scans and exact Linux/Windows normalized equality. Harness probes are not pipeline acceptance.
 
 Future commands should be committed scripts before invoking them, e.g. pnpm action:build, pnpm release:prepare --source <approvedSHA> --version0.1.0-rc.1, pnpm test:release. These names are proposed only, not existing commands or results. Actual current commands are pnpm check, pnpm test:simulation, pnpm test:viewer and gated pnpm test:live. Do not publish filtered/todo/skip success.
 

@@ -9,6 +9,8 @@ const native = [
   "packages/publisher/test/ingest-job.test.ts",
   "packages/publisher/test/maintenance.test.ts",
   "tools/simulation/**/*.test.ts",
+  "tools/lint-workflows.test.ts",
+  "tools/live/capture-fixture.test.ts",
   "tools/release/**/*.test.ts",
   "actions/publish/test/**/*.test.ts",
 ];

@@ -1,6 +1,6 @@
 # ADR 0031: Genuine comment operation completion
 
-- Status: inferred implementation contract under ADR 0014; independent review pending
+- Status: owner decisions recorded; component implementation independently reviewed
 - Date: 2026-10-04
 - Scope: M2 projection completion and existing GitHub adapter lifecycle
 
@@ -49,15 +49,21 @@ validated deferred result retains its existing meaning, including a changed head
 A fresh invocation that has never authorized a mutation can defer after readiness cancellation,
 and an already validated acceptance retains its created, updated or recovered result. The
 independent reviewer agrees with this distinction. The precise new retry-cancellation
-expectation change still needs direct owner approval after automatic approval review rejected
-it twice; it has not been edited. Original accepted-result, head-change and no-write readiness
-assertions remain intact.
+expectation change received direct owner approval on 2026-10-04 after automatic approval review
+rejected it twice. Only the retry subcase changes to failed/comment-operation-failed;
+first-write, fallback and coalesced cases retain deferred/readiness-pending. Original
+accepted-result, head-change, no-write readiness, write-count and work-bound assertions remain
+intact. The original failed run is retained; approval alone is no passing execution claim.
 
-The independent nonconfigurable native Promise.constructor reproducer remains an OPEN review
-gate shared with public metadata. ECMAScript intrinsic then performs SpeciesConstructor before
-attaching handlers; the current remedy fixes own-then assimilation but does not solve this
-constructor case. The owner has been asked to decide the trusted adapter promise boundary.
-This ADR does not record that pending boundary as approved or claim complete review closure.
+The owner approved the trusted adapter Promise boundary on 2026-10-04: transport, timing and
+mutation-guard implementation ports must return ordinary native Promises with unmodified
+native constructor/species. These are trusted in-process implementations, never capture or API
+data. Existing own-then defenses, bounded work, fixed diagnostics and secret scans remain.
+ECMAScript intrinsic then performs SpeciesConstructor before attaching handlers; the existing
+remedy does not solve a hostile nonconfigurable Promise.constructor. Its original reproducer
+remains retained failing, out-of-contract evidence, not a closed adversarial test. This explicit
+boundary decision resolves that release blocker without global suppression or V8 internals;
+independent review of the implementation within the approved boundary remains required.
 
 Tests must preserve the original queued-dispatch, diagnostic, retry, guard and response-getter
 assertions. Tests-first native unlink/acquisition, rejected own-then canary, exact invocation
