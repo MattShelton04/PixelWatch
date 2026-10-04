@@ -1,4 +1,5 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { inspect } from "node:util";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -16,6 +17,46 @@ function fixture() {
 }
 const dependencies = { metadata: METADATA, delay: () => Promise.resolve(), jitter: () => 0 };
 describe("marked Git store (M2.2)", () => {
+  it("captures its canonical temporary parent before initialization and retains cleanup authority after environment changes", async () => {
+    const parent = realpathSync.native(tmpdir());
+    const a = mkdtempSync(join(parent, "pixelwatch-store-parent-a-"));
+    const b = mkdtempSync(join(parent, "pixelwatch-store-parent-b-"));
+    const sentinel = join(b, "sentinel"); writeFileSync(sentinel, "untouched");
+    const before = lstatSync(b, { bigint: true });
+    const owned = [a, b, sentinel].map(path => ({ path, stat: lstatSync(path, { bigint: true }) }));
+    const keys = ["TEMP", "TMP", "TMPDIR"] as const;
+    const original = keys.map(key => process.env[key]);
+    const select = (path: string): void => { for (const key of keys) process.env[key] = path; };
+    const removeOwnedParents = (): void => {
+      for (const item of owned) {
+        const current = lstatSync(item.path, { bigint: true });
+        if (current.isSymbolicLink() || realpathSync.native(item.path) !== item.path || current.dev !== item.stat.dev || current.ino !== item.stat.ino ||
+          (item.path === sentinel ? !current.isFile() || current.nlink !== 1n : !current.isDirectory())) throw new Error("store-temp-cleanup-refused");
+      }
+      unlinkSync(sentinel); rmdirSync(b); rmdirSync(a);
+    };
+    let scratch: Scratch | undefined, store: GitBranchStore | undefined, client: string | undefined;
+    try {
+      select(a); scratch = new Scratch();
+      store = new GitBranchStore({ remote: scratch.remote, repositoryId: REPOSITORY_ID, defaultBranch: "main", testRemote: { root: scratch.root } });
+      select(b); expect((await store.read()).tip).toBeNull();
+      const clients = readdirSync(a).filter(name => /^pixelwatch-store-client-[A-Za-z0-9_-]+$/.test(name));
+      expect(clients).toHaveLength(1); client = join(a, clients[0] ?? "missing-client");
+      expect(realpathSync.native(client)).toBe(client);
+      await store.close(); expect(existsSync(client)).toBe(false);
+      const after = lstatSync(b, { bigint: true });
+      expect({ dev: after.dev, ino: after.ino }).toEqual({ dev: before.dev, ino: before.ino });
+      expect(readdirSync(b)).toEqual(["sentinel"]); expect(readFileSync(sentinel, "utf8")).toBe("untouched");
+    } finally {
+      try { await store?.close(); } finally {
+        select(a);
+        try { scratch?.close(); } finally {
+          keys.forEach((key, index) => { const value = original[index]; if (value === undefined) Reflect.deleteProperty(process.env, key); else process.env[key] = value; });
+          removeOwnedParents();
+        }
+      }
+    }
+  });
   it("native before-push refusals reconstruct fixed errors without callback-owned diagnostic aliases", async () => {
     const canary = "FAKE_STORE_CALLBACK_CANARY"; const signed = "https://invalid.example/object?sig=FAKE_STORE_CALLBACK_SIGNATURE";
     for (const kind of ["unknown", "mutated", "prototype"] as const) {

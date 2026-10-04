@@ -36,7 +36,7 @@ export function entryRecord(value:string|Uint8Array):void {
   scanEntryRaw([owned]);
 }
 export function entryHash(bytes:Uint8Array):string{return createHash("sha256").update(bytes).digest("hex");}
-function ownRoot():string {const root=mkdtempSync(join(tmpdir(),"pixelwatch-entry-"));roots.push(root);return root;}
+function ownRoot():string {const root=mkdtempSync(join(realpathSync.native(tmpdir()),"pixelwatch-entry-"));roots.push(root);return root;}
 function copyRuntimeDependencies(target:string):void {
   const copied=new Set<string>();
   const copy=(name:string,from:string):void=>{
@@ -254,7 +254,7 @@ EventTarget.prototype.addEventListener=nativeAdd;
   const raw=readFileSync(rawPath);entryRecord(raw);const proof=JSON.parse(raw.toString("utf8")) as HeldCheckpointProof;
   // A red exit13 does not execute entry cleanup. Remove only exact directories captured
   // at their genuine native mint point; never infer paths by enumerating temp storage.
-  for(const client of proof.clients){if(!client.remaining)continue;const target=resolve(client.path),rel=relative(resolve(tmpdir()),target),identity=lstatSync(target);
+  for(const client of proof.clients){if(!client.remaining)continue;const target=resolve(client.path),rel=relative(resolve(realpathSync.native(tmpdir())),target),identity=lstatSync(target);
     if(isAbsolute(rel)||!/^pixelwatch-store-client-[A-Za-z0-9_-]+$/.test(rel)||identity.isSymbolicLink()||!identity.isDirectory()||realpathSync(target)!==target||String(identity.dev)!==client.dev||String(identity.ino)!==client.ino)throw new Error("entry-child-cleanup-refused");
     rmSync(target,{recursive:true,force:false});
   }
@@ -262,5 +262,5 @@ EventTarget.prototype.addEventListener=nativeAdd;
 }
 export function cleanupEntryFixtures():void {
   for(const scratch of scratches.splice(0))scratch.close();fixtureGit?.close();fixtureGit=undefined;
-  for(const root of roots.splice(0)){const target=resolve(root),rel=relative(resolve(tmpdir()),target);if(isAbsolute(rel)||!/^pixelwatch-entry-[A-Za-z0-9_-]+$/.test(rel)||lstatSync(target).isSymbolicLink()||realpathSync(target)!==target)throw new Error("entry-fixture-cleanup-refused");rmSync(target,{recursive:true,force:false});}
+  for(const root of roots.splice(0)){const target=resolve(root),rel=relative(resolve(realpathSync.native(tmpdir())),target);if(isAbsolute(rel)||!/^pixelwatch-entry-[A-Za-z0-9_-]+$/.test(rel)||lstatSync(target).isSymbolicLink()||realpathSync(target)!==target)throw new Error("entry-fixture-cleanup-refused");rmSync(target,{recursive:true,force:false});}
 }

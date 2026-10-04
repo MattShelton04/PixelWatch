@@ -50,7 +50,7 @@ async function refused(world:EntryWorld,environment:Readonly<Record<string,strin
 }
 function fixedDependencies(result:EntryResult):void {expect(result).toMatchObject({status:"failed",exitCode:1,code:"dependencies-unavailable",warnings:[]});expect(result.outcome).toBeUndefined();}
 function cleanupNativeClient(path:string):void {
-  const target=resolve(path),rel=relative(resolve(tmpdir()),target);
+  const target=resolve(path),rel=relative(resolve(fs.realpathSync.native(tmpdir())),target);
   if(isAbsolute(rel)||!/^pixelwatch-store-client-[A-Za-z0-9_-]+$/.test(rel)||fs.lstatSync(target).isSymbolicLink()||fs.realpathSync(target)!==target)throw new Error("entry-fixture-cleanup-refused");
   originalRm(target,{recursive:true,force:false});
 }
