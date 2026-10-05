@@ -46,6 +46,7 @@ export class GitBranchStore implements StoreAdapter {
   readonly #test: boolean;
   readonly #token: string | undefined;
   readonly #checkpoint: GitBranchOptions["checkpoint"];
+  readonly #temporaryParent: string;
   readonly #packTransport: PackTransport;
   readonly #timing: StoreTiming;
   readonly #packCheckpoint: GitBranchOptions["packCheckpoint"];
@@ -62,8 +63,9 @@ export class GitBranchStore implements StoreAdapter {
     this.#packTransport = options.packTransport ?? httpPackTransport; this.#timing = options.timing ?? defaultTiming; this.#packCheckpoint = options.packCheckpoint;
     if (options.token !== undefined && (!/^[A-Za-z0-9_]+$/.test(options.token) || options.token.length > 512)) refuse("git-credential-invalid");
     this.#test = options.testRemote !== undefined;
+    this.#temporaryParent = realpathSync.native(tmpdir());
     if (options.testRemote !== undefined) {
-      const root = resolve(options.testRemote.root); const rel = relative(resolve(tmpdir()), root);
+      const root = resolve(options.testRemote.root); const rel = relative(this.#temporaryParent, root);
       if (isAbsolute(rel) || !/^pixelwatch-store-[A-Za-z0-9_-]+$/.test(rel) || lstatSync(root).isSymbolicLink() || realpathSync(root) !== root) refuse("git-test-root-refused");
       const remote = resolve(options.remote); const child = relative(root, remote);
       if (isAbsolute(child) || child.startsWith("..") || child !== "remote.git" || lstatSync(remote).isSymbolicLink() || realpathSync(remote) !== remote) refuse("git-test-remote-refused");
@@ -76,7 +78,7 @@ export class GitBranchStore implements StoreAdapter {
   #initialize(): void {
     this.#alive();
     if (this.#root !== undefined) return;
-    this.#root = mkdtempSync(join(tmpdir(), "pixelwatch-store-client-")); this.#gitDir = join(this.#root, "client.git"); this.#hooks = join(this.#root, "empty-hooks"); this.#empty = join(this.#root, "empty-config");
+    this.#root = mkdtempSync(join(this.#temporaryParent, "pixelwatch-store-client-")); this.#gitDir = join(this.#root, "client.git"); this.#hooks = join(this.#root, "empty-hooks"); this.#empty = join(this.#root, "empty-config");
     mkdirSync(this.#hooks); writeFileSync(this.#empty, "");
     const env: NodeJS.ProcessEnv = {};
     for (const key of ["PATH", "Path", "SystemRoot", "SYSTEMROOT", "WINDIR", "TMP", "TEMP", "TMPDIR"]) { const value = process.env[key]; if (value !== undefined) env[key] = value; }
@@ -275,7 +277,7 @@ export class GitBranchStore implements StoreAdapter {
     void guarded(async () => {
       await Promise.all([...this.#operations]);
       if (this.#root === undefined) return;
-      const target = resolve(this.#root); const rel = relative(resolve(tmpdir()), target);
+      const target = resolve(this.#root); const rel = relative(this.#temporaryParent, target);
       if (isAbsolute(rel) || !/^pixelwatch-store-client-[A-Za-z0-9_-]+$/.test(rel) || lstatSync(target).isSymbolicLink() || realpathSync(target) !== target) refuse("git-cleanup-refused");
       rmSync(target, { recursive: true, force: true }); this.#root = undefined; this.#gitDir = undefined; this.#hooks = undefined; this.#empty = undefined; this.#environment = undefined;
     }).then(completed, failed);

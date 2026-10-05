@@ -1,0 +1,168 @@
+name: PixelWatch Report
+on:
+  workflow_call:
+permissions: {}
+
+jobs:
+  ingest:
+    if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+      pull-requests: read
+    outputs:
+      project: ${{ steps.ingest.outputs.project || steps.maintenance.outputs.project }}
+    steps:
+      - name: Validate own workflow identity
+        id: self
+        env:
+          PIXELWATCH_JOB: ${{ toJSON(job) }}
+        run: |
+          # BEGIN PIXELWATCH OWN JOB GUARD
+          node --input-type=module <<'PIXELWATCH_SELF'
+          import {appendFileSync} from 'node:fs';
+          try {
+            const raw = process.env.PIXELWATCH_JOB;
+            if (typeof raw !== 'string' || Buffer.byteLength(raw) > 16384) throw new Error();
+            const own = JSON.parse(raw);
+            if (own === null || typeof own !== 'object' || Array.isArray(own)
+              || own.workflow_repository !== 'MattShelton04/PixelWatch'
+              || typeof own.workflow_sha !== 'string' || !/^[0-9a-f]{40}$/.test(own.workflow_sha)) throw new Error();
+            appendFileSync(process.env.GITHUB_OUTPUT, `repository=MattShelton04/PixelWatch\nsha=${own.workflow_sha}\n`);
+          } catch {
+            process.stderr.write('PixelWatch: own workflow identity unavailable\n');
+            process.exitCode = 1;
+          }
+          PIXELWATCH_SELF
+          # END PIXELWATCH OWN JOB GUARD
+      - name: Check out the publisher at its own immutable workflow commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ steps.self.outputs.repository }}
+          ref: ${{ steps.self.outputs.sha }}
+          path: _pixelwatch
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - name: Verify publisher HEAD
+        id: head
+        env:
+          PIXELWATCH_WORKFLOW_SHA: ${{ steps.self.outputs.sha }}
+        run: |
+          own_head="$(env -i PATH="$PATH" GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_SYSTEM=/dev/null GIT_CONFIG_GLOBAL=/dev/null git -C _pixelwatch -c core.hooksPath=/dev/null -c core.fsmonitor=false -c core.attributesFile=/dev/null -c credential.helper= -c protocol.allow=never -c submodule.recurse=false rev-parse --verify HEAD)"
+          if [ "$own_head" != "$PIXELWATCH_WORKFLOW_SHA" ]; then
+            printf '%s\n' 'PixelWatch: publisher HEAD mismatch' >&2
+            exit 1
+          fi
+          printf 'PIXELWATCH_CHECKOUT_HEAD=%s\n' "$own_head" >> "$GITHUB_ENV"
+      - name: Ingest the authenticated source run
+        if: github.event_name == 'workflow_run'
+        id: ingest
+        uses: ./_pixelwatch/actions/publish # zizmor: ignore[self-repository] ADR 0032: own workflow SHA checkout and HEAD verified
+        env:
+          PIXELWATCH_WORKFLOW_REPOSITORY: ${{ steps.self.outputs.repository }}
+          PIXELWATCH_WORKFLOW_SHA: ${{ steps.self.outputs.sha }}
+        with:
+          stage: ingest
+          token: ${{ github.token }}
+      - name: Maintain and repair without capture
+        if: github.event_name == 'workflow_dispatch'
+        id: maintenance
+        uses: ./_pixelwatch/actions/publish # zizmor: ignore[self-repository] ADR 0032: own workflow SHA checkout and HEAD verified
+        env:
+          PIXELWATCH_WORKFLOW_REPOSITORY: ${{ steps.self.outputs.repository }}
+          PIXELWATCH_WORKFLOW_SHA: ${{ steps.self.outputs.sha }}
+        with:
+          stage: maintenance
+          token: ${{ github.token }}
+
+  project:
+    needs: ingest
+    if: needs.ingest.result == 'success' && needs.ingest.outputs.project == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      pull-requests: write
+    concurrency:
+      group: pixelwatch-project-${{ github.repository_id }}
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Validate own workflow identity
+        id: self
+        env:
+          PIXELWATCH_JOB: ${{ toJSON(job) }}
+        run: |
+          # BEGIN PIXELWATCH OWN JOB GUARD
+          node --input-type=module <<'PIXELWATCH_SELF'
+          import {appendFileSync} from 'node:fs';
+          try {
+            const raw = process.env.PIXELWATCH_JOB;
+            if (typeof raw !== 'string' || Buffer.byteLength(raw) > 16384) throw new Error();
+            const own = JSON.parse(raw);
+            if (own === null || typeof own !== 'object' || Array.isArray(own)
+              || own.workflow_repository !== 'MattShelton04/PixelWatch'
+              || typeof own.workflow_sha !== 'string' || !/^[0-9a-f]{40}$/.test(own.workflow_sha)) throw new Error();
+            appendFileSync(process.env.GITHUB_OUTPUT, `repository=MattShelton04/PixelWatch\nsha=${own.workflow_sha}\n`);
+          } catch {
+            process.stderr.write('PixelWatch: own workflow identity unavailable\n');
+            process.exitCode = 1;
+          }
+          PIXELWATCH_SELF
+          # END PIXELWATCH OWN JOB GUARD
+      - name: Check out the publisher at its own immutable workflow commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ steps.self.outputs.repository }}
+          ref: ${{ steps.self.outputs.sha }}
+          path: _pixelwatch
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - name: Verify publisher HEAD
+        id: head
+        env:
+          PIXELWATCH_WORKFLOW_SHA: ${{ steps.self.outputs.sha }}
+        run: |
+          own_head="$(env -i PATH="$PATH" GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_SYSTEM=/dev/null GIT_CONFIG_GLOBAL=/dev/null git -C _pixelwatch -c core.hooksPath=/dev/null -c core.fsmonitor=false -c core.attributesFile=/dev/null -c credential.helper= -c protocol.allow=never -c submodule.recurse=false rev-parse --verify HEAD)"
+          if [ "$own_head" != "$PIXELWATCH_WORKFLOW_SHA" ]; then
+            printf '%s\n' 'PixelWatch: publisher HEAD mismatch' >&2
+            exit 1
+          fi
+          printf 'PIXELWATCH_CHECKOUT_HEAD=%s\n' "$own_head" >> "$GITHUB_ENV"
+      - name: Prepare the latest store after acquiring the projection lock
+        id: prepare
+        uses: ./_pixelwatch/actions/publish # zizmor: ignore[self-repository] ADR 0032: own workflow SHA checkout and HEAD verified
+        env:
+          PIXELWATCH_WORKFLOW_REPOSITORY: ${{ steps.self.outputs.repository }}
+          PIXELWATCH_WORKFLOW_SHA: ${{ steps.self.outputs.sha }}
+        with:
+          stage: prepare
+          token: ${{ github.token }}
+      - name: Upload the exact prepared Pages tree
+        if: steps.prepare.outputs.prepared == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ${{ steps.prepare.outputs.upload_root }}
+          include-hidden-files: true
+      - name: Deploy Pages
+        if: steps.prepare.outputs.prepared == 'true'
+        id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      - name: Observe served bytes and reconcile comments for this exact generation
+        if: always() && steps.prepare.outputs.prepared == 'true'
+        uses: ./_pixelwatch/actions/publish # zizmor: ignore[self-repository] ADR 0032: own workflow SHA checkout and HEAD verified
+        env:
+          PIXELWATCH_WORKFLOW_REPOSITORY: ${{ steps.self.outputs.repository }}
+          PIXELWATCH_WORKFLOW_SHA: ${{ steps.self.outputs.sha }}
+        with:
+          stage: finish
+          token: ${{ github.token }}
+          capsule: ${{ steps.prepare.outputs.capsule }}
+          capsule_sha256: ${{ steps.prepare.outputs.capsule_sha256 }}
+          deployment_outcome: ${{ steps.deploy.outcome == 'skipped' && 'not-attempted' || steps.deploy.outcome }}

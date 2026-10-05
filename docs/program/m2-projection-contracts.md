@@ -101,3 +101,17 @@ Root integration runs complete check/fullsimulation/all3browser and hosted exact
 Windows. Production scenarios use this caller; no driver reimplements a test-only publisher.
 M2 live exit remains actual same-repo/fork served comments, release self-reference/reproducibility
 and fixed authorized infrastructure. Human/external gates remain visible.
+
+## Owner-resolved completion boundary — 2026-10-04
+
+Trusted transport, timing and mutation-guard implementation ports return ordinary native
+Promises with unmodified native constructor/species (ADR 0031). This grants no trust to response
+data and changes no timeout, cancellation, own-then defense or output scan. The original hostile
+nonconfigurable-constructor reproducer stays retained failing and out of contract; it is not
+counted as passing review. Independent final review and integration remain required.
+
+The owner also approved only NEW24's retry-cancellation expectation: after a real POST receives
+503 and cancellation rejects its retry without a validated reply, report
+failed/comment-operation-failed. First-write/fallback/coalesced deferrals, real accepted201,
+changed-head deferral, write counts and the work bound remain intact. Original failure evidence
+is preserved; the corrected complete suite must actually run before acceptance.

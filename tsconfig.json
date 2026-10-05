@@ -5,6 +5,8 @@
     "checkJs": true
   },
   "include": [
+    "actions/publish/src/**/*.ts",
+    "actions/publish/test/**/*.ts",
     "tools/**/*.ts",
     "packages/*/src/**/*.ts",
     "packages/*/test/**/*.ts",

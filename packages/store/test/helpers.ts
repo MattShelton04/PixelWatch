@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative, resolve, isAbsolute } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -21,7 +21,7 @@ export function candidate(runs: readonly Run[] = []): StoreCandidate & { files: 
   return { store, runs: new Map(runs.map((r) => [r.runKey, r])), files, metadata: METADATA };
 }
 export class Scratch {
-  readonly root = mkdtempSync(join(tmpdir(), "pixelwatch-store-"));
+  readonly root = mkdtempSync(join(realpathSync.native(tmpdir()), "pixelwatch-store-"));
   readonly remote = join(this.root, "remote.git");
   readonly hooks = join(this.root, "empty-hooks");
   readonly env: NodeJS.ProcessEnv;
@@ -58,7 +58,7 @@ export class Scratch {
     this.git(["update-ref", ref, tip]); return tip;
   }
   close(): void {
-    const target = resolve(this.root); const rel = relative(resolve(tmpdir()), target);
+    const target = resolve(this.root); const rel = relative(resolve(realpathSync.native(tmpdir())), target);
     if (isAbsolute(rel) || rel.startsWith("..") || !rel.startsWith("pixelwatch-store-")) throw new Error("unsafe cleanup");
     rmSync(target, { recursive: true, force: true });
   }

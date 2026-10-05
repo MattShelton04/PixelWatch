@@ -1,8 +1,13 @@
-import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { inspect } from "node:util";
 import { describe, expect, it } from "vitest";
 import { repoRoot } from "./lib/lint-tools.ts";
 import { runActionlint, runZizmor, workflowTargets } from "./lint-workflows.ts";
+import { assertNoSecrets, CANARY_TOKEN } from "./simulation/capture.ts";
 
 const fixtures = "testdata/smoke/workflows";
 
@@ -40,6 +45,81 @@ describe("workflow linters", () => {
     expect(result.error).toBeUndefined();
     expect(result.status).toBe(1);
     expect(result.stdout).toContain('undefined variable "unknown_context"');
+  });
+});
+
+describe("workflow lint CLI reviewed-source consumer", () => {
+  function fixture(): { root: string; report: string } {
+    const root = mkdtempSync(path.join(tmpdir(), "pw-lint-policy-"));
+    for (const directory of ["tools/lib", "tools/release", ".github/workflows"]) {
+      mkdirSync(path.join(root, directory), { recursive: true });
+    }
+    // Execute the actual CLI and root-discovery module. The policy re-export supplies the
+    // independently reviewed implementation without inventing a fixture publisher or linter.
+    for (const file of ["tools/lint-workflows.ts", "tools/lib/lint-tools.ts", "tools/lint-tools.json"]) {
+      writeFileSync(path.join(root, file), readFileSync(path.join(repoRoot, file)), { flag: "wx" });
+    }
+    writeFileSync(path.join(root, "package.json"), '{"type":"module"}\n', { flag: "wx" });
+    const policyUrl = pathToFileURL(path.join(repoRoot, "tools/release/workflow-policy.ts")).href;
+    writeFileSync(path.join(root, "tools/release/workflow-policy.ts"), `export * from ${JSON.stringify(policyUrl)};\n`, { flag: "wx" });
+    const report = path.join(root, ".github/workflows/report.yml");
+    writeFileSync(report, readFileSync(path.join(repoRoot, ".github/workflows/report.yml")), { flag: "wx" });
+    return { root, report };
+  }
+  function child(root: string) {
+    const environment: Record<string, string> = { GH_TOKEN: CANARY_TOKEN, GITHUB_TOKEN: CANARY_TOKEN };
+    for (const key of ["PATH", "Path", "SystemRoot", "WINDIR", "TMP", "TEMP", "TMPDIR"]) {
+      const value = process.env[key];
+      if (value !== undefined) environment[key] = value;
+    }
+    const result = spawnSync(process.execPath, ["--import", pathToFileURL(path.join(repoRoot, "tools/lib/no-network.ts")).href, path.join(root, "tools/lint-workflows.ts")], {
+      cwd: root, env: environment, encoding: "utf8", timeout: 10_000, maxBuffer: 16 * 1024, windowsHide: true,
+    });
+    assertNoSecrets([result.stdout, result.stderr, inspect(result.error, { depth: 4 })]);
+    expect(result.error).toBeUndefined();
+    return result;
+  }
+  function valid(root: string): void {
+    const result = child(root);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("is not installed");
+    expect(result.stderr).not.toContain("reviewed-contract-refused");
+  }
+  function refused(root: string): void {
+    const result = child(root);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("workflow-policy: reviewed-contract-refused");
+    expect(result.stderr).not.toContain("is not installed");
+    expect(result.stdout).not.toContain("linting ");
+  }
+  it("checks actual reviewed workflow bytes before resolving or executing either linter", () => {
+    const { root, report } = fixture();
+    try {
+      valid(root);
+      const source = readFileSync(report, "utf8");
+      for (const changed of [
+        source.replace("cancel-in-progress: false", "cancel-in-progress: true"),
+        source.replace("steps.self.outputs.sha", "github.sha"),
+        source.replace("steps.self.outputs.repository", "github.repository"),
+        source.replace("needs.ingest.result == 'success' && needs.ingest.outputs.project == 'true'", "always()"),
+        source.replace("pixelwatch-project-${{ github.repository_id }}", "pixelwatch-project-${{ github.workflow_sha }}"),
+        source + "# unreviewed source retains annotations\n",
+      ]) {
+        expect(changed).not.toBe(source);
+        writeFileSync(report, changed);
+        refused(root);
+      }
+    } finally { rmSync(root, { recursive: true, force: true }); }
+  });
+  it("missing and over-bound report sources refuse before tool lookup or a zero-target pass", () => {
+    const { root, report } = fixture();
+    try {
+      valid(root);
+      rmSync(report);
+      refused(root);
+      writeFileSync(report, new Uint8Array(65_537), { flag: "wx" });
+      refused(root);
+    } finally { rmSync(root, { recursive: true, force: true }); }
   });
 });
 

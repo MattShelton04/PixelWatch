@@ -1,0 +1,36 @@
+name: PixelWatch Publisher
+description: Authenticate visual capture evidence and publish the retained PixelWatch report
+inputs:
+  stage:
+    description: "One trusted stage: ingest, maintenance, prepare, finish"
+    required: true
+  token:
+    description: Explicit current job token for the fixed authenticated GitHub API and Git store
+    required: true
+  capsule:
+    description: Private owned prepare capsule path, required only for finish
+    required: false
+  capsule_sha256:
+    description: Exact prepare inventory digest, required only for finish
+    required: false
+  deployment_outcome:
+    description: "Official deploy observation for finish: success, failure, cancelled, unknown, not-attempted"
+    required: false
+outputs:
+  stored:
+    description: Whether this stage proved a durable admitted source result
+  project:
+    description: Whether a successful ingestion or maintenance stage permits fresh projection
+  projection:
+    description: Bounded ingestion projection state
+  prepared:
+    description: Whether this prepare produced an exact owned generation
+  upload_root:
+    description: Owned generated Pages root for the official upload step
+  capsule:
+    description: Private owned inventory path outside the upload root
+  capsule_sha256:
+    description: Exact private inventory SHA-256
+runs:
+  using: node24
+  main: dist/index.js

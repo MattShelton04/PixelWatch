@@ -1,16 +1,18 @@
 import { defineConfig } from "vitest/config";
 
-const include = ["tools/**/*.test.ts", "packages/*/src/**/*.test.ts", "packages/*/test/**/*.test.ts"];
-// Native Git fixtures own real child processes and temporary repositories. Run them in a
-// separate, serial phase, after CPU-heavy PNG/property tests have finished. This changes
-// file scheduling only: actors inside each harmful-interleaving test still run together.
+const include = ["tools/**/*.test.ts", "packages/*/src/**/*.test.ts", "packages/*/test/**/*.test.ts", "actions/publish/test/**/*.test.ts"];
+// Native fixtures own real children and scratch directories. Their separate serial phase
+// preserves concurrent actors inside each harmful-interleaving test.
 const native = [
   "packages/store/test/**/*.test.ts",
   "packages/publisher/test/admission.test.ts",
   "packages/publisher/test/ingest-job.test.ts",
   "packages/publisher/test/maintenance.test.ts",
   "tools/simulation/**/*.test.ts",
+  "tools/lint-workflows.test.ts",
+  "tools/live/capture-fixture.test.ts",
   "tools/release/**/*.test.ts",
+  "actions/publish/test/**/*.test.ts",
 ];
 const shared = {
   include,

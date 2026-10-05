@@ -4,6 +4,7 @@ import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { verifyReportWorkflowTree } from "./release/workflow-policy.ts";
 import {
   binaryPath,
   installedManifestPath,
@@ -71,6 +72,7 @@ export function runZizmor(files: string[], extraArgs: string[] = []): SpawnSyncR
 }
 
 function main(): void {
+  verifyReportWorkflowTree(repoRoot);
   const targets = workflowTargets();
   if (targets.length === 0) throw new Error("no workflow files found to lint");
   for (const name of toolNames) linterPath(name);

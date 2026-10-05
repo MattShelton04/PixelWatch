@@ -20,6 +20,7 @@
     "schemas:viewer": "node packages/schemas/scripts/generate-viewer-validators.ts",
     "dev:compare": "node tools/pixelwatch-dev.ts compare",
     "test:simulation": "node tools/simulation/runner.ts",
+    "build:action": "node tools/release/build-cli.ts",
     "dev:serve": "node tools/pixelwatch-dev.ts serve",
     "viewer:fixture": "node tools/viewer/fixture-cli.ts",
     "test:viewer": "node tools/viewer/runner.ts",

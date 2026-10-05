@@ -5,11 +5,11 @@ This file maps every rule of the normative security model
 the threat it stops, and the named test or manual evidence that proves it (07 §6). It never
 weakens 01 §4. If this file and 01 disagree, 01 wins and this file is fixed in the same PR.
 
-Status on 2026-10-04 (verified main @ `1fe4821` plus reviewed local M2 foundations): `packages/schemas`, the pixel hash, the
+Status on 2026-10-04 (verified main @ `f3b998b` plus reviewed local M2 foundations): `packages/schemas`, the pixel hash, the
 restricted PNG codec, the canonical blob pool, comparator-v1, bounded ZIP ingestion, the
 fixed-part merge, trusted config parsing, runs and the store run index, retention, GC and
 budget planning, the `changes@1` projection with its served paths and URLs, and the internal
-`pixelwatch-dev compare` (M1.8, ADR 0014) are implemented. Most checks below are therefore **planned**. A planned check is never counted as
+`pixelwatch-dev compare` (M1.8, ADR 0014) are implemented. Remaining unexecuted checks below are **planned**. A planned check is never counted as
 green. M2.1 authenticates source attempts and trusted config. M2.2 supplies validated adapters;
 two production store scenarios and the genuine GitHub fault case have run for all four seeds
 twice on Windows. The full runner registers those three cases; eleven still need publisher/
@@ -27,8 +27,24 @@ integration acceptance. Its timeout cause remains unverified. The subsequent ind
 reviewed async native lifetime and disjoint scheduling corrections pass the complete local
 check1197/58unique files/630.46s, with lint/types/workflowlint. Full simulation3PASS/11NOTRUN/
 exit2 retains all14cases/11IDs and25verified hashes. Browser24/24all3 engines pass25.5s. Exact-
-head hosted and production projection/action/live gates remain open (mvp-progress.md).
-Superseding local integration6547d469 passed1120unit tests/54files plus24browser cases
+head hosted foundation `891e42d` passes 1197 tests/58 distinct files and all24 browser cases
+on Linux and Windows, all five required checks and aggregate CodeQL. Full simulation stays
+3PASS/11NOTRUN/exit2 with all25 normalized hashes identical on local/Linux/Windows; its failed
+jobs remain visible. This foundation evidence does not accept the new action composition.
+The scoped reusable workflow/development policy suite passes30/4files independently; capture
+caller integration passes22 independently, with actual linters and insecure controls retained.
+Actual entry has20 passing author tests (123.08s), with focused lint and whole types green.
+Independent replays close the original unsent-push
+and initial-read findings; new ENTRY-REV-3/4 P1 findings show held conflict retry delays and
+later admission/CAS reads can strand terminal cleanup. The next complete 20-case strict red
+has16 PASS/4 FAIL on unchanged source, including the production pack signal composition gap.
+The entry-only correction cancels those paths with original deadlines and retains bounded
+already-sent recovery. Independent complete20/118.06s, lint/types and unchanged lifecycle
+reclosure approve exact `e458a388` only for genuine ingest/capture-free maintenance. The
+documented original fixture count/prototype failures remain beside assertion-preserving
+additive fixtures; no original failed command is relabelled. Production projection, current-source complete check,
+actual bundles/self-reference, simulation coverage and live gates remain open (mvp-progress.md).
+Historical local integration6547d469 passed1120unit tests/54files plus24browser cases
 across all three engines. Source ingestion has two independent scoped approvals, including
 13 coupled actual-adapter sequences repeated identically. Scoped passing rows name actual evidence;
 they do not claim complete publisher, full simulation coverage or live fork acceptance.
@@ -179,7 +195,7 @@ Planned paths are provisional (§1).
 | R4.1-01 | live | planned | `tools/live/scenarios/pr-fork.ts` | A real fork PR's capture run has `contents: read`, no secrets, and the trusted report still publishes | M2.6 |
 | R4.1-02 | lint | passing | `tools/lint-workflows.test.ts` › "never persists checkout credentials" | Every checkout in the capture template sets `persist-credentials: false` | M0.2 |
 | R4.1-03 | unit | passing | `tools/live.test.ts` › "refuses every pull_request event, even with all settings" | Live test credentials are refused on any `pull_request*` event | M0.1 |
-| R4.1-03 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | `report.yml` has no `actions/cache`, no cache-enabled setup action, and no `upload-artifact` except the Pages artifact; self-checkout has `persist-credentials: false` | M2.5 |
+| R4.1-03 | lint | passing | `tools/release/report-workflow.test.ts` › "trusted jobs execute only pinned actions their own bundle and small fixed guards without caches installs or capture code" | Actual report has no adopter checkout/install/cache or capture execution; self-checkout does not persist credentials. Independent workflow/policy suite30/4files passes, lint/types/workflowlint0; actual own-job serialization and hostile live execution remain gates. | M2.5 |
 | R4.1-03 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A hostile fork PR that dumps env, caches and artifacts finds no publishing credential | M2.6 |
 | R4.1-04 | evidence | recorded | `docs/templates/pixelwatch-capture.yml` | The template header says PixelWatch can't enforce capture settings and that weakening them voids fork safety | M0.2 |
 | R4.1-04 | evidence | evidence-planned | `docs/evidence/quickstart.md` | Adopter docs state the admin-weakening limitation; checked in the clean-repo quickstart | M3.8 |
@@ -188,7 +204,17 @@ Planned paths are provisional (§1).
 | R4.2-01 | evidence | recorded | `docs/security/repo-settings.md` | Row 8: the repository requires full-length SHA pins; rows 2–3: protected `main` and version tags | M0.2 |
 | R4.2-01 | evidence | recorded | `docs/adr/0007-s11-same-repo-identity.md` | Same-repo: every `workflow_run` report job ran at `refs/heads/main` and the default-branch tip, never at the PR head or merge ref (8 report runs) | S11 |
 | R4.2-01 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | The adopter report template triggers only on `workflow_run` (+ `workflow_dispatch`), calls `report.yml@<40-hex>` with no `secrets: inherit` | M2.5 |
-| R4.2-02 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | `report.yml` checks out only `job.workflow_repository`@`job.workflow_sha`, never `workflow_run.head_sha`/`head_branch`, and has no `run:` step executing adopter files | M2.5 |
+| R4.2-01, R4.2-02 | unit | passing | `tools/release/workflow-policy.test.ts` › "added triggers run checkout cache jobs secret forwarding foreign or moving pins and duplicate fields refuse" | Canonical generated setup callers bind fixed product/fullSHA/version and refuse all added execution, triggers, secret forwarding or permission changes. Independently reviewed policy and actual CLI controls pass in complete30/4files; the final adopter template and live invocation are separate gates. | M2.5 |
+| R4.2-01, R4.2-02, R4.2-07 | lint | passing | `tools/lint-workflows.test.ts` › "checks actual reviewed workflow bytes before resolving or executing either linter"; "missing and over-bound report sources refuse before tool lookup or a zero-target pass" | Actual development CLI validates the hard-coded reviewed report digest before tool lookup/spawning. Independent complete30/4files and12 guarded CLI children pass, including11 actual unsafe/missing/over-bound refusals with zero tool lookup/spawns/digest-env reads; original insecure HIGH audits still execute. ADR0032 scopes individual annotations, not global audit removal or runtime authorization. | M2.5 |
+| R4.2-02 | lint | passing | `tools/release/report-workflow.test.ts` › "both jobs validate actual own job fields before fixed self checkout and verify HEAD before action" | Actual bounded own-job guard precedes fixed product checkout and native HEAD equality before local action execution. Independent30/4files and22 identity probes pass; actual hosted own-field serialization remains a separate gate. | M2.5 |
+| R4.2-02 | unit | passing | `actions/publish/test/entry.test.ts` › "own checkout HEAD and product workflow SHA refuse caller-selected code before credentials" | Actual source-free bundled entry validates its own sanitized native Git HEAD and fixed product/full workflow SHA before token access. Independent20/20 at e458a388/a7cca23b/efafc326 passes118.06s with lint/types; hosted own-job serialization and full self-reference remain gates. | M2.5 |
+| R4.2-05 | unit | passing | `actions/publish/test/entry.test.ts` › "selected unknown bundle cannot project while unselected unknown stays unopened" | A genuine authenticated selected unknown bundle refuses without a new store push or projection output; unrelated unknown artifacts stay unopened. Independent complete20 passes; this does not accept unimplemented prepare/finish. | M2.5 |
+| R4.3-09 | unit | passing | `actions/publish/test/entry.test.ts` › "released ingestion executes its sibling worker and stores canonical pixels through genuine GitHubClient and isolated Git" | Actual fixed bundled entry, separate sibling PNG worker, real source verification/core canonicalization and native isolated store preserve canonical pixels. Independent20 passes; fixture source/release commits are real local commits, with no release publication or live pixel claim. | M2.5 |
+| R4.5-03 | unit | passing | `actions/publish/test/entry.test.ts` › "one ten-minute scope includes policy and stops new CAS after expiry" | One injected600000ms work scope includes policy and pre-new-CAS checks; independent complete20 and original unsent-push/held-read reproducers close with original process/test bounds. Already-sent bounded recovery is retained separately. | M2.5 |
+| R4.5-03 | unit | passing | `actions/publish/test/entry.test.ts` › "a genuine native lease conflict cannot strand an expired ignored admission retry delay" | Actual competing native CAS creates a real conflict; the actual142ms retry delay is cancelled, no second CAS starts, the competitor tip/bytes remain and terminal native cleanup joins. Independent20 and additive byte-equivalent original-probe fixture pass; the original prototype-fault command remains recorded. | M2.5 |
+| R4.5-04 | unit | passing | `actions/publish/test/entry.test.ts` › "a held already-sent native checkpoint settles through genuine unknown-reply recovery" | Sent native pushes keep their actual uncertain receipt; exact private attemptedTip authorizes one fresh read with the existing60000ms pack deadline after outer expiry. Independent original and supplemental native recovery probes close; no accepted state is erased. | M2.5 |
+| R4.3-07 | unit | passing | `actions/publish/test/entry.test.ts` › "accepted admission survives output and terminal cleanup failure with fixed finite warnings" | Proven accepted source is privately copied before output/store/outer cleanup; finite fixed warnings and exit1 preserve storage. Independent20 plus disposal/unlink probes pass;52 physical artifacts and570 decoded/native values scan0 before verdict. | M2.5 |
+| R4.3-08 | unit | passing | `actions/publish/test/entry.test.ts` › "the native pack signal immediately follows outer cancellation and reaches the HTTP component unchanged" | Normal native transfers link existing60000ms deadline to the outer scope. An actual native PID signal and actual HTTP component share immediate cancellation; independent open-stream cancel1/exact fixed refusal/done-unlocked proof passes. Component scope only: no actual HTTPS Git, ignored-stream lifecycle or live-token permission claim. | M2.5 |
 | R4.2-02 | live | planned | `tools/live/scenarios/pr-fork-hostile.ts` | A fork PR adding scripts, a `package.json` and a poisoned cache sees none of them executed by the report | M2.6 |
 | R4.2-03 | evidence | recorded | `docs/adr/0006-s4-reusable-workflow-self-checkout.md` | A foreign SHA-pinned caller, a nested call and an old pin after a newer release each ran their own bundle, not the caller's impostor; the guard failed on missing or non-SHA fields; recorded with run IDs | S4 |
 | R4.2-03 | live | planned | `tools/release/self-reference.test.ts` | A foreign SHA-pinned caller, a nested call, and an older release after a newer one each run their own bundle; missing job fields fail | M2.5 |
@@ -204,10 +230,10 @@ Planned paths are provisional (§1).
 | R4.2-05 | unit | passing | `testdata/schemas/config/invalid/schema.comparator-version-2.json` | An unknown comparator version in config is rejected | M0.3 |
 | R4.2-05 | unit | passing | `packages/core/test/comparator.test.ts` › "refuses an unknown comparator version" | The core maps only comparator version 1 to a policy; any other version throws | M1.3 |
 | R4.2-05 | simulation | planned | `tools/simulation/scenarios/sim-unknown-version.sim.test.ts` | Unknown config/bundle/store version → zero store pushes, zero deployments, zero comment writes | M2.3 |
-| R4.2-06 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Top-level `permissions: {}`; the ingest and project jobs have exactly the 01 §4.2 sets | M2.5 |
+| R4.2-06 | lint | passing | `tools/release/report-workflow.test.ts` › "top permissions are empty and ingest project receive exactly their normative sets" | Actual report top-level permissions are empty and both jobs have exactly the 01 §4.2 sets. Independent30/4files and22 unchanged mutants pass; no expansion to permit metadata reads, and normative live job-token access is unproved. | M2.5 |
 | R4.2-06 | evidence | recorded | `docs/evidence/s4-self-reference.md` | Inside a foreign-called reusable workflow, each called job's logged `GITHUB_TOKEN` permissions were exactly its own 01 §4.2 set, not the caller's union | S4 |
 | R4.2-06 | evidence | evidence-planned | `docs/evidence/` (M2.6 live run) | Token permissions observed in a real report run match 01 §4.2 per job | M2.6 |
-| R4.2-07 | lint | planned | `tools/lint-workflows.test.ts` › report workflow block | Exactly one job both deploys Pages and writes comments; it has the fixed per-site group, `cancel-in-progress: false`; the ingest job has no concurrency group | M2.5 |
+| R4.2-07 | lint | passing | `tools/release/report-workflow.test.ts` › "one project job owns the stable repository ID lock through fresh prepare deploy and finish" | One actual project job owns pixelwatch-project-${{ github.repository_id }} with cancel-in-progress:false throughout prepare/upload/deploy/finish; ingestion and workflow have no lock. Independent30/4files passes; genuine race simulation and live execution remain gates. | M2.5 |
 | R4.2-08 | unit | passing | `tools/lib/lint-tools.test.ts` › "rejects any single-byte change or truncation" | Pinned lint tools are verified by SHA-256 before use | M0.1 |
 | R4.2-08 | unit | passing | `packages/schemas/test/json.test.ts` › "enforces the size and depth limits" | The strict JSON parser refuses > 1 MiB or depth > 32 | M0.3 |
 | R4.2-08 | evidence | recorded | `docs/security/repo-settings.md` | Rows 5–7: Dependabot alerts and security updates, CodeQL advanced setup, dependency review | M0.2 |
@@ -313,7 +339,7 @@ Planned paths are provisional (§1).
 | R4.5-03 | simulation | passing | `tools/simulation/scenarios/sim-ingest-cas-race.sim.test.ts` › "four-writers" | **CAS race.** Real adapters and isolated Git: four readers fetch one marked tip, real stale leases refuse, all four runs survive within five attempts; named conflict reached; all seeds repeated | M2.2 |
 | R4.5-03 | unit | passing | `tools/simulation/drivers/store.test.ts` › "four production writers survive the same-tip lease conflict for seed %i" | Production driver invokes original scenario assertions and proves reached fault plus exact normalized equality for every fixed seed twice | M2.2 |
 | R4.5-03 | unit | passing | `packages/store/test/git-branch.test.ts` › "uses expected-absent and explicit stale leases and creates parentless commits" | Actual native Git uses expected-absent and stale-tip leases; commits have no parent | M2.2 |
-| R4.5-03 | simulation | planned | `tools/simulation/scenarios/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported | M2.3 |
+| R4.5-03 | simulation | planned | `tools/simulation/scenarios/sim-lease-exhausted.sim.test.ts` | Retries exhausted → the previous store tip and site stay consistent; a repair instruction is reported. WIP remains unregistered: the corrected author's 8/8 pass is separate from independent 8 FAIL/33.97s replay. Original 30s assertions remain; measured phase diagnosis and complete native cleanup/replay are pending (`mvp-progress.md`). | M2.3 |
 | R4.5-04 | simulation | passing | `tools/simulation/scenarios/sim-push-outcome-unknown.sim.test.ts` › "accepted-push" | Actual push accepted then reply lost; original immutable run is rediscovered before retry despite caller mutation; exactly one push; named fault reached | M2.2 |
 | R4.5-04 | unit | passing | `tools/simulation/drivers/store.test.ts` › "an accepted production push survives a lost reply and changed input for seed %i" | Production driver checks unchanged canonical bytes/tip, reached lost-reply injection and exact replay for all fixed seeds twice | M2.2 |
 | R4.3-07 | unit | passing | `packages/store/test/git-branch.test.ts` › "lost accepted replies contain no fake token signed URL or native Git diagnostic" | Raw returned errors and accepted/recovered result contain no fake token, signed URL or native Git diagnostics | M2.2 |
